@@ -1,0 +1,37 @@
+<div class="todo-list-container">
+  <h2>My To-Do List</h2>
+
+  <!-- Add Todo Form -->
+  <form (ngSubmit)="addTodo()" class="add-todo-form">
+    <input type="text" [(ngModel)]="newTask" name="newTask" placeholder="What needs to be done?" required>
+    <button type="submit" [disabled]="!newTask.trim() || (isLoading$ | async)">Add Task</button>
+  </form>
+
+  <!-- Loading/Error Messages -->
+  <div *ngIf="isLoading$ | async" class="loading-message">Loading tasks...</div>
+  <!-- <div *ngIf="error$ | async as error" class="error-message">Error: {{ error }}</div> -->
+
+
+  <ul *ngIf="!(isLoading$ | async) && !(error$ | async) && (todos$ | async) as todos">
+    <div *ngIf="todos.length === 0" class="empty-list-message">
+      No tasks yet! Add one above.
+    </div>
+    <li *ngFor="let todo of todos; trackBy: trackById" [class.completed]="todo.completed">
+      <div *ngIf="editingTodo?.id !== todo.id" class="view-mode">
+        <input type="checkbox" [checked]="todo.completed" (change)="toggleComplete(todo)" class="todo-checkbox">
+        <span (click)="toggleComplete(todo)" class="todo-task">{{ todo.task }}</span>
+        <div class="actions">
+          <button (click)="startEdit(todo)" class="edit-btn">Edit</button>
+          <button (click)="deleteTodo(todo.id)" class="delete-btn">Delete</button>
+        </div>
+      </div>
+      <div *ngIf="editingTodo?.id === todo.id" class="edit-mode">
+        <input type="text" [(ngModel)]="updatedTask" name="updatedTask" class="edit-input" (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()">
+        <div class="actions">
+            <button (click)="saveEdit()" class="save-btn">Save</button>
+            <button (click)="cancelEdit()" class="cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

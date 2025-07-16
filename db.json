@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": "9d6172b7-0ff4-464d-a18f-4ba3d8eca43b",
+      "name": "gio",
+      "email": "gio@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": "90645113-90bf-48fb-9322-dda5cb9c52e9",
+      "name": "new",
+      "email": "new@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": "62efd517-4358-4f71-983e-74ada1a86235",
+      "name": "Prabha",
+      "email": "prabhakaran2002k@gmail.com",
+      "password": "Prabha"
+    }
+  ],
+  "todos": [
+    {
+      "id": "3cf3a0aa-1fa5-4a33-bea1-9d732a4aa0e8",
+      "userId": "9d6172b7-0ff4-464d-a18f-4ba3d8eca43b",
+      "task": "food",
+      "completed": true,
+      "createdAt": "2025-06-10T18:39:07.693Z"
+    },
+    {
+      "id": "0fe58e41-cdc6-4a74-81d9-ba9d3f48cb62",
+      "userId": "9d6172b7-0ff4-464d-a18f-4ba3d8eca43b",
+      "task": "football",
+      "completed": true,
+      "createdAt": "2025-06-10T18:39:22.309Z"
+    },
+    {
+      "id": "a0a3c7e4-4739-492c-a653-ac50e310a634",
+      "userId": "90645113-90bf-48fb-9322-dda5cb9c52e9",
+      "task": "ad,mnadmnad",
+      "completed": false,
+      "createdAt": "2025-06-10T18:40:52.157Z"
+    },
+    {
+      "id": "3eb3bf63-57f8-41a3-a7af-eb4c1f403865",
+      "userId": "9d6172b7-0ff4-464d-a18f-4ba3d8eca43b",
+      "task": "grocery tomorrow",
+      "completed": false,
+      "createdAt": "2025-06-12T13:59:23.347Z"
+    }
+  ]
+}

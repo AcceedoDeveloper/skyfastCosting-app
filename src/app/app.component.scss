@@ -1,0 +1,93 @@
+:host {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333;
+}
+.navbar {
+  background-color: #f5f5f5;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dbdbdb;
+}
+.navbar-brand .navbar-item.brand-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3273dc; /* Bulma primary color */
+  text-decoration: none;
+}
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Allow start and end to position correctly */
+}
+.navbar-start {
+  margin-right: auto; /* Pushes end to the right */
+}
+.navbar-end {
+  margin-left: auto; /* Aligns items to the end */
+  display: flex;
+  align-items: center;
+}
+.navbar-item {
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: #4a4a4a;
+}
+.navbar-item.is-active {
+  color: #3273dc;
+  font-weight: 600;
+}
+.user-greeting {
+  margin-right: 15px;
+  font-size: 0.9rem;
+  color: #555;
+}
+/* Basic button styling (can be enhanced with a CSS framework like Bulma) */
+.button {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+.button.is-light {
+  background-color: #f5f5f5;
+  border-color: #dbdbdb;
+  color: #363636;
+}
+.button.is-light:hover {
+  background-color: #e8e8e8;
+  border-color: #b5b5b5;
+}
+.button.is-primary {
+  background-color: #3273dc;
+  border-color: transparent;
+  color: #fff;
+}
+.button.is-primary:hover {
+  background-color: #276cda;
+}
+
+.container {
+  max-width: 960px; /* Or your preferred container width */
+  margin: 20px auto;
+  padding: 0 15px;
+}
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-top: 1px solid #eee;
+  font-size: 0.9em;
+  color: #777;
+}
