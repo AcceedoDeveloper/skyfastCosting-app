@@ -6,10 +6,11 @@ import { Observable } from 'rxjs';
 import { Todo } from '../../model/todo.model';
 import * as TodoActions from '../store/todo.action';
 import * as TodoSelectors from '../store/todo.selector';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-postlogin',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterModule],
   templateUrl: './postlogin.component.html',
   styleUrl: './postlogin.component.scss'
 })
