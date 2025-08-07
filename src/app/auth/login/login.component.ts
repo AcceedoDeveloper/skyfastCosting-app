@@ -32,6 +32,20 @@ export class LoginComponent implements OnInit {
 
     this.error$ = this.store.select(selectAuthError);
     this.isLoading$ = this.store.select(selectAuthLoading); 
+
+    const token = sessionStorage.getItem('token');
+    const user = sessionStorage.getItem('user');
+
+    if (token && user) {
+      this.store.dispatch(AuthActions.loginSuccess({
+        authResponse: {
+          accessToken: token,
+          user: JSON.parse(user)
+        }
+      }));
+    } else {
+      this.store.dispatch(AuthActions.logoutUser());
+    }
   }
 
   onSubmit(): void {

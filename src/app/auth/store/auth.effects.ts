@@ -15,7 +15,7 @@ export class AuthEffects {
 
 
   
-  //loginUser
+
   loginUser$ = createEffect(() =>
   this.actions$.pipe(
     ofType(fromAuth.loginUser),
@@ -27,26 +27,38 @@ export class AuthEffects {
     )
   )
 );
-  //loginsuccess
-  loginSuccess$ = createEffect(() =>
+loginSuccess$ = createEffect(() =>
   this.actions$.pipe(
     ofType(fromAuth.loginSuccess),
-    tap(() => {
-      //
-      this.router.navigate(['/todos']);
+    tap(({ authResponse }) => {
+      this.router.navigate(['/todos'], { replaceUrl: true });
     })
-  ),{dispatch : false}
-
+  ), { dispatch: false }
 );
+
+
+
 
 logoutUser$ = createEffect(() =>
-this.actions$.pipe(
-  ofType(fromAuth.logoutUser),
-  tap(() =>
-    this.router.navigate(['/login'])
-  )
-), {dispatch : false}
-
+  this.actions$.pipe(
+    ofType(fromAuth.logoutUser),
+    tap(() => {
+      sessionStorage.clear(); 
+      this.router.navigate(['/login'], { replaceUrl: true });
+    })
+  ), { dispatch: false }
 );
+
+
+  autoLogout$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(fromAuth.autoLogout),
+        tap(() => {
+          this.authService.logout();
+        })
+      ),
+    { dispatch: false }
+  );
 
 }

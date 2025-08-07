@@ -10,8 +10,9 @@ export const routes: Routes = [
 
   {
     path: 'todos',
-    loadComponent: () => import('./post-login/postlogin/postlogin.component').then(m => m.PostloginComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard],
+    loadComponent: () => import('./post-login/postlogin/postlogin.component').then(m => m.PostloginComponent)
+    
   },
 
   ...postLoginRoutes,

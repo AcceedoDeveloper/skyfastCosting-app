@@ -22,3 +22,6 @@ export const loginFailure = createAction(
 export const logoutUser = createAction(
   '[App Logout] Logout User'
 );
+
+
+export const autoLogout = createAction('[Auth] Auto Logout');

@@ -41,6 +41,14 @@ export const authReducer = createReducer(
     error: error.message || 'Login failed'
   })),
 
+    on(AuthActions.autoLogout, (state) => ({
+    ...state,
+    user: null,
+    token: null,
+    isAuthenticated: false,
+    error: null,
+  })),
+
   on(AuthActions.logoutUser, () => ({
     ...initialState
   }))

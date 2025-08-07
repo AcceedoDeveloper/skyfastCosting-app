@@ -28,20 +28,23 @@ export class AppComponent implements OnInit{
   }
 
 
-  ngOnInit(): void {
+ngOnInit(): void {
+ 
+  const token = sessionStorage.getItem('token');
+  const user = sessionStorage.getItem('user');
 
-     this.user$.subscribe(user => {
-      if (user) {
-        console.log('✅ Logged in user:', user);
-      }
-    });
-
+  if (!token || !user) {
+    this.store.dispatch(AuthActions.logoutUser());
   }
+
+}
+
 
   logout(){
     this.store.dispatch(AuthActions.logoutUser());
   }
 
 
+   
 
 }

@@ -10,37 +10,6 @@ import {v4 as uuidv4} from 'uuid';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private usersUrl = 'http://localhost:3000/users';
-
-  //resister
-
-
-  // register(credentials : {name : string, email : string, password : string}) : Observable<User>{
-  //   // const newUser : User = {
-  //   //   id : uuidv4(),
-  //   //   name : credentials.name,
-  //   //   email : credentials.email.toLowerCase()
-  //   // };
-
-  //   // const userToSave = {...newUser, password : credentials.password}
-
-  //   //chec k is user exist
-  //   return this.http.get<User[]>(`${this.usersUrl}?email=${credentials.email.toLowerCase()}`).pipe(
-  //     // switchMap(exisitingUsers => {
-  //     //   if(exisitingUsers.length > 0){
-  //     //     return throwError(() => new Error('email already exist in DB.'));
-  //     //   }
-
-  //     //   // return this.http.post<User>(this.usersUrl, userToSave).pipe(
-  //     //   //   map(() => newUser)
-  //     //   // )
-  //     // }),
-  //     catchError(this.handleError)
-  //   );
-
-  // }
-
-  //login
 
  login(credentials: { username: string; password: string }): Observable<AuthResponse> {
   const loginUrl = 'http://localhost:3005/login';
@@ -67,5 +36,32 @@ export class AuthService {
     }
     return throwError(() => new Error(errorMessage));
   }
+
+
+formatUser(data: AuthResponse): User {
+  const roleName = data.user.userName || 'unknown';
+
+  return {
+    _id: data.user._id,
+    UserCode: data.user.UserCode,
+    UserName: data.user.UserName,
+    userName: data.user.userName,
+    createdAt: data.user.createdAt,
+    updatedAt: data.user.updatedAt,
+    token: data.accessToken
+  };
+}
+
+
+
+  setUserInSessionStorage(user: User): void {
+  sessionStorage.setItem('userData', JSON.stringify(user));
+}
+
+logout(): void {
+  sessionStorage.removeItem('userData');
+}
+
+  
 
 }
