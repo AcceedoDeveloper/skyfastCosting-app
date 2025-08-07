@@ -15,53 +15,45 @@ export class AuthService {
   //resister
 
 
-  register(credentials : {name : string, email : string, password : string}) : Observable<User>{
-    const newUser : User = {
-      id : uuidv4(),
-      name : credentials.name,
-      email : credentials.email.toLowerCase()
-    };
+  // register(credentials : {name : string, email : string, password : string}) : Observable<User>{
+  //   // const newUser : User = {
+  //   //   id : uuidv4(),
+  //   //   name : credentials.name,
+  //   //   email : credentials.email.toLowerCase()
+  //   // };
 
-    const userToSave = {...newUser, password : credentials.password}
+  //   // const userToSave = {...newUser, password : credentials.password}
 
-    //chec k is user exist
-    return this.http.get<User[]>(`${this.usersUrl}?email=${credentials.email.toLowerCase()}`).pipe(
-      switchMap(exisitingUsers => {
-        if(exisitingUsers.length > 0){
-          return throwError(() => new Error('email already exist in DB.'));
-        }
+  //   //chec k is user exist
+  //   return this.http.get<User[]>(`${this.usersUrl}?email=${credentials.email.toLowerCase()}`).pipe(
+  //     // switchMap(exisitingUsers => {
+  //     //   if(exisitingUsers.length > 0){
+  //     //     return throwError(() => new Error('email already exist in DB.'));
+  //     //   }
 
-        return this.http.post<User>(this.usersUrl, userToSave).pipe(
-          map(() => newUser)
-        )
-      }),
-      catchError(this.handleError)
-    );
+  //     //   // return this.http.post<User>(this.usersUrl, userToSave).pipe(
+  //     //   //   map(() => newUser)
+  //     //   // )
+  //     // }),
+  //     catchError(this.handleError)
+  //   );
 
-  }
+  // }
 
   //login
 
-  login(credentials : {email : string; password : string}) : Observable<AuthResponse>{
-    return this.http.get<any[]>(`${this.usersUrl}?email=${credentials.email.toLowerCase()}&password=${credentials.password}`).pipe(
-      map(users => {
-        if(users.length > 0){
-          const user = users[0];
+ login(credentials: { username: string; password: string }): Observable<AuthResponse> {
+  const loginUrl = 'http://localhost:3005/login';
 
-          const {password, ...userWithoutPassword} = user;
+  return this.http.post<any>(loginUrl, credentials).pipe(
+    map(response => ({
+      user: response.user,
+      accessToken: response.token
+    })),
+    catchError(this.handleError)
+  );
+}
 
-          return {
-            user : userWithoutPassword,
-            accessToken : `mockToken-${user.id}-${new Date().getTime()}` /// simple mock token
-          }
-
-        }else{
-          throw new Error('Invalid email or password');
-        }
-      }),
-       catchError(this.handleError)
-    )
-  }
 
 
 

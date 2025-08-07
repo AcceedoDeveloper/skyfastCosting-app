@@ -13,30 +13,8 @@ export class AuthEffects {
   private router = inject(Router);
 
 
-  //registerUser
-  registerUser$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(fromAuth.registerUser),
-    exhaustMap(action =>
-      this.authService.register(action.credentials).pipe(
-        map(user => fromAuth.registerSuccess({user})),
-        catchError(error => of(fromAuth.registerFailure({error})))
-      )
-    )
-  )
-);
-  //sucess
-  registerSuccess$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(fromAuth.registerSuccess),
-    tap(() => {
-      //
-      alert('Registration successfull! Please LOGIN');
-      this.router.navigate(['/login']);
-    })
-  ),{dispatch : false}
 
-)
+  
   //loginUser
   loginUser$ = createEffect(() =>
   this.actions$.pipe(

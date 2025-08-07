@@ -1,33 +1,47 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { LoadingSpinnerComponent} from '../../shared/loading-spinner/loading-spinner.component';
+
 import * as AuthActions from '../store/auth.action';
 import { selectAuthLoading, selectAuthError } from '../store/auth.selector';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, LoadingSpinnerComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private store = inject(Store);
-  isLoading$: Observable<boolean>;
-  error$: Observable<string | null>;
+  private fb = inject(FormBuilder);
 
-  constructor() {
-    this.isLoading$ = this.store.select(selectAuthLoading);
+  loginForm!: FormGroup;
+  isLoading$!: Observable<boolean>;
+  error$!: Observable<string | null>;
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+
     this.error$ = this.store.select(selectAuthError);
+    this.isLoading$ = this.store.select(selectAuthLoading); 
   }
 
-  onSubmit(form: NgForm): void {
-    if (form.invalid) {
-      return;
-    }
-    const { email, password } = form.value;
-    this.store.dispatch(AuthActions.loginUser({ credentials: { email, password } }));
-  }
+  onSubmit(): void {
+  if (this.loginForm.invalid) return;
+
+  const { username, password } = this.loginForm.value;
+  console.log('Submitted:', username, password);
+  this.store.dispatch(AuthActions.loginUser({ credentials: { username, password } }));
+
+
+}
+
 }

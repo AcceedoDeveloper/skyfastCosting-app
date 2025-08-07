@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as AuthActions from './auth/store/auth.action';
@@ -9,7 +9,7 @@ import { User } from './model/auth.model';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -29,7 +29,13 @@ export class AppComponent implements OnInit{
 
 
   ngOnInit(): void {
-    // throw new Error('Method not implemented.');
+
+     this.user$.subscribe(user => {
+      if (user) {
+        console.log('✅ Logged in user:', user);
+      }
+    });
+
   }
 
   logout(){

@@ -1,3 +1,4 @@
+
 <nav class="navbar">
   <div class="navbar-brand">
     <a routerLink="/" class="navbar-item brand-text">NgRx To-Do Auth</a>
@@ -9,12 +10,7 @@
       </a>
     </div>
     <div class="navbar-end">
-      <div class="navbar-item" *ngIf="isLoggedIn$ | async as loggedIn">
-        <span *ngIf="user$ | async as user" class="user-greeting">
-          Welcome, {{ user.name || user.email }}!
-        </span>
-        <button (click)="logout()" class="button is-light">Logout</button>
-      </div>
+       <button (click)="logout()" class="button is-light">Logout</button>
       <div class="navbar-item" *ngIf="!(isLoggedIn$ | async)">
         <a routerLink="/login" routerLinkActive="is-active" class="button is-light">Login</a>
         <a routerLink="/register" routerLinkActive="is-active" class="button is-primary">Register</a>
