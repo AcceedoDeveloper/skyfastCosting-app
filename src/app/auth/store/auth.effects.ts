@@ -13,9 +13,6 @@ export class AuthEffects {
   private router = inject(Router);
 
 
-
-  
-
   loginUser$ = createEffect(() =>
   this.actions$.pipe(
     ofType(fromAuth.loginUser),
@@ -31,13 +28,14 @@ loginSuccess$ = createEffect(() =>
   this.actions$.pipe(
     ofType(fromAuth.loginSuccess),
     tap(({ authResponse }) => {
+      sessionStorage.setItem('token', authResponse.accessToken);
+      sessionStorage.setItem('user', JSON.stringify(authResponse.user));
+
       this.router.navigate(['/todos'], { replaceUrl: true });
     })
-  ), { dispatch: false }
+  ), 
+  { dispatch: false }
 );
-
-
-
 
 logoutUser$ = createEffect(() =>
   this.actions$.pipe(

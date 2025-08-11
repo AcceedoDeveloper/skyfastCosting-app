@@ -1,0 +1,85 @@
+<div class="container">
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step completed">Add Product</div>
+    <div class="step completed">Upload Drawings</div>
+    <div class="step completed">Map Machines</div>
+    <div class="step active">Upload JSIR</div>
+  </div>
+
+  <!-- Table -->
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Customer Name</th>
+        <th>Drawing Name</th>
+        <th>JSIR</th>
+        <th>ISIR</th>
+        <th>PDIR</th>
+        <th>PMS</th>
+        <th>PIR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>VALVE HOUSE ICV 65 76 SD</td>
+        <td>M/S DANFOSS AS REFRIGERATION A AC CONTROLSND</td>
+        <td>ISC II SD DFS</td>
+        <td class="required">* JSIR Required</td>
+        <td class="required">* JSIR Required</td>
+        <td class="required">* JSIR Required</td>
+        <td class="required">* JSIR Required</td>
+        <td class="required">* JSIR Required</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Operations Table -->
+  <h3>Operations</h3>
+  <table class="operations-table">
+    <thead>
+      <tr>
+        <th>Lot ID</th>
+        <th>Operation</th>
+        <th>Drawing</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1)</td>
+        <td>1st Operation</td>
+        <td>ISC II SD DFS</td>
+      </tr>
+      <tr>
+        <td>2)</td>
+        <td>2nd Operation</td>
+        <td>ISC II SD DFS 09B</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal -->
+  <div class="modal">
+    <div class="modal-header">
+      <h4>Select Sheet</h4>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="operation-col">
+        <h5>1st Operation</h5>
+        <label><input type="checkbox"> 1ST OPN (1)</label><br>
+        <label><input type="checkbox"> 2ND OPN (1)</label>
+      </div>
+      <div class="operation-col">
+        <h5>2nd Operation</h5>
+        <label><input type="checkbox"> 1ST OPN (1)</label><br>
+        <label><input type="checkbox"> 2ND OPN (1)</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn cancel">Cancel</button>
+      <button class="btn upload">Upload</button>
+    </div>
+  </div>
+</div>

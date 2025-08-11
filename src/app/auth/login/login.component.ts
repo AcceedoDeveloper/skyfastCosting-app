@@ -12,7 +12,7 @@ import { selectAuthLoading, selectAuthError } from '../store/auth.selector';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, LoadingSpinnerComponent],
+  imports: [CommonModule, ReactiveFormsModule,  LoadingSpinnerComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -24,29 +24,29 @@ export class LoginComponent implements OnInit {
   isLoading$!: Observable<boolean>;
   error$!: Observable<string | null>;
 
-  ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
-    });
+ngOnInit(): void {
+  this.loginForm = this.fb.group({
+    username: ['', Validators.required],
+    password: ['', Validators.required]
+  });
 
-    this.error$ = this.store.select(selectAuthError);
-    this.isLoading$ = this.store.select(selectAuthLoading); 
+  this.error$ = this.store.select(selectAuthError);
+  this.isLoading$ = this.store.select(selectAuthLoading);
 
-    const token = sessionStorage.getItem('token');
-    const user = sessionStorage.getItem('user');
+  const token = sessionStorage.getItem('token');
+  const user = sessionStorage.getItem('user');
 
-    if (token && user) {
-      this.store.dispatch(AuthActions.loginSuccess({
-        authResponse: {
-          accessToken: token,
-          user: JSON.parse(user)
-        }
-      }));
-    } else {
-      this.store.dispatch(AuthActions.logoutUser());
-    }
+  if (token && user) {
+    this.store.dispatch(AuthActions.loginSuccess({
+      authResponse: {
+        accessToken: token,
+        user: JSON.parse(user)
+      }
+    }));
+  } else {
+    this.store.dispatch(AuthActions.logoutUser());
   }
+}
 
   onSubmit(): void {
   if (this.loginForm.invalid) return;

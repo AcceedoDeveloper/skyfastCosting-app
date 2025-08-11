@@ -15,6 +15,11 @@ export const routes: Routes = [
     
   },
 
+  {
+    path: 'role',
+    loadComponent: () => import('./role/role.component').then(m => m.RoleComponent)
+  },
+
   ...postLoginRoutes,
 
 

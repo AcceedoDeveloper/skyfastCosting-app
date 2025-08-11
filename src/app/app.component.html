@@ -1,25 +1,49 @@
-
-<nav class="navbar">
+<!-- Navbar (hidden on login page) -->
+<nav class="navbar" *ngIf="showHeader">
   <div class="navbar-brand">
-    <a routerLink="/" class="navbar-item brand-text">NgRx To-Do Auth</a>
+    <a routerLink="/" class="navbar-item brand-text">Quality Management</a>
   </div>
+
   <div class="navbar-menu">
     <div class="navbar-start">
-      <a routerLink="/todos" routerLinkActive="is-active" class="navbar-item" *ngIf="isLoggedIn$ | async">
-        My To-Dos
+      <a 
+        routerLink="/todos" 
+        routerLinkActive="is-active" 
+        class="navbar-item" 
+        *ngIf="isLoggedIn$ | async">
+    
       </a>
     </div>
+
     <div class="navbar-end">
-       <button (click)="logout()" class="button is-light">Logout</button>
+      <!-- Logout button -->
+      <button 
+        *ngIf="isLoggedIn$ | async" 
+        (click)="logout()" 
+        class="button is-light">
+        Logout
+      </button>
+
+      <!-- Login/Register buttons -->
       <div class="navbar-item" *ngIf="!(isLoggedIn$ | async)">
-        <a routerLink="/login" routerLinkActive="is-active" class="button is-light">Login</a>
-        <a routerLink="/register" routerLinkActive="is-active" class="button is-primary">Register</a>
+        <a 
+          routerLink="/login" 
+          routerLinkActive="is-active" 
+          class="button is-light">
+          Login
+        </a>
+        <a 
+          routerLink="/register" 
+          routerLinkActive="is-active" 
+          class="button is-primary">
+          Register
+        </a>
       </div>
     </div>
   </div>
 </nav>
 
+<!-- Main routed content -->
 <main class="container">
   <router-outlet></router-outlet>
 </main>
-
