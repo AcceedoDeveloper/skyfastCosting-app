@@ -16,13 +16,22 @@ export const routes: Routes = [
   },
 
   {
-    path: 'role',
-    loadComponent: () => import('./role/role.component').then(m => m.RoleComponent)
+    path: 'system',
+    canActivate: [authGuard],
+    loadChildren: () => import('./master/system-organization/system.routes').then(m => m.systemRoutes)
   },
+
+    {
+    path: 'entity',
+    canActivate: [authGuard],
+    loadChildren: () => import('./master/entity-management/entity.routes').then(m => m.entityRoutes)
+  },
+
+  
 
   ...postLoginRoutes,
 
 
-   { path: '', redirectTo: '/todos', pathMatch: 'full' }, 
-  { path: '**', redirectTo: '/todos' }
+   { path: '', redirectTo: '/system', pathMatch: 'full' }, 
+  { path: '**', redirectTo: '/system' }
 ];

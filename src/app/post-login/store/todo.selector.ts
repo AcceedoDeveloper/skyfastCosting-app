@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { TodosState } from "../../model/todo.model";
 import * as fromTodos from './todo.reducer';
 
-export const selectTodosState = createFeatureSelector<TodosState>(fromTodos.todosfeatureKey);
+export const selectTodosState = createFeatureSelector<TodosState>(fromTodos.todoFeatureKey);
 
 
 export const selectAllTodos = createSelector(

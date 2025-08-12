@@ -7,6 +7,7 @@ import { Todo } from '../../model/todo.model';
 import * as TodoActions from '../store/todo.action';
 import * as TodoSelectors from '../store/todo.selector';
 import { RouterModule } from '@angular/router';
+import { AppState} from '../../store/app.state';
 
 @Component({
   selector: 'app-postlogin',
@@ -15,7 +16,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './postlogin.component.scss'
 })
 export class PostloginComponent {
-   private store = inject(Store);
+private store = inject<Store<AppState>>(Store);
 
   todos$: Observable<Todo[]>;
   isLoading$: Observable<boolean>;

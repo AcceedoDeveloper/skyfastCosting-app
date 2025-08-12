@@ -1,96 +1,63 @@
-import { createReducer, on } from "@ngrx/store";
-import { TodosState } from "../../model/todo.model";
-import * as TodoActions from '../store/todo.action';
+import { createReducer, on } from '@ngrx/store';
+import * as TodoActions from './todo.action';
+import { Todo } from '../../model/todo.model';
 
-export const todosfeatureKey = 'todos';
 
-export const initialTodoState : TodosState = {
-  items : [],
-  loading : false,
-  error : null
+export const todoFeatureKey = 'todos'; 
+
+export interface TodoState {
+  todos: Todo[];
+  error: any;
+}
+
+export const initialState: TodoState = {
+  todos: [],
+  error: null
 };
 
-export const todosReducer = createReducer(
-  initialTodoState,
+export const todoReducer = createReducer(
+  initialState,
 
-  on(TodoActions.loadTodos, (state)=> ({
+  // Load Todos
+  on(TodoActions.loadTodosSuccess, (state, { todos }) => ({
     ...state,
-    loading : true,
-    error : null
+    todos
+  })),
+  on(TodoActions.loadTodosFailure, (state, { error }) => ({
+    ...state,
+    error
   })),
 
-  on(TodoActions.loadTodosSuccess, (state, {todos}) => ({
+  // Add Todo
+  on(TodoActions.addTodoSuccess, (state, { todo }) => ({
     ...state,
-    items : todos,
-    loading : false
+    todos: [...state.todos, todo]
+  })),
+  on(TodoActions.addTodoFailure, (state, { error }) => ({
+    ...state,
+    error
   })),
 
-    on(TodoActions.loadTodosFailure, (state, {error}) => ({
+  // Update Todo
+ on(TodoActions.updateTodoSuccess, (state, { todo }) => ({
+  ...state,
+  todos: state.todos.map(t =>
+    t.id === todo.id ? todo : t
+  )
+})),
+  on(TodoActions.updateTodoFailure, (state, { error }) => ({
     ...state,
-    error : error.message || 'Failed to load messages',
-    loading : false
+    error
   })),
 
-  //add todos
-  on(TodoActions.addTodo, (state) => ({
+  // Delete Todo
+ on(TodoActions.deleteTodoSuccess, (state, { todoId }) => ({
+  ...state,
+  todos: state.todos.filter(todo => todo.id !== todoId)
+})),
+
+  on(TodoActions.deleteTodoFailure, (state, { error }) => ({
     ...state,
-    loading: true,
-    error : null
-  })),
-
-  on(TodoActions.addTodoSuccess, (state, {todo}) => ({
-    ...state,
-    loading: false,
-    items : [...state.items, todo],
-  })),
-
-
-    on(TodoActions.addTodoFailure, (state, {error}) => ({
-    ...state,
-    error : error.message || 'Failed to add todo',
-    loading : false
-  })),
-
-  //update todos
-  on(TodoActions.updateTodo, (state) => ({
-    ...state,
-    loading: true,
-    error : null
-  })),
-
-  on(TodoActions.updateTodoSuccess, (state, {todo}) => ({
-    ...state,
-    loading: false,
-    items : state.items.map(item => item.id === todo.id ? todo : item),
-  })),
-
-
-    on(TodoActions.updateTodoFailure, (state, {error}) => ({
-    ...state,
-    error : error.message || 'Failed to update todo',
-    loading : false
-  })),
-
-    on(TodoActions.deleteTodo, (state) => ({
-    ...state,
-    loading: true,
-    error : null
-  })),
-
-  on(TodoActions.deleteTodoSuccess, (state, {todoId}) => ({
-    ...state,
-    loading: false,
-    items : state.items.filter(item => item.id !== todoId)
-  })),
-
-
-    on(TodoActions.deleteTodoFailure, (state, {error}) => ({
-    ...state,
-    error : error.message || 'Failed to delete todo',
-    loading : false
-  })),
-
-
-
-  //delete todos
-)
+    error
+  }))
+);

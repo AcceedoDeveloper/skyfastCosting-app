@@ -31,7 +31,7 @@ loginSuccess$ = createEffect(() =>
       sessionStorage.setItem('token', authResponse.accessToken);
       sessionStorage.setItem('user', JSON.stringify(authResponse.user));
 
-      this.router.navigate(['/todos'], { replaceUrl: true });
+      this.router.navigate(['/system'], { replaceUrl: true });
     })
   ), 
   { dispatch: false }

@@ -1,0 +1,28 @@
+{
+  "baseUrl": "/",
+  "costingUrl": "http://localhost:3000/",
+  "backupUrl": "http://20.84.65.155:9011/",
+  "urls": [
+
+     { "name": "login", "url": "login" },
+
+    { "name": "role", "url": "getRole" },
+    { "name": "addRole", "url": "addRole" },
+    { "name": "updateRole", "url": "updateRole" },
+    { "name": "deleteRole", "url": "deleteRole" }
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  ]
+}
