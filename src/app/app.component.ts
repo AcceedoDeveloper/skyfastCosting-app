@@ -23,13 +23,12 @@ export class AppComponent implements OnInit {
   isLoggedIn$: Observable<boolean>;
   user$: Observable<User | null>;
 
-
   showHeader = true;
+  showDropdown = false;
 
   constructor() {
     this.isLoggedIn$ = this.store.select(AuthSelectors.selectIsLoggedIn);
     this.user$ = this.store.select(AuthSelectors.selectUser);
-
 
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -47,7 +46,12 @@ export class AppComponent implements OnInit {
     }
   }
 
+  toggleDropdown() {
+    this.showDropdown = !this.showDropdown;
+  }
+
   logout() {
     this.store.dispatch(AuthActions.logoutUser());
+    this.showDropdown = false;
   }
 }

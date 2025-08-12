@@ -1,49 +1,154 @@
-<!-- Navbar (hidden on login page) -->
-<nav class="navbar" *ngIf="showHeader">
-  <div class="navbar-brand">
-    <a routerLink="/" class="navbar-item brand-text">Quality Management</a>
-  </div>
+<div *ngIf="isLoggedIn$ | async; else loginPageLayout">
+  
 
-  <div class="navbar-menu">
-    <div class="navbar-start">
-      <a 
-        routerLink="/todos" 
-        routerLinkActive="is-active" 
-        class="navbar-item" 
-        *ngIf="isLoggedIn$ | async">
-    
-      </a>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a routerLink="/" class="navbar-item brand-text">Quality Management</a>
     </div>
 
-    <div class="navbar-end">
-      <!-- Logout button -->
-      <button 
-        *ngIf="isLoggedIn$ | async" 
-        (click)="logout()" 
-        class="button is-light">
-        Logout
-      </button>
-
-      <!-- Login/Register buttons -->
-      <div class="navbar-item" *ngIf="!(isLoggedIn$ | async)">
+    <div class="navbar-menu">
+      <div class="navbar-start">
         <a 
-          routerLink="/login" 
+          routerLink="/todos" 
           routerLinkActive="is-active" 
-          class="button is-light">
-          Login
-        </a>
-        <a 
-          routerLink="/register" 
-          routerLinkActive="is-active" 
-          class="button is-primary">
-          Register
+          class="navbar-item">
+      
         </a>
       </div>
-    </div>
-  </div>
-</nav>
 
-<!-- Main routed content -->
-<main class="container">
-  <router-outlet></router-outlet>
-</main>
+      <div class="navbar-end">
+    
+        <div class="profile-container">
+          <button
+            (click)="toggleDropdown()"
+            class="profile-btn"
+            title="Profile">
+            <i class="material-icons">person</i>
+          </button>
+
+          <div class="profile-dropdown" *ngIf="showDropdown">
+            <div class="dropdown-username">
+              {{ (user$ | async)?.UserName || 'User' }}
+              {{ (user$ | async)?.UserCode || 'user' }}
+            </div>
+            <button class="dropdown-logout" (click)="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="sidenav-container">
+    <aside class="custom-sidenav">
+      <div class="sidenav-header"></div>
+      <ul class="nav-list">
+
+        <li class="nav-item" routerLink="/dashboard/dashh" routerLinkActive="active-link">
+          <div class="nav-item-content">
+            <span class="material-icons nav-icon">dashboard</span>
+            <span class="nav-text">Dashboard</span>
+          </div>
+        </li>
+
+
+        <li class="nav-item has-submenu">
+          <div class="nav-item-content">
+            <span class="material-icons nav-icon">group</span>
+            <span class="nav-text">User Management</span>
+          </div>
+          <ul class="submenu">
+            <li routerLink="/master">
+              <span class="material-icons submenu-icon">person</span> User
+            </li>
+            <li routerLink="/master/role">
+              <span class="material-icons submenu-icon">security</span> Role
+            </li>
+            <li routerLink="/master/customer">
+              <span class="material-icons submenu-icon">people</span> Customer
+            </li>
+            <li routerLink="/material/suppliers">
+              <span class="material-icons submenu-icon">business</span> Supplier
+            </li>
+            <li routerLink="/master/department">
+              <span class="material-icons submenu-icon">apartment</span> Department
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="nav-item has-submenu">
+          <div class="nav-item-content">
+            <span class="material-icons nav-icon">inventory_2</span>
+            <span class="nav-text">Material Management</span>
+          </div>
+          <ul class="submenu">
+            <li routerLink="/material/material/type">
+              <span class="material-icons submenu-icon">list_alt</span> Material Type
+            </li>
+            <li routerLink="/material/list">
+              <span class="material-icons submenu-icon">category</span> Material
+            </li>
+            <li routerLink="/grade">
+              <span class="material-icons submenu-icon">grade</span> Grade
+            </li>
+          </ul>
+        </li>
+
+ 
+        <li class="nav-item has-submenu">
+          <div class="nav-item-content">
+            <span class="material-icons nav-icon">engineering</span>
+            <span class="nav-text">Process Management</span>
+          </div>
+          <ul class="submenu">
+            <li routerLink="/material/process">
+              <span class="material-icons submenu-icon">settings</span> Process
+            </li>
+            <li routerLink="/material/power-cost">
+              <span class="material-icons submenu-icon">bolt</span> Power Cost
+            </li>
+            <li routerLink="/material/salary-wages">
+              <span class="material-icons submenu-icon">attach_money</span> Salary & Wages
+            </li>
+            <li routerLink="/material/over-heads">
+              <span class="material-icons submenu-icon">calculate</span> Over-heads
+            </li>
+            <li routerLink="/master/meterialinput/casting">
+              <span class="material-icons submenu-icon">input</span> Casting Input
+             
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="nav-item" routerLink="/material/customer-details" routerLinkActive="active-link">
+          <div class="nav-item-content">
+            <span class="material-icons nav-icon">person</span>
+            <span class="nav-text">Quotation Generator</span>
+          </div>
+        </li>
+
+
+        <li class="nav-item" routerLink="/dashboard/report" routerLinkActive="active-link">
+          <div class="nav-item-content">
+            <span class="material-icons nav-icon">bar_chart</span>
+            <span class="nav-text">Reports</span>
+          
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+
+    <main class="container">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<ng-template #loginPageLayout>
+  <main class="container">
+    <router-outlet></router-outlet>
+  </main>
+</ng-template>
