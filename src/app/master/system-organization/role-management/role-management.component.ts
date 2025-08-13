@@ -20,12 +20,12 @@ export class RoleManagementComponent  implements OnInit {
 roles$!: Observable<Role[]>;
 
 ngOnInit() {
-  this.roles$ = this.store.select(selectAllRoles).pipe(
-    tap(roles => console.log('Roles from store:', roles))
-  );
+  this.store.select(selectAllRoles).subscribe(roles => {
+    console.log('Roles from store:', roles);
+  });
 
   this.store.dispatch(RoleActions.loadRoles());
 }
-  
+
 
 }

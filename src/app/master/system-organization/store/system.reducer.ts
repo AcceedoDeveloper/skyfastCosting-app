@@ -19,11 +19,14 @@ export const roleReducer = createReducer(
   initialState,
 
   // Load
-  on(RoleActions.loadRolesSuccess, (state, { roles }) => ({
-    ...state,
-    roles
-  })),
-
+on(RoleActions.loadRolesSuccess, (state, { roles }) => {
+    console.log('Reducer: loadRolesSuccess, roles:', roles);
+    return {
+      ...state,
+      roles,
+      error: null
+    };
+  }),
   // Add
   on(RoleActions.addRoleSuccess, (state, { role }) => ({
     ...state,

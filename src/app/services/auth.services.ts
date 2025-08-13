@@ -12,7 +12,7 @@ export class AuthService {
   private http = inject(HttpClient);
 
  login(credentials: { username: string; password: string }): Observable<AuthResponse> {
-  const loginUrl = 'http://localhost:3005/login';
+  const loginUrl = 'http://localhost:3000/login';
 
   return this.http.post<any>(loginUrl, credentials).pipe(
     map(response => ({

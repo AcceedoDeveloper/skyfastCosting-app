@@ -5,6 +5,7 @@ import { EntityService } from '../../../services/entity.service'; // your servic
 import { ToastrService } from 'ngx-toastr';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 
 @Injectable()
@@ -15,20 +16,24 @@ export class RoleEffects {
   private roleService = inject(EntityService);
   private toastr = inject(ToastrService);
 
-  loadRoles$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RoleActions.loadRoles),
-      mergeMap(() =>
-        this.roleService.getRoles().pipe(
-          map(roles => RoleActions.loadRolesSuccess({ roles })),
-          catchError(error => {
-            this.toastr.error('Failed to load roles.');
-            return of(RoleActions.apiFailure({ error }));
-          })
-        )
+loadRoles$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.loadRoles),
+    tap(() => console.log('loadRoles action received')),
+    mergeMap(() =>
+      this.roleService.getRoles().pipe(
+        tap(roles => console.log('Roles loaded from service:', roles)),
+        map(roles => RoleActions.loadRolesSuccess({ roles })),
+        catchError(error => {
+          this.toastr.error('Failed to load roles.');
+          console.error('loadRoles error:', error);
+          return of(RoleActions.apiFailure({ error }));
+        })
       )
     )
-  );
+  )
+);
+
 
   addRole$ = createEffect(() =>
     this.actions$.pipe(
