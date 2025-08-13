@@ -109,4 +109,43 @@ loadRoles$ = createEffect(() =>
 );
 
 
+addDepartment$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.addDepartment),
+    mergeMap(action =>
+      this.roleService.addDepartment(action.department).pipe(
+        map(department => {
+          this.toastr.success('Department added successfully!');
+          return RoleActions.addDepartmentSuccess({ department });
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to add department.');
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+
+deleteDepartment$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.deleteDepartment),
+    mergeMap(action =>
+      this.roleService.deleteDepartment(action.id).pipe(
+        map(() => {
+          this.toastr.success('Department deleted successfully!');
+          return RoleActions.deleteDepartmentSuccess({ id: action.id });
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to delete department.');
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+
+
 }

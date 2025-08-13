@@ -52,6 +52,19 @@ on(RoleActions.loadRolesSuccess, (state, { roles }) => ({
     })),
 
 
+
+    on(RoleActions.addDepartmentSuccess, (state, { department }) => ({
+  ...state,
+  department: [...state.department, department]
+})),
+
+on(RoleActions.deleteDepartmentSuccess, (state, { id }) => ({
+  ...state,
+  department: state.department.filter(dep => dep._id !== id)
+})),
+
+
+
   // Common Error
   on(RoleActions.apiFailure, (state, { error }) => ({
     ...state,

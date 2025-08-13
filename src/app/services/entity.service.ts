@@ -37,6 +37,13 @@ export class EntityService {
     return this.http.get<Department[]>(`${this.apiUrl}/getdepartment`)
   }
 
+  addDepartment(department: Department): Observable<Department> {
+  return this.http.post<Department>(`${this.apiUrl}/createdepartment`, department);
+}
+
+deleteDepartment(id: string): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/deletedepartment/${id}`);
+}
 
 
 }

@@ -1,5 +1,9 @@
 <h2>Departments</h2>
 
+<button mat-raised-button color="primary" (click)="toggleForm()">
+  <mat-icon>add</mat-icon> Add Department
+</button>
+
 <div class="table-container">
   <table>
     <thead>
@@ -18,7 +22,7 @@
             <mat-icon>edit</mat-icon>
           </button>
           <button class="icon-btn delete-btn" mat-icon-button>
-            <mat-icon>delete</mat-icon>
+            <mat-icon (click)="onDeleteDepartment(dept._id)" >delete</mat-icon>
           </button>
         </td>
       </tr>
@@ -29,3 +33,24 @@
   </table>
 </div>
 
+<div *ngIf="showForm" class="popup-overlay">
+  <div class="popup">
+    <h3>Add Department</h3>
+    <form [formGroup]="deptForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Department</mat-label>
+        <input matInput formControlName="department">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Department Code</mat-label>
+        <input matInput formControlName="departmentCode">
+      </mat-form-field>
+
+      <div class="popup-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="deptForm.invalid">Save</button>
+        <button mat-raised-button color="warn" type="button" (click)="toggleForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
