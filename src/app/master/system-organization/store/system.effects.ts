@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import {Department } from '../../../model/role.model';
 
 
 @Injectable()
@@ -114,8 +115,9 @@ addDepartment$ = createEffect(() =>
     ofType(RoleActions.addDepartment),
     mergeMap(action =>
       this.roleService.addDepartment(action.department).pipe(
-        map(department => {
+        map((response: any) => {
           this.toastr.success('Department added successfully!');
+          const department: Department = response.departmentname || response;
           return RoleActions.addDepartmentSuccess({ department });
         }),
         catchError(error => {
@@ -126,6 +128,7 @@ addDepartment$ = createEffect(() =>
     )
   )
 );
+
 
 
 deleteDepartment$ = createEffect(() =>
@@ -146,6 +149,24 @@ deleteDepartment$ = createEffect(() =>
   )
 );
 
+updateDepartment$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.updateDepartment),
+    mergeMap(action =>
+      this.roleService.updateDepartment(action.id, action.department).pipe(
+        map((response: any) => {
+          this.toastr.success('Department updated successfully!');
+          const updatedDepartment: Department = response.departmentname || response;
+          return RoleActions.updateDepartmentSuccess({ updatedDepartment });
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to update department.');
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
 
 
 }

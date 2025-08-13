@@ -63,6 +63,13 @@ on(RoleActions.deleteDepartmentSuccess, (state, { id }) => ({
   department: state.department.filter(dep => dep._id !== id)
 })),
 
+on(RoleActions.updateDepartmentSuccess, (state, { updatedDepartment }) => ({
+  ...state,
+  department: state.department.map(dep =>
+    dep._id === updatedDepartment._id ? updatedDepartment : dep
+  )
+})),
+
 
 
   // Common Error

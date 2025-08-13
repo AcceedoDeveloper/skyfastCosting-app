@@ -15,3 +15,4 @@ export interface Department {
   updatedAt: Date;
   __v: number;
 }
+

@@ -1,6 +1,6 @@
 <h2>Departments</h2>
 
-<button mat-raised-button color="primary" (click)="toggleForm()">
+<button mat-raised-button color="primary" (click)="toggleForm(true)">
   <mat-icon>add</mat-icon> Add Department
 </button>
 
@@ -18,7 +18,7 @@
         <td>{{ dept.department }}</td>
         <td>{{ dept.departmentCode }}</td>
         <td class="actions">
-          <button class="icon-btn edit-btn" mat-icon-button>
+          <button class="icon-btn edit-btn" mat-icon-button  (click)="onEditDepartment(dept)">
             <mat-icon>edit</mat-icon>
           </button>
           <button class="icon-btn delete-btn" mat-icon-button>
@@ -35,7 +35,7 @@
 
 <div *ngIf="showForm" class="popup-overlay">
   <div class="popup">
-    <h3>Add Department</h3>
+ <h3>{{ editingId ? 'Edit Department' : 'Add Department' }}</h3>
     <form [formGroup]="deptForm" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="fill" style="width: 100%;">
         <mat-label>Department</mat-label>
@@ -48,9 +48,11 @@
       </mat-form-field>
 
       <div class="popup-actions">
-        <button mat-raised-button color="primary" type="submit" [disabled]="deptForm.invalid">Save</button>
-        <button mat-raised-button color="warn" type="button" (click)="toggleForm()">Cancel</button>
-      </div>
+  <button mat-raised-button color="primary" type="submit" [disabled]="deptForm.invalid">
+    {{ editingId ? 'Update' : 'Save' }}
+  </button>
+  <button mat-raised-button color="warn" type="button" (click)="toggleForm()">Cancel</button>
+</div>
     </form>
   </div>
 </div>

@@ -47,3 +47,13 @@ export const deleteDepartmentSuccess = createAction(
   '[Department] Delete Department Success',
   props<{ id: string }>()
 );
+
+export const updateDepartment = createAction(
+  '[Department] Update Department',
+  props<{ id: string; department: Department }>()
+);
+
+export const updateDepartmentSuccess = createAction(
+  '[Department] Update Department Success',
+  props<{ updatedDepartment: Department }>()
+);

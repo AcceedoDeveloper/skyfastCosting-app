@@ -45,5 +45,8 @@ deleteDepartment(id: string): Observable<any> {
   return this.http.delete(`${this.apiUrl}/deletedepartment/${id}`);
 }
 
+updateDepartment(id: string, department: Department): Observable<Department> {
+  return this.http.put<Department>(`${this.apiUrl}/updatedepartment/${id}`, department);
+}
 
 }
