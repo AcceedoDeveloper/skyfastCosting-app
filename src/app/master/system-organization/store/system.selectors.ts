@@ -7,8 +7,15 @@ export const selectRoleState = createFeatureSelector<RoleState>('roles');
 
 export const selectAllRoles = createSelector(
   selectRoleState,
-  (state: RoleState) => {
-    console.log('Selector: current roles:', state.roles);
-    return state.roles;
-  }
-);export const selectRoleError = createSelector(selectRoleState, state => state.error);
+  (state: RoleState | undefined) => state?.roles ?? []
+);
+
+
+
+export const selectAllDepartmenstate = createSelector(
+  selectRoleState,
+  (state: RoleState) => state.department
+
+);
+
+export const selectRoleError = createSelector(selectRoleState, state => state.error);

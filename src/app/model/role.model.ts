@@ -5,3 +5,13 @@ export interface Role {
   createdAt?: string;
   updatedAt?: string;
 }
+
+
+export interface Department {
+  _id: string;
+  department: string;
+  departmentCode: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}

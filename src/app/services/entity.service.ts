@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {ConfigService } from '../shared/config.service';
 import { Observable } from "rxjs";
-import { Role} from '../model/role.model';
+import { Role, Department} from '../model/role.model';
 
 
 @Injectable({
@@ -31,5 +31,12 @@ export class EntityService {
   deleteRole(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/deleterole/${id}`);
   }
+
+
+  getDepartment(): Observable<Department[]>{
+    return this.http.get<Department[]>(`${this.apiUrl}/getdepartment`)
+  }
+
+
 
 }

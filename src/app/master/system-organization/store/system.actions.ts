@@ -1,6 +1,6 @@
 // store/role.actions.ts
 import { createAction, props } from '@ngrx/store';
-import { Role } from '../../../model/role.model';
+import { Role, Department } from '../../../model/role.model';
 
 // Load
 export const loadRoles = createAction('[Role] Load Roles');
@@ -20,3 +20,7 @@ export const deleteRoleSuccess = createAction('[Role] Delete Role Success', prop
 
 // Common Failure
 export const apiFailure = createAction('[Role API] Failure', props<{ error: any }>());
+
+
+export const loadDepartment = createAction('[Department] Load Department');
+export const loadDepartmentSuccess = createAction('[Department] Load Department Success', props<{ department: Department[] }>());

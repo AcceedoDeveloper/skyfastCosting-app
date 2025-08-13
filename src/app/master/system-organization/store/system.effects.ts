@@ -88,4 +88,25 @@ loadRoles$ = createEffect(() =>
       )
     )
   );
+
+
+  loadDepartment$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.loadDepartment),
+    tap(() => console.log('loadDepartment action received')),
+    mergeMap(() =>
+      this.roleService.getDepartment().pipe(
+        tap(department => console.log('Department loaded from service:', department)),
+        map(department => RoleActions.loadDepartmentSuccess({ department })),
+        catchError(error => {
+          this.toastr.error('Failed to load roles.');
+          console.error('loadRoles error:', error);
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+
 }
