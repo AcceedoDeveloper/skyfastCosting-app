@@ -7,10 +7,14 @@ import { Store } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
 import { CommonModule, } from '@angular/common'
 
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
+
 @Component({
   selector: 'app-department-creation',
   standalone: true,
-  imports: [ CommonModule, ],
+  imports: [ CommonModule, MatButtonModule, MatIconModule ],
   templateUrl: './department-creation.component.html',
   styleUrl: './department-creation.component.scss'
 })

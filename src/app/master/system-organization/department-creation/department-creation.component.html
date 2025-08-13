@@ -1,15 +1,31 @@
 <h2>Departments</h2>
 
-<ul>
-  <li *ngFor="let dept of department$ | async">
-    <strong>{{ dept.department }}</strong>
-    <span>({{ dept.departmentCode }})</span><br>
-   
-  </li>
-</ul>
-
-
-<div *ngIf="(department$ | async)?.length === 0">
-  No departments found.
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Department</th>
+        <th>Code</th>
+        <th class="actions-header">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dept of department$ | async">
+        <td>{{ dept.department }}</td>
+        <td>{{ dept.departmentCode }}</td>
+        <td class="actions">
+          <button class="icon-btn edit-btn" mat-icon-button>
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="icon-btn delete-btn" mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="(department$ | async)?.length === 0">
+        <td colspan="3" class="no-data">No departments found.</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
