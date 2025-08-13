@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd , RouterModule} from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, filter } from 'rxjs';
 import * as AuthActions from './auth/store/auth.action';
@@ -10,7 +10,7 @@ import { User } from './model/auth.model';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

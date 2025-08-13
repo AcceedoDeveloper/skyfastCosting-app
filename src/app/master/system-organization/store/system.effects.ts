@@ -154,9 +154,12 @@ updateDepartment$ = createEffect(() =>
     ofType(RoleActions.updateDepartment),
     mergeMap(action =>
       this.roleService.updateDepartment(action.id, action.department).pipe(
-        map((updatedDepartment: Department) => {
+        map(() => {
           this.toastr.success('Department updated successfully!');
-          return RoleActions.updateDepartmentSuccess({ updatedDepartment });
+          // Use the submitted form values
+          return RoleActions.updateDepartmentSuccess({
+            updatedDepartment: { ...action.department, _id: action.id }
+          });
         }),
         catchError(error => {
           this.toastr.error('Failed to update department.');
@@ -166,6 +169,7 @@ updateDepartment$ = createEffect(() =>
     )
   )
 );
+
 
 
 }

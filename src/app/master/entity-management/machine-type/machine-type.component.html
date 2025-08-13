@@ -1,1 +1,21 @@
-<p>machine-type works!</p>
+<div class="machine-type-container">
+  <h2>Machine Types</h2>
+
+  <!-- Show loader or message if empty -->
+  <div *ngIf="(machineTypes$ | async) as machineTypes; else loading">
+    <ul *ngIf="machineTypes.length > 0; else noData">
+      <li *ngFor="let type of machineTypes">
+        <strong>{{ type.name }}</strong>
+       
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #loading>
+    <p>Loading machine types...</p>
+  </ng-template>
+
+  <ng-template #noData>
+    <p>No machine types found.</p>
+  </ng-template>
+</div>
