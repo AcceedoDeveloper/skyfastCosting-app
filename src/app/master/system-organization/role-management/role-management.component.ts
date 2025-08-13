@@ -6,13 +6,14 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
 import { CommonModule, } from '@angular/common';
+import { MatIconModule} from '@angular/material/icon'
 
 @Component({
   selector: 'app-role-management',
   standalone: true,
   imports: [
     CommonModule, 
-  ],
+    MatIconModule  ],
   templateUrl: './role-management.component.html',
   styleUrl: './role-management.component.scss'
 })

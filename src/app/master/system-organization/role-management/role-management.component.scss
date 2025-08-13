@@ -1,0 +1,91 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f3f3;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  margin: 20px auto 10px auto;
+  color: #333;
+  max-width: 600px;
+  text-align: left;
+}
+
+.table-container {
+  width: 600px;
+  margin: 0 auto 20px auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #fff;
+}
+
+th {
+  text-align: left;
+  padding: 14px 20px;
+  color: #5b84ff;
+  font-weight: bold;
+  border-bottom: 2px solid #5b84ff;
+}
+
+th.actions-header {
+  text-align: center;
+  width: 120px;
+}
+
+td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+}
+
+td.actions {
+  text-align: center;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn mat-icon {
+  font-size: 22px;
+}
+
+.edit-btn mat-icon {
+  color: #000000;
+}
+
+.delete-btn mat-icon {
+  color: #000000;
+}
+
+.icon-btn:hover mat-icon {
+  opacity: 0.8;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}

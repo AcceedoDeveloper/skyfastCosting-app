@@ -154,9 +154,8 @@ updateDepartment$ = createEffect(() =>
     ofType(RoleActions.updateDepartment),
     mergeMap(action =>
       this.roleService.updateDepartment(action.id, action.department).pipe(
-        map((response: any) => {
+        map((updatedDepartment: Department) => {
           this.toastr.success('Department updated successfully!');
-          const updatedDepartment: Department = response.departmentname || response;
           return RoleActions.updateDepartmentSuccess({ updatedDepartment });
         }),
         catchError(error => {
