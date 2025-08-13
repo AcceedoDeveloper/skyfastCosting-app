@@ -1,1 +1,15 @@
-<p>department-creation works!</p>
+<h2>Departments</h2>
+
+<ul>
+  <li *ngFor="let dept of department$ | async">
+    <strong>{{ dept.department }}</strong>
+    <span>({{ dept.departmentCode }})</span><br>
+    Created: {{ dept.createdAt | date:'short' }}
+  </li>
+</ul>
+
+<!-- Optional: Show message if no departments -->
+<div *ngIf="(department$ | async)?.length === 0">
+  No departments found.
+</div>
+

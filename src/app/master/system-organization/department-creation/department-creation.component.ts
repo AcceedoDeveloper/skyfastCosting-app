@@ -5,11 +5,12 @@ import { selectAllDepartmenstate } from '../store/system.selectors';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { tap } from 'rxjs/operators';
+import { CommonModule, } from '@angular/common'
 
 @Component({
   selector: 'app-department-creation',
   standalone: true,
-  imports: [],
+  imports: [ CommonModule, ],
   templateUrl: './department-creation.component.html',
   styleUrl: './department-creation.component.scss'
 })
@@ -21,8 +22,11 @@ export class DepartmentCreationComponent   implements OnInit {
 
   ngOnInit(): void {
 
-  this.store.select(selectAllDepartmenstate).subscribe(roles => {
-    console.log('Department from store:', roles);
+    this.department$ = this.store.select(selectAllDepartmenstate);
+
+  this.department$.subscribe(Department => {
+
+    console.log('Department from store:', Department);
   });
     this.store.dispatch(RoleActions.loadDepartment());
     
