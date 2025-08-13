@@ -1,1 +1,25 @@
-<p>role-management works!</p>
+<h2>Roles</h2>
+
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Role</th>
+      <th>Created At</th>
+      <th>Updated At</th>
+      <th>ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of roles$ | async">
+      <td>{{ r.role }}</td>
+      <td>{{ r.createdAt | date:'short' }}</td>
+      <td>{{ r.updatedAt | date:'short' }}</td>
+      <td>{{ r._id }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="(roles$ | async)?.length === 0">
+  No roles found.
+</div>
+
