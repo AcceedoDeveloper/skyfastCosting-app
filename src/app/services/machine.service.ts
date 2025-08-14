@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MachineType } from '../model/machine.model';
+import { MachineType, Machine } from '../model/machine.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,4 +30,9 @@ export class MachineService {
   deleteMachineType(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/deletemachine-type/${id}`);
   }
+
+  getMachine(): Observable<Machine[]>{
+    return this.http.get<Machine[]>(`${this.baseUrl}/getmachine`);
+  } 
+
 }

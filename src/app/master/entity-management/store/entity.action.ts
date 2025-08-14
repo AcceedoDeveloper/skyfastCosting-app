@@ -1,6 +1,6 @@
 // store/machine-type.actions.ts
 import { createAction, props } from '@ngrx/store';
-import { MachineType } from '../../../model/machine.model';
+import { MachineType, Machine } from '../../../model/machine.model';
 
 // Load
 export const loadMachineTypes = createAction('[MachineType] Load Machine Types');
@@ -43,4 +43,11 @@ export const deleteMachineTypeSuccess = createAction(
 export const apiFailure = createAction(
   '[MachineType API] Failure',
   props<{ error: any }>()
+);
+
+
+export const loadMachine = createAction('[Machine] Load Machine ');
+export const loadMachineSuccess = createAction(
+  '[Machine] Load Machine  Success',
+  props<{ machine: Machine[] }>()
 );

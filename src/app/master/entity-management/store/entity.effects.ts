@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import * as MachineTypeActions from './entity.action';
 import { MachineService } from '../../../services/machine.service';
-import { MachineType } from '../../../model/machine.model';
+import { MachineType, Machine } from '../../../model/machine.model';
 
 @Injectable()
 export class MachineTypeEffects {
@@ -90,4 +90,30 @@ export class MachineTypeEffects {
       )
     )
   );
+
+
+
+  loadMachine$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.loadMachine),
+
+      mergeMap(() =>
+        this.machineTypeService.getMachine().pipe(
+          map( (machine : Machine[]) => 
+            MachineTypeActions.loadMachineSuccess({ machine })
+          ),
+          catchError( error => {
+            this.toastr.error(" Failed to load machine");
+            console.error(" load material error ", error);
+            return of( MachineTypeActions.apiFailure({ error}))
+          }
+          )
+        )
+
+      )
+    )
+
+  )
+
+  
 }

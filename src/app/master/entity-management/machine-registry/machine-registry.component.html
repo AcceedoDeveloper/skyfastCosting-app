@@ -1,1 +1,19 @@
-<p>machine-registry works!</p>
+<table>
+  <thead>
+    <tr>
+    
+      <th>Machine number</th>
+      <th>Machine Name</th>
+      <th>Machine Type</th>
+     
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let machine of machine$ | async">
+      <td>{{ machine.machineNumber }}</td>
+      <td>{{ machine.machineName }}</td>
+      <td>{{ machine.machineType }}</td>
+     
+    </tr>
+  </tbody>
+</table>

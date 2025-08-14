@@ -1,17 +1,19 @@
 // store/machine-type.reducer.ts
 import { createReducer, on } from '@ngrx/store';
 import * as MachineTypeActions from './entity.action';
-import { MachineType } from '../../../model/machine.model';
+import { MachineType, Machine } from '../../../model/machine.model';
 
 export const machineTypeFeatureKey = 'machineTypes';
 
 export interface MachineTypeState {
   machineTypes: MachineType[];
+  machine: Machine[];
   error: any;
 }
 
 export const initialState: MachineTypeState = {
   machineTypes: [],
+  machine: [],
   error: null
 };
 
@@ -39,6 +41,12 @@ export const machineTypeReducer = createReducer(
   on(MachineTypeActions.deleteMachineTypeSuccess, (state, { id }) => ({
     ...state,
     machineTypes: state.machineTypes.filter(mt => mt._id !== id)
+  })),
+
+    on(MachineTypeActions.loadMachineSuccess, (state, { machine }) => ({
+    ...state,
+    machine,
+    error: null
   })),
 
   on(MachineTypeActions.apiFailure, (state, { error }) => ({

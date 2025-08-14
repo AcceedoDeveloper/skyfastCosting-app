@@ -74,9 +74,9 @@ ngOnInit() {
   }
 
   deleteRole(id: string) {
-    if (confirm('Are you sure you want to delete this role?')) {
+  
       this.store.dispatch(RoleActions.deleteRole({ id }));
-    }
+    
   }
 
 }

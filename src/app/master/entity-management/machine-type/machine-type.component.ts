@@ -5,10 +5,15 @@ import { MachineType } from '../../../model/machine.model';
 import * as MachineTypeActions from '../store/entity.action';
 import { selectAllMachineTypes } from '../store/entity.selectors';
 import { CommonModule } from '@angular/common';
+import { MatIconModule} from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
 @Component({
   selector: 'app-machine-type',
   imports: [
-    CommonModule
+    CommonModule,
+    MatIconModule,
+    MatButtonModule
   ],
   templateUrl: './machine-type.component.html',
   styleUrl: './machine-type.component.scss'

@@ -1,21 +1,32 @@
 <div class="machine-type-container">
-  <h2>Machine Types</h2>
-
-  <!-- Show loader or message if empty -->
-  <div *ngIf="(machineTypes$ | async) as machineTypes; else loading">
-    <ul *ngIf="machineTypes.length > 0; else noData">
-      <li *ngFor="let type of machineTypes">
-        <strong>{{ type.name }}</strong>
-       
-      </li>
-    </ul>
+  <div class="header">
+    <h2>Machine Types</h2>
   </div>
 
-  <ng-template #loading>
-    <p>Loading machine types...</p>
-  </ng-template>
-
-  <ng-template #noData>
-    <p>No machine types found.</p>
-  </ng-template>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Machine Type</th>
+          <th class="actions-header">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let type of machineTypes$ | async">
+          <td>{{ type.name }}</td>
+          <td class="actions">
+            <button mat-icon-button color="primary" >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="(machineTypes$ | async)?.length === 0">
+          <td colspan="2" class="no-data">No machine types found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

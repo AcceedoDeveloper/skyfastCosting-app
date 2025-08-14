@@ -1,47 +1,46 @@
+<div class="header">
+  <h2>Roles</h2>
 
-<h2>Roles</h2>
+  <div class="add-section">
+    <mat-form-field appearance="outline" class="role-input">
+      <mat-label>Role Name</mat-label>
+      <input matInput [(ngModel)]="newRoleName" autocomplete="off" />
+    </mat-form-field>
 
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="isEditMode ? updateRole() : addRole()"
+      [disabled]="newRoleName.trim().length === 0"
+      class="circular-button primary-button"
+    >
+      <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+    </button>
 
-<div class="add-section" style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
-  <mat-form-field appearance="outline" style="flex:1;">
-    <mat-label>Role Name</mat-label>
-    <input matInput [(ngModel)]="newRoleName" autocomplete="off" />
-  </mat-form-field>
-
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="isEditMode ? updateRole() : addRole()"
-    [disabled]="newRoleName.trim().length === 0"
-    style="border-radius:50%; min-width:50px; height:50px; padding:0;"
-  >
-    <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
-  </button>
-
-  <button
-    *ngIf="isEditMode"
-    mat-raised-button
-    color="warn"
-    (click)="cancelEdit()"
-    style="height:50px;"
-  >
-    Cancel
-  </button>
+    <button
+      *ngIf="isEditMode"
+      mat-raised-button
+      color="warn"
+      (click)="cancelEdit()"
+      class="cancel-button"
+    >
+      Cancel
+    </button>
+  </div>
 </div>
 
-
 <div class="table-container">
-  <table border="1" width="100%">
+  <table>
     <thead>
       <tr>
         <th>Role</th>
-        <th>Actions</th>
+        <th class="actions-header">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let role of roles$ | async">
         <td>{{ role.role }}</td>
-        <td>
+        <td class="actions">
           <button mat-icon-button color="primary" (click)="editRole(role)">
             <mat-icon>edit</mat-icon>
           </button>
@@ -51,7 +50,7 @@
         </td>
       </tr>
       <tr *ngIf="(roles$ | async)?.length === 0">
-        <td colspan="2" style="text-align:center;">No roles found.</td>
+        <td colspan="2" class="no-data">No roles found.</td>
       </tr>
     </tbody>
   </table>

@@ -6,3 +6,15 @@ export interface MachineType {
   updatedAt?: string;
   __v?: number;
 }
+
+
+// model/machine.model.ts
+export interface Machine {
+  _id: string;
+  machineNumber: string;
+  machineName: string;
+  machineType: string;
+  createdAt: string; // or Date if you want to convert it
+  updatedAt: string; // or Date
+  __v: number;
+}
