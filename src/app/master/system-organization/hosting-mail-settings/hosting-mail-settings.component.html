@@ -1,1 +1,34 @@
-<p>hosting-mail-settings works!</p>
+<div class="header">
+  <div class="toggle-group">
+    <!-- optional filters/search -->
+  </div>
+  <button (click)="openAddHostingMail()">Add Hosting Mail</button>
+</div>
+
+<!-- Hosting Mail Table -->
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">SMTP Server</th>
+        <th style="width: 10%;">Port</th>
+        <th style="width: 25%;">Email</th>
+        <th style="width: 15%;">Encryption</th>
+        <th style="width: 25%;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let element of (hosting$ | async)">
+        <td>{{ element.smtpServer }}</td>
+        <td>{{ element.portNo }}</td>
+        <td>{{ element.emailId }}</td>
+        <td>{{ element.EncryptionType }}</td>
+        <td class="actions">
+          <mat-icon aria-label="Edit Hosting Mail" class="icon" 
+            (click)="openAddHostingMail(element)">edit</mat-icon>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

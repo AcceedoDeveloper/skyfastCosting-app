@@ -61,4 +61,7 @@ export class MachineService {
     return this.http.put<Customer>(`${this.baseUrl}/updateCustomer/${id}`, customer);
   }
 
+
+  
+
 }

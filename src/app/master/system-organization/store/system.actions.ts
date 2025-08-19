@@ -1,6 +1,6 @@
 // store/role.actions.ts
 import { createAction, props } from '@ngrx/store';
-import { Role, Department, Shift } from '../../../model/role.model';
+import { Role, Department, Shift, HostingMail } from '../../../model/role.model';
 
 // Load
 export const loadRoles = createAction('[Role] Load Roles');
@@ -93,3 +93,43 @@ export const deleteShiftSuccess = createAction(
   '[Shift] Delete Shift Success',
   props<{ id: string }>()
 );
+
+
+
+export const loadHostingMail = createAction('[HostingMail] Load HostingMail');
+export const loadHostingMailSuccess = createAction(
+  '[HostingMail] Load HostingMail Success',
+  props<{ hostingMail: HostingMail[] }>()
+);
+
+export const addHostingMail = createAction(
+  '[HostingMail] Add HostingMail',
+  props<{ hostingMail: HostingMail }>()
+);
+
+export const addHostingMailSuccess = createAction(
+  '[HostingMail] Add HostingMail Success',
+  props<{ hostingMail: HostingMail }>()
+);
+
+export const updateHostingMail = createAction(
+  '[HostingMail] Update HostingMail',
+  props<{ id: string; hostingMail: HostingMail }>()
+);
+
+export const updateHostingMailSuccess = createAction(
+  '[HostingMail] Update HostingMail Success',
+  props<{ updatedHostingMail: HostingMail }>()
+);
+
+export const deleteHostingMail = createAction(
+  '[HostingMail] Delete HostingMail',
+  props<{ id: string }>()
+);
+
+export const deleteHostingMailSuccess = createAction(
+  '[HostingMail] Delete HostingMail Success',
+  props<{ id: string }>()
+);
+
+

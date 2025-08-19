@@ -19,6 +19,13 @@ export const selectAllDepartmenstate = createSelector(
 );
 
 
+
+export const selectHosting = createSelector(
+  selectRoleState,
+  (state : RoleState) => state.hostingMail
+);
+
+
 export const selectAllShift = createSelector(
   selectRoleState,
   (state: RoleState) => state.shift

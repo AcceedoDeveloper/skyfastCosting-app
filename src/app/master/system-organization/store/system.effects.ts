@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import {Department, Role, Shift,  } from '../../../model/role.model';
+import {Department, Role, Shift, HostingMail } from '../../../model/role.model';
 
 
 @Injectable()
@@ -250,5 +250,76 @@ deleteShift$ = createEffect(() =>
   )
 );
 
+
+
+loadHostingMail$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RoleActions.loadHostingMail),
+      mergeMap(() =>
+        this.roleService.getHostingMail().pipe(
+          map(hostingMail =>
+            RoleActions.loadHostingMailSuccess({ hostingMail })
+          ),
+          catchError(error =>
+            of(RoleActions.apiFailure({ error }))
+          )
+        )
+      )
+    )
+  );
+
+  addHostingMail$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RoleActions.addHostingMail),
+      mergeMap(action =>
+        this.roleService.createHostingMail(action.hostingMail).pipe(
+          map((response: any) => {
+            this.toastr.success('Hosting Mail added successfully!');
+            const hosting : HostingMail = response.hostingMail || response
+            return RoleActions.addHostingMailSuccess({ hostingMail: hosting });
+          }),
+          catchError(error =>
+            of(RoleActions.apiFailure({ error }))
+          )
+        )
+      )
+    )
+  );
+
+  updateHostingMail$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RoleActions.updateHostingMail),
+      mergeMap(action =>
+        this.roleService.updateHostingMail(action.id, action.hostingMail).pipe(
+          map(() => {
+            this.toastr.success('Hosting Mail updated successfully!');
+            return RoleActions.updateHostingMailSuccess({
+              updatedHostingMail: { ...action.hostingMail, _id: action.id }
+            });
+          }),
+          catchError(error =>
+            of(RoleActions.apiFailure({ error }))
+          )
+        )
+      )
+    )
+  );
+
+  deleteHostingMail$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RoleActions.deleteHostingMail),
+      mergeMap(action =>
+        this.roleService.deleteHostingMail(action.id).pipe(
+          map(() => {
+            this.toastr.success('Hosting Mail deleted successfully!');
+            return RoleActions.deleteHostingMailSuccess({ id: action.id });
+          }),
+          catchError(error =>
+            of(RoleActions.apiFailure({ error }))
+          )
+        )
+      )
+    )
+  );
 
 }

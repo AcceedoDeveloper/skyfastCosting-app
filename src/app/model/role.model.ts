@@ -28,3 +28,17 @@ export interface Shift {
 }
 
 
+// hosting-mail.model.ts
+export interface HostingMail {
+  _id: string;
+  smtpServer: string;
+  portNo: string;
+  emailId: string;
+  password: string;
+  EncryptionType: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
+

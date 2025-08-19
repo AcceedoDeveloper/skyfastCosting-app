@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {ConfigService } from '../shared/config.service';
 import { Observable } from "rxjs";
-import { Role, Department, Shift} from '../model/role.model';
+import { Role, Department, Shift, HostingMail} from '../model/role.model';
 
 
 @Injectable({
@@ -64,5 +64,22 @@ updateShift(id: string, shift: Shift): Observable<Shift> {
 deleteShift(id: string): Observable<any> {
   return this.http.delete(`${this.apiUrl}/deleteShift/${id}`);
 }
+
+getHostingMail(): Observable<HostingMail[]> {
+    return this.http.get<HostingMail[]>(`${this.apiUrl}/getHostingMail`);
+  }
+
+  createHostingMail(hostingMail: HostingMail): Observable<HostingMail> {
+    return this.http.post<HostingMail>(`${this.apiUrl}/createHostingMail`, hostingMail);
+  }
+
+  updateHostingMail(id: string, hostingMail: HostingMail): Observable<HostingMail> {
+    return this.http.put<HostingMail>(`${this.apiUrl}/updateHostingMail/${id}`, hostingMail);
+  }
+
+  deleteHostingMail(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/deleteHostingMail/${id}`);
+  }
+
 
 }

@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Hosting Mail' : 'Add Hosting Mail' }}</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>SMTP Server</mat-label>
+      <input matInput formControlName="smtpServer" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Port</mat-label>
+      <input matInput type="number" formControlName="portNo" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="emailId" />
+    </mat-form-field>
+
+    <!-- 👇 New Password field -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Encryption</mat-label>
+      <input matInput formControlName="EncryptionType" />
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()">
+    {{ isEdit ? 'Update' : 'Add' }}
+  </button>
+</div>
