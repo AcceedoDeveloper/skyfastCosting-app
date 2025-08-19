@@ -40,8 +40,9 @@ export class MachineTypeEffects {
       ofType(MachineTypeActions.addMachineType),
       mergeMap(action =>
         this.machineTypeService.createMachineType(action.machineType).pipe(
-          map((machineType: MachineType) => {
+          map((response: any) => {
             this.toastr.success('Machine type added successfully!');
+            const machineType :  MachineType = response.machineType || response;
             return MachineTypeActions.addMachineTypeSuccess({ machineType });
           }),
           catchError(error => {
@@ -61,7 +62,7 @@ export class MachineTypeEffects {
         this.machineTypeService.updateMachineType(action.id, action.machineType).pipe(
           map((updatedMachineType: MachineType) => {
             this.toastr.success('Machine type updated successfully!');
-            return MachineTypeActions.updateMachineTypeSuccess({ updatedMachineType });
+            return MachineTypeActions.updateMachineTypeSuccess({ updatedMachineType : { ...action.machineType , _id: action.id}});
           }),
           catchError(error => {
             this.toastr.error('Failed to update machine type.');
@@ -114,6 +115,45 @@ export class MachineTypeEffects {
     )
 
   )
+
+
+
+  addMachine$ = createEffect( () =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.addMachine),
+      mergeMap( actions =>
+        this.machineTypeService.createMachine(actions.machine).pipe(
+          map( (response : any) => {
+            this.toastr.success('Machine added successfully!');
+            const machine : Machine = response.machine || response;
+            return MachineTypeActions.addMachineSuccess({ machine});
+          }),
+          catchError( error => {
+            this.toastr.error('Failed to add machine');
+            return of(MachineTypeActions.apiFailure({ error}));
+          })
+        )
+       )
+    )
+
+  )
+
+    updateMachine$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.updateMachine),
+      mergeMap(action =>
+        this.machineTypeService.updateMachine(action.id, action.machine).pipe(
+          map((updatedMachine: Machine) => {
+            this.toastr.success('Machine type updated successfully!');
+            return MachineTypeActions.updateMachineSuccess({ updatedMachine : { ...action.machine , _id: action.id}});
+          }),
+          catchError(error => {
+            this.toastr.error('Failed to update machine type.');
+            return of(MachineTypeActions.apiFailure({ error }));
+          })
+        )
+      )
+    ))
 
   
 }

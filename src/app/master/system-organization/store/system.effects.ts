@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import {Department } from '../../../model/role.model';
+import {Department, Role,  } from '../../../model/role.model';
 
 
 @Injectable()
@@ -41,8 +41,9 @@ loadRoles$ = createEffect(() =>
       ofType(RoleActions.addRole),
       mergeMap(action =>
         this.roleService.addRole(action.role).pipe(
-          map(role => {
+          map((response : any) => {
             this.toastr.success('Role added successfully!');
+            const role : Role = response.role || response ;
             return RoleActions.addRoleSuccess({ role });
           }),
           catchError(error => {
@@ -61,7 +62,7 @@ loadRoles$ = createEffect(() =>
         this.roleService.updateRole(action.id, action.role).pipe(
           map(updatedRole => {
             this.toastr.success('Role updated successfully!');
-            return RoleActions.updateRoleSuccess({ updatedRole });
+            return RoleActions.updateRoleSuccess({ updatedRole : { ...action.role, _id: action.id} });
           }),
           catchError(error => {
             this.toastr.error('Failed to update role.');

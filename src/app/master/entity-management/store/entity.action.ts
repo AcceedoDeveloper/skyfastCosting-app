@@ -51,3 +51,22 @@ export const loadMachineSuccess = createAction(
   '[Machine] Load Machine  Success',
   props<{ machine: Machine[] }>()
 );
+
+export const addMachine = createAction(
+  '[Machine] Add Machine',
+  props<{ machine: Machine }>()
+);
+export const addMachineSuccess = createAction(
+  '[Machine] Add Machine  Success',
+  props<{ machine: Machine }>()
+);
+
+
+export const updateMachine = createAction(
+  '[Machine] Update Machine',
+  props<{ id: string; machine: Machine }>()
+);
+export const updateMachineSuccess = createAction(
+  '[Machine] Update Machine Success',
+  props<{ updatedMachine: Machine }>()
+);

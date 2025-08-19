@@ -35,4 +35,13 @@ export class MachineService {
     return this.http.get<Machine[]>(`${this.baseUrl}/getmachine`);
   } 
 
+ createMachine(machine: Partial<Machine>): Observable<Machine> {
+    return this.http.post<Machine>(`${this.baseUrl}/createmachine`, machine);
+  }
+
+  updateMachine(id: string, machine: Partial<Machine>): Observable<Machine> {
+    return this.http.put<Machine>(`${this.baseUrl}/updatemachine/${id}`, machine);
+  }
+  
+
 }

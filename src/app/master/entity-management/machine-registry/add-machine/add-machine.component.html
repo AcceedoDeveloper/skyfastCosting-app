@@ -1,0 +1,32 @@
+<form [formGroup]="machineForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Machine Number:</label>
+    <input type="text" formControlName="machineNumber" />
+    <div class="error" *ngIf="machineForm.get('machineNumber')?.touched && machineForm.get('machineNumber')?.invalid">
+      <small *ngIf="machineForm.get('machineNumber')?.errors?.['required']">Machine Number is required</small>
+    </div>
+  </div>
+
+  <div>
+    <label>Machine Name:</label>
+    <input type="text" formControlName="machineName" />
+    <div class="error" *ngIf="machineForm.get('machineName')?.touched && machineForm.get('machineName')?.invalid">
+      <small *ngIf="machineForm.get('machineName')?.errors?.['required']">Machine Name is required</small>
+    </div>
+  </div>
+
+  <div>
+    <label>Machine Type:</label>
+    <select formControlName="machineType">
+      <option value="">-- Select Type --</option>
+      <option *ngFor="let type of (  macineType$! | async)" [value]="type.name">
+        {{ type.name }}
+      </option>
+    </select>
+    <div class="error" *ngIf="machineForm.get('machineType')?.touched && machineForm.get('machineType')?.invalid">
+      <small>Machine Type is required</small>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="machineForm.invalid">Submit</button>
+</form>

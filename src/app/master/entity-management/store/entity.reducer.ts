@@ -49,6 +49,19 @@ export const machineTypeReducer = createReducer(
     error: null
   })),
 
+    on(MachineTypeActions.addMachineSuccess, (state, { machine }) => ({
+    ...state,
+    machine: [...state.machine, machine]
+  })),
+
+   on(MachineTypeActions.updateMachineSuccess, (state, { updatedMachine }) => ({
+    ...state,
+    machine: state.machine.map(mt =>
+      mt._id === updatedMachine._id ? updatedMachine : mt
+    )
+  })),
+
+
   on(MachineTypeActions.apiFailure, (state, { error }) => ({
     ...state,
     error

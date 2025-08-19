@@ -1,19 +1,43 @@
-<table>
-  <thead>
-    <tr>
+<div class="machine-type-container">
+
+  <div class="header">
+    <h2>Machines</h2>
+    <button mat-raised-button color="primary" class="add-button"  (click)="openAddMachineDialog()">
+      <mat-icon>add</mat-icon> Add Machine
+    </button>
+  </div>
+
+ 
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Machine Number</th>
+          <th>Machine Name</th>
+          <th>Machine Type</th>
+          <th class="actions-header">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let machine of machine$ | async">
+          <td>{{ machine.machineNumber }}</td>
+          <td>{{ machine.machineName }}</td>
+          <td>{{ machine.machineType }}</td>
+          <td class="actions">
+            <button mat-icon-button color="primary"  (click)="openEditMachineDialog(machine)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+
     
-      <th>Machine number</th>
-      <th>Machine Name</th>
-      <th>Machine Type</th>
-     
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let machine of machine$ | async">
-      <td>{{ machine.machineNumber }}</td>
-      <td>{{ machine.machineName }}</td>
-      <td>{{ machine.machineType }}</td>
-     
-    </tr>
-  </tbody>
-</table>
+        <tr *ngIf="(machine$ | async)?.length === 0">
+          <td colspan="4" class="no-data">No machines found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
