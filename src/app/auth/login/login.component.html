@@ -11,11 +11,11 @@
           <input
             type="text"
             placeholder="Username"
-            formControlName="username"
+            formControlName="userName"
             required
           />
-          <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error-message">
-            <span *ngIf="loginForm.get('username')?.errors?.['required']">
+          <div *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched" class="error-message">
+            <span *ngIf="loginForm.get('userName')?.errors?.['required']">
               Username is required.
             </span>
           </div>
