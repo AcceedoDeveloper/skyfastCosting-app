@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Add Shift</h2>
+
+<form [formGroup]="shiftForm" (ngSubmit)="onSubmit()" class="form-container">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Shift Name</mat-label>
+    <input matInput formControlName="shiftName" placeholder="Enter shift name">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Start Time</mat-label>
+    <input matInput formControlName="startTime" placeholder="e.g. 04:00 PM">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>End Time</mat-label>
+    <input matInput formControlName="endTime" placeholder="e.g. 08:00 PM">
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" type="submit" [disabled]="shiftForm.invalid">Save</button>
+    <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+  </div>
+</form>

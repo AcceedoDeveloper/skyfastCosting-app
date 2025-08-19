@@ -18,4 +18,11 @@ export const selectAllDepartmenstate = createSelector(
 
 );
 
+
+export const selectAllShift = createSelector(
+  selectRoleState,
+  (state: RoleState) => state.shift
+
+);
+
 export const selectRoleError = createSelector(selectRoleState, state => state.error);

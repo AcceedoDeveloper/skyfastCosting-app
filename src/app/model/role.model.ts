@@ -17,3 +17,12 @@ export interface Department {
   __v: number;
 }
 
+export interface Shift {
+  _id: string;
+  shiftName: string;
+  startTime: string;
+  endTime: string;
+  createdAt: string;  // ISO Date string
+  updatedAt: string;  // ISO Date string
+  __v: number;
+}

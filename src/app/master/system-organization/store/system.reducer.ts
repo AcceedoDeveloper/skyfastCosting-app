@@ -1,19 +1,21 @@
 // store/role.reducer.ts
 import { createReducer, on, State } from '@ngrx/store';
 import * as RoleActions from './system.actions';
-import { Role, Department } from '../../../model/role.model';
+import { Role, Department, Shift } from '../../../model/role.model';
 
 export const systemFeatureKey = 'roles'; 
 
 export interface RoleState {
   roles: Role[];
   department: Department[];
+  shift: Shift[];
    error: any;
 }
 
 export const initialState: RoleState = {
   roles: [],
   department: [],
+  shift: [],
   error: null
 };
 
@@ -69,6 +71,28 @@ on(RoleActions.updateDepartmentSuccess, (state, { updatedDepartment }) => ({
     dep._id === updatedDepartment._id ? updatedDepartment : dep
   )
 })),
+
+
+on(RoleActions.loadShiftSuccess, (state, { shift }) => ({
+      ...state,
+      shift,
+      error: null
+    })),
+       on(RoleActions.addShiftSuccess, (state, { shift }) => ({
+  ...state,
+  shift: [...state.shift, shift]
+})),
+
+on(RoleActions.updateShiftSuccess, (state, { shift }) => ({
+  ...state,
+  shifts: state.shift.map(s => s._id === shift._id ? shift : s)
+})),
+
+on(RoleActions.deleteShiftSuccess, (state, { id }) => ({
+  ...state,
+  shift: state.shift.filter(shi => shi._id !== id)
+})),
+
 
 
 

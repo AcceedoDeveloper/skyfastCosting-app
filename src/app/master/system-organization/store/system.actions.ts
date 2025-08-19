@@ -1,6 +1,6 @@
 // store/role.actions.ts
 import { createAction, props } from '@ngrx/store';
-import { Role, Department } from '../../../model/role.model';
+import { Role, Department, Shift } from '../../../model/role.model';
 
 // Load
 export const loadRoles = createAction('[Role] Load Roles');
@@ -56,4 +56,40 @@ export const updateDepartment = createAction(
 export const updateDepartmentSuccess = createAction(
   '[Department] Update Department Success',
   props<{ updatedDepartment: Department }>()
+);
+
+export const loadshift = createAction('[shift] Load shift');
+export const loadShiftSuccess = createAction('[shift] Load shift Success', props<{ shift: Shift[] }>());
+
+
+
+export const addShift = createAction(
+  '[Shift] Add Shift',
+  props<{ shift: Shift }>()
+);
+
+export const addShiftSuccess = createAction(
+  '[Shift] Add Shift Success',
+  props<{ shift: Shift }>()
+);
+
+export const updateShift = createAction(
+  '[Shift] Update Shift',
+  props<{ id: string; shift: Shift }>()
+);
+
+export const updateShiftSuccess = createAction(
+  '[Shift] Update Shift Success',
+  props<{ shift: Shift }>()
+);
+
+
+export const deleteShift = createAction(
+  '[shift] Delete shift',
+  props<{ id: string }>()
+);
+
+export const deleteShiftSuccess = createAction(
+  '[Shift] Delete Shift Success',
+  props<{ id: string }>()
 );

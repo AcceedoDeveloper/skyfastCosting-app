@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import {Department, Role,  } from '../../../model/role.model';
+import {Department, Role, Shift,  } from '../../../model/role.model';
 
 
 @Injectable()
@@ -171,6 +171,84 @@ updateDepartment$ = createEffect(() =>
   )
 );
 
+
+  loadShift$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.loadshift),
+    mergeMap(() =>
+      this.roleService.getShift().pipe(
+        tap(shift => console.log('Department loaded from service:', shift)),
+        map(shift => RoleActions.loadShiftSuccess({ shift })),
+        catchError(error => {
+          this.toastr.error('Failed to load roles.');
+          console.error('loadRoles error:', error);
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+
+addShift$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.addShift),
+    mergeMap(action =>
+      this.roleService.addShift(action.shift).pipe(
+        map((response: any) => {
+          this.toastr.success('Shift added successfully!');
+          const shift: Shift = response.shift || response;
+          return RoleActions.addShiftSuccess({ shift }); 
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to add shift.');
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+updateShift$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.updateShift),
+    mergeMap((action) =>
+      this.roleService.updateShift(action.id, action.shift).pipe(
+       map(() => {
+  this.toastr.success('Shift updated successfully!');
+  return RoleActions.updateShiftSuccess({
+    shift: { ...action.shift, _id: action.id }
+  });
+}),
+
+        catchError((error) => {
+          this.toastr.error('Failed to update shift.');
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+
+
+deleteShift$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.deleteShift),
+    mergeMap(action =>
+      this.roleService.deleteShift(action.id).pipe(
+        map(() => {
+          this.toastr.success('Shift deleted successfully!');
+          return RoleActions.deleteShiftSuccess({ id: action.id });
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to delete department.');
+          return of(RoleActions.apiFailure({ error }));
+        })
+      )
+    )
+  )
+);
 
 
 }

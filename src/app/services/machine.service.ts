@@ -7,7 +7,7 @@ import { MachineType, Machine } from '../model/machine.model';
   providedIn: 'root'
 })
 export class MachineService {
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = 'http://localhost:3005';
 
   constructor(private http: HttpClient) {}
 
