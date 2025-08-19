@@ -212,12 +212,12 @@ addShift$ = createEffect(() =>
 updateShift$ = createEffect(() =>
   this.actions$.pipe(
     ofType(RoleActions.updateShift),
-    mergeMap((action) =>
+    mergeMap(action =>
       this.roleService.updateShift(action.id, action.shift).pipe(
        map(() => {
   this.toastr.success('Shift updated successfully!');
   return RoleActions.updateShiftSuccess({
-    shift: { ...action.shift, _id: action.id }
+    updateshift: { ...action.shift, _id: action.id }
   });
 }),
 

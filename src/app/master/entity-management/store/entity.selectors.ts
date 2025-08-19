@@ -16,6 +16,12 @@ export const selectAllMachine = createSelector (
   (state : MachineTypeState) => state.machine
 );
 
+
+export const selectAllCustomers = createSelector(
+  selectMachineTypeState,
+  (state: MachineTypeState) => state.customers
+);
+
 export const selectMachineTypeError = createSelector(
   selectMachineTypeState,
   state => state.error

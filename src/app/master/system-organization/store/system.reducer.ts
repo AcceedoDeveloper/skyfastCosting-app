@@ -83,9 +83,9 @@ on(RoleActions.loadShiftSuccess, (state, { shift }) => ({
   shift: [...state.shift, shift]
 })),
 
-on(RoleActions.updateShiftSuccess, (state, { shift }) => ({
+on(RoleActions.updateShiftSuccess, (state, { updateshift }) => ({
   ...state,
-  shifts: state.shift.map(s => s._id === shift._id ? shift : s)
+  shift: state.shift.map(s => s._id === updateshift._id ? updateshift : s)
 })),
 
 on(RoleActions.deleteShiftSuccess, (state, { id }) => ({

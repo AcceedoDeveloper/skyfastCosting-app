@@ -48,11 +48,11 @@ onSubmit() {
 
       this.store.dispatch(
         RoleActions.updateShift({ id: this.data._id, shift: shiftData }));
-        this.store.dispatch(RoleActions.loadshift());
+       
     } else {
-
       this.store.dispatch(RoleActions.addShift({ shift: shiftData }));
     }
+    
      
     this.dialogRef.close();
   }

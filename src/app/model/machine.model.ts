@@ -18,3 +18,13 @@ export interface Machine {
   updatedAt: string; // or Date
   __v: number;
 }
+
+
+export interface Customer {
+  _id: string;
+  customerName: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}

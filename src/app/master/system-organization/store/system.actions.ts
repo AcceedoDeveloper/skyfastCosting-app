@@ -80,7 +80,7 @@ export const updateShift = createAction(
 
 export const updateShiftSuccess = createAction(
   '[Shift] Update Shift Success',
-  props<{ shift: Shift }>()
+  props<{ updateshift: Shift }>()
 );
 
 

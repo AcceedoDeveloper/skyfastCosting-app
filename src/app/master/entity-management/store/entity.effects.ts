@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import * as MachineTypeActions from './entity.action';
 import { MachineService } from '../../../services/machine.service';
-import { MachineType, Machine } from '../../../model/machine.model';
+import { MachineType, Machine, Customer } from '../../../model/machine.model';
 
 @Injectable()
 export class MachineTypeEffects {
@@ -154,6 +154,79 @@ export class MachineTypeEffects {
         )
       )
     ))
+
+
+    loadCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.loadCustomer),
+      mergeMap(() =>
+        this.machineTypeService.getCustomer().pipe(
+          map((customers) => MachineTypeActions.loadCustomerSuccess({ customers })),
+          catchError((error) => {
+            this.toastr.error('Failed to load customers');
+            return of(MachineTypeActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  addCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.addCustomer),
+      mergeMap((action) =>
+        this.machineTypeService.addCustomer(action.customer).pipe(
+          map((response : any) => {
+            this.toastr.success('Customer added successfully!');
+            const customer : Customer = response.customer || response;
+            return MachineTypeActions.addCustomerSuccess({ customer });
+          }),
+          catchError((error) => {
+            this.toastr.error('Failed to add customer');
+            return of(MachineTypeActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  deleteCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.deleteCustomer),
+      mergeMap((action) =>
+        this.machineTypeService.deleteCustomer(action.id).pipe(
+          map(() => {
+            this.toastr.success('Customer deleted successfully!');
+            return MachineTypeActions.deleteCustomerSuccess({ id: action.id });
+          }),
+          catchError((error) => {
+            this.toastr.error('Failed to delete customer');
+            return of(MachineTypeActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  updateCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.updateCustomer),
+      mergeMap((action) =>
+        this.machineTypeService.updateCustomer(action.id, action.customer).pipe(
+          map(() => {
+            this.toastr.success('Customer updated successfully!');
+            return MachineTypeActions.updateCustomerSuccess({
+              updatedCustomer: { ...action.customer, _id: action.id }
+            });
+          }),
+          catchError((error) => {
+            this.toastr.error('Failed to update customer');
+            return of(MachineTypeActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
 
   
 }

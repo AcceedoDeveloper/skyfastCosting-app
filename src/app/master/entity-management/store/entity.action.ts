@@ -1,6 +1,6 @@
 // store/machine-type.actions.ts
 import { createAction, props } from '@ngrx/store';
-import { MachineType, Machine } from '../../../model/machine.model';
+import { MachineType, Machine, Customer } from '../../../model/machine.model';
 
 // Load
 export const loadMachineTypes = createAction('[MachineType] Load Machine Types');
@@ -70,3 +70,46 @@ export const updateMachineSuccess = createAction(
   '[Machine] Update Machine Success',
   props<{ updatedMachine: Machine }>()
 );
+
+
+
+
+
+// Load
+export const loadCustomer = createAction('[Customer] Load Customer');
+export const loadCustomerSuccess = createAction(
+  '[Customer] Load Customer Success',
+  props<{ customers: Customer[] }>()
+);
+
+// Add
+export const addCustomer = createAction(
+  '[Customer] Add Customer',
+  props<{ customer: Customer }>()
+);
+export const addCustomerSuccess = createAction(
+  '[Customer] Add Customer Success',
+  props<{ customer: Customer }>()
+);
+
+// Delete
+export const deleteCustomer = createAction(
+  '[Customer] Delete Customer',
+  props<{ id: string }>()
+);
+export const deleteCustomerSuccess = createAction(
+  '[Customer] Delete Customer Success',
+  props<{ id: string }>()
+);
+
+// Update
+export const updateCustomer = createAction(
+  '[Customer] Update Customer',
+  props<{ id: string; customer: Customer }>()
+);
+export const updateCustomerSuccess = createAction(
+  '[Customer] Update Customer Success',
+  props<{ updatedCustomer: Customer }>()
+);
+
+
