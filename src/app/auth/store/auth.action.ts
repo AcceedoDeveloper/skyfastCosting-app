@@ -5,7 +5,7 @@ import { AuthResponse, User } from "../../model/auth.model";
 
 export const loginUser = createAction(
   '[Login Page] Login User',
-  props<{ credentials: { username: string; password: string } }>()
+  props<{ credentials: { userName: string; password: string } }>()
 );
 
 

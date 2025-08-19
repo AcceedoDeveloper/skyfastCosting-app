@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
 
 ngOnInit(): void {
   this.loginForm = this.fb.group({
-    username: ['', Validators.required],
+    userName: ['', Validators.required],
     password: ['', Validators.required]
   });
 
@@ -51,9 +51,9 @@ ngOnInit(): void {
   onSubmit(): void {
   if (this.loginForm.invalid) return;
 
-  const { username, password } = this.loginForm.value;
-  console.log('Submitted:', username, password);
-  this.store.dispatch(AuthActions.loginUser({ credentials: { username, password } }));
+  const { userName, password } = this.loginForm.value;
+  console.log('Submitted:', userName, password);
+  this.store.dispatch(AuthActions.loginUser({ credentials: { userName, password } }));
 
 
 }

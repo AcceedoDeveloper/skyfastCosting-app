@@ -11,7 +11,7 @@ import {v4 as uuidv4} from 'uuid';
 export class AuthService {
   private http = inject(HttpClient);
 
- login(credentials: { username: string; password: string }): Observable<AuthResponse> {
+ login(credentials: { userName: string; password: string }): Observable<AuthResponse> {
   const loginUrl = 'http://localhost:3005/login';
 
   return this.http.post<any>(loginUrl, credentials).pipe(
