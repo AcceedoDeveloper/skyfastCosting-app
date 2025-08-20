@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MachineType, Machine, Customer } from '../model/machine.model';
+import { MachineType, Machine, Customer, User } from '../model/machine.model';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +62,21 @@ export class MachineService {
   }
 
 
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.baseUrl}/getUsers`);
+  }
+
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(`${this.baseUrl}/CreateUser`, user);
+  }
+
+  updateUser(id: string, user: User): Observable<User> {
+    return this.http.put<User>(`${this.baseUrl}/updateUser/${id}`, user);
+  }
+
+  deleteUser(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/deleteUser/${id}`);
+  }
   
 
 }

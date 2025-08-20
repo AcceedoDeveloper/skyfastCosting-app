@@ -1,0 +1,81 @@
+.table-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 30px auto;
+  
+ 
+ 
+  overflow-x: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 5px; 
+
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.25rem; /* Match the font size from your previous styles */
+  color: #000000; /* Match the color used in your previous designs */
+}
+
+.header button {
+  background-color: #3f51b5;
+  color: white;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th {
+  text-align: left;
+  padding: 14px 20px; /* Adjusted padding to match td for better alignment */
+  color: #5b84ff;
+  font-weight: 500;
+  border-bottom: 2px solid #5b84ff;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 10px;
+  border-bottom: 1px solid #ddd;
+  font-weight: 500;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+td.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.actions mat-icon.icon {
+  font-size: 25px;
+  color: #000;
+  cursor: pointer;
+}
+
+.actions mat-icon.icon:hover {
+  color: #ff4081;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+mat-paginator {
+  display: flex;
+  justify-content: end;
+ 
+  background: #fff;
+  border-radius: 0 0 10px 10px;
+}

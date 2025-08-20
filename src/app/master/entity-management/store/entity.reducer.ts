@@ -1,7 +1,7 @@
 // store/machine-type.reducer.ts
 import { createReducer, on } from '@ngrx/store';
 import * as MachineTypeActions from './entity.action';
-import { MachineType, Machine, Customer } from '../../../model/machine.model';
+import { MachineType, Machine, Customer, User } from '../../../model/machine.model';
 
 export const machineTypeFeatureKey = 'machineTypes';
 
@@ -9,6 +9,7 @@ export interface MachineTypeState {
   machineTypes: MachineType[];
   machine: Machine[];
    customers: Customer[];
+    users: User[];
   error: any;
 }
 
@@ -16,6 +17,7 @@ export const initialState: MachineTypeState = {
   machineTypes: [],
   machine: [],
   customers: [],
+    users: [],
   error: null
 };
 
@@ -86,6 +88,29 @@ export const machineTypeReducer = createReducer(
       c._id === updatedCustomer._id ? updatedCustomer : c
     )
   })),
+
+
+   on(MachineTypeActions.loadUsersSuccess, (state, { users }) => ({
+    ...state,
+    users,
+    error: null
+  })),
+
+  on(MachineTypeActions.addUserSuccess, (state, { user }) => ({
+    ...state,
+    users: [...state.users, user]
+  })),
+
+  on(MachineTypeActions.updateUserSuccess, (state, { updatedUser }) => ({
+    ...state,
+    users: state.users.map(u => u._id === updatedUser._id ? updatedUser : u)
+  })),
+
+  on(MachineTypeActions.deleteUserSuccess, (state, { id }) => ({
+    ...state,
+    users: state.users.filter(u => u._id !== id)
+  })),
+
 
 
 

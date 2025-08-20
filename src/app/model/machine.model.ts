@@ -30,3 +30,17 @@ export interface Customer {
 }
 
 
+export interface User {
+  _id: string;
+  fullName: string;
+  userName: string;
+  password: string;
+  emailId: string;
+  phoneNumber: string;
+  role: any;   // can be Role object or string depending on API
+  deleted?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  __v?: number;
+  token?: string;
+}

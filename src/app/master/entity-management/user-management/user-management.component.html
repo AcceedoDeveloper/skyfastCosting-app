@@ -1,1 +1,39 @@
-<p>user-management works!</p>
+<div class="table-container">
+  <div class="header">
+    <h2>User List</h2>
+    <button mat-raised-button color="primary" (click)="openAddUserPopup()">Add User</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User Name</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of paginatedUsers">
+        <td>{{ user.userName }}</td>
+        <td>{{ user.fullName }}</td>
+        <td>{{ user.emailId }}</td>
+        <td>{{ user.phoneNumber || '-' }}</td>
+        <td>{{ user.role?.role || user.role }}</td>
+        <td class="actions">
+          <mat-icon class="icon" (click)="openEditUserPopup(user)">edit</mat-icon>
+          <mat-icon class="icon" (click)="deleteUser(user)">delete</mat-icon>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <mat-paginator
+    [length]="users.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+</div>

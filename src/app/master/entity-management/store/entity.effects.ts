@@ -228,5 +228,58 @@ export class MachineTypeEffects {
     )
   );
 
+
+
+  loadUsers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.loadUsers),
+      mergeMap(() =>
+        this.machineTypeService.getUsers().pipe(
+          map(users => MachineTypeActions.loadUsersSuccess({ users })),
+          catchError(error => of(MachineTypeActions.apiFailure({ error })))
+        )
+      )
+    )
+  );
+
+  addUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.addUser),
+      mergeMap(action =>
+        this.machineTypeService.createUser(action.user).pipe(
+          tap(() => this.toastr.success('User added successfully!')),
+          map(user => MachineTypeActions.addUserSuccess({ user })),
+          catchError(error => of(MachineTypeActions.apiFailure({ error })))
+        )
+      )
+    )
+  );
+
+  updateUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.updateUser),
+      mergeMap(action =>
+        this.machineTypeService.updateUser(action.id, action.user).pipe(
+          tap(() => this.toastr.success('User updated successfully!')),
+          map(() => MachineTypeActions.updateUserSuccess({ updatedUser: { ...action.user, _id: action.id } })),
+          catchError(error => of(MachineTypeActions.apiFailure({ error })))
+        )
+      )
+    )
+  );
+
+  deleteUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MachineTypeActions.deleteUser),
+      mergeMap(action =>
+        this.machineTypeService.deleteUser(action.id).pipe(
+          tap(() => this.toastr.success('User deleted successfully!')),
+          map(() => MachineTypeActions.deleteUserSuccess({ id: action.id })),
+          catchError(error => of(MachineTypeActions.apiFailure({ error })))
+        )
+      )
+    )
+  );
+
   
 }

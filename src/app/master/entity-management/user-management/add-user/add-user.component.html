@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit User' : 'Add User' }}</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>User Name</mat-label>
+      <input matInput formControlName="userName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Full Name</mat-label>
+      <input matInput formControlName="fullName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="emailId" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phoneNumber" />
+    </mat-form-field>
+
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>Role</mat-label>
+  <mat-select formControlName="role">
+    <mat-option *ngFor="let r of role$ | async" [value]="r.role">
+      {{ r.role }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+
+
+    <mat-form-field appearance="outline" class="w-100">
+  <mat-label>Password</mat-label>
+  <input matInput type="password" formControlName="password" />
+</mat-form-field>
+
+
+
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()">
+    {{ isEdit ? 'Update' : 'Add' }}
+  </button>
+</div>
