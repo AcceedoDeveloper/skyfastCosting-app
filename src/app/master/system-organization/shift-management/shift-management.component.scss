@@ -20,6 +20,9 @@ body {
   margin-left: 10px;
 }
 
+.btn{
+  margin-right: 167px;
+}
 .table-container {
   width: 900px;
   margin: 10px auto;
@@ -31,13 +34,19 @@ body {
 
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 25%;
+   justify-content: space-between;
+   align-items: center;
+  
+}
+
+.shift{
+  margin-bottom: -25px;
+  margin-left: 20px;
 }
 
 .toggle-group {
   flex: 1;
+
 }
 
 .add-section {
