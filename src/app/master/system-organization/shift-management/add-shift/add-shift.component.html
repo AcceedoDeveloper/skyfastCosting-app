@@ -1,6 +1,7 @@
-<h2 mat-dialog-title>Add Shift</h2>
+
 
 <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()" class="form-container">
+  <h2 mat-dialog-title>Add Shift</h2>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Shift Name</mat-label>
     <input matInput formControlName="shiftName" placeholder="Enter shift name">

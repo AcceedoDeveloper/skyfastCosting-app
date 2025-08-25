@@ -48,6 +48,7 @@ export class ShiftManagementComponent implements OnInit {
   openAddShift() {
   this.dialog.open(AddShiftComponent, {
         width: '500px',
+        height:'500px',
         data: {}         
       });
     }

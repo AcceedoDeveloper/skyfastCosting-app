@@ -1,4 +1,5 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Edit Hosting Mail' : 'Add Hosting Mail' }}</h2>
+<div class="cont">
+<h2 class="txt" mat-dialog-title>{{ isEdit ? 'Edit Hosting Mail' : 'Add Hosting Mail' }}</h2>
 
 <div mat-dialog-content>
   <form [formGroup]="form">
@@ -35,4 +36,5 @@
   <button mat-flat-button color="primary" (click)="save()">
     {{ isEdit ? 'Update' : 'Add' }}
   </button>
+</div>
 </div>

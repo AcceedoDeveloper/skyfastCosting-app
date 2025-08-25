@@ -54,6 +54,7 @@ export class HostingMailSettingsComponent  implements OnInit {
     openAddHostingMail(element?: HostingMail) {
        this.dialog.open(UpdateHostingComponent, {
             width: '500px',
+            height:'530px',
             data: element || {} 
           });
 }

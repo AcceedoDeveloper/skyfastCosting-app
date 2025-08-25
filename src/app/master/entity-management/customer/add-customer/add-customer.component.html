@@ -1,15 +1,16 @@
+<div class="container" >
 <h2 mat-dialog-title>
   {{ isEditMode ? 'Edit Customer' : 'Add Customer' }}
 </h2>
 
-<div mat-dialog-content>
+<div mat-dialog-content class="Standard" >
   <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline" class="w-full">
+    <mat-form-field appearance="fill" >
       <mat-label>Customer Name</mat-label>
       <input matInput formControlName="customerName" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-full">
+    <mat-form-field appearance="fill" >
       <mat-label>Address</mat-label>
       <input matInput formControlName="address" />
     </mat-form-field>
@@ -22,3 +23,7 @@
     </div>
   </form>
 </div>
+
+</div>
+
+

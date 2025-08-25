@@ -17,6 +17,11 @@ body {
   justify-content: center;
 }
 
+.cust{
+  margin-bottom: -25px;
+  margin-right: 90px;
+}
+
 .primary-button {
   margin-left: 10px;
 }
@@ -34,7 +39,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 25%;
+  margin: 20px;
+}
+
+
+.btn{
+  margin-right: 2px;
 }
 
 .toggle-group {
