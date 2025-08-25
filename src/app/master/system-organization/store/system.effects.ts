@@ -7,7 +7,8 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import {Department, Role, Shift, HostingMail } from '../../../model/role.model';
-
+import { CompanyService } from '../../../services/company.service';
+import { Company } from '../../../model/company.model';
 
 @Injectable()
 export class RoleEffects {
@@ -16,6 +17,7 @@ export class RoleEffects {
      private actions$ = inject(Actions);
   private roleService = inject(EntityService);
   private toastr = inject(ToastrService);
+  private companyService = inject(CompanyService);
 
 loadRoles$ = createEffect(() =>
   this.actions$.pipe(
@@ -321,5 +323,66 @@ loadHostingMail$ = createEffect(() =>
       )
     )
   );
+
+loadCompany$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.loadCompany),
+    mergeMap(() =>
+      this.companyService.getCompanies().pipe(
+        map(companies => RoleActions.loadCompanySuccess({ companies })),
+        catchError(error => of(RoleActions.apiFailure({ error })))
+      )
+    )
+  )
+);
+
+addCompany$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.addCompany),
+    mergeMap(action =>
+      this.companyService.addCompany(action.company).pipe(
+        map((response: any) => {
+          this.toastr.success('Company added successfully!');
+          const company: Company = response.company || response;
+          return RoleActions.addCompanySuccess({ company });
+        }),
+        catchError(error =>
+          of(RoleActions.apiFailure({ error }))
+        )
+      )
+    )
+  )
+);
+
+
+deleteCompany$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.deleteCompany),
+    mergeMap(action =>
+      this.companyService.deleteCompany(action.id).pipe(
+        map(() => RoleActions.deleteCompanySuccess({ id: action.id })),
+        catchError(error => of(RoleActions.apiFailure({ error })))
+      )
+    )
+  )
+);
+
+updateCompany$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.updateCompany),
+    mergeMap(action =>
+      this.companyService.updateCompany(action.id, action.company).pipe(
+        map(() =>
+          RoleActions.updateCompanySuccess({
+            updatedCompany: { ...action.company, _id: action.id }
+          })
+        ),
+        catchError(error => of(RoleActions.apiFailure({ error })))
+      )
+    )
+  )
+);
+
+
 
 }

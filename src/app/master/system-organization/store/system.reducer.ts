@@ -2,6 +2,7 @@
 import { createReducer, on, State } from '@ngrx/store';
 import * as RoleActions from './system.actions';
 import { Role, Department, Shift, HostingMail } from '../../../model/role.model';
+import { Company } from '../../../model/company.model';
 
 export const systemFeatureKey = 'roles'; 
 
@@ -10,6 +11,7 @@ export interface RoleState {
   department: Department[];
   shift: Shift[];
   hostingMail: any[];
+  companies: Company[];
    error: any;
 }
 
@@ -18,6 +20,7 @@ export const initialState: RoleState = {
   department: [],
   shift: [],
   hostingMail: [],
+  companies: [],
   error: null
 };
 
@@ -114,6 +117,30 @@ on(RoleActions.loadHostingMailSuccess, (state, { hostingMail }) => ({
   on(RoleActions.deleteHostingMailSuccess, (state, { id }) => ({
     ...state,
     hostingMail: state.hostingMail.filter(mail => mail._id !== id)
+  })),
+
+
+  on(RoleActions.loadCompanySuccess, (state, { companies }) => ({
+    ...state,
+    companies,
+    error: null
+  })),
+
+  on(RoleActions.addCompanySuccess, (state, { company }) => ({
+    ...state,
+    companies: [...state.companies, company]
+  })),
+
+  on(RoleActions.deleteCompanySuccess, (state, { id }) => ({
+    ...state,
+    companies: state.companies.filter(c => c._id !== id)
+  })),
+
+  on(RoleActions.updateCompanySuccess, (state, { updatedCompany }) => ({
+    ...state,
+    companies: state.companies.map(c =>
+      c._id === updatedCompany._id ? updatedCompany : c
+    )
   })),
 
 

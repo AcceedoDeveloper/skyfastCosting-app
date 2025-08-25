@@ -29,7 +29,11 @@ export const selectHosting = createSelector(
 export const selectAllShift = createSelector(
   selectRoleState,
   (state: RoleState) => state.shift
+);
 
+export const selectCompany = createSelector(
+  selectRoleState,
+  (state: RoleState) => state.companies
 );
 
 export const selectRoleError = createSelector(selectRoleState, state => state.error);

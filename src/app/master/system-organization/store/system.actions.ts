@@ -1,6 +1,8 @@
 // store/role.actions.ts
 import { createAction, props } from '@ngrx/store';
 import { Role, Department, Shift, HostingMail } from '../../../model/role.model';
+import { Company } from '../../../model/company.model';
+
 
 // Load
 export const loadRoles = createAction('[Role] Load Roles');
@@ -130,6 +132,45 @@ export const deleteHostingMail = createAction(
 export const deleteHostingMailSuccess = createAction(
   '[HostingMail] Delete HostingMail Success',
   props<{ id: string }>()
+);
+
+
+
+
+export const loadCompany = createAction('[Company] Load Company');
+export const loadCompanySuccess = createAction(
+  '[Company] Load Company Success',
+  props<{ companies: Company[] }>()
+);
+
+export const addCompany = createAction(
+  '[Company] Add Company',
+  props<{ company: Company }>()
+);
+
+export const addCompanySuccess = createAction(
+  '[Company] Add Company Success',
+  props<{ company: Company }>()
+);
+
+export const deleteCompany = createAction(
+  '[Company] Delete Company',
+  props<{ id: string }>()
+);
+
+export const deleteCompanySuccess = createAction(
+  '[Company] Delete Company Success',
+  props<{ id: string }>()
+);
+
+export const updateCompany = createAction(
+  '[Company] Update Company',
+  props<{ id: string; company: Company }>()
+);
+
+export const updateCompanySuccess = createAction(
+  '[Company] Update Company Success',
+  props<{ updatedCompany: Company }>()
 );
 
 

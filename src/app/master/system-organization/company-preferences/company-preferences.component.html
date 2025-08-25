@@ -1,1 +1,24 @@
-<p>company-preferences works!</p>
+<div>
+  <button (click)="  openAddCompany() " >
+    add Companyy
+  </button>
+</div>
+
+<div class="company-wrapper" *ngIf="company$ | async as companies">
+  <mat-card *ngFor="let company of companies" class="company-card">
+    <mat-card-header>
+      <mat-card-title>{{ company.companyName }}</mat-card-title>
+      <mat-card-subtitle>{{ company.companySlogan }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p><strong>Address:</strong> {{ company.companyAddress }}</p>
+      <p><strong>GST No:</strong> {{ company.companyGSTNumber }}</p>
+      <p><strong>Backup Timing:</strong> {{ company.backupTiming }}</p>
+      <p><strong>Backup email:</strong> {{ company.backupEmailId }}</p>
+    </mat-card-content>
+     <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="openAddCompany(company)">Edit</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
