@@ -1,24 +1,151 @@
-<div>
-  <button (click)="  openAddCompany() " >
-    add Companyy
-  </button>
-</div>
 
-<div class="company-wrapper" *ngIf="company$ | async as companies">
-  <mat-card *ngFor="let company of companies" class="company-card">
-    <mat-card-header>
-      <mat-card-title>{{ company.companyName }}</mat-card-title>
-      <mat-card-subtitle>{{ company.companySlogan }}</mat-card-subtitle>
-    </mat-card-header>
+<div class="main-wrapper">
 
-    <mat-card-content>
-      <p><strong>Address:</strong> {{ company.companyAddress }}</p>
-      <p><strong>GST No:</strong> {{ company.companyGSTNumber }}</p>
-      <p><strong>Backup Timing:</strong> {{ company.backupTiming }}</p>
-      <p><strong>Backup email:</strong> {{ company.backupEmailId }}</p>
-    </mat-card-content>
-     <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="openAddCompany(company)">Edit</button>
-    </mat-card-actions>
-  </mat-card>
+
+  <div class="section" *ngIf="company$ | async as companies">
+    
+
+    <h2 class="section-title">COMPANY PREFERENCES</h2>
+
+    <div class="card" *ngFor="let company of companies; trackBy: trackByCompanyId">
+
+    
+      <div class="kv-list" *ngIf="editingCompany?.id !== company._id">
+        <div class="row">
+          <div class="label">Company Name</div><div class="colon">:</div>
+          <div class="value">{{ company.companyName }}</div>
+        </div>
+        <div class="row">
+          <div class="label">Company Slogan</div><div class="colon">:</div>
+          <div class="value">{{ company.companySlogan }}</div>
+        </div>
+        <div class="row">
+          <div class="label">Address</div><div class="colon">:</div>
+          <div class="value">{{ company.companyAddress }}</div>
+        </div>
+        <div class="row">
+          <div class="label">GST No</div><div class="colon">:</div>
+          <div class="value">{{ company.companyGSTNumber }}</div>
+        </div>
+        <div class="row">
+          <div class="label">Backup Timing</div><div class="colon">:</div>
+          <div class="value">{{ company.backupTiming }}</div>
+        </div>
+        <div class="row">
+          <div class="label">Backup Email</div><div class="colon">:</div>
+          <div class="value">{{ company.backupEmailId }}</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" (click)="editCompany(company)">Edit</button>
+        </div>
+      </div>
+
+
+      <form class="kv-list"
+            *ngIf="editingCompany?.id === company._id"
+            [formGroup]="companyForm"
+            (ngSubmit)="saveCompany()">
+        <div class="row">
+          <div class="label">Company Name</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="text" formControlName="companyName" /></div>
+        </div>  
+        <div class="row">
+          <div class="label">Company Slogan</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="text" formControlName="companySlogan" /></div>
+        </div>  
+        <div class="row">
+          <div class="label">Address</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="text" formControlName="companyAddress" /></div>
+        </div>
+        <div class="row">
+          <div class="label">GST No</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="text" formControlName="companyGSTNumber" /></div>
+        </div>
+        <div class="row">
+          <div class="label">Backup Timing</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="text" formControlName="backupTiming" /></div>
+        </div>
+        <div class="row">
+          <div class="label">Backup Email</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="email" formControlName="backupEmailId" /></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" type="submit" [disabled]="companyForm.invalid">Update</button>
+          <button class="btn" type="button" (click)="cancelEditCompany()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="section" *ngIf="hosting$ | async as hostingList">
+    
+  
+    <h2 class="section-title">HOSTING MAIL</h2>
+
+    <div class="card" *ngFor="let host of hostingList; trackBy: trackByHostingId">
+
+      <div class="kv-list" *ngIf="editingHosting?.id !== host._id">
+        <div class="row">
+          <div class="label">SMTP Server</div><div class="colon">:</div>
+          <div class="value">{{ host.smtpServer }}</div>
+        </div>
+        <div class="row">
+          <div class="label">Port</div><div class="colon">:</div>
+          <div class="value">{{ host.portNo }}</div>
+        </div>
+        <div class="row">
+          <div class="label">Email</div><div class="colon">:</div>
+          <div class="value">{{ host.emailId }}</div>
+        </div>
+        <div class="row">
+          <div class="label">Password</div><div class="colon">:</div>
+          <div class="value">{{host.password}}</div>
+        </div>
+        <div class="row">
+          <div class="label">Encryption</div><div class="colon">:</div>
+          <div class="value">{{ host.EncryptionType }}</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" (click)="editHosting(host)">Edit</button>
+        </div>
+      </div>
+
+
+      <form class="kv-list"
+            *ngIf="editingHosting?.id === host._id"
+            [formGroup]="hostingForm"
+            (ngSubmit)="saveHosting()">
+
+        <div class="row">
+          <div class="label">SMTP Server</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="text" formControlName="smtpServer" /></div>
+        </div>
+        <div class="row">
+          <div class="label">Port</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="number" formControlName="portNo" /></div>
+        </div>
+        <div class="row">
+          <div class="label">Email</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="email" formControlName="emailId" /></div>
+        </div>
+        <div class="row">
+          <div class="label">Password</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="password" formControlName="password" /></div>
+        </div>
+        <div class="row">
+          <div class="label">Encryption</div><div class="colon">:</div>
+          <div class="value"><input class="kv-input" type="text" formControlName="EncryptionType" /></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" type="submit" [disabled]="hostingForm.invalid">Update</button>
+          <button class="btn" type="button" (click)="cancelEditHosting()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

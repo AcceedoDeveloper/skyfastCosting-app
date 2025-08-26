@@ -9,7 +9,7 @@ import { ShiftManagementComponent} from './shift-management/shift-management.com
 
 export const systemRoutes: Routes = [
     {
-    path: '',
+    path: 'companypreferences',
     component: CompanyPreferencesComponent
     },
     {

@@ -70,60 +70,38 @@
             <li routerLink="/entity/customers">
               <span class="material-icons submenu-icon">business</span> Customer
             </li>
-            <li routerLink="/system/hosting-mail-settings">
-              <span class="material-icons submenu-icon">mail</span>  hosting mail
-            </li>
-             <li routerLink="/system">
-              <span class="material-icons submenu-icon">business_center </span> Company 
-            </li>
+         
             
           </ul>
         </li>
+
+         <li class="nav-item" routerLink="/system/companypreferences" routerLinkActive="active-link">
+          <div class="nav-item-content">
+            <span class="material-icons nav-icon">person</span>
+            <span class="nav-text">Company Management</span>
+          </div>
+        </li>
+
+
 
 
         <li class="nav-item has-submenu">
           <div class="nav-item-content">
             <span class="material-icons nav-icon">inventory_2</span>
-            <span class="nav-text">Material Management</span>
+            <span class="nav-text">Material & Process Management</span>
           </div>
           <ul class="submenu">
             <li routerLink="/material/material/type">
-              <span class="material-icons submenu-icon">list_alt</span> Material Type
+              <span class="material-icons submenu-icon">list_alt</span> Rwa Maaterial
             </li>
             <li routerLink="/material/list">
-              <span class="material-icons submenu-icon">category</span> Material
+              <span class="material-icons submenu-icon">category</span> process
             </li>
-            <li routerLink="/grade">
-              <span class="material-icons submenu-icon">grade</span> Grade
-            </li>
+          
           </ul>
         </li>
 
- 
-        <li class="nav-item has-submenu">
-          <div class="nav-item-content">
-            <span class="material-icons nav-icon">engineering</span>
-            <span class="nav-text">Process Management</span>
-          </div>
-          <ul class="submenu">
-            <li routerLink="/material/process">
-              <span class="material-icons submenu-icon">settings</span> Process
-            </li>
-            <li routerLink="/material/power-cost">
-              <span class="material-icons submenu-icon">bolt</span> Power Cost
-            </li>
-            <li routerLink="/material/salary-wages">
-              <span class="material-icons submenu-icon">attach_money</span> Salary & Wages
-            </li>
-            <li routerLink="/material/over-heads">
-              <span class="material-icons submenu-icon">calculate</span> Over-heads
-            </li>
-            <li routerLink="/master/meterialinput/casting">
-              <span class="material-icons submenu-icon">input</span> Casting Input
-             
-            </li>
-          </ul>
-        </li>
+
 
 
         <li class="nav-item" routerLink="/material/customer-details" routerLinkActive="active-link">

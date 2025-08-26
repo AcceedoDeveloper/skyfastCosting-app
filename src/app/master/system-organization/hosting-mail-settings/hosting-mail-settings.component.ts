@@ -39,7 +39,7 @@ export class HostingMailSettingsComponent  implements OnInit {
 
    ngOnInit(): void {
   this.hosting$ = this.store.select(selectHosting).pipe(
-    // ensure it's always an array
+
     map(data => Array.isArray(data) ? data : [data])
   );
 
