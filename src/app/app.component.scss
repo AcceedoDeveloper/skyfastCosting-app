@@ -17,9 +17,9 @@
 }
 
 .navbar-brand .navbar-item.brand-text {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
-  color: #8e24aa;
+  color: #3c5b64;
   text-decoration: none;
 }
 
@@ -86,7 +86,7 @@
 }
 
 .profile-btn {
-  background-color: #8e24aa;
+  background-color: #3c5b64;
   border: none;
   color: white;
   border-radius: 50%;
@@ -148,7 +148,7 @@
   top: 0;
   height: 100%;
   width: 240px;
-  background-color: #8e24aa;
+  background-color: #3c5b64;
   color: white;
   padding-top: 60px;
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);
@@ -163,7 +163,7 @@
   display: flex;
   align-items: center;
   padding: 0 20px;
-  background-color: #8e24aa;
+  background-color: #3c5b64;
   font-size: 18px;
   font-weight: bold;
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -261,17 +261,21 @@
 }
 
 .material-icons.nav-icon {
-  font-size: 20px;
-  color: #333333;
+  margin-top: 5px;
+  margin-bottom: 2px;
+  font-size: 30px;
+  color: #3c5b64;
 }
 
 .material-icons.submenu-icon {
   font-size: 20px;
-  color: #555555;
+  color: #3c5b64;
 }
 
 .nav-text {
-  font-size: 10px;
+  font-size: 11px;
+  margin-top: 2px;
+  margin-bottom: 5px;
   line-height: 12px;
   color: #333333;
   display: block;
