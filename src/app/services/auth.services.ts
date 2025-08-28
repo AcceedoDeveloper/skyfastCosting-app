@@ -1,3 +1,4 @@
+
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import {  Observable, throwError } from "rxjs";
@@ -11,22 +12,36 @@ import {v4 as uuidv4} from 'uuid';
 export class AuthService {
   private http = inject(HttpClient);
 
- login(credentials: { userName: string; password: string }): Observable<AuthResponse> {
-  const loginUrl = 'http://localhost:3005/login';
+  login(credentials: { userName: string; password: string }): Observable<AuthResponse> {
+    const loginUrl = 'http://localhost:3005/login';
+    return this.http.post<any>(loginUrl, credentials).pipe(
+      map(response => ({
+        user: response.user,
+        accessToken: response.token
+      })),
+      catchError(this.handleError)
+    );
+  }
 
-  return this.http.post<any>(loginUrl, credentials).pipe(
-    map(response => ({
-      user: response.user,
-      accessToken: response.token
-    })),
-    catchError(this.handleError)
-  );
-}
+  forgotPassword(email: string): Observable<{ message: string }> {
+    const forgotPasswordUrl = 'http://localhost:3005/forgot-password';
+    return this.http.post<{ message: string }>(forgotPasswordUrl, { emailId: email }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
+  verifyOtp(email: string, otp: string): Observable<AuthResponse> {
+    const verifyOtpUrl = 'http://localhost:3005/verify-otp';
+    return this.http.post<any>(verifyOtpUrl, { emailId: email, otp }).pipe(
+      map(response => ({
+        user: response.user,
+        accessToken: response.token
+      })),
+      catchError(this.handleError)
+    );
+  }
 
-
-
-    private handleError(error: any): Observable<never> {
+  private handleError(error: any): Observable<never> {
     console.error('AuthService Error:', error);
     let errorMessage = 'An unknown error occurred during authentication.';
     if (error.message) {
@@ -37,31 +52,24 @@ export class AuthService {
     return throwError(() => new Error(errorMessage));
   }
 
-
-formatUser(data: AuthResponse): User {
-  const roleName = data.user.userName || 'unknown';
-
-  return {
-    _id: data.user._id,
-    UserCode: data.user.UserCode,
-    UserName: data.user.UserName,
-    userName: data.user.userName,
-    createdAt: data.user.createdAt,
-    updatedAt: data.user.updatedAt,
-    token: data.accessToken
-  };
-}
-
-
+  formatUser(data: AuthResponse): User {
+    const roleName = data.user.userName || 'unknown';
+    return {
+      _id: data.user._id,
+      UserCode: data.user.UserCode,
+      UserName: data.user.UserName,
+      userName: data.user.userName,
+      createdAt: data.user.createdAt,
+      updatedAt: data.user.updatedAt,
+      token: data.accessToken
+    };
+  }
 
   setUserInSessionStorage(user: User): void {
-  sessionStorage.setItem('userData', JSON.stringify(user));
-}
+    sessionStorage.setItem('userData', JSON.stringify(user));
+  }
 
-logout(): void {
-  sessionStorage.removeItem('userData');
-}
-
-  
-
+  logout(): void {
+    sessionStorage.removeItem('userData');
+  }
 }
