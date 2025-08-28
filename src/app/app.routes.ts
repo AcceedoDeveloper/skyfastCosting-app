@@ -27,6 +27,12 @@ export const routes: Routes = [
     loadChildren: () => import('./master/entity-management/entity.routes').then(m => m.entityRoutes)
   },
 
+  {
+    path: 'product',
+    canActivate: [authGuard],
+    loadChildren: () => import('./product/product.routes').then(m => m.productRoutes)
+  },
+
   
 
   ...postLoginRoutes,

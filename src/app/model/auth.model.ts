@@ -1,4 +1,4 @@
-// Represents the backend user response
+
 export interface User {
   _id: string;
   UserCode: string;
@@ -9,14 +9,15 @@ export interface User {
   token: string;
 }
 
-// Response from login API
+
 export interface AuthResponse {
   user: User;
   accessToken: string;
 }
 
-// Used in the NgRx store
+
 export interface AuthState {
+  forgotPassword: any;
   user: User | null;
   token: string | null;
   isLoggedIn: boolean;
