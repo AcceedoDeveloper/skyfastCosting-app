@@ -1,13 +1,11 @@
 <div class="header">
- 
-   <div class="cust"><h3 style="font-weight: bold;">Customer</h3></div>
+  <div class="cust">
+    <h3 style="font-weight: bold;">Customer</h3>
+  </div>
 
-  
   <div class="btn">
     <button (click)="openAddCustomer()">Add Customer</button>
   </div>
-      
-
 </div>
 
 <!-- Customer Table -->
@@ -15,26 +13,38 @@
   <table>
     <thead>
       <tr>
-        <th style="width: 21%;">Customer Name</th>
-        <th style="width: 50%;">Address</th>
-        <th style="width: 12%;">Actions</th>
+        <th style="width: 18%;">Customer Name</th>
+        <th style="width: 22%;">Address</th>
+        <th style="width: 12%;">GST Number</th>
+        <th style="width: 12%;">Phone</th>
+        <th style="width: 20%;">Email</th>
+        <th style="width: 10%;">Transport</th>
+        <th style="width: 6%;">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let customer of customer$ | async">
         <td>{{ customer.customerName }}</td>
         <td>{{ customer.address }}</td>
+        <td>{{ customer.gstNumber }}</td>
+        <td>{{ customer.phone }}</td>
+        <td>{{ customer.email }}</td>
+        <td>{{ customer.transport }}</td>
         <td class="actions">
           <mat-icon
             aria-label="Edit customer"
             class="icon"
             (click)="openAddCustomer(customer)"
-          >edit</mat-icon>
+          >
+            edit
+          </mat-icon>
           <mat-icon
             aria-label="Delete customer"
             class="icon"
             (click)="deleteCustomer(customer._id)"
-          >delete</mat-icon>
+          >
+            delete
+          </mat-icon>
         </td>
       </tr>
     </tbody>
