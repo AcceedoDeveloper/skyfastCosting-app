@@ -1,29 +1,54 @@
-<div class="container" >
-<h2 mat-dialog-title>
-  {{ isEditMode ? 'Edit Customer' : 'Add Customer' }}
-</h2>
+<div class="container">
+  <h2 mat-dialog-title>
+    {{ isEditMode ? 'Edit Customer' : 'Add Customer' }}
+  </h2>
 
-<div mat-dialog-content class="Standard" >
-  <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="fill" >
-      <mat-label>Customer Name</mat-label>
-      <input matInput formControlName="customerName" />
-    </mat-form-field>
+  <div mat-dialog-content>
+    <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Customer Name</mat-label>
+        <input matInput formControlName="customerName" />
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" >
-      <mat-label>Address</mat-label>
-      <input matInput formControlName="address" />
-    </mat-form-field>
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="address" />
+      </mat-form-field>
 
-    <div mat-dialog-actions >
-      <button mat-button type="button" (click)="cancel()" >Cancel</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="customerForm.invalid">
-        {{ isEditMode ? 'Update' : 'Add' }}
-      </button>
-    </div>
-  </form>
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>GST Number</mat-label>
+        <input matInput formControlName="gstNumber" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Phone</mat-label>
+        <input matInput type="tel" formControlName="phone" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Transport</mat-label>
+        <mat-select formControlName="transport">
+          <mat-option value="domestic">Domestic</mat-option>
+          <mat-option value="international">International</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div mat-dialog-actions>
+        <button mat-button type="button" (click)="cancel()">Cancel</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="customerForm.invalid"
+        >
+          {{ isEditMode ? 'Update' : 'Add' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
-
-</div>
-
-

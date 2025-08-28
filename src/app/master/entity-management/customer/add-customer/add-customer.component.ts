@@ -7,11 +7,19 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-add-customer',
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatInputModule, MatDialogModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatDialogModule,
+    MatSelectModule
+  ],
   templateUrl: './add-customer.component.html',
   styleUrl: './add-customer.component.scss'
 })
@@ -31,7 +39,11 @@ export class AddCustomerComponent implements OnInit {
 
     this.customerForm = this.fb.group({
       customerName: [this.data?.customerName || '', Validators.required],
-      address: [this.data?.address || '', Validators.required]
+      address: [this.data?.address || '', Validators.required],
+      gstNumber: [this.data?.gstNumber || ''],
+      phone: [this.data?.phone || ''],
+      email: [this.data?.email || '', [Validators.email]],
+      transport: [this.data?.transport || '']
     });
   }
 
@@ -56,7 +68,7 @@ export class AddCustomerComponent implements OnInit {
     }
   }
 
-  cancel(){
+  cancel() {
     this.dialogRef.close();
   }
 }

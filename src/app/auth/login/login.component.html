@@ -1,3 +1,4 @@
+
 <app-loading-spinner *ngIf="isLoading$ | async"></app-loading-spinner>
 
 <div class="login-page-container">
@@ -6,39 +7,151 @@
       <h2>LOGIN</h2>
       <p class="subtitle"></p>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <input
-            type="text"
-            placeholder="Username"
-            formControlName="userName"
-            required
-          />
-          <div *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched" class="error-message">
-            <span *ngIf="loginForm.get('userName')?.errors?.['required']">
-              Username is required.
-            </span>
+
+      <div *ngIf="!showForgotPassword">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <input
+              type="text"
+              placeholder="Username"
+              formControlName="userName"
+              required
+            />
+            <div
+              *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched"
+              class="error-message"
+            >
+              <span *ngIf="loginForm.get('userName')?.errors?.['required']">
+                Username is required.
+              </span>
+            </div>
           </div>
+
+          <div class="form-group">
+            <input
+              type="password"
+              placeholder="Password"
+              formControlName="password"
+              required
+            />
+            <div
+              *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+              class="error-message"
+            >
+              <span *ngIf="loginForm.get('password')?.errors?.['required']">
+                Password is required.
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="loginForm.invalid || (isLoading$ | async)"
+          >
+            {{ (isLoading$ | async) ? 'Logging in...' : 'Login Now' }}
+          </button>
+        </form>
+
+        <div class="forgot-password-link">
+          <a href="javascript:void(0)" (click)="onForgotPassword()"
+            >Forgot Password?</a
+          >
+        </div>
+      </div>
+
+
+      <div *ngIf="showForgotPassword && !showOtpForm">
+        <h3>Reset Password</h3>
+        <p class="subtitle">Enter your email to receive an OTP</p>
+
+        <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSendOtp()">
+          <div
+            *ngIf="forgotPasswordMessage$ | async as message"
+            class="success-message"
+          >
+            {{ message }}
+          </div>
+
+          <div class="form-group">
+            <input
+              type="email"
+              placeholder="Email"
+              formControlName="email"
+              required
+            />
+            <div
+              *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched"
+              class="error-message"
+            >
+              <span *ngIf="forgotPasswordForm.get('email')?.errors?.['required']">
+                Email is required.
+              </span>
+              <span *ngIf="forgotPasswordForm.get('email')?.errors?.['email']">
+                Please enter a valid email.
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="forgotPasswordForm.invalid || (forgotPasswordLoading$ | async)"
+          >
+            {{ (forgotPasswordLoading$ | async) ? 'Sending...' : 'Send OTP' }}
+          </button>
+        </form>
+
+        <div class="back-to-login">
+          <a href="javascript:void(0)" (click)="onBackToLogin()">Back to Login</a>
+        </div>
+      </div>
+
+      <div *ngIf="showOtpForm">
+        <h3>Verify OTP</h3>
+        <p class="subtitle">Enter the OTP sent to your email</p>
+
+        <div *ngIf="otpTimer > 0" class="otp-timer">
+          OTP expires in: {{ formatTime(otpTimer) }}
+        </div>
+        <div *ngIf="otpTimer === 0" class="otp-expired">
+          OTP has expired.
+          <a href="javascript:void(0)" (click)="resendOtp()">Resend OTP</a>
         </div>
 
-        <div class="form-group">
-          <input
-            type="password"
-            placeholder="Password"
-            formControlName="password"
-            required
-          />
-          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']">
-              Password is required.
-            </span>
+   
+        <form (ngSubmit)="onVerifyOtp()">
+          <div class="otp-input-container">
+            <input
+              *ngFor="let digit of otpDigits; let i = index"
+              type="text"
+              maxlength="1"
+              class="otp-input"
+              [(ngModel)]="otpValues[i]"
+              (input)="onOtpInput($event, i)"
+              (keydown)="onOtpKeyDown($event, i)"
+              name="otp-{{ i }}"
+              required
+            />
           </div>
-        </div>
 
-        <button type="submit" [disabled]="loginForm.invalid || (isLoading$ | async)">
-          {{ (isLoading$ | async) ? 'Logging in...' : 'Login Now' }}
-        </button>
-      </form>
+          <div
+            *ngIf="forgotPasswordError$ | async as error"
+            class="error-message"
+          >
+            {{ error }}
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="otpValues.join('').length !== otpDigits.length || (forgotPasswordLoading$ | async) || otpTimer === 0"
+          >
+            {{ (forgotPasswordLoading$ | async) ? 'Verifying...' : 'Verify OTP' }}
+          </button>
+        </form>
+
+        <div class="back-to-login">
+          <a href="javascript:void(0)" (click)="onBackToLogin()">Back to Login</a>
+        </div>
+      </div>
     </div>
 
     <div class="login-image-section">

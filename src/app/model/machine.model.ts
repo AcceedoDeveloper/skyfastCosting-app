@@ -24,6 +24,10 @@ export interface Customer {
   _id: string;
   customerName: string;
   address: string;
+  gstNumber: string;
+  phone: string;
+  email: string;
+  transport: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
