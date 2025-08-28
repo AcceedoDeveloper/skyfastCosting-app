@@ -33,8 +33,8 @@
   <table>
     <thead>
       <tr>
-        <th>Role</th>
-        <th class="actions-header">Actions</th>
+        <th style="width: 60%;">Role</th>
+        <th style="width: 20%;">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -42,10 +42,10 @@
         <td>{{ role.role }}</td>
         <td class="actions">
           <button mat-icon-button color="primary" (click)="editRole(role)">
-            <mat-icon>edit</mat-icon>
+            <mat-icon class="icon" >edit</mat-icon>
           </button>
           <button mat-icon-button color="warn" (click)="deleteRole(role._id)">
-            <mat-icon>delete</mat-icon>
+            <mat-icon class="icon">delete</mat-icon>
           </button>
         </td>
       </tr>

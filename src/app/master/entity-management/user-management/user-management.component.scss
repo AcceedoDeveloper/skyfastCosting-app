@@ -1,19 +1,28 @@
 .table-container {
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
   margin: 30px auto;
   
- 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
  
   overflow-x: auto;
 }
 
+
+
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 15px 5px; 
+  align-items: center;
+  width: 600px;
+  margin: 20px;
+  margin-left: 50px;
+  margin-bottom: -12px;
 
+}
+
+.btn{
+  margin-right: -220px;
 }
 
 .header h2 {
@@ -32,7 +41,7 @@ table {
   border-collapse: collapse;
   background: white;
   border-radius: 10px 10px 0 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
 }
 
 th {
