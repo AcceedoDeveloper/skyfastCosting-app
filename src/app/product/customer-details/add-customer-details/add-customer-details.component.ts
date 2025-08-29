@@ -60,8 +60,8 @@ export class AddCustomerDetailsComponent implements OnInit{
       castingWeight: [null, Validators.required],
       shortWeight: [null, Validators.required],
       meltingLoss: [null, Validators.required],
-      rawMaterial: [],   // optional
-      processSelection: [] // optional
+      rawMaterial: [[]],   // optional
+      processSelection: [[]] // optional
     });
 
     this.custoemr$ = this.store.select(selectAllCustomers);

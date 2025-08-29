@@ -59,5 +59,12 @@ openAddProductDialog() {
   
 }
 
+onDelete(_id: string | undefined) {
+  if (!_id) return; // safeguard
+  console.log('Deleting customer with id:', _id);
+  this.store.dispatch(customerActions.deleteCustomer({ id: _id }) );
+}
+
+
 }
 
