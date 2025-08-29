@@ -87,9 +87,9 @@
 }
 
 .profile-btn {
-  background-color: #3c5b64;
+  background-color:white ;
   border: none;
-  color: white;
+  color: #0e1635 ;
   border-radius: 50%;
   width: 42px;
   height: 42px;
@@ -101,7 +101,7 @@
 }
 
 .profile-btn:hover {
-  background-color: #6a1b9a;
+  background-color: rgb(202, 202, 202);
   transform: scale(1.05);
 }
 
@@ -279,7 +279,7 @@
 
 .material-icons.submenu-icon {
   font-size: 20px;
-  color: #3c5b64;
+  color: #0e1635;
 }
 
 .nav-text {

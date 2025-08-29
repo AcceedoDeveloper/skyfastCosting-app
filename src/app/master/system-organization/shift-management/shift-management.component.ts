@@ -22,7 +22,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     FormsModule,
     MatIconModule,
     CommonModule,
-    MatDialogModule
+    MatDialogModule,
+      MatButtonModule
   ],
   templateUrl: './shift-management.component.html',
   styleUrl: './shift-management.component.scss'
