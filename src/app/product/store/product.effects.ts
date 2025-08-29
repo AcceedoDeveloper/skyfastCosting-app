@@ -4,6 +4,7 @@ import * as RawMaterialActions from './product.actions';
 import { ProductService } from '../../services/product.service';
 import { catchError, map, mergeMap, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { CustomerDetails } from '../../model/customer-details.model';
 
 
 @Injectable()
@@ -166,4 +167,87 @@ export class ProductEffects {
       )
     )
   );
+
+
+
+  loadCustomers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.loadCustomers),
+      mergeMap(() =>
+        this.productservices.getCustomers().pipe(
+          map(customers => RawMaterialActions.loadCustomersSuccess({ customers })),
+          catchError(error => {
+            this.toastr.error('Failed to load customers');
+            return of(RawMaterialActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  // Add Customer
+  addCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.addCustomer),
+      mergeMap(action =>
+        this.productservices.createCustomer(action.customer).pipe(
+          map(customer => {
+            this.toastr.success('Customer added successfully!');
+            return RawMaterialActions.addCustomerSuccess({ customer });
+          }),
+          catchError(error => {
+            this.toastr.error('Failed to add customer');
+            return of(RawMaterialActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  // Update
+  updateCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.updateCustomer),
+      mergeMap(action =>
+        this.productservices.updateCustomer(action.id, action.customer).pipe(
+          map(() => {
+            this.toastr.success('Customer updated successfully!');
+            return RawMaterialActions.updateCustomerSuccess({
+              updatedCustomer: { ...action.customer, _id: action.id }
+            });
+          }),
+          catchError(error => {
+            this.toastr.error('Failed to update customer');
+            return of(RawMaterialActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  // Delete
+  deleteCustomer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.deleteCustomer),
+      mergeMap(action =>
+        this.productservices.deleteCustomer(action.id).pipe(
+          map(() => {
+            this.toastr.success('Customer deleted successfully!');
+            return RawMaterialActions.deleteCustomerSuccess({ id: action.id });
+          }),
+          catchError(error => {
+            this.toastr.error('Failed to delete customer');
+            return of(RawMaterialActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+
+
+
+
+
+
 }

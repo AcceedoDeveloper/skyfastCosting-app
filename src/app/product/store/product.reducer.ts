@@ -1,15 +1,18 @@
 import { createReducer, on } from '@ngrx/store';
 import * as ProductActions from './product.actions';
 import { RawMaterial, Process } from '../../model/product.model';
+import { CustomerDetails} from '../../model/customer-details.model';
 
 export interface ProductState {
   rawMaterials: RawMaterial[];
   process: Process[];
+  customers: CustomerDetails[];
   error: any;
 }
 
 export const initialState: ProductState = {
   rawMaterials: [],
+  customers: [],
   process: [],
   error: null,
 };
@@ -64,6 +67,33 @@ export const productReducer = createReducer(
       p._id === updatedProcess._id ? updatedProcess : p
     )
   })),
+
+
+
+
+   on(ProductActions.loadCustomersSuccess, (state, { customers }) => ({
+    ...state,
+    customers,
+    error: null
+  })),
+
+  on(ProductActions.addCustomerSuccess, (state, { customer }) => ({
+    ...state,
+    customers: [...state.customers, customer]
+  })),
+
+  on(ProductActions.updateCustomerSuccess, (state, { updatedCustomer }) => ({
+    ...state,
+    customers: state.customers.map(c =>
+      c._id === updatedCustomer._id ? updatedCustomer : c
+    )
+  })),
+
+  on(ProductActions.deleteCustomerSuccess, (state, { id }) => ({
+    ...state,
+    customers: state.customers.filter(c => c._id !== id)
+  })),
+
 
 
   on(ProductActions.apiFailure, (state, { error }) => ({
