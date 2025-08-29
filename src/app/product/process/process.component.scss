@@ -132,3 +132,30 @@ tr:hover {
   background-color: #b0bec5;
   cursor: not-allowed;
 }
+
+.calculationicon {
+  font-size: 20px;
+  color: #000000;
+  cursor: pointer;
+  vertical-align: middle;
+  
+}
+
+.popup {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  min-width: 250px;
+  margin-top: 6px;
+}
+
+.popup-content h5 {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #37474f;
+}

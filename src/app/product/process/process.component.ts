@@ -49,6 +49,22 @@ export class ProcessComponent implements OnInit {
     this.store.dispatch(processActions.loadProcess());
   }
 
+  selectedProcessId: string | null = null;
+
+
+
+togglePopup(processId: string) {
+  this.selectedProcessId = this.selectedProcessId === processId ? null : processId;
+}
+
+calculateProcessValue(p: any): number {
+  const hours = Number(p.Hours) || 0;
+  const cycleTime = Number(p.cycleTime) || 1; // prevent divide by 0
+  const cavity = Number(p.cavity) || 1;
+  return (hours / 3600 / cycleTime) / cavity;
+}
+
+
 
   openAddDialog() {
     const dialogRef = this.dialog.open(AddProcessComponent, {
