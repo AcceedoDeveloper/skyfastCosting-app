@@ -1,28 +1,38 @@
-<div class="raw-material-container">
-  <h2>Raw Materials</h2>
-<button (click)="addrawmaterial()" >Add raw Material</button>
+<div class="main">
+ <div class="header">
+ <h2 style="font-weight: bold;">Raw Materials</h2>
+<!-- <button (click)="addrawmaterial()" >Add raw Material</button> -->
+<button mat-raised-button color="primary" (click)="addrawmaterial()">Add raw Material</button>
+
+ </div>
+ 
   <!-- Show when data is loading -->
-  <ng-container *ngIf="rawMaterials$ | async as rawMaterials; else loading">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Grade Name</th>
-          <th>Rate Per Kg</th>
-          <th>action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let rm of rawMaterials">
-          <td>{{ rm.GradeName }}</td>
-          <td>{{ rm.RatePerKg }}</td>
-            <td>
-                <!-- Action buttons can be added here -->
-                <button class="btn btn-sm btn-primary" (click)="edit(rm)"  >Edit</button>
-                <button class="btn btn-sm btn-danger" (click)="delete(rm._id)" >Delete</button>
-            </td>
-        </tr>
-      </tbody>
-    </table>
+  <ng-container  *ngIf="rawMaterials$ | async as rawMaterials; else loading">
+  
+
+     <table  class="table table-bordered">
+       <thead>
+         <tr>
+           <th>Grade Name</th>
+           <th>Rate Per Kg</th>
+           <th>action</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr  *ngFor="let rm of rawMaterials">
+           <td>{{ rm.GradeName }}</td>
+           <td>{{ rm.RatePerKg }}</td>
+             <td  >
+                 <!-- Action buttons can be added here -->
+                  <mat-icon class="icon" (click)="edit(rm)" >edit</mat-icon>
+                  <mat-icon class="icon" (click)="delete(rm._id)">delete</mat-icon>
+                  
+               
+             </td>
+         </tr>
+       </tbody>
+     </table>
+  
   </ng-container>
 
   <!-- Fallback template -->
@@ -33,7 +43,9 @@
 
 
 
-<div *ngIf=" popup" >
+<div class="popup" *ngIf=" popup" >
+
+  <div class="popup-content">
     <h2 mat-dialog-title>Add Raw Material</h2>
 
 <form [formGroup]="rawMaterialForm" (ngSubmit)=" onSubmit()" class="form-container">
@@ -48,9 +60,12 @@
   </mat-form-field>
 
   <div class="actions">
-    <button mat-button type="button" (click)="close()">Cancel</button>
+   
+    <button class="btn btn-danger" type="button" (click)="close()">Cancel</button>
     <button mat-flat-button color="primary" type="submit">Save</button>
   </div>
 </form>
+
+  </div>
 
 </div>
