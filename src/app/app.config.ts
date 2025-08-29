@@ -23,6 +23,7 @@ import { AuthEffects } from './auth/store/auth.effects';
 import { TodoEffects } from './post-login/store/todo.effects';
 import { RoleEffects} from './master/system-organization/store/system.effects';
 import { MachineTypeEffects } from './master/entity-management/store/entity.effects';
+import {ProductEffects} from './product/store/product.effects';
 import { ConfigService} from './shared/config.service';
 import {appReducers } from './store/app.state';
 
@@ -62,7 +63,7 @@ export const appConfig: ApplicationConfig = {
    
 
 
-    provideEffects([AuthEffects, TodoEffects, RoleEffects, MachineTypeEffects]),
+    provideEffects([AuthEffects, TodoEffects, RoleEffects, MachineTypeEffects, ProductEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideRouterStore(),
     ConfigService,

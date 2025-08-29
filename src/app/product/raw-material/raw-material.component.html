@@ -1,1 +1,56 @@
-<p>raw-material works!</p>
+<div class="raw-material-container">
+  <h2>Raw Materials</h2>
+<button (click)="addrawmaterial()" >Add raw Material</button>
+  <!-- Show when data is loading -->
+  <ng-container *ngIf="rawMaterials$ | async as rawMaterials; else loading">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Grade Name</th>
+          <th>Rate Per Kg</th>
+          <th>action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rm of rawMaterials">
+          <td>{{ rm.GradeName }}</td>
+          <td>{{ rm.RatePerKg }}</td>
+            <td>
+                <!-- Action buttons can be added here -->
+                <button class="btn btn-sm btn-primary" (click)="edit(rm)"  >Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="delete(rm._id)" >Delete</button>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <!-- Fallback template -->
+  <ng-template #loading>
+    <p>Loading raw materials...</p>
+  </ng-template>
+</div>
+
+
+
+<div *ngIf=" popup" >
+    <h2 mat-dialog-title>Add Raw Material</h2>
+
+<form [formGroup]="rawMaterialForm" (ngSubmit)=" onSubmit()" class="form-container">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Grade Name</mat-label>
+    <input matInput formControlName="GradeName" placeholder="Enter Grade Name">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Rate Per Kg</mat-label>
+    <input matInput type="number" formControlName="RatePerKg" placeholder="Enter Rate">
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-button type="button" (click)="close()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit">Save</button>
+  </div>
+</form>
+
+</div>
