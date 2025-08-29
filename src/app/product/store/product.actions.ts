@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { RawMaterial } from '../../model/product.model';
+import { RawMaterial, Process } from '../../model/product.model';
 
 // Load
 export const loadRawMaterials = createAction('[RawMaterial] Load RawMaterials');
@@ -41,8 +41,28 @@ export const updateRawMaterialSuccess = createAction(
   props<{ updatedRawMaterial: RawMaterial }>()
 );
 
+
+
+export const loadProcess = createAction('[Process] Load Process');
+export const loadProcessSuccess = createAction('[Process] Load Process Success', props<{ process: Process[] }>());
+
+// Add
+export const addProcess = createAction('[Process] Add Process', props<{ process: Process }>());
+export const addProcessSuccess = createAction('[Process] Add Process Success', props<{ process: Process }>());
+
+// Delete
+export const deleteProcess = createAction('[Process] Delete Process', props<{ id: string }>());
+export const deleteProcessSuccess = createAction('[Process] Delete Process Success', props<{ id: string }>());
+
+// Update
+export const updateProcess = createAction('[Process] Update Process', props<{ id: string; process: Process }>());
+export const updateProcessSuccess = createAction('[Process] Update Process Success', props<{ updatedProcess: Process }>());
+
 // API Failure
 export const apiFailure = createAction(
   '[RawMaterial] API Failure',
   props<{ error: any }>()
 );
+
+
+

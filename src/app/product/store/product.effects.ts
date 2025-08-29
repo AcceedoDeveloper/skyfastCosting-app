@@ -97,4 +97,73 @@ export class ProductEffects {
       )
     )
   );
+
+
+  loadProcess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.loadProcess),
+      mergeMap(() =>
+        this.productservices.getProcesses().pipe(
+          map(process => RawMaterialActions.loadProcessSuccess({ process })),
+          catchError(error => of(RawMaterialActions.apiFailure({ error })))
+        )
+      )
+    )
+  );
+
+  addProcess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.addProcess),
+      mergeMap(action =>
+        this.productservices.addProcess(action.process).pipe(
+          map((response: any) => {
+            this.toastr.success('Process added successfully!');
+            return RawMaterialActions.addProcessSuccess({ process: response });
+          }),
+          catchError(error => {
+            this.toastr.error('Failed to add process.');
+            return of(RawMaterialActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  deleteProcess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.deleteProcess),
+      mergeMap(action =>
+        this.productservices.deleteProcess(action.id).pipe(
+          map(() => {
+            this.toastr.success('Process deleted successfully!');
+            return RawMaterialActions.deleteProcessSuccess({ id: action.id });
+          }),
+          catchError(error => {
+            this.toastr.error('Failed to delete process.');
+            return of(RawMaterialActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  updateProcess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RawMaterialActions.updateProcess),
+      mergeMap(action =>
+        this.productservices.updateProcess(action.id, action.process).pipe(
+          map(() => {
+            this.toastr.success('Process updated successfully!');
+            return RawMaterialActions.updateProcessSuccess({
+              updatedProcess: { ...action.process, _id: action.id }
+            });
+          }),
+          catchError(error => {
+            this.toastr.error('Failed to update process.');
+            return of(RawMaterialActions.apiFailure({ error }));
+          })
+        )
+      )
+    )
+  );
 }

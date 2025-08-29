@@ -1,1 +1,42 @@
-<p>process works!</p>
+<div class="process-container">
+  <h2>Process List</h2>
+<button mat-flat-button color="primary" (click)="openAddDialog()">+ Add Process</button>
+  <!-- Show data when available -->
+  <ng-container *ngIf="process$ | async as processes; else loading">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Process Name</th>
+          <th>Tonnage Jaw</th>
+          <th>Hours</th>
+          <th>Cavity</th>
+          <th>Cycle Time</th>
+          <th>Cost</th>
+          <th>Calculation</th>
+          <th>Actions</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of processes">
+          <td>{{ p.processName }}</td>
+          <td>{{ p.TonnageJaw }}</td>
+          <td>{{ p.Hours }}</td>
+          <td>{{ p.cavity }}</td>
+          <td>{{ p.cycleTime }}</td>
+          <td>{{ p.cost | currency:'INR':'symbol' }}</td>
+          <td>{{ p.calculation | number:'1.6-6' }}</td>
+          <td>
+            <button mat-button color="accent" (click)="openEditDialog(p)">Edit</button>
+            <button mat-button color="warn" (click)="onDelete(p._id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <!-- Fallback template -->
+  <ng-template #loading>
+    <p>Loading process data...</p>
+  </ng-template>
+</div>

@@ -9,6 +9,12 @@ export const selectAllRawMaterials = createSelector(
   (state: ProductState) => state.rawMaterials
 );
 
+
+export const selectAllProcess = createSelector(
+  selectRawMaterialState,
+  (state: ProductState) => state.process
+);
+
 export const selectRawMaterialError = createSelector(
   selectRawMaterialState,
   (state: ProductState) => state.error
