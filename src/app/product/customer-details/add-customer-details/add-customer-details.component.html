@@ -1,1 +1,107 @@
-<p>add-customer-details works!</p>
+
+
+
+
+<mat-stepper labelPosition="bottom" #stepper>
+  <mat-step [stepControl]="productForm">
+    <form [formGroup]="productForm">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-dialog-content [formGroup]="productForm" class="dialog-content">
+  <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Customer Name</mat-label>
+  <mat-select formControlName="customerName">
+    <mat-option *ngFor="let c of (custoemr$ | async)" [value]="c.customerName">
+      {{ c.customerName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Product Name</mat-label>
+    <input matInput formControlName="productName">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Part Name</mat-label>
+    <input matInput formControlName="partName">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Cavities</mat-label>
+    <input type="number" matInput formControlName="cavities">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Casting Weight</mat-label>
+    <input type="number" matInput formControlName="castingWeight">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Short Weight</mat-label>
+    <input type="number" matInput formControlName="shortWeight">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Melting Loss</mat-label>
+    <input type="number" matInput formControlName="meltingLoss">
+  </mat-form-field>
+
+ <div class="array-section">
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Raw Materials</mat-label>
+    <mat-select formControlName="rawMaterial" multiple>
+      <mat-option *ngFor="let mat of (rawmaterial$ | async)" [value]="mat.GradeName">
+        {{ mat.GradeName }} (₹{{ mat.RatePerKg }}/Kg)
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+
+  <div class="array-section">
+ 
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Processes</mat-label>
+    <mat-select formControlName="processSelection" multiple>
+      <mat-option *ngFor="let proc of (process$ | async)" [value]="proc.processName">
+        {{ proc.processName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="productForm.invalid">Save</button>
+</mat-dialog-actions>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step optional>
+    <form >
+      <ng-template matStepLabel>Fill out your address</ng-template>
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+               required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>

@@ -1,7 +1,6 @@
 <div class="customer-container">
-
-  <h2 style="font-weight: bold;">Customer Details</h2>
-
+  <h2>Customer Details</h2>
+<button mat-raised-button color="primary" (click)="openAddProductDialog()">Add Customer</button>
   <ng-container *ngIf="customers$ | async as customers; else loading">
     <table class="table table-bordered">
       <thead>
@@ -16,7 +15,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let c of customers">
-          <td>{{ c.customerName }}</td>
+          <td>{{ c.customerId.customerName }}</td>
           <td>{{ c.productName }}</td>
           <td>{{ c.partName }}</td>
           <td>{{ c.noOfRawMaterial }}</td>
