@@ -16,8 +16,8 @@
           </button>
           <div class="profile-dropdown" *ngIf="showDropdown">
             <div class="dropdown-username">
-              {{userName}}
-              {{userRole}}
+              {{userName}} <br>
+              {{ userRole }}
             </div>
             <button class="dropdown-logout" (click)="logout()">Logout</button>
           </div>
