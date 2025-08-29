@@ -102,4 +102,5 @@ export class AddCustomerDetailsComponent implements OnInit{
     this.dialogRef.close();
   }
 
+  
 }
