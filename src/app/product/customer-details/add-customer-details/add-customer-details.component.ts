@@ -96,11 +96,13 @@ export class AddCustomerDetailsComponent implements OnInit{
       delete formValue.processSelection;
     }
     this.dialogRef.close(formValue);
+          this.store.dispatch(customerActions.addCustomer({ customer: formValue }));
+
   }
 
   close() {
     this.dialogRef.close();
   }
 
-  
+
 }

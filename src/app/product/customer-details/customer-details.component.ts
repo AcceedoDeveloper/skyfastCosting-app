@@ -56,12 +56,7 @@ openAddProductDialog() {
     maxWidth: '75vw'
   });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      console.log('✅ Form Data:', result);
-      this.store.dispatch(customerActions.addCustomer({ customer: result }));
-    }
-  });
+  
 }
 
 }
