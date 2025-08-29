@@ -28,8 +28,8 @@
 
           <div class="profile-dropdown" *ngIf="showDropdown">
             <div class="dropdown-username">
-              {{ (user$ | async)?.UserName || 'User' }}
-              {{ (user$ | async)?.UserCode || 'user' }}
+              {{userName}}
+              {{ userRole }}
             </div>
             <button class="dropdown-logout" (click)="logout()">Logout</button>
           </div>

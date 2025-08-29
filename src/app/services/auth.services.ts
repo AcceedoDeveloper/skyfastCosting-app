@@ -61,7 +61,8 @@ export class AuthService {
       userName: data.user.userName,
       createdAt: data.user.createdAt,
       updatedAt: data.user.updatedAt,
-      token: data.accessToken
+      token: data.accessToken,
+      role: data.user.role
     };
   }
 

@@ -1,4 +1,4 @@
-
+import { Role } from "./role.model";
 export interface User {
   _id: string;
   UserCode: string;
@@ -7,6 +7,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   token: string;
+  role: Role;
 }
 
 

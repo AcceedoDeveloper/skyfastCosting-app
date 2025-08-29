@@ -22,6 +22,9 @@ export class AppComponent implements OnInit {
 
   isLoggedIn$: Observable<boolean>;
   user$: Observable<User | null>;
+  userName!: string;
+userRole!: string;
+
 
   showHeader = true;
   showDropdown = false;
@@ -29,6 +32,15 @@ export class AppComponent implements OnInit {
   constructor() {
     this.isLoggedIn$ = this.store.select(AuthSelectors.selectIsLoggedIn);
     this.user$ = this.store.select(AuthSelectors.selectUser);
+
+   this.user$.subscribe(user => {
+  if (user) {
+    console.log('User data:', user);
+    this.userName = user.userName;  // 👈 bind username
+    this.userRole = user.role?.role;      // 👈 bind role
+  }
+});
+      
 
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
