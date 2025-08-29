@@ -1,9 +1,11 @@
 <div class="process-container">
   <div class="header">
     <div class="cust">
-  <h2>Process List</h2>
+  
+  <h2 style="font-weight: bold;">Process List</h2>
   </div>
-<button mat-flat-button color="primary" (click)="openAddDialog()">+ Add Process</button>
+
+<button  mat-raised-button color="primary" (click)="openAddDialog()">+ Add Process</button>
 </div>
   <!-- Show data when available -->
   <ng-container *ngIf="process$ | async as processes; else loading">
@@ -11,10 +13,10 @@
       <thead>
         <tr>
           <th>Process Name</th>
-          <th>Tonnage Jaw</th>
+          <th>Tonnage / Jaw</th>
           <th>Hours</th>
           <th>Cavity</th>
-          <th>Cycle Time</th>
+          <th>Cycle time / Weight</th>
           <th>Cost</th>
           <th>Calculation</th>
           <th>Actions</th>
