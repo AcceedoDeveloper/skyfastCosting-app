@@ -1,12 +1,31 @@
+.process-container
+{
+   margin: 20px auto;
+  padding: 10px;
+  border-radius: 10px;
+  width: 1300px;
+}
+
+
 .table-bordered {
   // width: 1100px;
   margin: 10px auto;
   background: white;
-  border-radius: 10px;
+ 
  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
 
-  overflow-x: auto;    
-  overflow-y: auto;   
+
+  
+  
+      margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  overflow: auto;
+border-radius: 10px  ;
+
+text-align: center;
+overflow: hidden;
+  
 }
 
 td.actions {
@@ -41,11 +60,12 @@ table {
 }
 
 thead {
+ 
   background-color: #fff;
 }
 
 th {
-  text-align: left;
+   text-align: center;
   padding: 14px 20px;
   color: #5b84ff;
   font-weight: bold;

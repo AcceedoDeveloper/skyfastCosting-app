@@ -52,7 +52,9 @@ export class ProcessComponent implements OnInit {
 
   openAddDialog() {
     const dialogRef = this.dialog.open(AddProcessComponent, {
-      width: '500px'
+         width: '45%',
+      height: '62%',
+      maxWidth: '45vw', 
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -64,7 +66,8 @@ export class ProcessComponent implements OnInit {
 
   openEditDialog(process: Process) {
     const dialogRef = this.dialog.open(AddProcessComponent, {
-      width: '500px',
+      width: '600px',
+      height:'auto',
       data: { process }
     });
 

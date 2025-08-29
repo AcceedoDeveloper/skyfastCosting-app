@@ -12,6 +12,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import {CustomerDetails } from '../../model/customer-details.model';
+import { MatIconModule} from '@angular/material/icon';
+import { AddCustomerDetailsComponent} from './add-customer-details/add-customer-details.component';
 
 @Component({
   selector: 'app-customer-details',
@@ -21,7 +23,8 @@ import {CustomerDetails } from '../../model/customer-details.model';
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
@@ -46,6 +49,19 @@ export class CustomerDetailsComponent implements OnInit{
     this.store.dispatch(customerActions.loadCustomers());
     
   }
+openAddProductDialog() {
+  const dialogRef = this.dialog.open(AddCustomerDetailsComponent, {
+    width: '590%',
+    height: '650px',
+    maxWidth: '75vw'
+  });
 
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      console.log('✅ Form Data:', result);
+      this.store.dispatch(customerActions.addCustomer({ customer: result }));
+    }
+  });
+}
 
 }

@@ -1,6 +1,4 @@
 <div *ngIf="isLoggedIn$ | async; else loginPageLayout">
-  
-
   <nav class="navbar">
     <div class="navbar-brand">
       <a routerLink="/" class="navbar-item brand-text">Cost Management</a>
@@ -8,24 +6,14 @@
 
     <div class="navbar-menu">
       <div class="navbar-start">
-        <a 
-          routerLink="/todos" 
-          routerLinkActive="is-active" 
-          class="navbar-item">
-      
-        </a>
+        <a routerLink="/todos" routerLinkActive="is-active" class="navbar-item"></a>
       </div>
 
       <div class="navbar-end">
-    
         <div class="profile-container">
-          <button
-            (click)="toggleDropdown()"
-            class="profile-btn"
-            title="Profile">
+          <button (click)="openDropdown()" class="profile-btn" title="Profile">
             <i class="material-icons">person</i>
           </button>
-
           <div class="profile-dropdown" *ngIf="showDropdown">
             <div class="dropdown-username">
               {{userName}} <br>
@@ -38,12 +26,10 @@
     </div>
   </nav>
 
-
   <div class="sidenav-container">
     <aside class="custom-sidenav">
       <div class="sidenav-header"></div>
       <ul class="nav-list">
-
         <li class="nav-item" routerLink="/dashboard/dashh" routerLinkActive="active-link">
           <div class="nav-item-content">
             <span class="material-icons nav-icon">dashboard</span>
@@ -51,13 +37,12 @@
           </div>
         </li>
 
-
-        <li class="nav-item has-submenu">
+        <li class="nav-item has-submenu" (click)="toggleSubmenu('user-management')">
           <div class="nav-item-content">
             <span class="material-icons nav-icon">group</span>
             <span class="nav-text">User Management</span>
           </div>
-          <ul class="submenu">
+          <ul class="submenu" *ngIf="activeSubmenu === 'user-management'">
             <li routerLink="/entity">
               <span class="material-icons submenu-icon">person</span>&nbsp; User
             </li>
@@ -70,34 +55,28 @@
             <li routerLink="/entity/customers">
               <span class="material-icons submenu-icon">business</span>&nbsp; Customer
             </li>
-         
-            
           </ul>
         </li>
 
-         <li class="nav-item" routerLink="/system/companypreferences" routerLinkActive="active-link">
+        <li class="nav-item" routerLink="/system/companypreferences" routerLinkActive="active-link">
           <div class="nav-item-content">
             <span class="material-icons nav-icon">person</span>
             <span class="nav-text">Company Management</span>
           </div>
         </li>
 
-
-
-
-        <li class="nav-item has-submenu">
+        <li class="nav-item has-submenu" (click)="toggleSubmenu('material-process')">
           <div class="nav-item-content">
             <span class="material-icons nav-icon">inventory_2</span>
             <span class="nav-text">Material & Process Management</span>
           </div>
-          <ul class="submenu">
+          <ul class="submenu" *ngIf="activeSubmenu === 'material-process'">
             <li routerLink="/product/raw-materials">
               <span class="material-icons submenu-icon">list_alt</span> Raw Material
             </li>
             <li routerLink="/product">
-              <span class="material-icons submenu-icon">category</span> process
+              <span class="material-icons submenu-icon">category</span> Process
             </li>
-          
           </ul>
         </li>
 
@@ -111,17 +90,14 @@
           </div>
         </li>
 
-
         <li class="nav-item" routerLink="/dashboard/report" routerLinkActive="active-link">
           <div class="nav-item-content">
             <span class="material-icons nav-icon">bar_chart</span>
             <span class="nav-text">Reports</span>
-          
           </div>
         </li>
       </ul>
     </aside>
-
 
     <main class="container">
       <router-outlet></router-outlet>

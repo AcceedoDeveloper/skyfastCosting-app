@@ -1,7 +1,9 @@
+import { Customer } from "./machine.model";
+
 export interface CustomerDetails {
   _id?: string; // optional before save
-  customerId?: string;
-  customerName: string;
+  customerId: Customer; 
+  customerName: Customer;
   productName: string;
   partName: string;
   cavities: number;
