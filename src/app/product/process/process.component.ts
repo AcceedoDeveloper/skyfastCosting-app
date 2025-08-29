@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { AddProcessComponent } from './add-process/add-process.component';
 
 
@@ -23,6 +24,7 @@ import { AddProcessComponent } from './add-process/add-process.component';
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
+    MatIconModule,
     MatFormFieldModule,
     MatInputModule
   ],

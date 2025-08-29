@@ -1,0 +1,114 @@
+.table-bordered {
+  // width: 1100px;
+  margin: 10px auto;
+  background: white;
+  border-radius: 10px;
+ box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
+
+  overflow-x: auto;    
+  overflow-y: auto;   
+}
+
+td.actions {
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
+  text-align: center;
+}
+
+td mat-icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.icon {
+  cursor: pointer;
+  margin-right: 8px;
+  color: #333;
+}
+
+.icon:hover {
+  color: #1976d2;
+}
+
+.icon:last-child {
+  margin-right: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: auto;
+}
+
+thead {
+  background-color: #fff;
+}
+
+th {
+  text-align: left;
+  padding: 14px 20px;
+  color: #5b84ff;
+  font-weight: bold;
+  border-bottom: 2px solid #5b84ff;
+  white-space: nowrap;
+}
+
+td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+td.actions {
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
+  text-align: center;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+
+}
+
+
+.header h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+
+.header .btn button {
+  background-color: #0e1635;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.header .btn button:hover {
+  background-color: #000e47;
+  // box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.cust {
+  margin: 0;
+}
+
+.header .btn button:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}

@@ -1,6 +1,10 @@
 <div class="process-container">
+  <div class="header">
+    <div class="cust">
   <h2>Process List</h2>
+  </div>
 <button mat-flat-button color="primary" (click)="openAddDialog()">+ Add Process</button>
+</div>
   <!-- Show data when available -->
   <ng-container *ngIf="process$ | async as processes; else loading">
     <table class="table table-bordered">
@@ -26,9 +30,12 @@
           <td>{{ p.cycleTime }}</td>
           <td>{{ p.cost | currency:'INR':'symbol' }}</td>
           <td>{{ p.calculation | number:'1.6-6' }}</td>
-          <td>
-            <button mat-button color="accent" (click)="openEditDialog(p)">Edit</button>
-            <button mat-button color="warn" (click)="onDelete(p._id)">Delete</button>
+          <td class="actions">
+            <mat-icon
+               class="icon" (click)="openEditDialog(p)">edit</mat-icon>
+            <mat-icon
+              
+              class="icon" (click)="onDelete(p._id)">delete</mat-icon>
           </td>
         </tr>
       </tbody>
