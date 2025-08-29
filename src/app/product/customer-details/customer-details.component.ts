@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import {CustomerDetails } from '../../model/customer-details.model';
-
+import { MatIconModule} from '@angular/material/icon';
 @Component({
   selector: 'app-customer-details',
   imports: [
@@ -21,7 +21,8 @@ import {CustomerDetails } from '../../model/customer-details.model';
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'

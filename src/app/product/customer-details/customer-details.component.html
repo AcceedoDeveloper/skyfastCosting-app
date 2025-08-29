@@ -1,5 +1,6 @@
 <div class="customer-container">
-  <h2>Customer Details</h2>
+
+  <h2 style="font-weight: bold;">Customer Details</h2>
 
   <ng-container *ngIf="customers$ | async as customers; else loading">
     <table class="table table-bordered">
@@ -8,15 +9,9 @@
           <th>Customer Name</th>
           <th>Product</th>
           <th>Part</th>
-          <th>Cavities</th>
-          <th>Casting Weight</th>
-          <th>Short Weight</th>
-          <th>Melting Loss</th>
           <th>Raw Materials</th>
           <th>Processes</th>
-          <th>No. of Processes</th>
-          <th>No. of Raw Materials</th>
-          <th>Created</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -24,15 +19,12 @@
           <td>{{ c.customerName }}</td>
           <td>{{ c.productName }}</td>
           <td>{{ c.partName }}</td>
-          <td>{{ c.cavities }}</td>
-          <td>{{ c.castingWeight }}</td>
-          <td>{{ c.shortWeight }}</td>
-          <td>{{ c.meltingLoss }}</td>
-          <td>{{ c.rawMaterial?.join(', ') }}</td>
-          <td>{{ c.processSelection?.join(', ') }}</td>
-          <td>{{ c.noOfProcess }}</td>
           <td>{{ c.noOfRawMaterial }}</td>
-          <td>{{ c.createdAt | date:'short' }}</td>
+          <td>{{ c.noOfProcess }}</td>
+            <td class="actions">
+            <mat-icon class="icon" >edit</mat-icon>
+            <mat-icon class="icon" >delete</mat-icon>
+          </td>
         </tr>
       </tbody>
     </table>

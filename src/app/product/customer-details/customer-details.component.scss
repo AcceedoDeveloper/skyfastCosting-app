@@ -1,0 +1,60 @@
+.customer-container{
+      margin: 20px auto;
+  padding: 10px;
+  border-radius: 10px;
+  width: 1300px;
+
+}
+
+.table-bordered {
+    margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  overflow: auto;
+border-radius: 10px  ;
+  background: white;
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1);
+
+overflow: hidden;
+}
+
+thead {
+  background-color: #fff;
+}
+
+th {
+  text-align:center;
+  padding: 14px 20px;
+  color: #5b84ff;
+  font-weight: bold;
+  border-bottom: 2px solid #5b84ff;
+  white-space: nowrap;
+    
+}
+
+td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+  text-align: center;
+  vertical-align: middle;
+}
+
+td.actions {
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
+  
+  text-align: center;
+}
+
+tr:hover {
+  
+  background-color: #ff0000;
+}
+td.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  gap: 10px;
+}
