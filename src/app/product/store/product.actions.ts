@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { RawMaterial, Process } from '../../model/product.model';
+import { CustomerDetails} from '../../model/customer-details.model';
 
 // Load
 export const loadRawMaterials = createAction('[RawMaterial] Load RawMaterials');
@@ -57,6 +58,49 @@ export const deleteProcessSuccess = createAction('[Process] Delete Process Succe
 // Update
 export const updateProcess = createAction('[Process] Update Process', props<{ id: string; process: Process }>());
 export const updateProcessSuccess = createAction('[Process] Update Process Success', props<{ updatedProcess: Process }>());
+
+
+
+
+// Load
+export const loadCustomers = createAction('[Customer] Load Customers');
+export const loadCustomersSuccess = createAction(
+  '[Customer] Load Customers Success',
+  props<{ customers: CustomerDetails[] }>()
+);
+
+// Add
+export const addCustomer = createAction(
+  '[Customer] Add Customer',
+  props<{ customer: CustomerDetails }>()
+);
+
+export const addCustomerSuccess = createAction(
+  '[Customer] Add Customer Success',
+  props<{ customer: CustomerDetails }>()
+);
+
+// Update
+export const updateCustomer = createAction(
+  '[Customer] Update Customer',
+  props<{ id: string; customer: CustomerDetails }>()
+);
+
+export const updateCustomerSuccess = createAction(
+  '[Customer] Update Customer Success',
+  props<{ updatedCustomer: CustomerDetails }>()
+);
+
+// Delete
+export const deleteCustomer = createAction(
+  '[Customer] Delete Customer',
+  props<{ id: string }>()
+);
+
+export const deleteCustomerSuccess = createAction(
+  '[Customer] Delete Customer Success',
+  props<{ id: string }>()
+);
 
 // API Failure
 export const apiFailure = createAction(

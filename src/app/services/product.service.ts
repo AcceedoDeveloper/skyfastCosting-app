@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RawMaterial, Process } from '../model/product.model';
+import { CustomerDetails } from '../model/customer-details.model';
 
 
 
@@ -46,5 +47,22 @@ private apiUrl = 'http://localhost:3005';
 
   updateProcess(id: string, process: Process): Observable<Process> {
     return this.http.put<Process>(`${this.apiUrl}/updateProcess/${id}`, process);
+  }
+
+
+  getCustomers(): Observable<CustomerDetails[]> {
+    return this.http.get<CustomerDetails[]>(`${this.apiUrl}/getCustomerDetails`);
+  }
+
+  createCustomer(customer: CustomerDetails): Observable<CustomerDetails> {
+    return this.http.post<CustomerDetails>(`${this.apiUrl}/createCustomerDetails`, customer);
+  }
+
+  updateCustomer(id: string, customer: CustomerDetails): Observable<CustomerDetails> {
+    return this.http.put<CustomerDetails>(`${this.apiUrl}/updateCustomerDetails/${id}`, customer);
+  }
+
+  deleteCustomer(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/deleteCustomerDetails/${id}`);
   }
 }
