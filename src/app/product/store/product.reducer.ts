@@ -6,13 +6,13 @@ import { CustomerDetails} from '../../model/customer-details.model';
 export interface ProductState {
   rawMaterials: RawMaterial[];
   process: Process[];
-  customers: CustomerDetails[];
+  customersDeatiil: CustomerDetails[];
   error: any;
 }
 
 export const initialState: ProductState = {
   rawMaterials: [],
-  customers: [],
+  customersDeatiil: [],
   process: [],
   error: null,
 };
@@ -71,28 +71,29 @@ export const productReducer = createReducer(
 
 
 
-   on(ProductActions.loadCustomersSuccess, (state, { customers }) => ({
-    ...state,
-    customers,
-    error: null
-  })),
+ on(ProductActions.loadCustomersSuccess, (state, { customers }) => ({
+  ...state,
+  customersDeatiil: customers,   // ✅ correct property
+  error: null
+})),
 
-  on(ProductActions.addCustomerSuccess, (state, { customer }) => ({
-    ...state,
-    customers: [...state.customers, customer]
-  })),
+on(ProductActions.addCustomerSuccess, (state, { customer }) => ({
+  ...state,
+  customersDeatiil: [...state.customersDeatiil, customer]  // ✅ use correct key
+})),
 
-  on(ProductActions.updateCustomerSuccess, (state, { updatedCustomer }) => ({
-    ...state,
-    customers: state.customers.map(c =>
-      c._id === updatedCustomer._id ? updatedCustomer : c
-    )
-  })),
+on(ProductActions.updateCustomerSuccess, (state, { updatedCustomer }) => ({
+  ...state,
+  customersDeatiil: state.customersDeatiil.map(c =>
+    c._id === updatedCustomer._id ? updatedCustomer : c
+  )
+})),
 
-  on(ProductActions.deleteCustomerSuccess, (state, { id }) => ({
-    ...state,
-    customers: state.customers.filter(c => c._id !== id)
-  })),
+on(ProductActions.deleteCustomerSuccess, (state, { id }) => ({
+  ...state,
+  customersDeatiil: state.customersDeatiil.filter(c => c._id !== id)
+})),
+
 
 
 

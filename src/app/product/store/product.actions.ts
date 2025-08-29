@@ -70,13 +70,13 @@ export const loadCustomersSuccess = createAction(
 );
 
 // Add
-export const addCustomer = createAction(
-  '[Customer] Add Customer',
+export const AddCustomerDetailsComponent = createAction(
+  '[CustomerDetails] Add Customer',
   props<{ customer: CustomerDetails }>()
 );
 
 export const addCustomerSuccess = createAction(
-  '[Customer] Add Customer Success',
+  '[CustomerDetails] Add Customer Success',
   props<{ customer: CustomerDetails }>()
 );
 

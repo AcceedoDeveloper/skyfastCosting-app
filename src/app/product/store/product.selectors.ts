@@ -18,7 +18,7 @@ export const selectAllProcess = createSelector(
 
 export const selectAllCustomers = createSelector(
   selectRawMaterialState,
-  (state: ProductState) => state.customers
+  (state: ProductState) => state.customersDeatiil
 );
 
 export const selectRawMaterialError = createSelector(

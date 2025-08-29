@@ -15,7 +15,7 @@ import { Customer } from '../../../model/machine.model';
 import { Store } from '@ngrx/store';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import * as customerActions from '../../store/product.actions';
+import * as Actions from '../../store/product.actions';
 import { Process, RawMaterial} from '../../../model/product.model';
 import {selectAllProcess, selectAllRawMaterials } from '../../store/product.selectors';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -80,8 +80,8 @@ export class AddCustomerDetailsComponent implements OnInit{
     });
     
     this.store.dispatch(loadCustomer());
-    this.store.dispatch(customerActions.loadRawMaterials());
-    this.store.dispatch(customerActions.loadProcess());
+    this.store.dispatch(Actions.loadRawMaterials());
+    this.store.dispatch(Actions.loadProcess());
 
   }
 
@@ -96,7 +96,7 @@ export class AddCustomerDetailsComponent implements OnInit{
       delete formValue.processSelection;
     }
     this.dialogRef.close(formValue);
-          this.store.dispatch(customerActions.addCustomer({ customer: formValue }));
+          this.store.dispatch(Actions.AddCustomerDetailsComponent({ customer: formValue }));
 
   }
 

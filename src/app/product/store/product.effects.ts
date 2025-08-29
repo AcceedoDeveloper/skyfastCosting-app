@@ -188,9 +188,9 @@ export class ProductEffects {
   // Add Customer
   addCustomer$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(RawMaterialActions.addCustomer),
+      ofType(RawMaterialActions.AddCustomerDetailsComponent),
       mergeMap(action =>
-        this.productservices.createCustomer(action.customer).pipe(
+        this.productservices.createCustomerDetails(action.customer).pipe(
           map(customer => {
             this.toastr.success('Customer added successfully!');
             return RawMaterialActions.addCustomerSuccess({ customer });

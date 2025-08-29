@@ -5,7 +5,7 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th>Customer Name</th>
+         
           <th>Product</th>
           <th>Part</th>
           <th>Raw Materials</th>
@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let c of customers">
-          <td>{{ c.customerId.customerName }}</td>
+         
           <td>{{ c.productName }}</td>
           <td>{{ c.partName }}</td>
           <td>{{ c.noOfRawMaterial }}</td>
@@ -30,7 +30,7 @@
   </ng-container>
 
   <ng-template #loading>
-    
+
     <p>Loading customer data...</p>
   </ng-template>
 </div>
