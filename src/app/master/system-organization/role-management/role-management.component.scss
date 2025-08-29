@@ -81,7 +81,7 @@ td.actions {
   padding-left: 20px;
 }
 
-tr:hover {
+.trh:hover {
   background-color: #f9f9f9;
 }
 
@@ -100,3 +100,19 @@ td mat-icon {
   margin-right: 0;
 }
 
+
+
+/* 🔹 Plain underline input style */
+.underline-input {
+  border: none;
+  border-bottom: 2px solid #37474f;
+  padding: 6px 4px;
+  font-size: 16px;
+  outline: none;
+  background: transparent;
+  width: 200px;
+}
+
+.underline-input:focus {
+  border-bottom: 2px solid #000f1b;
+}

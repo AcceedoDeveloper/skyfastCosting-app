@@ -3,3 +3,16 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+ /* styles.scss (global file, not component SCSS) */
+
+.timepicker-overlay {
+  z-index: 2100 !important;
+}
+
+.timepicker-backdrop-overlay {
+  z-index: 2100 !important;
+}

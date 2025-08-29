@@ -1,11 +1,20 @@
 <div class="header">
-  <h2>Roles</h2>
+  <h2 style="font-weight: bold;" class="">Roles</h2>
 
   <div class="add-section">
-    <mat-form-field appearance="outline" class="role-input">
+    <!-- <mat-form-field appearance="outline" class="role-input">
       <mat-label>Role Name</mat-label>
       <input matInput [(ngModel)]="newRoleName" autocomplete="off" />
-    </mat-form-field>
+    </mat-form-field> -->
+
+         <input
+        type="text"
+        placeholder="Enter role name"
+        [(ngModel)]="newRoleName"
+        class="underline-input"
+        autocomplete="off"
+      />
+
 
     <button
       mat-raised-button
@@ -38,7 +47,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let role of roles$ | async">
+      <tr class="trh" *ngFor="let role of roles$ | async">
         <td>{{ role.role }}</td>
         <td class="actions">
           <button mat-icon-button color="primary" (click)="editRole(role)">

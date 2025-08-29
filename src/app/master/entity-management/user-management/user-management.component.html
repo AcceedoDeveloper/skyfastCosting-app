@@ -1,39 +1,44 @@
-<div >
+<div class="machine-type-container">
   <div class="header">
-    <h2>User List</h2>
+    <!-- <h2>User List</h2> -->
+     <h2 style="font-weight: bold;" id="h2">User List</h2>
     <button class="btn" mat-raised-button color="primary" (click)="openAddUserPopup()">Add User</button>
   </div>
 
-  <table class="table-container">
-    <thead>
-      <tr>
-        <th>User Name</th>
-        <th>Full Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Role</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of paginatedUsers">
-        <td>{{ user.userName }}</td>
-        <td>{{ user.fullName }}</td>
-        <td>{{ user.emailId }}</td>
-        <td>{{ user.phoneNumber || '-' }}</td>
-        <td>{{ user.role?.role || user.role }}</td>
-        <td class="actions">
-          <mat-icon class="icon" (click)="openEditUserPopup(user)">edit</mat-icon>
-          <mat-icon class="icon" (click)="deleteUser(user)">delete</mat-icon>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-container">
 
-  <mat-paginator
-    [length]="users.length"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
-  </mat-paginator>
+    <table >
+      <thead id="theader">
+        <tr>
+          <th>User Name</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr  class="trh" *ngFor="let user of paginatedUsers">
+          <td>{{ user.userName }}</td>
+          <td>{{ user.fullName }}</td>
+          <td>{{ user.emailId }}</td>
+          <td>{{ user.phoneNumber || '-' }}</td>
+          <td>{{ user.role?.role || user.role }}</td>
+          <td class="actions">
+            <mat-icon class="icon" (click)="openEditUserPopup(user)">edit</mat-icon>
+            <mat-icon class="icon" (click)="deleteUser(user)">delete</mat-icon>
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+    <mat-paginator
+      [length]="users.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  
+  </div>
 </div>

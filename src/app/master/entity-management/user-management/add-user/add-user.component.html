@@ -43,9 +43,9 @@
   </form>
 </div>
 
-<div mat-dialog-actions align="end">
-  <button mat-button (click)="cancel()">Cancel</button>
-  <button mat-flat-button color="primary" (click)="save()">
+<div mat-dialog-actions class="btn">
+  <button class="btn btn-danger"  (click)="cancel()">Cancel</button>
+  <button mat-flat-button class="submit-button" (click)="save()">
     {{ isEdit ? 'Update' : 'Add' }}
   </button>
 </div>

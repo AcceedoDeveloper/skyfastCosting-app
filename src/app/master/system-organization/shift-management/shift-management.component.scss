@@ -16,33 +16,25 @@ body {
   justify-content: center;
 }
 
-.primary-button {
-  margin-left: 10px;
+.main {
+  width: 90%;              /* takes 90% of parent width */
+  max-width: 1200px;       /* optional: limit max width */
+  margin: 0 auto;          /* center horizontally */
+      // background-color: #5b84ff;    /* add spacing inside */
+
 }
 
-.btn{
-  margin-right: 167px;
-}
+
 .table-container {
-  width: 900px;
+  // width: 900px;
   margin: 10px auto;
   background: white;
   border-radius: 0; 
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
-  overflow: hidden;
+  overflow:auto;
 }
 
-.header {
-  display: flex;
-   justify-content: space-between;
-   align-items: center;
-  
-}
 
-.shift{
-  margin-bottom: -25px;
-  margin-left: 20px;
-}
 
 .toggle-group {
   flex: 1;
@@ -87,7 +79,7 @@ td.actions {
   padding-left: 20px;
 }
 
-tr:hover {
+.trh:hover {
   background-color: #f9f9f9;
 }
 
@@ -106,35 +98,7 @@ td mat-icon {
   margin-right: 0;
 }
 
-button {
-  background-color: #3f51b5;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 0; 
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  margin-right: -214px;
-  cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-}
 
-button:hover {
-  background-color: #303f9f;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
-}
-
-button:disabled {
-  background-color: #b0bec5;
-  cursor: not-allowed;
-}
 
 .spin-icon {
   animation: spin 2s linear infinite;
@@ -149,3 +113,54 @@ button:disabled {
     transform: rotate(360deg);
   }
 }
+
+.headers{
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+}
+// #btnas{
+//   // margin-left: -100px;
+//   margin-right: 1px;
+// }
+
+// #btnas {
+//   background-color: #37474f;
+//   color: white;
+// }
+// #btnas:hover
+// {
+//   color: #37474f;
+// background: #fff;
+// }
+
+button {
+  background-color: #427cf0;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+   border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+ 
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+button:hover {
+  background-color: white;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
+}
+
+button:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}
+
