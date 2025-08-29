@@ -38,11 +38,11 @@
         </mat-select>
       </mat-form-field>
 
-      <div mat-dialog-actions>
-        <button mat-button type="button" (click)="cancel()">Cancel</button>
+      <div mat-dialog-actions class="btndiv">
+        <button class="btn btn-danger" type="button" (click)="cancel()">Cancel</button>
         <button
-          mat-raised-button
-          color="primary"
+         class="submit-button"
+         color="primary"
           type="submit"
           [disabled]="customerForm.invalid"
         >

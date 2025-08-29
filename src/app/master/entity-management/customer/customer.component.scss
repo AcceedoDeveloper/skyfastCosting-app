@@ -4,6 +4,13 @@ body {
   margin: 0;
   padding: 0;
 }
+.main {
+  width: 105%;             
+  max-width: 1800px;       
+  margin: 0 auto;        
+      // background-color: #5b84ff;   
+
+}
 
 .circular-button {
   height: 40px;
@@ -25,12 +32,14 @@ body {
 }
 
 .table-container {
-  width: 1100px;
+  // width: 1100px;
   margin: 10px auto;
   background: white;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+ box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
+
+  overflow-x: auto;    
+  overflow-y: auto;   
 }
 
 
@@ -50,38 +59,39 @@ body {
 }
 
 
-.header .btn button {
-  background-color: #3f51b5;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
-}
+// .header .btn button {
+//   background-color: #3f51b5;
+//   color: white;
+//   padding: 8px 16px;
+//   border: none;
+//   border-radius: 4px;
+//   font-size: 14px;
+//   font-weight: 500;
+//   text-transform: uppercase;
+//   cursor: pointer;
+//   transition: background-color 0.2s, box-shadow 0.2s;
+// }
 
-.header .btn button:hover {
-  background-color: #303f9f;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-}
+// .header .btn button:hover {
+//   background-color: #303f9f;
+//   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+// }
 
-.header .btn button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
-}
+// .header .btn button:focus {
+//   outline: none;
+//   box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
+// }
 
-.header .btn button:disabled {
-  background-color: #b0bec5;
-  cursor: not-allowed;
-}
+// .header .btn button:disabled {
+//   background-color: #b0bec5;
+//   cursor: not-allowed;
+// }
 
 
 table {
   width: 100%;
   border-collapse: collapse;
+  overflow: auto;
 }
 
 thead {
@@ -143,3 +153,17 @@ td mat-icon {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+td#address {
+  max-width: 200px;     
+  white-space: normal;  
+  word-wrap: break-word; 
+}
+
+// td#address {
+//   max-width: 200px;     
+//   max-height: 50px;    
+//   overflow: auto;       
+//   display: block;       
+// }
+

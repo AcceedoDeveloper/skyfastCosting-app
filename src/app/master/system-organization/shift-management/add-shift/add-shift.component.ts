@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import * as RoleActions from '../../store/system.actions';
+import{NgxMaterialTimepickerModule}from'ngx-material-timepicker';
 
 
 
@@ -19,7 +20,8 @@ import * as RoleActions from '../../store/system.actions';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+     NgxMaterialTimepickerModule
   ],
   templateUrl: './add-shift.component.html',
   styleUrl: './add-shift.component.scss'

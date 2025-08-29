@@ -1,40 +1,72 @@
+.machine-type-container {
+  margin: 20px auto;
+  padding: 10px;
+  border-radius: 10px;
+  width: 1300px;
+  // background-color: #3f51b5;
+  // margin-left: -240px;
+}
+
+#h2 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
 .table-container {
-  width: 90%;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1300px;
   margin: 30px auto;
   
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
  
- 
-  overflow-x: auto;
+   overflow-x: auto;    
+  overflow-y: auto; 
 }
+
+mat-paginator {
+  display: flex;
+  justify-content: end;
+  font-size: medium;
+  font-weight: 400;
+  background: #fff;
+  border-radius: 0 0 10px 10px;
+  margin-top: 8px;
+}
+
 
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 15px 5px; 
+  align-items: center;
+  // background-color: red;
+  
 
 }
+
 
 .header h2 {
   margin: 0;
-  font-size: 1.25rem; /* Match the font size from your previous styles */
-  color: #000000; /* Match the color used in your previous designs */
+  font-size: 1.25rem; 
+  color: #000000; 
 }
 
-.header button {
-  background-color: #3f51b5;
-  color: white;
-}
+// .header button {
+//   background-color: #3f51b5;
+//   color: white;
+// }
 
 table {
   width: 100%;
   border-collapse: collapse;
   background: white;
   border-radius: 10px 10px 0 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
+}
+// #theader{
+//  background-color: #ff4081;
+//  border-radius: 10px 10px 0px 0px;
+// }
 th {
   text-align: left;
   padding: 14px 20px; /* Adjusted padding to match td for better alignment */
@@ -42,6 +74,8 @@ th {
   font-weight: 500;
   border-bottom: 2px solid #5b84ff;
   white-space: nowrap;
+ 
+  
 }
 
 td {
@@ -68,7 +102,7 @@ td.actions {
   color: #ff4081;
 }
 
-tr:hover {
+.trh:hover {
   background-color: #f9f9f9;
 }
 
