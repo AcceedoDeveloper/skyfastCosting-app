@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AddProcessComponent } from './add-process/add-process.component';
+import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
 
 
 
@@ -96,10 +97,21 @@ calculateProcessValue(p: any): number {
     });
   }
 
-  onDelete(id: string) {
+onDelete(id: string) {
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Process',
+      message: 'Are you sure you want to delete this process?'
+    }
+  });
 
-    this.store.dispatch(processActions.deleteProcess({ id }));
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
+      this.store.dispatch(processActions.deleteProcess({ id }));
+    } 
+  });
+}
 
-  }
 
 }
