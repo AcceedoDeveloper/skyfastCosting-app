@@ -1,6 +1,9 @@
 <div class="customer-container">
-  <h2>Customer Details</h2>
-<button mat-raised-button color="primary" (click)="openAddProductDialog()">Add Customer</button>
+  <div class="header">
+
+    <h2>Customer Details</h2>
+  <button mat-raised-button color="primary" (click)="openAddProductDialog()">Add Customer</button>
+  </div>
   <ng-container *ngIf="customers$ | async as customers; else loading">
     <table class="table table-bordered">
       <thead>

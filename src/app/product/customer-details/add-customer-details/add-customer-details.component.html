@@ -2,56 +2,80 @@
 
   <!-- STEP 1 -->
   <mat-step [stepControl]="productForm">
+
+
     <form [formGroup]="productForm">
       <ng-template matStepLabel>Customer & Product Details</ng-template>
+
+
       <mat-dialog-content class="dialog-content">
+       
+        <div class="title">
+          <h4 class="pd" >Product details</h4>
+          <h4 class="ci">Core Input</h4>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Customer Name</mat-label>
-          <mat-select formControlName="customerName">
-            <mat-option *ngFor="let c of (custoemr$ | async)" [value]="c.customerName">
-              {{ c.customerName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="maininputdiv">
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Product Name</mat-label>
-          <input matInput formControlName="productName">
-        </mat-form-field>
+          <div class="prodiv">
+  
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Customer Name</mat-label>
+              <mat-select formControlName="customerName">
+                <mat-option *ngFor="let c of (custoemr$ | async)" [value]="c.customerName">
+                  {{ c.customerName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+    
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Product Name</mat-label>
+              <input matInput formControlName="productName">
+            </mat-form-field>
+    
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Part Name</mat-label>
+              <input matInput formControlName="partName">
+            </mat-form-field>
+          </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Part Name</mat-label>
-          <input matInput formControlName="partName">
-        </mat-form-field>
+          <div class="corediv">
+          
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Cavities</mat-label>
+              <input type="number" matInput formControlName="cavities">
+            </mat-form-field>
+          
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Casting Weight</mat-label>
+              <input type="number" matInput formControlName="castingWeight">
+            </mat-form-field>
+          
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Short Weight</mat-label>
+              <input type="number" matInput formControlName="shortWeight">
+            </mat-form-field>
+          
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Melting Loss</mat-label>
+              <input type="number" matInput formControlName="meltingLoss">
+            </mat-form-field>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Cavities</mat-label>
-          <input type="number" matInput formControlName="cavities">
-        </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Casting Weight</mat-label>
-          <input type="number" matInput formControlName="castingWeight">
-        </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Short Weight</mat-label>
-          <input type="number" matInput formControlName="shortWeight">
-        </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Melting Loss</mat-label>
-          <input type="number" matInput formControlName="meltingLoss">
-        </mat-form-field>
 
       </mat-dialog-content>
 
       <div class="step-actions">
-        <button mat-button (click)="close()">Cancel</button>
-        <button mat-button matStepperNext [disabled]="productForm.invalid">Next</button>
+        <button class="btn btn-danger" (click)="close()">Cancel</button>
+        <button class="submit-button" matStepperNext [disabled]="productForm.invalid">Next</button>
       </div>
     </form>
+
+
   </mat-step>
 
   <!-- STEP 2 -->
