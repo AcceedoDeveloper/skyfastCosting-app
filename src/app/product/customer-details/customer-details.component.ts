@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {CustomerDetails } from '../../model/customer-details.model';
 import { MatIconModule} from '@angular/material/icon';
 import { AddCustomerDetailsComponent} from './add-customer-details/add-customer-details.component';
+import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
 
 @Component({
   selector: 'app-customer-details',
@@ -61,9 +62,22 @@ openAddProductDialog() {
 
 onDelete(_id: string | undefined) {
   if (!_id) return; // safeguard
-  console.log('Deleting customer with id:', _id);
-  this.store.dispatch(customerActions.deleteCustomer({ id: _id }) );
+
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Customer',
+      message: 'Are you sure you want to delete this customer?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
+      this.store.dispatch(customerActions.deleteCustomer({ id: _id }));
+    } 
+  });
 }
+
 
 
 }
