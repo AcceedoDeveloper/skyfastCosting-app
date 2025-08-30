@@ -1,6 +1,6 @@
 {
   "baseUrl": "/",
-  "costingUrl": "http://localhost:3000/",
+  "costingUrl": "http://localhost:3005/",
   "backupUrl": "http://20.84.65.155:9011/",
   "urls": [
 
@@ -9,10 +9,70 @@
     { "name": "role", "url": "getRole" },
     { "name": "addRole", "url": "addRole" },
     { "name": "updateRole", "url": "updateRole" },
-    { "name": "deleteRole", "url": "deleteRole" }
+    { "name": "deleteRole", "url": "deleteRole" },
     
   
+     { "name": "getCompanies", "url": "getCompanies" },
+    { "name": "CreateCompany", "url": "CreateCompany" },
+    { "name": "updateCompany", "url": "updateCompany" },
+    { "name": "deleteCompany", "url": "deleteCompany" },
 
+     { "name": "getRole", "url": "getRole" },
+    { "name": "addRole", "url": "addRole" },
+    { "name": "updateRole", "url": "updateRole" },
+    { "name": "deleteRole", "url": "deleteRole" },
+
+    { "name": "getDepartment", "url": "getdepartment" },
+    { "name": "createDepartment", "url": "createdepartment" },
+    { "name": "updateDepartment", "url": "updatedepartment" },
+    { "name": "deleteDepartment", "url": "deletedepartment" },
+
+    { "name": "getShift", "url": "getShifts" },
+    { "name": "createShift", "url": "createShift" },
+    { "name": "updateShift", "url": "updateShift" },
+    { "name": "deleteShift", "url": "deleteShift" },
+
+    { "name": "getHostingMail", "url": "getHostingMail" },
+    { "name": "createHostingMail", "url": "createHostingMail" },
+    { "name": "updateHostingMail", "url": "updateHostingMail" },
+    { "name": "deleteHostingMail", "url": "deleteHostingMail" },
+
+
+    { "name": "getMachineTypes", "url": "getmachine-type" },
+    { "name": "createMachineType", "url": "createmachine-type" },
+    { "name": "updateMachineType", "url": "updatemachine-type" },
+    { "name": "deleteMachineType", "url": "deletemachine-type" },
+
+ 
+    { "name": "getMachine", "url": "getmachine" },
+    { "name": "createMachine", "url": "createmachine" },
+    { "name": "updateMachine", "url": "updatemachine" },
+
+    { "name": "getCustomer", "url": "getCustomer" },
+    { "name": "createCustomer", "url": "CreateCustomer" },
+    { "name": "updateCustomer", "url": "updateCustomer" },
+    { "name": "deleteCustomer", "url": "deleteCustomer" },
+
+   
+    { "name": "getUsers", "url": "getUsers" },
+    { "name": "createUser", "url": "CreateUser" },
+    { "name": "updateUser", "url": "updateUser" },
+    { "name": "deleteUser", "url": "deleteUser" },
+
+    { "name": "getRawMaterials", "url": "getRawMaterial" },
+    { "name": "createRawMaterial", "url": "createRawMaterial" },
+    { "name": "updateRawMaterial", "url": "updateRawMaterial" },
+    { "name": "deleteRawMaterial", "url": "deleteRawMaterial" },
+
+    { "name": "getProcesses", "url": "getProcess" },
+    { "name": "createProcess", "url": "createProcess" },
+    { "name": "updateProcess", "url": "updateProcess" },
+    { "name": "deleteProcess", "url": "deleteProcess" },
+
+    { "name": "getCustomerDetails", "url": "getCustomerDetails" },
+    { "name": "createCustomerDetails", "url": "createCustomerDetails" },
+    { "name": "updateCustomerDetails", "url": "updateCustomerDetails" },
+    { "name": "deleteCustomerDetails", "url": "deleteCustomerDetails" }
 
 
 

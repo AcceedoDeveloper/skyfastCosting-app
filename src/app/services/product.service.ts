@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RawMaterial, Process } from '../model/product.model';
 import { CustomerDetails } from '../model/customer-details.model';
-
+import { ConfigService} from '../shared/config.service';
 
 
 
@@ -14,55 +14,55 @@ export class ProductService {
 
 private apiUrl = 'http://localhost:3005';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private config : ConfigService) {}
 
-  getRawMaterials(): Observable<RawMaterial[]> {
-    return this.http.get<RawMaterial[]>(`${this.apiUrl}/getRawMaterial`);
+ getRawMaterials(): Observable<RawMaterial[]> {
+    return this.http.get<RawMaterial[]>(this.config.getCostingUrl('getRawMaterials'));
   }
 
   addRawMaterial(rawMaterial: RawMaterial): Observable<RawMaterial> {
-    return this.http.post<RawMaterial>(`${this.apiUrl}/createRawMaterial`, rawMaterial);
-  }
-
-  deleteRawMaterial(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/deleteRawMaterial/${id}`);
+    return this.http.post<RawMaterial>(this.config.getCostingUrl('createRawMaterial'), rawMaterial);
   }
 
   updateRawMaterial(id: string, rawMaterial: RawMaterial): Observable<RawMaterial> {
-    return this.http.put<RawMaterial>(`${this.apiUrl}/updateRawMaterial/${id}`, rawMaterial);
+    return this.http.put<RawMaterial>(`${this.config.getCostingUrl('updateRawMaterial')}/${id}`, rawMaterial);
   }
 
+  deleteRawMaterial(id: string): Observable<any> {
+    return this.http.delete(`${this.config.getCostingUrl('deleteRawMaterial')}/${id}`);
+  }
 
-   getProcesses(): Observable<Process[]> {
-    return this.http.get<Process[]>(`${this.apiUrl}/getProcess`);
+  // 🔹 Processes
+  getProcesses(): Observable<Process[]> {
+    return this.http.get<Process[]>(this.config.getCostingUrl('getProcesses'));
   }
 
   addProcess(process: Process): Observable<Process> {
-    return this.http.post<Process>(`${this.apiUrl}/createProcess`, process);
-  }
-
-  deleteProcess(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/deleteProcess/${id}`);
+    return this.http.post<Process>(this.config.getCostingUrl('createProcess'), process);
   }
 
   updateProcess(id: string, process: Process): Observable<Process> {
-    return this.http.put<Process>(`${this.apiUrl}/updateProcess/${id}`, process);
+    return this.http.put<Process>(`${this.config.getCostingUrl('updateProcess')}/${id}`, process);
   }
 
+  deleteProcess(id: string): Observable<any> {
+    return this.http.delete(`${this.config.getCostingUrl('deleteProcess')}/${id}`);
+  }
 
+  // 🔹 Customer Details
   getCustomers(): Observable<CustomerDetails[]> {
-    return this.http.get<CustomerDetails[]>(`${this.apiUrl}/getCustomerDetails`);
+    return this.http.get<CustomerDetails[]>(this.config.getCostingUrl('getCustomerDetails'));
   }
 
-  createCustomerDetails(customerdetails: CustomerDetails): Observable<CustomerDetails> {
-    return this.http.post<CustomerDetails>(`${this.apiUrl}/createCustomerDetails`, customerdetails);
+  createCustomerDetails(customerDetails: CustomerDetails): Observable<CustomerDetails> {
+    return this.http.post<CustomerDetails>(this.config.getCostingUrl('createCustomerDetails'), customerDetails);
   }
 
   updateCustomer(id: string, customer: CustomerDetails): Observable<CustomerDetails> {
-    return this.http.put<CustomerDetails>(`${this.apiUrl}/updateCustomerDetails/${id}`, customer);
+    return this.http.put<CustomerDetails>(`${this.config.getCostingUrl('updateCustomerDetails')}/${id}`, customer);
   }
 
   deleteCustomer(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/deleteCustomerDetails/${id}`);
+    return this.http.delete(`${this.config.getCostingUrl('deleteCustomerDetails')}/${id}`);
   }
 }

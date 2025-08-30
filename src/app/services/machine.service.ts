@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MachineType, Machine, Customer, User } from '../model/machine.model';
+import  { ConfigService} from '../shared/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,74 +10,69 @@ import { MachineType, Machine, Customer, User } from '../model/machine.model';
 export class MachineService {
   private baseUrl = 'http://localhost:3005';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private config : ConfigService) {}
 
-  // GET: All machine types
-  getMachineTypes(): Observable<MachineType[]> {
-    return this.http.get<MachineType[]>(`${this.baseUrl}/getmachine-type`);
+ getMachineTypes(): Observable<MachineType[]> {
+    return this.http.get<MachineType[]>(this.config.getCostingUrl("getMachineTypes"));
   }
 
-  // POST: Create machine type
   createMachineType(machineType: Partial<MachineType>): Observable<MachineType> {
-    return this.http.post<MachineType>(`${this.baseUrl}/createmachine-type`, machineType);
+    return this.http.post<MachineType>(this.config.getCostingUrl("createMachineType"), machineType);
   }
 
-  // PUT: Update machine type
   updateMachineType(id: string, machineType: Partial<MachineType>): Observable<MachineType> {
-    return this.http.put<MachineType>(`${this.baseUrl}/updatemachine-type/${id}`, machineType);
+    return this.http.put<MachineType>(`${this.config.getCostingUrl("updateMachineType")}/${id}`, machineType);
   }
 
-  // DELETE: Remove machine type
   deleteMachineType(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/deletemachine-type/${id}`);
+    return this.http.delete(`${this.config.getCostingUrl("deleteMachineType")}/${id}`);
   }
 
-  getMachine(): Observable<Machine[]>{
-    return this.http.get<Machine[]>(`${this.baseUrl}/getmachine`);
-  } 
+  // 🔹 Machines
+  getMachine(): Observable<Machine[]> {
+    return this.http.get<Machine[]>(this.config.getCostingUrl("getMachine"));
+  }
 
- createMachine(machine: Partial<Machine>): Observable<Machine> {
-    return this.http.post<Machine>(`${this.baseUrl}/createmachine`, machine);
+  createMachine(machine: Partial<Machine>): Observable<Machine> {
+    return this.http.post<Machine>(this.config.getCostingUrl("createMachine"), machine);
   }
 
   updateMachine(id: string, machine: Partial<Machine>): Observable<Machine> {
-    return this.http.put<Machine>(`${this.baseUrl}/updatemachine/${id}`, machine);
+    return this.http.put<Machine>(`${this.config.getCostingUrl("updateMachine")}/${id}`, machine);
   }
-  
 
-
+  // 🔹 Customers
   getCustomer(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(`${this.baseUrl}/getCustomer`);
+    return this.http.get<Customer[]>(this.config.getCostingUrl("getCustomer"));
   }
 
   addCustomer(customer: Customer): Observable<Customer> {
-    return this.http.post<Customer>(`${this.baseUrl}/CreateCustomer`, customer);
-  }
-
-  deleteCustomer(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/deleteCustomer/${id}`);
+    return this.http.post<Customer>(this.config.getCostingUrl("createCustomer"), customer);
   }
 
   updateCustomer(id: string, customer: Customer): Observable<Customer> {
-    return this.http.put<Customer>(`${this.baseUrl}/updateCustomer/${id}`, customer);
+    return this.http.put<Customer>(`${this.config.getCostingUrl("updateCustomer")}/${id}`, customer);
   }
 
+  deleteCustomer(id: string): Observable<any> {
+    return this.http.delete(`${this.config.getCostingUrl("deleteCustomer")}/${id}`);
+  }
 
+  // 🔹 Users
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.baseUrl}/getUsers`);
+    return this.http.get<User[]>(this.config.getCostingUrl("getUsers"));
   }
 
   createUser(user: User): Observable<User> {
-    return this.http.post<User>(`${this.baseUrl}/CreateUser`, user);
+    return this.http.post<User>(this.config.getCostingUrl("createUser"), user);
   }
 
   updateUser(id: string, user: User): Observable<User> {
-    return this.http.put<User>(`${this.baseUrl}/updateUser/${id}`, user);
+    return this.http.put<User>(`${this.config.getCostingUrl("updateUser")}/${id}`, user);
   }
 
   deleteUser(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/deleteUser/${id}`);
+    return this.http.delete(`${this.config.getCostingUrl("deleteUser")}/${id}`);
   }
-  
 
 }
