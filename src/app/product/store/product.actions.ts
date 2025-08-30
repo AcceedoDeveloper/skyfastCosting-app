@@ -93,12 +93,12 @@ export const updateCustomerSuccess = createAction(
 
 // Delete
 export const deleteCustomer = createAction(
-  '[Customer] Delete Customer',
+  '[CustomerDetils] Delete Customer',
   props<{ id: string }>()
 );
 
 export const deleteCustomerSuccess = createAction(
-  '[Customer] Delete Customer Success',
+  '[Customerdeails] Delete Customer Success',
   props<{ id: string }>()
 );
 

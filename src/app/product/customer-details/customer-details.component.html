@@ -22,7 +22,7 @@
           <td>{{ c.noOfProcess }}</td>
             <td class="actions">
             <mat-icon class="icon" >edit</mat-icon>
-            <mat-icon class="icon" >delete</mat-icon>
+            <mat-icon class="icon" (click)="onDelete(c._id)" >delete</mat-icon>
           </td>
         </tr>
       </tbody>
