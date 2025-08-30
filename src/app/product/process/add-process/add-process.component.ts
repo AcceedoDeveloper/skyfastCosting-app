@@ -38,9 +38,7 @@ export class AddProcessComponent {
       processName: [data?.process?.processName || '', Validators.required],
       TonnageJaw: [data?.process?.TonnageJaw || '', Validators.required],
       Hours: [data?.process?.Hours || '', Validators.required],
-      cavity: [data?.process?.cavity || '', Validators.required],
       cycleTime: [data?.process?.cycleTime || '', Validators.required],
-      cost: [data?.process?.cost || '', Validators.required],
     });
   }
 

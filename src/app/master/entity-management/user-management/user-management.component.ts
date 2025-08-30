@@ -14,6 +14,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';  // 👈 ADD T
 import { MatTableModule } from '@angular/material/table';    
 import { AddUserComponent} from './add-user/add-user.component';    
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {ConfrimDialogComponent } from '../../../shared/confrim-dialog/confrim-dialog.component';
 
 
 
@@ -93,9 +94,19 @@ openEditUserPopup(user: User) {
 
 
 deleteUser(user: User) {
-  if (confirm(`Are you sure you want to delete ${user.fullName}?`)) {
-    this.store.dispatch(MachineTypeActions.deleteUser({ id: user._id }));
-  }
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete User',
+      message: `Are you sure you want to delete ${user.fullName}?`
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
+      this.store.dispatch(MachineTypeActions.deleteUser({ id: user._id }));
+    } 
+  });
 }
 
 }

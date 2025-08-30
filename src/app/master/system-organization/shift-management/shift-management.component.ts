@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { AddShiftComponent} from './add-shift/add-shift.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfrimDialogComponent} from '../../../shared/confrim-dialog/confrim-dialog.component';
 
 
 
@@ -64,11 +65,21 @@ editShift(shift: Shift) {
   });
 }
 
+deleteShift(id: string) {
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Shift',
+      message: 'Are you sure you want to delete this shift?'
+    }
+  });
 
-  deleteShift(id: string) {
-    console.log('id', id);
-    
-   this.store.dispatch(RoleActions.deleteShift({ id}))
-  }
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
+      this.store.dispatch(RoleActions.deleteShift({ id }));
+    } 
+  });
+}
+
 
 }

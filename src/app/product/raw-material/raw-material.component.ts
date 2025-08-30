@@ -12,6 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-raw-material',
@@ -34,7 +36,7 @@ export class RawMaterialComponent implements OnInit {
 
   rawMaterials$!: Observable<RawMaterial[]>;
 
-  constructor(private store: Store, private fb: FormBuilder) {
+  constructor(private store: Store, private fb: FormBuilder, private dialog : MatDialog) {
   }
 
   ngOnInit(): void {
@@ -93,7 +95,20 @@ export class RawMaterialComponent implements OnInit {
     this.editingId = null;
   }
 
-  delete(id: string) {
-    this.store.dispatch(rawActions.deleteRawMaterial({ id }));
-  }
+ delete(id: string) {
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Raw Material',
+      message: 'Are you sure you want to delete this raw material?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
+      this.store.dispatch(rawActions.deleteRawMaterial({ id }));
+    } 
+  });
+}
+
 }

@@ -11,6 +11,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { ConfrimDialogComponent} from '../../../shared/confrim-dialog/confrim-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-role-management',
@@ -27,7 +30,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class RoleManagementComponent  implements OnInit {
 
-  constructor(private store : Store){}
+  constructor(private store : Store, private dialog : MatDialog){}
 
 roles$!: Observable<Role[]>;
  newRoleName: string = '';
@@ -73,10 +76,21 @@ ngOnInit() {
     this.newRoleName = '';
   }
 
-  deleteRole(id: string) {
-  
+deleteRole(id: string) {
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Role',
+      message: 'Are you sure you want to delete this role?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
       this.store.dispatch(RoleActions.deleteRole({ id }));
-    
-  }
+    } 
+  });
+}
+
 
 }

@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AddCustomerComponent } from './add-customer/add-customer.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { ConfrimDialogComponent} from '../../../shared/confrim-dialog/confrim-dialog.component';
 
 @Component({
   selector: 'app-customer',
@@ -46,7 +47,20 @@ export class CustomerComponent implements OnInit {
     });
   }
 
-  deleteCustomer(id: string) {
-    this.store.dispatch(MachineTypeActions.deleteCustomer({ id }));
-  }
+ deleteCustomer(id: string) {
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Customer',
+      message: 'Are you sure you want to delete this customer?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
+      this.store.dispatch(MachineTypeActions.deleteCustomer({ id }));
+    } 
+  });
+}
+
 }
