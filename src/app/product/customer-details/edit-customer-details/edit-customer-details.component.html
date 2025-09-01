@@ -1,0 +1,134 @@
+<h2 mat-dialog-title>
+  {{ data ? 'Edit Customer' : 'Add Customer' }}
+</h2>
+
+<form [formGroup]="customerForm" mat-dialog-content class="customer-form">
+
+  <!-- Basic Details -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Product Name</mat-label>
+    <input matInput formControlName="productName" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Part Name</mat-label>
+    <input matInput formControlName="partName" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>No of Raw Materials</mat-label>
+    <input matInput type="number" formControlName="noOfRawMaterials" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>No of Processes</mat-label>
+    <input matInput type="number" formControlName="noOfProcess" />
+  </mat-form-field>
+
+  <!-- Other Properties -->
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Rejection</mat-label>
+    <input matInput type="number" formControlName="rejection" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Interest Rate</mat-label>
+    <input matInput type="number" formControlName="interestRate" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Inspector Cost</mat-label>
+    <input matInput type="number" formControlName="inspectorCost" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Packing</mat-label>
+    <input matInput formControlName="packing" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Tool Ambience</mat-label>
+    <textarea matInput formControlName="toolAmbience"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Casting Weight</mat-label>
+    <input matInput type="number" formControlName="castingWeight" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Cavities</mat-label>
+    <input matInput type="number" formControlName="cavities" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Melting Loss</mat-label>
+    <input matInput type="number" formControlName="meltingLoss" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="half-width">
+    <mat-label>Short Weight</mat-label>
+    <input matInput type="number" formControlName="shortWeight" />
+  </mat-form-field>
+
+
+
+  <!-- Processes Section -->
+  <h3>Processes</h3>
+  <div formArrayName="processes">
+    <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-block">
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Process Name</mat-label>
+        <input matInput formControlName="processName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Tonnage Jaw</mat-label>
+        <input matInput formControlName="TonnageJaw" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Hours</mat-label>
+        <input matInput type="number" formControlName="Hours" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Cycle Time</mat-label>
+        <input matInput type="number" formControlName="cycleTime" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Cavity</mat-label>
+        <input matInput type="number" formControlName="cavity" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Cost</mat-label>
+        <input matInput type="number" formControlName="cost" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Calculation</mat-label>
+        <input matInput type="number" formControlName="calculation" />
+      </mat-form-field>
+
+      <button mat-stroked-button color="warn" (click)="removeProcess(i)">
+        Remove
+      </button>
+
+ 
+    </div>
+  </div>
+  <button mat-raised-button color="accent" (click)="addProcess()">+ Add Process</button>
+
+
+
+
+
+</form>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+</mat-dialog-actions>

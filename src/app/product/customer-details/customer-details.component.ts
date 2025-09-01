@@ -15,6 +15,7 @@ import {CustomerDetails } from '../../model/customer-details.model';
 import { MatIconModule} from '@angular/material/icon';
 import { AddCustomerDetailsComponent} from './add-customer-details/add-customer-details.component';
 import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
+import { EditCustomerDetailsComponent } from './edit-customer-details/edit-customer-details.component';
 
 @Component({
   selector: 'app-customer-details',
@@ -78,6 +79,20 @@ onDelete(_id: string | undefined) {
   });
 }
 
+onEdit(customer: CustomerDetails) {
+  const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
+    width: '590%',
+    height: '650px',
+    maxWidth: '75vw',
+    data: customer   // ✅ pass the selected customer to dialog
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      // If user saved changes, dispatch update
+    }
+  });
+}
 
 
 }

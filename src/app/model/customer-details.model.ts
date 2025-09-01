@@ -1,5 +1,16 @@
 import { Customer } from "./machine.model";
 
+export interface Process {
+  processId: string;
+  processName: string;
+  TonnageJaw?: string;
+  Hours?: number;
+  cycleTime?: number;
+  cavity?: number;
+  cost?: number;
+  calculation?: number;
+}
+
 export interface CustomerDetails {
   _id?: string; // optional before save
   customerId: Customer; 
@@ -12,6 +23,7 @@ export interface CustomerDetails {
   meltingLoss: number;
   rawMaterial?: string[];
   processSelection?: string[];
+  processes?: Process[];
   noOfProcess?: number;
   noOfRawMaterial?: number;
    Rejection?: number;
