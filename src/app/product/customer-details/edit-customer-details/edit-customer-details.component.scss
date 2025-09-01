@@ -1,0 +1,80 @@
+/* General form styling */
+.customer-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+/* Full width fields */
+.full-width {
+  flex: 1 1 100%;
+}
+
+/* Half width fields (responsive two-column layout) */
+.half-width {
+  flex: 1 1 calc(50% - 16px);
+  min-width: 250px;
+}
+
+/* Section titles */
+h3 {
+  flex: 1 1 100%;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 20px 0 10px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+}
+
+/* Process block styling */
+.process-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: #fafafa;
+}
+
+/* Buttons inside process block */
+.process-block button {
+  margin-top: 8px;
+  height: 36px;
+  align-self: flex-start;
+}
+
+/* Dialog actions */
+mat-dialog-actions {
+  margin-top: 20px;
+}
+
+mat-dialog-actions button {
+  min-width: 100px;
+  font-weight: 500;
+}
+
+/* Save button highlight */
+mat-dialog-actions button[color="primary"] {
+  background-color: #5073fb;
+  color: white;
+}
+
+/* Cancel button styling */
+mat-dialog-actions button:not([color="primary"]) {
+  border: 1px solid #ccc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .half-width {
+    flex: 1 1 100%;
+  }
+
+  .process-block {
+    padding: 12px;
+  }
+}
