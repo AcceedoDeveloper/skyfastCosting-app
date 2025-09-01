@@ -11,6 +11,16 @@ export interface Process {
   calculation?: number;
 }
 
+export interface RawMaterial {
+  _id?: string;
+  GradeName: string;
+  RatePerKg: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  __v?: number;
+}
+
+
 export interface CustomerDetails {
   _id?: string; // optional before save
   customerId: Customer; 
@@ -21,7 +31,7 @@ export interface CustomerDetails {
   castingWeight: number;
   shortWeight: number;
   meltingLoss: number;
-  rawMaterial?: string[];
+  rawMaterial?: RawMaterial[]; 
   processSelection?: string[];
   processes?: Process[];
   noOfProcess?: number;

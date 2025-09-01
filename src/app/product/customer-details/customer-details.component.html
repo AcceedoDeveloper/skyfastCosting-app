@@ -21,7 +21,17 @@
          
           <td>{{ c.productName }}</td>
           <td>{{ c.partName }}</td>
-          <td>{{ c.noOfRawMaterial }}</td>
+        <td>
+  <div *ngIf="c.rawMaterial && c.rawMaterial.length > 0; else noMaterial">
+    <div *ngFor="let mat of c.rawMaterial">
+      {{ mat.GradeName }} ({{ mat.RatePerKg }} Rs/Kg)
+    </div>
+  </div>
+  <ng-template #noMaterial>
+    <span>No Raw Materials</span>
+  </ng-template>
+</td>
+
           <td>{{ c.noOfProcess }}</td>
             <td class="actions">
             <mat-icon class="icon" (click)="onEdit(c)" >edit</mat-icon>
