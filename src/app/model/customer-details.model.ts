@@ -14,6 +14,11 @@ export interface CustomerDetails {
   processSelection?: string[];
   noOfProcess?: number;
   noOfRawMaterial?: number;
+   Rejection?: number;
+  Packing?: string;
+  InterestRate?: number;
+  InspectorCost?: number;
+  ToolAmbience?: string;
   createdAt?: Date;
   updatedAt?: Date;
   __v?: number;

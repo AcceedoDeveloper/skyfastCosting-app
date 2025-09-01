@@ -82,12 +82,12 @@ export const addCustomerSuccess = createAction(
 
 // Update
 export const updateCustomer = createAction(
-  '[Customer] Update Customer',
-  props<{ id: string; customer: CustomerDetails }>()
+  '[CustomerDeatils] Update Customer',
+  props<{ id: string; customer: any }>()
 );
 
 export const updateCustomerSuccess = createAction(
-  '[Customer] Update Customer Success',
+  '[CustomerDeaitls] Update Customer Success',
   props<{ updatedCustomer: CustomerDetails }>()
 );
 

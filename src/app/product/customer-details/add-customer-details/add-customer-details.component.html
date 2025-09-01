@@ -37,6 +37,15 @@
               <mat-label>Part Name</mat-label>
               <input matInput formControlName="partName">
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Raw Materials</mat-label>
+          <mat-select formControlName="rawMaterial" multiple>
+            <mat-option *ngFor="let mat of (rawmaterial$ | async)" [value]="mat.GradeName">
+              {{ mat.GradeName }} (₹{{ mat.RatePerKg }}/Kg)
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
           </div>
 
           <div class="corediv">
@@ -71,7 +80,7 @@
 
       <div class="step-actions">
         <button class="btn btn-danger" (click)="close()">Cancel</button>
-        <button class="submit-button" matStepperNext [disabled]="productForm.invalid">Next</button>
+        <button class="submit-button" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
       </div>
     </form>
 
@@ -79,45 +88,103 @@
   </mat-step>
 
   <!-- STEP 2 -->
-  <mat-step [stepControl]="productForm">
-    <form [formGroup]="productForm">
-      <ng-template matStepLabel>Materials & Processes</ng-template>
-      <mat-dialog-content class="dialog-content">
+  <mat-step [stepControl]="processForm">
+  <form [formGroup]="processForm">
+    <ng-template matStepLabel>Materials & Processes</ng-template>
+    <mat-dialog-content class="dialog-content">
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Raw Materials</mat-label>
-          <mat-select formControlName="rawMaterial" multiple>
-            <mat-option *ngFor="let mat of (rawmaterial$ | async)" [value]="mat.GradeName">
-              {{ mat.GradeName }} (₹{{ mat.RatePerKg }}/Kg)
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+      <div formArrayName="processSelection">
+        <div *ngFor="let procCtrl of processSelection.controls; let i = index" [formGroupName]="i" class="process-block">
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Processes</mat-label>
-          <mat-select formControlName="processSelection" multiple>
-            <mat-option *ngFor="let proc of (process$ | async)" [value]="proc.processName">
-              {{ proc.processName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <!-- Process dropdown -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Select Process</mat-label>
+            <mat-select formControlName="processId" (selectionChange)="onProcessChange(i, $event.value)">
+              <mat-option *ngFor="let p of (process$ | async)" [value]="p">
+                {{ p.processName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      </mat-dialog-content>
+          <!-- Show details if selected -->
+         <div *ngIf="procCtrl.value.details" class="process-details">
+  <p><strong>TonnageJaw:</strong> {{ procCtrl.value.details.TonnageJaw }}</p>
+  <p><strong>Hours:</strong> {{ procCtrl.value.details.Hours }}</p>
+  <p><strong>Cycle Time:</strong> {{ procCtrl.value.details.cycleTime }}</p>
 
-      <div class="step-actions">
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+  <!-- Editable inputs -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Cavity</mat-label>
+    <input matInput type="number" formControlName="cavity" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Cost</mat-label>
+    <input matInput type="number" formControlName="cost" />
+  </mat-form-field>
+</div>
+
+
+          <!-- Remove button -->
+          <button mat-icon-button color="warn" (click)="removeProcessSelection(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+
+        </div>
       </div>
-    </form>
-  </mat-step>
+
+      <!-- Add Process -->
+      <button mat-mini-fab color="primary" (click)="addProcessSelection()">
+        <mat-icon>add</mat-icon>
+      </button>
+
+    </mat-dialog-content>
+
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext (click)="onProcessNext()">Next</button>
+    </div>
+  </form>
+</mat-step>
+
 
   <!-- STEP 3 -->
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
+
+    <form  [formGroup]="processForm" >
+
+        <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Rejection</mat-label>
+    <input matInput type="number" formControlName="Rejection" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Packing</mat-label>
+    <input matInput type="text" formControlName="Packing" />
+  </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+    <mat-label>InterestRate</mat-label>
+    <input matInput type="number" formControlName="InterestRate" />
+  </mat-form-field>
+
+
+    <mat-form-field appearance="outline" class="full-width">
+    <mat-label>InspectorCost</mat-label>
+    <input matInput type="number" formControlName="InspectorCost" />
+  </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+    <mat-label>ToolAmbience</mat-label>
+    <input matInput type="text" formControlName="ToolAmbience" />
+  </mat-form-field>
+
+    </form>
+
     <div class="step-actions">
       <button mat-button matStepperPrevious>Back</button>
-      <button mat-raised-button color="primary" (click)="save()">Save</button>
+      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
       <button mat-button (click)="stepper.reset()">Reset</button>
     </div>
   </mat-step>
