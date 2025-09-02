@@ -132,27 +132,44 @@ export class AddCustomerDetailsComponent implements OnInit{
   return this.processForm.get('processSelection') as FormArray;
 }
 
-// Add a new process selection
+
 addProcessSelection() {
   const group = this.fb.group({
-    processId: ['', Validators.required],  // dropdown
-    details: [null],
-    cavity: [null, Validators.required],   
+      processId: [null, Validators.required],   
+    processName: ['', Validators.required],
+    TonnageJaw: [''],
+    Hours: [''],
+    cycleTime: [''],
+    cavity: [null, Validators.required],
     cost: [null, Validators.required],
-     
   });
   this.processSelection.push(group);
 }
 
-// Remove process selection
+
+
 removeProcessSelection(index: number) {
   this.processSelection.removeAt(index);
 }
 
-// On process select, fill details
-onProcessChange(index: number, process: any) {
-  this.processSelection.at(index).patchValue({ details: process });
+
+onProcessChange(index: number, processId: string) {
+  this.process$.pipe(take(1)).subscribe(processes => {
+    const selectedProcess = processes.find(p => p._id === processId);
+    if (selectedProcess) {
+      this.processSelection.at(index).patchValue({
+        processId: selectedProcess._id,
+        processName: selectedProcess.processName,
+        TonnageJaw: selectedProcess.TonnageJaw,
+        Hours: selectedProcess.Hours,
+        cycleTime: selectedProcess.cycleTime
+      });
+    }
+  });
 }
+
+
+
 
 
 onProcessNext() {
@@ -160,18 +177,19 @@ onProcessNext() {
 }
 
 onSave() {
-
   const processSelections = this.processForm.value.processSelection.map((p: any) => ({
-    processName: p.details?.processName || '',
-    TonnageJaw: p.details?.TonnageJaw || '',
-    Hours: p.details?.Hours || 0,
-    cycleTime: p.details?.cycleTime || 0,
+    processId: p.processId,
+    processName: p.processName,
+    TonnageJaw: p.TonnageJaw,
+    Hours: p.Hours,
+    cycleTime: p.cycleTime,
     cost: p.cost,
     cavity: p.cavity
   }));
 
-
+  // ✅ combine productForm + processForm into a full object
   const result = {
+    ...this.productForm.value,   
     processes: processSelections,
     Rejection: this.processForm.value.Rejection,
     Packing: this.processForm.value.Packing,
@@ -180,17 +198,14 @@ onSave() {
     ToolAmbience: this.processForm.value.ToolAmbience
   };
 
+  console.log('Final JSON (Full):', result);
 
-  console.log('Final JSON:', result);
-
-  this.store.dispatch(Action.updateCustomer({ id:  this.Cusid!, customer : result}));
-
-  this.store.dispatch(Action.loadCustomers());
-
+  this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
   this.dialogRef.close();
-
-
 }
+
+
+
 
 
 

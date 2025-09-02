@@ -96,21 +96,34 @@
       <div formArrayName="processSelection">
         <div *ngFor="let procCtrl of processSelection.controls; let i = index" [formGroupName]="i" class="process-block">
 
-          <!-- Process dropdown -->
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Select Process</mat-label>
-            <mat-select formControlName="processId" (selectionChange)="onProcessChange(i, $event.value)">
-              <mat-option *ngFor="let p of (process$ | async)" [value]="p">
-                {{ p.processName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Select Process</mat-label>
+  <mat-select formControlName="processId" (selectionChange)="onProcessChange(i, $event.value)">
+    <mat-option *ngFor="let p of (process$ | async)" [value]="p._id">
+      {{ p.processName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 
           <!-- Show details if selected -->
-         <div *ngIf="procCtrl.value.details" class="process-details">
-  <p><strong>TonnageJaw:</strong> {{ procCtrl.value.details.TonnageJaw }}</p>
-  <p><strong>Hours:</strong> {{ procCtrl.value.details.Hours }}</p>
-  <p><strong>Cycle Time:</strong> {{ procCtrl.value.details.cycleTime }}</p>
+         <div class="process-details">
+ <!-- Editable fields -->
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>TonnageJaw</mat-label>
+  <input matInput type="text" formControlName="TonnageJaw" />
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>Hours</mat-label>
+  <input matInput type="number" formControlName="Hours" />
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>Cycle Time</mat-label>
+  <input matInput type="number" formControlName="cycleTime" />
+</mat-form-field>
+
 
   <!-- Editable inputs -->
   <mat-form-field appearance="outline" class="full-width">
