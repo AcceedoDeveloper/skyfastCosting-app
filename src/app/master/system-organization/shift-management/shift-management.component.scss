@@ -5,6 +5,15 @@ body {
   padding: 0;
 }
 
+.main {
+  width: 90%;              /* takes 90% of parent width */
+  max-width: 1200px;       /* optional: limit max width */
+  margin: 40px auto;          /* center horizontally */
+      // background-color: #5b84ff;    /* add spacing inside */
+
+}
+
+
 .circular-button {
   height: 40px;
   width: 40px;
@@ -16,13 +25,6 @@ body {
   justify-content: center;
 }
 
-.main {
-  width: 90%;              /* takes 90% of parent width */
-  max-width: 1200px;       /* optional: limit max width */
-  margin: 0 auto;          /* center horizontally */
-      // background-color: #5b84ff;    /* add spacing inside */
-
-}
 
 
 .table-container {

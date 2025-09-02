@@ -1,35 +1,32 @@
+
 .login-page-container {
   // display: flex;
   // justify-content: center;
   // align-items: center;
   // min-height: 100vh;
-  // 
+  // padding: 20px;
   // box-sizing: border-box;
-  // margin-bottom: 20px;
-  // background-color: #e74c3c;
-  display: inline-block;
+
+   display: inline-block;
   border-radius: 10px;
-  margin-top: 60px;
-  margin-left: 200px;
-  margin-bottom: 50px;
+ margin-top: 5%;
+ width: 100%;
+margin-left: 50px;
+margin-bottom: 6px;
+  // background-color: #27ae60;
  
   // padding: 20px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
- 
-  
+
 }
-
-
 
 .login-wrapper {
   display: flex;
-  width: 150%;
-  max-width: 1000px;
-  min-height: 600px;
-  height: auto;
-  background: white;
+  width: 100%;
+  height: 100%;
+ 
+  background: rgb(255, 255, 255);
   border-radius: 15px;
-
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   animation: fadeIn 0.5s ease;
 }
@@ -365,3 +362,144 @@ button {
     }
   }
 }
+
+
+
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column;
+    width: 95%;
+    min-height: auto;
+  }
+  
+  .login-image-section {
+    display: none;
+  }
+  
+  .login-form-section {
+    padding: 30px 20px;
+    min-height: auto;
+  }
+  
+  .message-container {
+    min-height: 50px;
+  }
+  
+  .otp-input-container {
+    justify-content: space-around;
+    
+    .otp-digit {
+      width: 40px;
+      height: 50px;
+      font-size: 20px;
+    }
+  }
+}
+/* 📱 Extra Small Devices (Phones ≤480px) */
+@media (max-width: 480px) {
+  .login-page-container {
+    margin: 20px auto;
+    width: 95%;
+  }
+
+  .login-wrapper {
+    flex-direction: column;
+    width: 100%;
+    min-height: auto;
+    box-shadow: none;
+    border-radius: 10px;
+  }
+
+  .login-form-section {
+    padding: 20px 15px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .otp-input-container {
+    justify-content: space-around;
+
+    .otp-digit {
+      width: 35px;
+      height: 45px;
+      font-size: 16px;
+    }
+  }
+}
+/* 📱 Small Mobiles (≤480px) */
+@media (max-width: 480px) {
+  .login-page-container {
+    width: 95%;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  }
+
+  h2 { font-size: 18px; }
+  button { font-size: 12px; padding: 8px; }
+}
+
+/* 📱 Large Mobiles (481px – 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .login-page-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  h2 { font-size: 20px; }
+  button { font-size: 13px; padding: 10px; }
+}
+
+/* 📲 Tablets (769px – 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .login-page-container {
+    width: 80%;
+    padding: 20px;
+  }
+
+  h2 { font-size: 22px; }
+  button { font-size: 14px; padding: 12px; }
+}
+
+/* 💻 Small Laptops (1025px – 1200px) */
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .login-page-container {
+    width: 75%;
+    padding: 25px;
+  }
+
+  h2 { font-size: 24px; }
+  button { font-size: 15px; padding: 14px; }
+}
+
+/* 🖥 Large Desktops (1201px – 1440px) */
+@media (min-width: 1201px) and (max-width: 1440px) {
+  .login-page-container {
+    width: 70%;
+    padding: 30px;
+  }
+
+  h2 { font-size: 26px; }
+  button { font-size: 16px; padding: 16px; }
+}
+
+/* 🖥 Ultra-Wide Screens (4K >1440px) */
+@media (min-width: 1441px) {
+  .login-page-container {
+    width: 95%;
+    padding: 30px;
+  }
+
+  h2 { font-size: 28px; }
+  button { font-size: 18px; padding:18px;}
+}
+
+
+
