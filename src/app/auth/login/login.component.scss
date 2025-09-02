@@ -1,35 +1,36 @@
 
+
 .login-page-container {
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // min-height: 100vh;
-  // padding: 20px;
-  // box-sizing: border-box;
-
-   display: inline-block;
-  border-radius: 10px;
- margin-top: 5%;
- width: 100%;
-margin-left: 50px;
-margin-bottom: 6px;
-  // background-color: #27ae60;
- 
-  // padding: 20px;
-
+  width: 69%;
+  max-width: 1200px;   /* prevents it from being too wide */
+  margin: auto; /* centers horizontally */
+  padding: 15px;
 }
 
 .login-wrapper {
   display: flex;
   width: 100%;
+  max-width: 950px;
   height: 100%;
- 
-  background: rgb(255, 255, 255);
+  max-height: 460px;
+  background: #fff;
+  margin-top: 30px;
   border-radius: 15px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   animation: fadeIn 0.5s ease;
 }
+
+.OTP{
+    margin-bottom: 50px;
+  }
+
+  .login-form-section h2{
+    margin-top: -125px;
+  }
+
+  h2 { font-size: 28px; }
+  button { font-size: 18px; padding: 16px 24px; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px); }
@@ -51,34 +52,13 @@ margin-bottom: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  // background: #f9f9f9;
+  background: #f9f9f9;
   
- img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-
-  /* Extra features */
-  display: block;              /* removes bottom space caused by inline img */
-  border-radius: 8px;          /* rounded corners */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* soft shadow */
-  transition: transform 0.3s, filter 0.3s; /* smooth hover effects */
-  cursor: pointer;             /* clickable look */
-}
-
-/* Hover effect */
-img:hover {
-  transform: scale(1.05);      /* zoom-in effect */
-  filter: brightness(1.1);     /* brighter on hover */
-}
-
-/* Responsive container behavior */
-.responsive-img {
-  max-width: 100%;
-  height: auto;                /* maintain aspect ratio */
-}
-
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 h2 {
@@ -266,7 +246,7 @@ button {
   font-weight: 500;
   color: #4a90e2;
   margin-bottom: 10px;
-  // background: #f0f7ff;
+  background: #f0f7ff;
   padding: 10px;
   border-radius: 8px;
 }
@@ -332,174 +312,44 @@ button {
   animation: fadeMsg 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .login-wrapper {
-    flex-direction: column;
-    width: 95%;
-    min-height: auto;
-  }
-  
-  .login-image-section {
-    display: none;
-  }
-  
-  .login-form-section {
-    padding: 30px 20px;
-    min-height: auto;
-  }
-  
-  .message-container {
-    min-height: 50px;
-  }
-  
-  .otp-input-container {
-    justify-content: space-around;
-    
-    .otp-digit {
-      width: 40px;
-      height: 50px;
-      font-size: 20px;
-    }
-  }
-}
 
-
-
-@media (max-width: 768px) {
-  .login-wrapper {
-    flex-direction: column;
-    width: 95%;
-    min-height: auto;
-  }
-  
-  .login-image-section {
-    display: none;
-  }
-  
-  .login-form-section {
-    padding: 30px 20px;
-    min-height: auto;
-  }
-  
-  .message-container {
-    min-height: 50px;
-  }
-  
-  .otp-input-container {
-    justify-content: space-around;
-    
-    .otp-digit {
-      width: 40px;
-      height: 50px;
-      font-size: 20px;
-    }
-  }
-}
-/* 📱 Extra Small Devices (Phones ≤480px) */
-@media (max-width: 480px) {
-  .login-page-container {
-    margin: 20px auto;
-    width: 95%;
-  }
-
-  .login-wrapper {
-    flex-direction: column;
-    width: 100%;
-    min-height: auto;
-    box-shadow: none;
-    border-radius: 10px;
-  }
-
-  .login-form-section {
-    padding: 20px 15px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 12px;
-  }
-
-  .otp-input-container {
-    justify-content: space-around;
-
-    .otp-digit {
-      width: 35px;
-      height: 45px;
-      font-size: 16px;
-    }
-  }
-}
-/* 📱 Small Mobiles (≤480px) */
-@media (max-width: 480px) {
-  .login-page-container {
-    width: 95%;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-  }
-
-  h2 { font-size: 18px; }
-  button { font-size: 12px; padding: 8px; }
-}
-
-/* 📱 Large Mobiles (481px – 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
-  .login-page-container {
-    width: 90%;
-    padding: 15px;
-  }
-
-  h2 { font-size: 20px; }
-  button { font-size: 13px; padding: 10px; }
-}
-
-/* 📲 Tablets (769px – 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .login-page-container {
-    width: 80%;
-    padding: 20px;
-  }
-
-  h2 { font-size: 22px; }
-  button { font-size: 14px; padding: 12px; }
-}
-
-/* 💻 Small Laptops (1025px – 1200px) */
-@media (min-width: 1025px) and (max-width: 1200px) {
-  .login-page-container {
-    width: 75%;
-    padding: 25px;
-  }
-
-  h2 { font-size: 24px; }
-  button { font-size: 15px; padding: 14px; }
-}
-
-/* 🖥 Large Desktops (1201px – 1440px) */
-@media (min-width: 1201px) and (max-width: 1440px) {
-  .login-page-container {
-    width: 70%;
+@media screen and (min-width: 1920px) {
+   .login-page-container {
+    width: 67%;
+    height: 560px;
     padding: 30px;
+    margin-top: 120px;
+    margin-left: 240px;
+  }
+  .OTP{
+    margin-bottom: 50px;
   }
 
-  h2 { font-size: 26px; }
-  button { font-size: 16px; padding: 16px; }
-}
-
-/* 🖥 Ultra-Wide Screens (4K >1440px) */
-@media (min-width: 1441px) {
-  .login-page-container {
-    width: 95%;
-    padding: 30px;
+  .login-form-section h2{
+    margin-top: -135px;
   }
 
   h2 { font-size: 28px; }
-  button { font-size: 18px; padding:18px;}
+  button { font-size: 18px; padding: 16px 24px; }
 }
 
+@media screen and (max-width: 2400px) {
+   .login-page-container {
+    width: 70%;
+    height: 650px;
+    padding: 30px;
+    margin-top: 210px;
+    margin-left: 220px;
+  }
+  .OTP{
+    margin-bottom: 50px;
+  }
 
+  .login-form-section h2{
+    margin-top: -135px;
+  }
+
+  h2 { font-size: 28px; }
+  button { font-size: 18px; padding: 16px 24px; }
+}
 
