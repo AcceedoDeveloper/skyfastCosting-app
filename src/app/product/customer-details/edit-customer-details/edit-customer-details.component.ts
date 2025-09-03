@@ -15,6 +15,8 @@ import {selectAllProcess, selectAllRawMaterials } from '../../store/product.sele
 import * as Action from '../../store/product.actions';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
+import { MatStepperModule } from '@angular/material/stepper';
+
 
 
 
@@ -28,7 +30,8 @@ import { Observable, take } from 'rxjs';
     MatIconModule,
     MatSelectModule,
     CommonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatStepperModule
   ],
   templateUrl: './edit-customer-details.component.html',
   styleUrl: './edit-customer-details.component.scss'
@@ -69,6 +72,7 @@ if (data?.revisions?.length) {
   
 
     this.customerForm = this.fb.group({
+      customerName: [data?.customerName.customerName || '', Validators.required],
       productName: [revision?.productName || '', Validators.required],
       partName: [data?.partName || '', Validators.required],
 
@@ -204,6 +208,16 @@ incrementRevision() {
   onCancel() {
     this.dialogRef.close();
   }
+
+  calculateProcessValue(proc: any): number {
+  if (!proc) return 0;
+
+  const hours = Number(proc.Hours) || 0;
+  const cycleTime = Number(proc.cycleTime) || 1; // prevent divide by 0
+  const cavity = Number(proc.cavity) || 1;
+
+  return +(hours / 3600 / cycleTime / cavity).toFixed(4); // rounded to 4 decimals
+}
 
 
 
