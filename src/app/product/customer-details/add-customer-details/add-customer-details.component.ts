@@ -104,7 +104,7 @@ export class AddCustomerDetailsComponent implements OnInit{
   
 
   save() {
-    const formValue = { ...this.productForm.value };
+    const formValue = { ...this.productForm.value,  };
     if (formValue.rawMaterial.length === 0) {
       delete formValue.rawMaterial;
     }
@@ -141,7 +141,7 @@ addProcessSelection() {
     Hours: [''],
     cycleTime: [''],
     cavity: [null, Validators.required],
-    cost: [null, Validators.required],
+    
   });
   this.processSelection.push(group);
 }
@@ -183,11 +183,11 @@ onSave() {
     TonnageJaw: p.TonnageJaw,
     Hours: p.Hours,
     cycleTime: p.cycleTime,
-    cost: p.cost,
+   
     cavity: p.cavity
   }));
 
-  // ✅ combine productForm + processForm into a full object
+  
   const result = {
     ...this.productForm.value,   
     processes: processSelections,
@@ -195,7 +195,8 @@ onSave() {
     Packing: this.processForm.value.Packing,
     InterestRate: this.processForm.value.InterestRate,
     InspectorCost: this.processForm.value.InspectorCost,
-    ToolAmbience: this.processForm.value.ToolAmbience
+    ToolAmbience: this.processForm.value.ToolAmbience,
+    revisionNumber: 1 
   };
 
   console.log('Final JSON (Full):', result);

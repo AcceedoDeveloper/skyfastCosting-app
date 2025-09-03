@@ -1,13 +1,6 @@
 
 
-.dialog-content {
-  padding: 2px;
-  max-width: 1100px;
-// background-color: red;
-  border-radius: 12px;
-  margin-left: 70px;
 
-}
 
 
 .title {
@@ -147,3 +140,21 @@ mat-form-field.full-width {
   }
 }
 
+.process-row {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* spacing between fields */
+  margin-bottom: 12px;
+  flex-wrap: wrap; /* allow wrapping if screen is small */
+}
+
+.field {
+  flex: 1; /* make all fields equal width */
+  min-width: 120px; /* prevent shrinking too small */
+}
+
+
+.icon{
+    position: absolute;
+    bottom: 15px
+}

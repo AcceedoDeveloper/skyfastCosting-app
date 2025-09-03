@@ -21,6 +21,23 @@ export interface RawMaterial {
 }
 
 
+export interface Revision {
+  revisionNumber: number;
+  Rejection: number;
+  InterestRate: number;
+  InspectorCost: number;
+  Packing: string;
+  ToolAmbience: string;
+  castingWeight: number;
+  cavities: number;
+  meltingLoss: number;
+  shortWeight: number;
+  rawMaterial: RawMaterial[];
+  processes: Process[];
+  productName: string;
+}
+
+
 export interface CustomerDetails {
   _id?: string; // optional before save
   customerId: Customer; 
@@ -44,4 +61,6 @@ export interface CustomerDetails {
   createdAt?: Date;
   updatedAt?: Date;
   __v?: number;
+  revisions?: Revision[];
+
 }

@@ -80,7 +80,7 @@
 
       <div class="step-actions">
         <button class="btn btn-danger" (click)="close()">Cancel</button>
-        <button class="submit-button" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
+        <button class="btn btn-primary" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
       </div>
     </form>
 
@@ -94,68 +94,69 @@
     <mat-dialog-content class="dialog-content">
 
       <div formArrayName="processSelection">
-        <div *ngFor="let procCtrl of processSelection.controls; let i = index" [formGroupName]="i" class="process-block">
+  <div *ngFor="let procCtrl of processSelection.controls; let i = index" [formGroupName]="i" >
 
-    <mat-form-field appearance="outline" class="full-width">
-  <mat-label>Select Process</mat-label>
-  <mat-select formControlName="processId" (selectionChange)="onProcessChange(i, $event.value)">
-    <mat-option *ngFor="let p of (process$ | async)" [value]="p._id">
-      {{ p.processName }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    <div class="process-row">
+
+      <!-- Process select -->
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Select Process</mat-label>
+      <mat-select formControlName="processId" (selectionChange)="onProcessChange(i, $event.value)">
+        <mat-option *ngFor="let p of (process$ | async)" [value]="p._id">
+          {{ p.processName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- TonnageJaw -->
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>TonnageJaw</mat-label>
+      <input matInput type="text" formControlName="TonnageJaw" />
+    </mat-form-field>
+
+    <!-- Hours -->
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Hours</mat-label>
+      <input matInput type="number" formControlName="Hours" />
+    </mat-form-field>
+
+    <!-- Cycle Time -->
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Cycle Time</mat-label>
+      <input matInput type="number" formControlName="cycleTime" />
+    </mat-form-field>
+
+    <!-- Cavity -->
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Cavity</mat-label>
+      <input matInput type="number" formControlName="cavity" />
+    </mat-form-field>
 
 
-          <!-- Show details if selected -->
-         <div class="process-details">
- <!-- Editable fields -->
-<mat-form-field appearance="outline" class="full-width">
-  <mat-label>Tonnage / Jaw</mat-label>
-  <input matInput type="text" formControlName="TonnageJaw" />
-</mat-form-field>
+        <!-- Delete button -->
+    <button mat-icon-button color="warn" (click)="removeProcessSelection(i)">
+      <mat-icon  class="icon" >delete</mat-icon>
+    </button>
 
-<mat-form-field appearance="outline" class="full-width">
-  <mat-label>Hours</mat-label>
-  <input matInput type="number" formControlName="Hours" />
-</mat-form-field>
-
-<mat-form-field appearance="outline" class="full-width">
-  <mat-label>Cycle Time / Weight</mat-label>
-  <input matInput type="number" formControlName="cycleTime" />
-</mat-form-field>
+    </div>
+    
 
 
-  <!-- Editable inputs -->
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Cavity</mat-label>
-    <input matInput type="number" formControlName="cavity" />
-  </mat-form-field>
+    <!-- Add Process -->
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Cost</mat-label>
-    <input matInput type="number" formControlName="cost" />
-  </mat-form-field>
+
+  </div>
 </div>
 
+<button mat-mini-fab color="primary" (click)="addProcessSelection()">
+  <mat-icon>add</mat-icon>
+</button>
 
-          <!-- Remove button -->
-          <button mat-icon-button color="warn" (click)="removeProcessSelection(i)">
-            <mat-icon>delete</mat-icon>
-          </button>
-
-        </div>
-      </div>
-
-      <!-- Add Process -->
-      <button mat-mini-fab color="primary" (click)="addProcessSelection()">
-        <mat-icon>add</mat-icon>
-      </button>
 
     </mat-dialog-content>
 
     <div class="step-actions">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button matStepperNext (click)="onProcessNext()">Next</button>
+      <button class="btn btn-primary" matStepperNext (click)="onProcessNext()">Next</button>
     </div>
   </form>
 </mat-step>
@@ -196,9 +197,7 @@
     </form>
 
     <div class="step-actions">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
+      <button  class="btn btn-primary" (click)="onSave()">Save</button>
     </div>
   </mat-step>
 

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { CustomerDetails } from '../../../model/customer-details.model';
@@ -10,6 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
+import { Process, RawMaterial} from '../../../model/product.model';
+import {selectAllProcess, selectAllRawMaterials } from '../../store/product.selectors';
+import * as Action from '../../store/product.actions';
+import { Store } from '@ngrx/store';
+import { Observable, take } from 'rxjs';
+
 
 
 @Component({
@@ -27,8 +33,14 @@ import { MatDialogModule } from '@angular/material/dialog';
   templateUrl: './edit-customer-details.component.html',
   styleUrl: './edit-customer-details.component.scss'
 })
-export class EditCustomerDetailsComponent {
+export class EditCustomerDetailsComponent implements OnInit {
+  rawMaterial$! : Observable<RawMaterial[]>;
+  process$!: Observable<Process[]>;
   customerForm: FormGroup;
+  revisionNumber = 1; 
+  selectedRevisionIndex = 0; // default first revision
+
+
 
   get processes(): FormArray {
     return this.customerForm.get('processes') as FormArray;
@@ -37,29 +49,75 @@ export class EditCustomerDetailsComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditCustomerDetailsComponent>,
+    private store : Store,
     @Inject(MAT_DIALOG_DATA) public data: CustomerDetails | null
   ) {
+
+    console.log('data', data);
+    
+  const revision = data?.revisions?.[data.revisions.length - 1];
+  
+  // if revisions exist, take the last revision number and increment by 1
+if (data?.revisions?.length) {
+  const lastRevision = data.revisions[data.revisions.length - 1];
+  this.revisionNumber = (lastRevision.revisionNumber || 1) ;
+} else {
+  this.revisionNumber = 1; 
+}
+
+
+  
+
     this.customerForm = this.fb.group({
-      productName: [data?.productName || '', Validators.required],
+      productName: [revision?.productName || '', Validators.required],
       partName: [data?.partName || '', Validators.required],
-      noOfRawMaterials: [data?.noOfRawMaterial ?? 0, [Validators.required, Validators.min(0)]],
-      noOfProcess: [data?.noOfProcess ?? 0, [Validators.required, Validators.min(0)]],
-      rejection: [data?.Rejection ?? 0],
-      interestRate: [data?.InterestRate ?? 0],
-      inspectorCost: [data?.InspectorCost ?? 0],
-      packing: [data?.Packing || ''],
-      toolAmbience: [data?.ToolAmbience || ''],
-      castingWeight: [data?.castingWeight ?? 0],
-      cavities: [data?.cavities ?? 0],
-      meltingLoss: [data?.meltingLoss ?? 0],
-      shortWeight: [data?.shortWeight ?? 0],
-      processes: this.fb.array([])   // ✅ add processes as FormArray
+
+      // counts (fallback if missing)
+      noOfRawMaterials: [revision?.rawMaterial?.length ?? 0],
+      noOfProcess: [revision?.processes?.length ?? 0],
+
+      // 👇 map revision values
+      rejection: [revision?.Rejection ?? 0],
+      interestRate: [revision?.InterestRate ?? 0],
+      inspectorCost: [revision?.InspectorCost ?? 0],
+      packing: [revision?.Packing || ''],
+      toolAmbience: [revision?.ToolAmbience || ''],
+
+      castingWeight: [revision?.castingWeight ?? 0],
+      cavities: [revision?.cavities ?? 0],
+      meltingLoss: [revision?.meltingLoss ?? 0],
+      shortWeight: [revision?.shortWeight ?? 0],
+
+      // 👇 rawMaterial IDs for mat-select
+      rawMaterial: [revision?.rawMaterial?.map((r: any) => r._id) || []],
+
+      processes: this.fb.array([])
     });
 
-    // Populate processes if editing
-    if (data?.processes) {
-      data.processes.forEach(proc => this.addProcess(proc));
+    // ✅ Fill processes from revision
+    if (revision?.processes?.length) {
+      revision.processes.forEach((proc: any) => this.addProcess(proc));
     }
+  }
+
+
+  
+
+  ngOnInit(): void {
+    this.rawMaterial$ = this.store.select(selectAllRawMaterials);
+
+    this.rawMaterial$.subscribe( raw =>{
+      console.log('raw data', raw);
+    })
+
+    this.store.dispatch(Action.loadRawMaterials());
+    this.store.dispatch(Action.loadProcess());
+
+    this.process$ = this.store.select(selectAllProcess);
+    this.process$.subscribe(process =>{
+      console.log('process', process);
+      
+    })
   }
 
   addProcess(proc: any = null) {
@@ -81,16 +139,93 @@ export class EditCustomerDetailsComponent {
     this.processes.removeAt(index);
   }
 
-  onSave() {
-    if (this.customerForm.valid) {
-      this.dialogRef.close({
-        ...this.data,
-        ...this.customerForm.value
+onSave() {
+  if (this.customerForm.valid) {
+    const formValue = this.customerForm.value;
+
+    let selectedRawMaterials: any[] = [];
+    this.rawMaterial$.pipe(take(1)).subscribe(allRawMaterials => {
+      selectedRawMaterials = (formValue.rawMaterial || []).map((id: string) => {
+        const found = allRawMaterials.find(r => r._id === id);
+        return found ? found.GradeName : id; // ✅ store only grade names
       });
-    }
+    });
+
+    const updatedCustomer = {
+      productName: formValue.productName,
+      cavities: formValue.cavities,
+      castingWeight: formValue.castingWeight,
+      shortWeight: formValue.shortWeight,
+      meltingLoss: formValue.meltingLoss,
+
+      // 👇 Map with correct casing
+      Rejection: formValue.rejection,
+      Packing: formValue.packing,
+      InterestRate: formValue.interestRate,
+      InspectorCost: formValue.inspectorCost,
+      ToolAmbience: formValue.toolAmbience,
+
+      customerName: typeof this.data?.customerName === 'string' 
+        ? this.data.customerName 
+        : this.data?.customerName?.customerName || '',
+
+      rawMaterial: selectedRawMaterials,
+      processes: formValue.processes.map((p: any) => ({
+        processName: p.processName,
+        TonnageJaw: p.TonnageJaw,
+        Hours: p.Hours,
+        cycleTime: p.cycleTime,
+        cavity: p.cavity
+      })),
+
+      revisionNumber: this.revisionNumber
+    };
+
+    console.log('📦 Final Payload (Correct):', updatedCustomer);
+
+    this.store.dispatch(
+      Action.updateCustomer({
+        id: this.data?._id!,
+        customer: updatedCustomer
+      })
+    );
+
+    this.dialogRef.close(updatedCustomer);
   }
+}
+
+incrementRevision() {
+  this.revisionNumber++;
+  console.log('🔄 Revision incremented:', this.revisionNumber);
+  this.onSave();
+}
+
 
   onCancel() {
     this.dialogRef.close();
   }
+
+
+
+onProcessSelected(processId: string, index: number) {
+  this.process$.pipe(take(1)).subscribe(allProcesses => {
+    const selectedProc = allProcesses.find(p => p._id === processId);
+
+    if (selectedProc) {
+      const processGroup = this.processes.at(index);
+
+      processGroup.patchValue({
+        processName: selectedProc.processName,
+        TonnageJaw: selectedProc.TonnageJaw,
+        Hours: selectedProc.Hours,
+        cycleTime: selectedProc.cycleTime,
+        cavity: selectedProc.cavity,
+        cost: selectedProc.cost,
+        calculation: selectedProc.calculation
+      });
+    }
+  });
+}
+
+
 }

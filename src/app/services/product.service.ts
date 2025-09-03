@@ -59,6 +59,8 @@ private apiUrl = 'http://localhost:3005';
   }
 
   updateCustomer(id: string, customer: CustomerDetails): Observable<CustomerDetails> {
+    console.log('data', customer);
+    
     return this.http.put<CustomerDetails>(`${this.config.getCostingUrl('updateCustomerDetails')}/${id}`, customer);
   }
 

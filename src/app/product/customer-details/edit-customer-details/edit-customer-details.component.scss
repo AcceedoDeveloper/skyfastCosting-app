@@ -1,80 +1,39 @@
-/* General form styling */
-.customer-form {
+.process-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 10px;
+  flex-wrap: nowrap;
+  align-items: center; /* vertically center fields & button */
+  gap: 10px; /* spacing between fields and button */
 }
 
-/* Full width fields */
-.full-width {
-  flex: 1 1 100%;
-}
-
-/* Half width fields (responsive two-column layout) */
 .half-width {
-  flex: 1 1 calc(50% - 16px);
-  min-width: 250px;
+  flex: 1; /* all inputs take equal width */
+  min-width: 150px; /* prevent shrinking too small */
 }
 
-/* Section titles */
-h3 {
-  flex: 1 1 100%;
-  font-size: 18px;
-  font-weight: 600;
-  margin: 20px 0 10px;
-  color: #333;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 6px;
+.delete-btn {
+  flex: 0 0 auto; /* button stays fixed size */
+  margin-top: 8px; /* align with mat-form-field input */
 }
 
-/* Process block styling */
-.process-block {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  background: #fafafa;
+
+
+
+
+.maininputdiv {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 3 equal columns */
+  gap: 10px; /* spacing between columns and rows */
 }
 
-/* Buttons inside process block */
-.process-block button {
-  margin-top: 8px;
-  height: 36px;
-  align-self: flex-start;
+.maininputdiv mat-form-field {
+  width: 100%; /* make form fields fill their grid cell */
 }
 
-/* Dialog actions */
-mat-dialog-actions {
-  margin-top: 20px;
+.icon{
+    position: absolute;
+    bottom: 15px
 }
 
-mat-dialog-actions button {
-  min-width: 100px;
-  font-weight: 500;
-}
-
-/* Save button highlight */
-mat-dialog-actions button[color="primary"] {
-  background-color: #5073fb;
-  color: white;
-}
-
-/* Cancel button styling */
-mat-dialog-actions button:not([color="primary"]) {
-  border: 1px solid #ccc;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .half-width {
-    flex: 1 1 100%;
-  }
-
-  .process-block {
-    padding: 12px;
-  }
+.button-div{
+  gap: 10px;
 }
