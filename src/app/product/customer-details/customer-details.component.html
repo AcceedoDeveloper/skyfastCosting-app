@@ -1,49 +1,283 @@
 <div class="customer-container">
   <div class="header">
-
     <h2>Customer Details</h2>
-  <button mat-raised-button color="primary" (click)="openAddProductDialog()">Add Customer</button>
+    <button mat-raised-button color="primary" (click)="openAddProductDialog()">Add Customer</button>
   </div>
+
   <ng-container *ngIf="customers$ | async as customers; else loading">
     <table class="table table-bordered">
       <thead>
         <tr>
-         
-          <th>Product</th>
+          <th>Customer</th>
           <th>Part</th>
+          <th>Product</th>
           <th>Raw Materials</th>
           <th>Processes</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let c of customers">
-         
-          <td>{{ c.productName }}</td>
-          <td>{{ c.partName }}</td>
-        <td>
-  <div *ngIf="c.rawMaterial && c.rawMaterial.length > 0; else noMaterial">
-    <div *ngFor="let mat of c.rawMaterial">
-      {{ mat.GradeName }} ({{ mat.RatePerKg }} Rs/Kg)
-    </div>
-  </div>
-  <ng-template #noMaterial>
-    <span>No Raw Materials</span>
-  </ng-template>
-</td>
 
-          <td>{{ c.noOfProcess }}</td>
-            <td class="actions">
-            <mat-icon class="icon" (click)="onEdit(c)" >edit</mat-icon>
-            <mat-icon class="icon" (click)="onDelete(c._id)" >delete</mat-icon>
-          </td>
-        </tr>
+
+        
+   <ng-container *ngFor="let c of customers$ | async">
+  <tr>
+    <td>{{ c.customerName.customerName }}</td>
+    <td>{{ c.partName }}</td>
+    <td>{{ getLatestRevision(c)?.productName }}</td>
+
+    <td>
+      <ng-container *ngIf="getLatestRevision(c)?.rawMaterial?.length > 0; else noMaterial">
+        <div *ngFor="let mat of getLatestRevision(c)?.rawMaterial">
+          {{ mat.GradeName }} ({{ mat.RatePerKg }} Rs/Kg)
+        </div>
+      </ng-container>
+      <ng-template #noMaterial>
+        <span>No Raw Materials</span>
+      </ng-template>
+    </td>
+
+    <td>
+      <ng-container *ngIf="getLatestRevision(c)?.processes?.length > 0; else noProcess">
+        <div *ngFor="let p of getLatestRevision(c)?.processes">
+          {{ p.processName }} ({{ p.TonnageJaw || '' }} {{ p.Hours ? p.Hours + 'h' : '' }})
+        </div>
+      </ng-container>
+      <ng-template #noProcess>
+        <span>No Processes</span>
+      </ng-template>
+    </td>
+
+    <td class="actions">
+      <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
+      <mat-icon class="icon" (click)="onDelete(c._id)">delete</mat-icon>
+      <ng-container *ngIf="c.revisions.length > 1">
+        <mat-icon  class="icon" (click)="toggleCompare(c)">compare</mat-icon>
+      </ng-container>
+    </td>
+  </tr>
+
+  <!-- 🔽 Nested table row -->
+  <tr *ngIf="expandedCustomer === c">
+    <td colspan="6">
+      <table class="table table-sm table-bordered nested-table">
+        <thead>
+          <tr>
+            <th>Revision</th>
+            <th>Product</th>
+            <th>Raw Materials</th>
+            <th>Processes</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let rev of c.revisions; let i = index">
+  <td>
+    <mat-checkbox
+      [(ngModel)]="rev.selected"
+      (change)="onRevisionSelect(rev, $event)"
+    ></mat-checkbox>
+    Revision {{ i + 1 }}
+  </td>
+  <td>{{ rev.productName }}</td>
+  <td>
+    <div *ngIf="(rev?.rawMaterial?.length || 0) > 0; else noMat">
+      <div *ngFor="let mat of rev.rawMaterial">
+        {{ mat.GradeName }} ({{ mat.RatePerKg | number:'1.2-2' }} Rs/Kg)
+      </div>
+    </div>
+    <ng-template #noMat>No Raw Materials</ng-template>
+  </td>
+  <td>
+    <div *ngIf="(rev?.processes?.length || 0) > 0; else noProc">
+      <div *ngFor="let p of rev?.processes">
+        {{ p?.processName }} - {{ p?.cost | number:'1.2-2' }}
+      </div>
+    </div>
+    <ng-template #noProc>No Processes</ng-template>
+  </td>
+</tr>
+
+<!-- Compare button -->
+<tr>
+  <td colspan="6" class="text-center">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="openComparePopup()"
+      [disabled]="!canCompare()"
+    >
+      Compare Selected
+    </button>
+  </td>
+</tr>
+
+
+
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</ng-container>
+
+
+
+
+
       </tbody>
     </table>
   </ng-container>
 
   <ng-template #loading>
-
     <p>Loading customer data...</p>
   </ng-template>
 </div>
+
+
+<div class="compare-popup" *ngIf="showComparePopup">
+  <div class="compare-popup-content">
+    <h3>Compare Revisions</h3>
+
+
+     <div class="revision-selector">
+      <h4>Select Revisions to Compare</h4>
+      <div *ngFor="let rev of expandedCustomer?.revisions">
+        <mat-checkbox
+          [(ngModel)]="rev.selected"
+          (change)="onRevisionSelectPopup(rev, $event)"
+        >
+          Revision {{ rev.revisionNumber || 'N/A' }}
+        </mat-checkbox>
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Revision {{ selectedRevisions[0]?.revisionNumber }}</th>
+    <th>Revision {{ selectedRevisions[1]?.revisionNumber }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Product Name</b></td>
+          <td>{{ selectedRevisions[0].productName }}</td>
+          <td>{{ selectedRevisions[1].productName }}</td>
+        </tr>
+        <tr>
+          <td><b>Revision Number</b></td>
+          <td>{{ selectedRevisions[0].revisionNumber }}</td>
+          <td>{{ selectedRevisions[1].revisionNumber }}</td>
+        </tr>
+        <tr>
+          <td><b>Cavities</b></td>
+          <td>{{ selectedRevisions[0].cavities }}</td>
+          <td>{{ selectedRevisions[1].cavities }}</td>
+        </tr>
+        <tr>
+          <td><b>Casting Weight</b></td>
+          <td>{{ selectedRevisions[0].castingWeight }}</td>
+          <td>{{ selectedRevisions[1].castingWeight }}</td>
+        </tr>
+        <tr>
+          <td><b>Short Weight</b></td>
+          <td>{{ selectedRevisions[0].shortWeight }}</td>
+          <td>{{ selectedRevisions[1].shortWeight }}</td>
+        </tr>
+        <tr>
+          <td><b>Melting Loss</b></td>
+          <td>{{ selectedRevisions[0].meltingLoss }}</td>
+          <td>{{ selectedRevisions[1].meltingLoss }}</td>
+        </tr>
+        <tr>
+          <td><b>Rejection</b></td>
+          <td>{{ selectedRevisions[0].Rejection }}</td>
+          <td>{{ selectedRevisions[1].Rejection }}</td>
+        </tr>
+        <tr>
+          <td><b>Packing</b></td>
+          <td>{{ selectedRevisions[0].Packing }}</td>
+          <td>{{ selectedRevisions[1].Packing }}</td>
+        </tr>
+        <tr>
+          <td><b>Interest Rate</b></td>
+          <td>{{ selectedRevisions[0].InterestRate }}</td>
+          <td>{{ selectedRevisions[1].InterestRate }}</td>
+        </tr>
+        <tr>
+          <td><b>Inspector Cost</b></td>
+          <td>{{ selectedRevisions[0].InspectorCost }}</td>
+          <td>{{ selectedRevisions[1].InspectorCost }}</td>
+        </tr>
+        <tr>
+          <td><b>Status</b></td>
+          <td>{{ selectedRevisions[0].Status }}</td>
+          <td>{{ selectedRevisions[1].Status }}</td>
+        </tr>
+        <tr>
+          <td><b>Tool Ambience</b></td>
+          <td>{{ selectedRevisions[0].ToolAmbience }}</td>
+          <td>{{ selectedRevisions[1].ToolAmbience }}</td>
+        </tr>
+        <tr>
+          <td><b>No. of Raw Materials</b></td>
+          <td>{{ selectedRevisions[0].noOfRawMaterials }}</td>
+          <td>{{ selectedRevisions[1].noOfRawMaterials }}</td>
+        </tr>
+        <tr>
+          <td><b>No. of Processes</b></td>
+          <td>{{ selectedRevisions[0].noOfProcess }}</td>
+          <td>{{ selectedRevisions[1].noOfProcess }}</td>
+        </tr>
+
+        <!-- Raw Materials -->
+        <tr>
+          <td><b>Raw Materials</b></td>
+          <td>
+            <div *ngFor="let mat of selectedRevisions[0].rawMaterial">
+              {{ mat.GradeName }} ({{ mat.RatePerKg | number:'1.2-2' }} Rs/Kg)
+            </div>
+          </td>
+          <td>
+            <div *ngFor="let mat of selectedRevisions[1].rawMaterial">
+              {{ mat.GradeName }} ({{ mat.RatePerKg | number:'1.2-2' }} Rs/Kg)
+            </div>
+          </td>
+        </tr>
+
+        <!-- Processes -->
+        <tr>
+          <td><b>Processes</b></td>
+          <td>
+            <div *ngFor="let p of selectedRevisions[0].processes">
+              <div class="process-block">
+                <p><b>Name:</b> {{ p.processName }}</p>
+                <p><b>Tonnage Jaw:</b> {{ p.TonnageJaw }}</p>
+                <p><b>Hours:</b> {{ p.Hours }}</p>
+                <p><b>Cost:</b> {{ p.cost | number:'1.2-2' }}</p>
+              </div>
+              <hr />
+            </div>
+          </td>
+          <td>
+            <div *ngFor="let p of selectedRevisions[1].processes">
+              <div class="process-block">
+                <p><b>Name:</b> {{ p.processName }}</p>
+                <p><b>Tonnage Jaw:</b> {{ p.TonnageJaw }}</p>
+                <p><b>Hours:</b> {{ p.Hours }}</p>
+                <p><b>Cost:</b> {{ p.cost | number:'1.2-2' }}</p>
+              </div>
+              <hr />
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button mat-raised-button color="warn" (click)="closeComparePopup()">Close</button>
+  </div>
+</div>
+
+
+
+

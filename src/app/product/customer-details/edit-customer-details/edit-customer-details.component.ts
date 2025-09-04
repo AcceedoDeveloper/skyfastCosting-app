@@ -42,6 +42,8 @@ export class EditCustomerDetailsComponent implements OnInit {
   customerForm: FormGroup;
   revisionNumber = 1; 
   selectedRevisionIndex = 0; // default first revision
+  packingOptions: string[] = ["none", "domestic", "international"];
+
 
 
 
@@ -194,7 +196,10 @@ onSave() {
       })
     );
 
-    this.dialogRef.close(updatedCustomer);
+    this.store.dispatch(Action.loadCustomers());
+
+    this.dialogRef.close();
+
   }
 }
 

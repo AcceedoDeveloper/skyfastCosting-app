@@ -32,9 +32,10 @@ export interface Revision {
   cavities: number;
   meltingLoss: number;
   shortWeight: number;
-  rawMaterial: RawMaterial[];
-  processes: Process[];
+  rawMaterial?: RawMaterial[];
+  processes?: Process[];
   productName: string;
+  selected?: boolean;
 }
 
 
@@ -61,6 +62,7 @@ export interface CustomerDetails {
   createdAt?: Date;
   updatedAt?: Date;
   __v?: number;
-  revisions?: Revision[];
+  revisions: Revision[];
+  
 
 }

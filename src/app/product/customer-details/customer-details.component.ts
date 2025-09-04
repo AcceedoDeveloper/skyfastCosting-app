@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import * as customerActions from '../store/product.actions';
 import { selectAllCustomers } from '../store/product.selectors';
 import { CommonModule } from '@angular/common';
@@ -16,6 +16,9 @@ import { MatIconModule} from '@angular/material/icon';
 import { AddCustomerDetailsComponent} from './add-customer-details/add-customer-details.component';
 import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
 import { EditCustomerDetailsComponent } from './edit-customer-details/edit-customer-details.component';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 
 @Component({
   selector: 'app-customer-details',
@@ -26,13 +29,19 @@ import { EditCustomerDetailsComponent } from './edit-customer-details/edit-custo
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    FormsModule,
+    MatCheckboxModule
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
 })
 export class CustomerDetailsComponent implements OnInit{
   customers$!: Observable<CustomerDetails[]>;
+selectedRevisions: any[] = [];
+showComparePopup: boolean = false;
+   expandedCustomer: any = null;
+
 
 
   constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog) {
@@ -41,7 +50,18 @@ export class CustomerDetailsComponent implements OnInit{
   ngOnInit(): void {
 
     
- this.customers$ = this.store.select(selectAllCustomers);
+this.customers$ = this.store.select(selectAllCustomers).pipe(
+  map(customers =>
+    customers.map(c => ({
+      ...c,
+      revisions: c.revisions?.map(r => ({
+        ...r,
+        rawMaterial: r.rawMaterial ?? [],
+        processes: r.processes ?? []
+      })) ?? []
+    }))
+  )
+);
   this.customers$.subscribe(customers => {
       console.log('Customers from store:', customers);
     }
@@ -90,9 +110,73 @@ onEdit(customer: CustomerDetails) {
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
       // If user saved changes, dispatch update
+      this.store.dispatch(customerActions.loadCustomers());
     }
   });
 }
+
+
+
+getLatestRevision(c: any) {
+  return c?.revisions && c.revisions.length > 0
+    ? c.revisions[c.revisions.length - 1]
+    : null;
+}
+
+ onCompare(customer: any) {
+    this.selectedRevisions = customer.revisions;
+  }
+
+
+
+
+  toggleCompare(customer: any) {
+  if (this.expandedCustomer === customer) {
+    this.expandedCustomer = null; // collapse
+  } else {
+    this.expandedCustomer = customer; // expand
+  }
+}
+
+onRevisionSelect(revision: any, event: any) {
+  if (event.checked) {
+    if (this.selectedRevisions.length < 2) {
+      this.selectedRevisions.push(revision);
+    } else {
+      event.source.checked = false; // restrict to 2
+    }
+  } else {
+    this.selectedRevisions = this.selectedRevisions.filter(r => r !== revision);
+  }
+}
+
+canCompare(): boolean {
+  return this.selectedRevisions.length === 2;
+}
+
+openComparePopup() {
+  if (this.selectedRevisions.length === 2) {
+    this.showComparePopup = true;
+  }
+}
+
+closeComparePopup() {
+  this.showComparePopup = false;
+}
+
+
+onRevisionSelectPopup(revision: any, event: any) {
+  if (event.checked) {
+    if (this.selectedRevisions.length < 2) {
+      this.selectedRevisions.push(revision);
+    } else {
+      event.source.checked = false; // restrict to 2
+    }
+  } else {
+    this.selectedRevisions = this.selectedRevisions.filter(r => r !== revision);
+  }
+}
+
 
 
 }

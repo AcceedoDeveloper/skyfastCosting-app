@@ -48,6 +48,7 @@ export class AddCustomerDetailsComponent implements OnInit{
     rawmaterial$! : Observable<RawMaterial[]>;
     process$! : Observable<Process[]>;
     Cusid?: string;
+    packingOptions: string[] = ["none", "domestic", "international"];
 
     constructor(
     private fb: FormBuilder,

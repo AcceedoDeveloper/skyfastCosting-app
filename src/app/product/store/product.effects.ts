@@ -204,6 +204,15 @@ export class ProductEffects {
     )
   );
 
+
+  addCustomerSuccess$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RawMaterialActions.addCustomerSuccess),
+    map(() => RawMaterialActions.loadCustomers()) // 👈 reload only after success
+  )
+);
+
+
   // Update
   updateCustomer$ = createEffect(() =>
     this.actions$.pipe(
@@ -224,6 +233,14 @@ export class ProductEffects {
       )
     )
   );
+
+
+  updateCustomerSuccess$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RawMaterialActions.updateCustomerSuccess),
+    map(() => RawMaterialActions.loadCustomers()) 
+  )
+);
 
   // Delete
   deleteCustomer$ = createEffect(() =>

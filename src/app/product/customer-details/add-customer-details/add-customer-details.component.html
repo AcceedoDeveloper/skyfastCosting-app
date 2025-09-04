@@ -181,9 +181,13 @@
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Packing</mat-label>
-    <input matInput type="text" formControlName="Packing" />
-  </mat-form-field>
+  <mat-label>Packing</mat-label>
+  <mat-select formControlName="Packing">
+    <mat-option *ngFor="let option of packingOptions" [value]="option">
+      {{ option }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
     <mat-label>InterestRate</mat-label>
