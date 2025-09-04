@@ -110,7 +110,7 @@
 
     <!-- TonnageJaw -->
     <mat-form-field appearance="outline" class="field">
-      <mat-label>TonnageJaw</mat-label>
+      <mat-label>Tonnage/Jaw</mat-label>
       <input matInput type="text" formControlName="TonnageJaw" />
     </mat-form-field>
 
@@ -208,8 +208,16 @@
     </form>
 
     <div class="step-actions">
-      <button  class="btn btn-primary" (click)="onSave()">Save</button>
+      <button  class="btn btn-primary" matStepperNext (click)="onSave()">Save</button>
     </div>
   </mat-step>
+
+
+
+
+      <mat-step>
+       <ng-template matStepLabel>Quotation view</ng-template>
+
+    </mat-step>
 
 </mat-stepper>

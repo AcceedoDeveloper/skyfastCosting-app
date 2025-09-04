@@ -87,6 +87,9 @@
     <mat-step>
       <ng-template matStepLabel>Processes</ng-template>
       <div class="process-container" formArrayName="processes">
+         <button mat-mini-fab color="primary" (click)="addProcess()">
+        <mat-icon>add</mat-icon>
+      </button>
         <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
           <mat-form-field appearance="outline" class="half-width">
             <mat-label>Process Name</mat-label>
@@ -126,12 +129,12 @@
           <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcess(i)">
             <mat-icon class="icon">delete</mat-icon>
           </button>
+          
         </div>
+           
       </div>
 
-      <button mat-mini-fab color="primary" (click)="addProcess()">
-        <mat-icon>add</mat-icon>
-      </button>
+  
 
       <div class="step-actions">
         <button class="btn btn-primary" matStepperNext>Next</button>
@@ -173,9 +176,14 @@
 
       <div class="step-actions">
         <button class="btn btn-warning" (click)="incrementRevision() " >make as another review</button>
-        <button class="btn btn-primary" (click)="onSave()">Save</button>
+        <button class="btn btn-primary"  matStepperNext (click)="onSave()">Save</button>
       </div>
     </div>
+    </mat-step>
+
+    <mat-step>
+       <ng-template matStepLabel>Quotation view</ng-template>
+
     </mat-step>
 
   </mat-horizontal-stepper>

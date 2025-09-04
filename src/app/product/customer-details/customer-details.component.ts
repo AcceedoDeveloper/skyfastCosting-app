@@ -178,6 +178,35 @@ onRevisionSelectPopup(revision: any, event: any) {
 }
 
 
+getCellClass(field: string): string {
+  if (!this.selectedRevisions || this.selectedRevisions.length < 2) return '';
+
+  const val1 = this.selectedRevisions[0][field];
+  const val2 = this.selectedRevisions[1][field];
+
+  if (val1 !== val2) {
+    return 'highlight-diff'; // Apply red background if different
+  }
+  return ''; // No class if same
+}
+isDifferent(value1: any, value2: any): boolean {
+  return value1 !== value2;
+}
+getRawMaterialList(rawMaterials: any[] | undefined): string {
+  if (!rawMaterials || rawMaterials.length === 0) {
+    return 'No Raw Materials';
+  }
+  return rawMaterials.map(mat => mat.GradeName).join(', ');
+}
+
+getProcessList(processes: any[] | undefined): string {
+  if (!processes || processes.length === 0) {
+    return 'No Processes';
+  }
+  return processes.map(p => p.processName).join(', ');
+}
+
+
 
 }
 

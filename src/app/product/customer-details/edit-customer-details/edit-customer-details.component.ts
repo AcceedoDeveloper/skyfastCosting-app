@@ -198,7 +198,6 @@ onSave() {
 
     this.store.dispatch(Action.loadCustomers());
 
-    this.dialogRef.close();
 
   }
 }

@@ -89,3 +89,42 @@ td.actions {
 .icon  :hover{
 cursor: pointer;
 }
+
+
+.revision-checkboxes {
+  display: flex;
+  flex-wrap: wrap; /* if too many, they wrap to next line */
+  gap: 16px; /* space between checkboxes */
+  margin-bottom: 1rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+}
+
+
+.highlight-diff {
+  color: red;
+  font-weight: bold;
+}
+.diff {
+  color: red;
+  font-weight: bold;
+}
+/* Make revision + product narrow */
+.small-col {
+  width: 120px;
+  white-space: nowrap;
+}
+
+/* Make raw materials + processes wider */
+.wide-col {
+  width: 40%;
+  text-align: left;
+}
+
+/* Keep table responsive */
+.nested-table td {
+  vertical-align: top;
+}

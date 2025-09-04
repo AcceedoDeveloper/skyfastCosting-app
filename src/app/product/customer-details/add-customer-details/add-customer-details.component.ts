@@ -203,7 +203,6 @@ onSave() {
   console.log('Final JSON (Full):', result);
 
   this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
-  this.dialogRef.close();
 }
 
 calculateProcessValue(proc: any): number {

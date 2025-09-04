@@ -36,6 +36,8 @@ export interface Revision {
   processes?: Process[];
   productName: string;
   selected?: boolean;
+  noOfProcess?: number;
+  noOfRawMaterial?: number;
 }
 
 
@@ -52,8 +54,6 @@ export interface CustomerDetails {
   rawMaterial?: RawMaterial[]; 
   processSelection?: string[];
   processes?: Process[];
-  noOfProcess?: number;
-  noOfRawMaterial?: number;
    Rejection?: number;
   Packing?: string;
   InterestRate?: number;
