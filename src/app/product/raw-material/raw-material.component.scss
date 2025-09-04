@@ -174,6 +174,42 @@ inset: 0;
   width: 100%;
 }
 
+/* Cost Display Box Styling */
+.cost-display-box {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.cost-display-box:hover {
+  border-color: #0e1635;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cost-display-box h5 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cost-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0e1635;
+  text-align: center;
+  padding: 8px;
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
 /* Actions (buttons at the bottom) */
 .actions {
   display: flex;

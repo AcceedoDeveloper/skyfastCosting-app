@@ -43,7 +43,8 @@ export class AddCustomerComponent implements OnInit {
       gstNumber: [this.data?.gstNumber || ''],
       phone: [this.data?.phone || ''],
       email: [this.data?.email || '', [Validators.email]],
-      transport: [this.data?.transport || '']
+      transport: [this.data?.transport || ''],
+      baseCost: [this.data?.baseCost || 0]
     });
   }
 

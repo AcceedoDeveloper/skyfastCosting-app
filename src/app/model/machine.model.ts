@@ -28,6 +28,7 @@ export interface Customer {
   phone: string;
   email: string;
   transport: string;
+  baseCost?: number;
   createdAt: string;
   updatedAt: string;
   __v: number;

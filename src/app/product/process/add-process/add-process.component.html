@@ -28,6 +28,13 @@
       <input matInput formControlName="cycleTime">
     </mat-form-field>
   
+    <!-- Process Cost Display -->
+    <div class="cost-display-box">
+      <h5>Process Cost</h5>
+      <div class="cost-value">
+        ₹{{ calculateProcessCost() }}/Hour
+      </div>
+    </div>
     
   </div>
 

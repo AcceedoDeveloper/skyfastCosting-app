@@ -60,6 +60,14 @@
     <input matInput type="number" formControlName="RatePerKg" placeholder="Enter Rate">
   </mat-form-field>
 
+  <!-- Cost Display Box -->
+  <div class="cost-display-box">
+    <h5>Material Cost</h5>
+    <div class="cost-value">
+      ₹{{ rawMaterialForm.get('RatePerKg')?.value || 0 }}/Kg
+    </div>
+  </div>
+
   <div class="actions">
    
     <button class="btn btn-danger" type="button" (click)="close()">Cancel</button>
