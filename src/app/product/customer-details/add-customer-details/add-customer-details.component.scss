@@ -209,9 +209,8 @@ transition: all 0.2s ease;
 
 /* Label left, value right inside a row */
 .field-row{
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 12px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
@@ -225,14 +224,6 @@ transition: all 0.2s ease;
 
 .value-box{ width: 100%; }
 
-/* Make mat-field look compact like your first image */
-.value-box .mat-mdc-text-field-wrapper{ height: 32px; }
-.value-box .mat-mdc-form-field-flex{ align-items: center; }
-.value-box .mdc-notched-outline__leading,
-.value-box .mdc-notched-outline__notch,
-.value-box .mdc-notched-outline__trailing{ border-color:#e5e7eb; }
-
-/* Ensure select fields match input field height */
 /* Ensure select fields match input field height */
 .value-box .mat-mdc-select{ height: 32px; }
 .value-box .mat-mdc-select-trigger{ height: 32px; }
@@ -248,4 +239,47 @@ transition: all 0.2s ease;
 .lab{
 border: 2px solid black;
 padding: 0px 5px;
+margin-left: -70px;
 }
+
+.lab1{
+  border: 2px solid black;
+  padding: 0px 5px;
+  margin-left: -70px;
+  }
+
+
+   .lab {
+    width: 48%;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .lab  {
+    outline: none;
+    border-color: #3f51b5;
+    box-shadow: 0 0 4px rgba(63, 81, 181, 0.3);
+  }
+
+
+
+  .lab1 {
+    width: 55%;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .lab1 {
+    outline: none;
+    border-color: #3f51b5;
+    box-shadow: 0 0 4px rgba(63, 81, 181, 0.3);
+  }
+
+
+  .label1 {
+    flex: 0 0 auto; /* Prevent label from stretching */
+  }

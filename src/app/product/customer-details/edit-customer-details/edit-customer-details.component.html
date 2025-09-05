@@ -152,18 +152,18 @@
           <hr style="border: 0.2px solid #000000;">
 
           <div class="field-row">
-            <label style="font-size:15px; font-weight: bold;">Interest Rate</label>
-              <input matInput type="number" formControlName="interestRate" />
+            <label class="label1" style="font-size:15px; font-weight: bold;">Interest Rate</label>
+              <input class="lab" matInput type="number" formControlName="interestRate" />
           </div>
 
           <div class="field-row">
-            <label style="font-size: 15px; font-weight: bold;">Tool Ambience</label>
-              <input matInput type="text" formControlName="toolAmbience" />
+            <label class="label1" style="font-size: 15px; font-weight: bold;">Tool Ambience</label>
+              <input class="lab" matInput type="text" formControlName="toolAmbience" />
           </div>
 
           <div class="field-row">
-            <label style="font-size:15px; font-weight: bold;">Inspection Cost</label>
-              <input matInput type="number" formControlName="inspectorCost" />
+            <label class="label1" style="font-size:15px; font-weight: bold;">Inspection Cost</label>
+              <input class="lab" matInput type="number" formControlName="inspectorCost" />
           </div>
         </div>
 
@@ -173,7 +173,7 @@
           <hr style="border: 0.2px solid #000000;">
           <div class="field-row single">
             <label style="font-size: 15px; font-weight: bold;">Rejection</label>
-              <input matInput type="number" formControlName="rejection" />
+              <input class="lab" matInput type="number" formControlName="rejection" />
           </div>
         </div>
 
@@ -183,7 +183,7 @@
           <hr style="border: 0.2px solid #000000;">
           <div class="field-row single">
             <label style="font-size: 15px; font-weight: bold;">Packing</label>
-              <mat-select class="lab" formControlName="packing">
+              <mat-select class="lab1" formControlName="packing">
                 <mat-option *ngFor="let option of packingOptions" [value]="option">
                   {{ option }}
                 </mat-option>
