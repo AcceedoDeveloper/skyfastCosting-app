@@ -1,7 +1,7 @@
 <div class="customer-container">
   <div class="header">
     <h2>Customer Details</h2>
-    <button mat-raised-button color="primary" (click)="openAddProductDialog()">Add Customer</button>
+    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
   </div>
 
   <ng-container *ngIf="customers$ | async as customers; else loading">
@@ -57,15 +57,15 @@
   </tr>
 
   <!-- 🔽 Nested table row -->
-  <tr *ngIf="expandedCustomer === c">
-    <td colspan="6">
+  <tr  *ngIf="expandedCustomer === c">
+    <td id="subbg" colspan="6">
       <table class="table table-sm table-bordered nested-table">
-        <thead>
-          <tr>
-            <th>Revision</th>
-            <th>Product</th>
-            <th>Raw Materials</th>
-            <th>Processes</th>
+        <thead >
+          <tr >
+            <th class="subtable" >Revision</th>
+            <th class="subtable">Product</th>
+            <th class="subtable">Raw Materials</th>
+            <th class="subtable">Processes</th>
           </tr>
         </thead>
        <tbody>

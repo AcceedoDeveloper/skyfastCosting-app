@@ -67,9 +67,9 @@ thead {
 th {
    text-align: center;
   padding: 14px 20px;
-  color: #5b84ff;
-  font-weight: bold;
-  border-bottom: 2px solid #5b84ff;
+    background-color: #0e1635;
+    color: white;
+
   white-space: nowrap;
 }
 
@@ -158,4 +158,22 @@ tr:hover {
   font-size: 14px;
   font-weight: 500;
   color: #37474f;
+}
+
+#hbtn {
+  background-color: #ffffff;  
+  color: #0e1635;             
+  padding: 10px 22px;
+  border: 1px solid #e0e0e0;  
+  border-radius: 30px;        
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#hbtn:hover {
+  border-color: #c8b273;      
+  box-shadow: 0 3px 8px rgba(200,178,115,0.25);
 }
