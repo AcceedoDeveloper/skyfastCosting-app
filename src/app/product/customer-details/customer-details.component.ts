@@ -122,6 +122,11 @@ getLatestRevision(c: any) {
     ? c.revisions[c.revisions.length - 1]
     : null;
 }
+getLatestrevisionNumber(c: any) {
+  return c?.revisions && c.revisions.length > 0
+    ? c.revisions[c.revisions.length - 1]
+    : null;
+}
 
  onCompare(customer: any) {
     this.selectedRevisions = customer.revisions;

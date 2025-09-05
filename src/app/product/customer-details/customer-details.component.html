@@ -11,8 +11,10 @@
           <th>Customer</th>
           <th>Part</th>
           <th>Product</th>
+          <th>Revision</th>
           <th>Raw Materials</th>
           <th>Processes</th>
+          <th>Download</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -25,8 +27,15 @@
     <td>{{ c.customerName.customerName }}</td>
     <td>{{ c.partName }}</td>
     <td>{{ getLatestRevision(c)?.productName }}</td>
+     <!-- <td>{{c.revisionNumber}}</td> -->
 
-    <td>
+<td>
+  {{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}
+</td>
+
+
+
+    <td> 
   <ng-container *ngIf="getLatestRevision(c)">
     {{ getLatestRevision(c).noOfRawMaterials }}
   </ng-container>
@@ -44,6 +53,14 @@
         <span>No Processes</span>
       </ng-template>
     </td>
+   <!-- <td>
+  <button >Download Quotation</button>
+</td> -->
+<td>
+  <a href="quotation.pdf" download="Quotation.pdf">Download Quotation</a>
+</td>
+
+
 
     <td class="actions">
       <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
@@ -58,7 +75,7 @@
 
   <!-- 🔽 Nested table row -->
   <tr  *ngIf="expandedCustomer === c">
-    <td id="subbg" colspan="6">
+    <td id="subbg" colspan="8">
       <table class="table table-sm table-bordered nested-table">
         <thead >
           <tr >
@@ -80,7 +97,7 @@
     </td>
 
     <!-- Product -->
-    <td class="small-col">
+    <td class="small-col" id="small-colname">
       {{ rev.productName }}
     </td>
 
@@ -348,7 +365,10 @@
       </tbody>
     </table>
 
-    <button mat-raised-button color="warn" (click)="closeComparePopup()">Close</button>
+    <div id="closebtn">
+      <button  class="btn btn-danger"  (click)="closeComparePopup()">Close</button>
+
+    </div>
   </div>
 </div>
 

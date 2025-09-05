@@ -303,3 +303,167 @@ margin-left: -70px;
     height: 18px; 
     line-height: 18px; 
   }
+
+
+
+
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Main Quotation Container */
+.mainquotation {
+  padding: 20px;
+  border-bottom: 2px solid #0e1635;
+  background-color: #f8f9fa;
+}
+
+.quotationheader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.quotationheader img {
+  height: 20px;
+}
+
+.quotationheader h3 {
+  font-size: 24px;
+  color: #0e1635;
+  font-weight: bold;
+}
+
+.headerdate h6 {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Customer Section */
+.Customermain {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.cusdata h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.cusdata address {
+  font-style: normal;
+  font-size: 14px;
+  color: #555;
+}
+
+.cusnum p {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.cusnum strong {
+  color: #007bff;
+}
+
+/* Material and Process Cost Tables */
+.materialcost {
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table th {
+  // background-color: #007bff;
+
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.processcost th {
+  // background-color: #007bff;
+
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.processcost td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.tablebg {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #000;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .Customermain {
+    flex-direction: column;
+  }
+
+  .cusdata, .cusnum {
+    margin-bottom: 15px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+}
+
+/* Additional Styling for Professional Look */
+h4, h6 {
+  margin: 0;
+}
+
+address {
+  line-height: 1.4;
+}
+
+table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+table, th, td {
+
+  border-collapse: collapse;   /* avoid double borders */
+  text-align: center;          /* horizontal center */
+  vertical-align: middle;      /* vertical center */
+  padding: 6px 10px;           /* breathing space */
+}
+
+.tablebg {
+  background-color: #f2f2f2;   /* light grey for highlighted cells */
+  font-weight: bold;
+}

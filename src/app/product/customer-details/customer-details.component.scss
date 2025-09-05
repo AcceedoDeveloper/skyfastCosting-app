@@ -126,6 +126,8 @@ cursor: pointer;
 }
 /* Make revision + product narrow */
 .small-col {
+  text-align: center;
+vertical-align: middle;
   width: 120px;
   white-space: nowrap;
 }
@@ -133,7 +135,7 @@ cursor: pointer;
 /* Make raw materials + processes wider */
 .wide-col {
   width: 40%;
-  text-align: left;
+  // text-align: left;
 }
 
 /* Keep table responsive */
@@ -158,4 +160,18 @@ cursor: pointer;
 #hbtn:hover {
   border-color: #c8b273;      
   box-shadow: 0 3px 8px rgba(200,178,115,0.25);
+}
+
+#closebtn{
+  display: flex;
+  justify-content:flex-end;
+ 
+}
+
+
+#small-colname {
+padding: 0px 200px;
+text-align: center;
+vertical-align: middle;
+// background-color: #c8b273;
 }
