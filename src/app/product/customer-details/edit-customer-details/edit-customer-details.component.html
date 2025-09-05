@@ -144,35 +144,54 @@
   <mat-step>
       <ng-template matStepLabel>Other Details</ng-template>
      <div class="other-details">
-      <mat-form-field appearance="outline">
-        <mat-label>Rejection</mat-label>
-        <input matInput type="number" formControlName="rejection" />
-      </mat-form-field>
+      <div class="summary-row">
 
-     <mat-form-field appearance="outline">
-  <mat-label>Packing</mat-label>
-  <mat-select formControlName="packing">
-    <mat-option *ngFor="let option of packingOptions" [value]="option">
-      {{ option }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+        <!-- Commercial Terms -->
+        <div class="summary-card">
+          <h3 style="color:#3d8adc;;">Commercial Terms</h3>
+          <hr style="border: 0.2px solid #000000;">
 
+          <div class="field-row">
+            <label style="font-size:15px; font-weight: bold;">Interest Rate</label>
+              <input matInput type="number" formControlName="interestRate" />
+          </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Interest Rate</mat-label>
-        <input matInput type="number" formControlName="interestRate" />
-      </mat-form-field>
+          <div class="field-row">
+            <label style="font-size: 15px; font-weight: bold;">Tool Ambience</label>
+              <input matInput type="text" formControlName="toolAmbience" />
+          </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Inspector Cost</mat-label>
-        <input matInput type="number" formControlName="inspectorCost" />
-      </mat-form-field>
+          <div class="field-row">
+            <label style="font-size:15px; font-weight: bold;">Inspection Cost</label>
+              <input matInput type="number" formControlName="inspectorCost" />
+          </div>
+        </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Tool Ambience</mat-label>
-        <input matInput type="text" formControlName="toolAmbience" />
-      </mat-form-field>
+        <!-- Rejection -->
+        <div class="summary-card">
+          <h3 style="color:#3d8adc;;">Rejection</h3>
+          <hr style="border: 0.2px solid #000000;">
+          <div class="field-row single">
+            <label style="font-size: 15px; font-weight: bold;">Rejection</label>
+              <input matInput type="number" formControlName="rejection" />
+          </div>
+        </div>
+
+        <!-- Transportation -->
+        <div class="summary-card">
+          <h3 style="color:#3d8adc;;">Transportation</h3>
+          <hr style="border: 0.2px solid #000000;">
+          <div class="field-row single">
+            <label style="font-size: 15px; font-weight: bold;">Packing</label>
+              <mat-select class="lab" formControlName="packing">
+                <mat-option *ngFor="let option of packingOptions" [value]="option">
+                  {{ option }}
+                </mat-option>
+              </mat-select>
+          </div>
+        </div>
+
+      </div>
 
       <div class="step-actions">
         <button class="btn btn-warning" (click)="incrementRevision() " >make as another review</button>
