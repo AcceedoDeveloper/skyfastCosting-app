@@ -26,6 +26,7 @@
         (click)="isEditMode ? updateRole() : addRole()"
         [disabled]="newRoleName.trim().length === 0"
         class="circular-button primary-button"
+     
       >
         <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
       </button>

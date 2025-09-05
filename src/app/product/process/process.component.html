@@ -5,7 +5,7 @@
   <h2 style="font-weight: bold;">Process List</h2>
   </div>
 
-<button  mat-raised-button color="primary" (click)="openAddDialog()">+ Add Process</button>
+<button  mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">+ Add Process</button>
 </div>
   <!-- Show data when available -->
   <ng-container *ngIf="process$ | async as processes; else loading">
@@ -51,3 +51,4 @@
 
 
 
+ 
