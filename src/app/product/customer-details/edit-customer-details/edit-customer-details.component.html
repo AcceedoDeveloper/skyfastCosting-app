@@ -86,10 +86,11 @@
     <!-- Step 2: Processes -->
     <mat-step>
       <ng-template matStepLabel>Processes</ng-template>
-      <div class="process-container" formArrayName="processes">
-         <button mat-mini-fab color="primary" (click)="addProcess()">
+      <button class="addbtn" mat-mini-fab color="primary" (click)="addProcess()">
         <mat-icon>add</mat-icon>
       </button>
+      <div class="process-container" formArrayName="processes">
+      
         <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
           <mat-form-field appearance="outline" class="half-width">
             <mat-label>Process Name</mat-label>
@@ -152,7 +153,7 @@
           <hr style="border: 0.2px solid #000000;">
 
           <div class="field-row">
-            <label class="label1" style="font-size:15px; font-weight: bold;">Interest Rate</label>
+            <label class="label1" style="font-size:15px; font-weight: bold;">Interest Rate %</label>
               <input class="lab" matInput type="number" formControlName="interestRate" />
           </div>
 
@@ -162,7 +163,7 @@
           </div>
 
           <div class="field-row">
-            <label class="label1" style="font-size:15px; font-weight: bold;">Inspection Cost</label>
+            <label class="label1" style="font-size:15px; font-weight: bold;">Inspection Cost %</label>
               <input class="lab" matInput type="number" formControlName="inspectorCost" />
           </div>
         </div>
@@ -172,7 +173,7 @@
           <h3 style="color:#3d8adc;;">Rejection</h3>
           <hr style="border: 0.2px solid #000000;">
           <div class="field-row single">
-            <label style="font-size: 15px; font-weight: bold;">Rejection</label>
+            <label style="font-size: 15px; font-weight: bold;">Rejection %</label>
               <input class="lab" matInput type="number" formControlName="rejection" />
           </div>
         </div>
@@ -194,7 +195,7 @@
       </div>
 
       <div class="step-actions">
-        <button class="btn btn-warning" (click)="incrementRevision() " >make as another review</button>
+        <button class="btn btn-warning" (click)="incrementRevision() " >Save As New Revision</button>
         <button class="btn btn-primary"  matStepperNext (click)="onSave()">Save</button>
       </div>
     </div>

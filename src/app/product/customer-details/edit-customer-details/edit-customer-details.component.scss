@@ -183,6 +183,16 @@ transition: all 0.2s ease;
   margin-bottom: 2px;
 }
 
+.btn-warning {
+  transition: all 0.2s ease; 
+}
+
+.btn-warning:hover {
+  background-color: #e0a800; 
+  transform: scale(1.02); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
 .other-details{ margin-top: 20px; }
 
 /* Row of three cards */
@@ -283,4 +293,24 @@ transition: all 0.2s ease;
   
     .label1 {
       flex: 0 0 auto; /* Prevent label from stretching */
+    }
+
+
+    .addbtn{
+      margin-left: 95%;
+      margin-bottom: 2px;
+    }
+
+
+    .addbtn.mat-mini-fab {
+      width: 32px; 
+      height: 32px; 
+      line-height: 32px; 
+    }
+    
+    .addbtn .mat-icon {
+      font-size: 18px; 
+      width: 18px;
+      height: 18px; 
+      line-height: 18px; 
     }
