@@ -29,7 +29,7 @@
             </mat-form-field>
     
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Product Name</mat-label>
+              <mat-label>Part Number</mat-label>
               <input matInput formControlName="productName">
             </mat-form-field>
     
@@ -136,10 +136,7 @@
     </mat-form-field>
 
     <div class="formula-box">
-      <h5>
-        Cost
-        {{ calculateProcessValue(procCtrl.value) }}
-      </h5>
+      <h5>  Cost {{ calculateProcessValue(procCtrl.value) }}</h5>
     </div>
 
 
