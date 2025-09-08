@@ -28,7 +28,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Product Name</mat-label>
+            <mat-label>Part No</mat-label>
             <input matInput type="text" formControlName="productName" readonly />
           </mat-form-field>
 
@@ -41,7 +41,7 @@
             <mat-label>Raw Materials</mat-label>
             <mat-select formControlName="rawMaterial" multiple>
               <mat-option *ngFor="let raw of (rawMaterial$ | async)" [value]="raw._id">
-                {{ raw.GradeName }} (₹{{ raw.RatePerKg }}/kg)
+                {{ raw.GradeName }} <!--(₹{{ raw.RatePerKg }}/g)  -->
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -107,7 +107,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Hours</mat-label>
+            <mat-label>Cost Per Hr</mat-label>
             <input matInput type="number" formControlName="Hours" />
           </mat-form-field>
 
@@ -201,10 +201,233 @@
     </div>
     </mat-step>
 
-    <mat-step>
-       <ng-template matStepLabel>Quotation view</ng-template>
+<mat-step>
+  <ng-template matStepLabel>Quotation view</ng-template>
 
-    </mat-step>
+  <!-- header -->
+  <div class="mainquotation">
+    <div class="quotationheader">
+      <img src="/sky.png" alt="SKYFAST">
+      <h3>QUOTATION</h3>
+      <div class="headerdate">
+        <h6>Qtn. N SF/11/21/02</h6>
+        <h6>Date : 17.11.21</h6>
+      </div>
+    </div>
+  </div>
+
+  <!-- customer main -->
+  <div class="Customermain">
+    <!-- customer data -->
+    <div class="cusdata">
+      <h4><strong>Customer Name & Address: <br>Gilbarco Veeder Root India Private Ltd</strong></h4>
+      <address>
+        SF No. 628/2 & 627/2,<br>
+        W-4 Coimbatore Campus, Eachanari,<br>
+        Chettipalayam Road, Malumichampatti,<br>
+        Coimbatore 641 021, India
+      </address>
+    </div>
+
+    <!-- customer number data -->
+    <div class="cusnum">
+      <p>Customer Drawing No : <strong>M11241</strong></p>
+      <p>Part No : <strong>M11241B001 REV "B"</strong></p>
+      <p>Part Name : <strong>End Cover</strong></p>
+    </div>
+  </div>
+
+  <div class="materialcost">
+    <!-- Material cost -->
+    <table border="2px" class="matcost">
+      <thead>
+        <tr>
+          <th style="text-align: center;" colspan="4"><strong>Material Cost</strong></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Raw Material Spec</td>
+          <td>A 413</td>
+          <td>Finish Weight/pc</td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>Raw Material Price/kg +10% inventory cost</td>
+          <td>250</td>
+          <td>Raw Material Cost/pc (Rm.wt/pc x Rm.price/kg)</td>
+          <td>45.15</td>
+        </tr>
+        <tr>
+          <td>Component Weight(Kg)</td>
+          <td>0.172</td>
+          <td>Scrap Weight/pc (Rm.wt - Finish wt x 0.96)</td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>Melting Loss</td>
+          <td>5.0%</td>
+          <td>Scrap Cost/pc (Scrap wt/pc x Scrap cost/kg)</td>
+          <td>NA</td>
+        </tr>
+        <tr>
+          <td>Raw Material Weight/pc</td>
+          <td>0.181</td>
+          <td><strong>Net Mat. Cost</strong> (Rm.cost/pc - Scrap cost/pc)</td>
+          <td>45.15</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Process Cost -->
+  <table  border="1" style="border-collapse: collapse; text-align:center;" class="processcost">
+  <thead>
+    <tr>
+      <th rowspan="2">Opn No</th>
+      <th rowspan="2">Opn Code</th>
+      <th rowspan="2">Machine</th>
+      <th rowspan="2">Machine Hour Rate</th>
+      <th rowspan="2">Cavities</th>
+      <th style="text-align: center;" colspan="2">No. of Cores</th> 
+      <th rowspan="2">Hourly Output</th>
+      <th rowspan="2">Batch Qty</th>
+      <th rowspan="2">Process Cost / Shot</th>
+    </tr>
+    <tr>
+      <th>Mech</th>
+      <th>Hy</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>10</td>
+      <td>200T (Toyo)</td>
+      <td>1180</td>
+      <td>2</td>
+      <td>-</td>
+      <td>-</td>
+      <td>200</td>
+      <td>1000 shots</td>
+      <td>5.80</td>
+    </tr>
+
+    <tr>
+      <td>2</td>
+      <td>20</td>
+      <td>Fettling-Manual</td>
+      <td>71</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>120</td>
+      <td>-</td>
+      <td>0.99</td>
+    </tr>
+
+    <tr>
+      <td>3</td>
+      <td>30</td>
+      <td>Machining</td>
+      <td>210</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>180</td>
+      <td>-</td>
+      <td>1.16</td>
+    </tr>
+
+    <tr>
+      <td>4</td>
+      <td>40</td>
+      <td>Vibro Finish</td>
+      <td>Rs. 8/Kgs</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.172</td>
+      <td>-</td>
+      <td>1.38</td>
+    </tr>
+<tr>
+   <td>5</td>
+      <td>50</td>
+      <td>Leak Testing</td>
+      <td>78</td>
+      <td>-</td>
+      <td>-</td>
+      <td>160</td>
+      <td>-</td>
+      <td>0.48</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td></td>
+      <td>oil Shot &
+      rejection</td>
+      <td>5%</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.47</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align: center;" colspan="4">Total Process Cost/pc (L):</td>
+      <td>9.88</td>
+    </tr>
+    <tr>
+      <td class="tablebg" rowspan="2" colspan="2">Total Quoted Price / Piece</td>
+      <td><strong>Net Material Cost (M)</strong></td>
+      <td colspan="2"><strong>Total Labour Cost (L)</strong></td>
+      <td colspan="2"><strong>Profit, ICC & Overheads 15%</strong></td>
+      <td>Tool Amortizati</td>
+      <td class="tablebg" colspan="2">Total Price</td>
+    </tr>
+    <tr>
+      <td>45.15</td>
+      <td colspan="2">9.88</td>
+      <td colspan="2">8.25</td>
+      <td>1.94</td>
+      <td class="tablebg" colspan="2">65.22</td>
+    </tr>
+    <tr>
+      <td class="tablebg" colspan="2">Profit, ICC & Overheads 15%</td>
+      <td>8.25</td> 
+      <td colspan="2">9.88</td>
+      <td colspan="2"></td>
+      <td>1.94</td> 
+      <td class="tablebg" colspan="2">65.22</td> 
+    </tr>
+    <tr>
+      <th style="text-align: center;" colspan="10">Other Terms and Conditions</th>
+    </tr>
+    <tr>
+      <td colspan="2">Packing & Forwarding</td>
+      <td><strong>Yours</strong></td>
+      <td colspan="2">Mode Of Transport</td>
+      <td colspan="2">Road</td>
+      <td colspan="3">Freight: Paid</td>
+    </tr>
+    <tr>
+      <td colspan="2">Applicable Tax</td>
+      <td>CGST / SGST / IGST</td>
+      <td colspan="4"></td>
+      <td colspan="3"></td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</mat-step>
 
   </mat-horizontal-stepper>
 </form>
