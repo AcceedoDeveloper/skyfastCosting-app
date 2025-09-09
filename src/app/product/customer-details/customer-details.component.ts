@@ -220,7 +220,7 @@ downloadQuotation(customerName: string, partName: string, revision: number) {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Quotation_${customerName}_${partName}_Rev${revision}.pdf`;
+      link.download = `Quotation_${customerName}_${partName}_Rev${revision}.xlsx`;
       link.click();
       window.URL.revokeObjectURL(url); // cleanup
     },

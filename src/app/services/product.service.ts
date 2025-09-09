@@ -66,7 +66,7 @@ private apiUrl = 'http://localhost:3005';
 
 
   downloadQuotation(customerName: string, partName: string, revision: number): Observable<Blob> {
-    const url = `${this.apiUrl}/quotation/revision?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
+    const url = `${this.apiUrl}/customer/quotation/revision?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
     return this.http.get(url, { responseType: 'blob' }); // blob = binary data
   }
 
