@@ -64,6 +64,12 @@ private apiUrl = 'http://localhost:3005';
     return this.http.put<CustomerDetails>(`${this.config.getCostingUrl('updateCustomerDetails')}/${id}`, customer);
   }
 
+
+  downloadQuotation(customerName: string, partName: string, revision: number): Observable<Blob> {
+    const url = `${this.apiUrl}/quotation/revision?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
+    return this.http.get(url, { responseType: 'blob' }); // blob = binary data
+  }
+
   deleteCustomer(id: string): Observable<any> {
     return this.http.delete(`${this.config.getCostingUrl('deleteCustomerDetails')}/${id}`);
   }

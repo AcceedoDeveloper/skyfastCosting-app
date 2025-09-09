@@ -56,7 +56,7 @@
             </mat-form-field>
           
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Casting Weight</mat-label>
+              <mat-label>Casting Weight (In Kg)</mat-label>
               <input type="number" matInput formControlName="castingWeight">
             </mat-form-field>
           
@@ -114,13 +114,13 @@
     <!-- TonnageJaw -->
     <mat-form-field appearance="outline" class="field">
       <mat-label>Tonnage / Jaw</mat-label>
-      <input matInput type="text" formControlName="TonnageJaw" />
+      <input matInput type="text" formControlName="TonnageJaw" readonly />
     </mat-form-field>
 
     <!-- Hours -->
     <mat-form-field appearance="outline" class="field">
-      <mat-label>Cost Per Hr</mat-label>
-      <input matInput type="number" formControlName="Hours" />
+      <mat-label>Machine / per hr</mat-label>
+      <input matInput type="number" formControlName="Hours" readonly />
     </mat-form-field>
 
     <!-- Cycle Time -->
@@ -181,18 +181,14 @@
             <h3 style="color:#3d8adc;;">Commercial Terms</h3>
             <hr style="border: 0.2px solid #000000;">
 
-            <div class="field-row">
-              <label class="label1" style="font-size:15px; font-weight: bold;">InterestRate %</label>
-              <input class="lab" matInput type="number" formControlName="InterestRate" />
-            </div>
-            
+           
              <div class="field-row">
-              <label class="label1" style="font-size:15px; font-weight: bold;">Tool Ambience</label>
+              <label class="label1" style="font-size:15px; font-weight: bold;">Tool Cost</label>
               <input class="lab" matInput type="string" formControlName="ToolAmbience" />
             </div>
 
             <div class="field-row">
-              <label class="label1" style="font-size:15px; font-weight: bold;">Inspector Cost %</label>
+              <label class="label1" style="font-size:15px; font-weight: bold;">Inspector Cost </label>
               <input class="lab" matInput type="number" formControlName="InspectorCost" />
             </div>
 
@@ -212,16 +208,45 @@
           <div class="summary-card">
             <h3 style="color: #3d8adc;;">Transportation</h3>
             <hr style="border: 0.2px solid #000000;">
+
+             <div class="field-row">
+              <label class="label1" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost)</label>
+              <input class="lab" matInput type="number" formControlName="InterestRate" />
+            </div>
+            
             <div class="field-row single">
               <label style="font-size:15px; font-weight: bold;">Packing</label>
                 
-                <mat-select class="lab1" formControlName="Packing" >
+                <mat-select class="lab1" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
                   <mat-option  *ngFor="let option of packingOptions" [value]="option">
                     {{ option }}
                   </mat-option>
                 </mat-select>
             </div>
           </div>
+
+
+       <div class="field-row" *ngIf="showTransportInput">
+  <label style="font-size:15px; font-weight: bold;">Transport</label>
+
+  <!-- Radio Buttons -->
+  <mat-radio-group formControlName="TransportType">
+    <mat-radio-button value="cost">Cost</mat-radio-button>
+    <mat-radio-button value="percentage">Percentage</mat-radio-button>
+  </mat-radio-group>
+
+  <!-- Input shown based on selection -->
+  <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'cost'">
+    <label class="label1">Transport Cost</label>
+    <input class="lab" matInput type="number" formControlName="TransportCost" />
+  </div>
+
+  <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'percentage'">
+    <label class="label1">Transport %</label>
+    <input class="lab" matInput type="number" formControlName="TransportPercentage" />
+  </div>
+</div>
+
 
         </div>
       </div>

@@ -19,6 +19,7 @@ import * as Action from '../../store/product.actions';
 import { Process, RawMaterial} from '../../../model/product.model';
 import {selectAllProcess, selectAllRawMaterials } from '../../store/product.selectors';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatRadioModule} from '@angular/material/radio';
 import { Actions, ofType } from '@ngrx/effects';
 import {  take } from 'rxjs/operators';
 
@@ -35,7 +36,8 @@ import {  take } from 'rxjs/operators';
     MatIconModule,
     MatSelectModule,
     FormsModule,
-    MatStepperModule
+    MatStepperModule,
+    MatRadioModule
   ],
   templateUrl: './add-customer-details.component.html',
   styleUrl: './add-customer-details.component.scss'
@@ -48,6 +50,7 @@ export class AddCustomerDetailsComponent implements OnInit{
     rawmaterial$! : Observable<RawMaterial[]>;
     process$! : Observable<Process[]>;
     Cusid?: string;
+    showTransportInput = false; 
     packingOptions: string[] = ["none", "domestic", "international"];
 
     constructor(
@@ -77,7 +80,10 @@ export class AddCustomerDetailsComponent implements OnInit{
     Packing : [null, Validators.required],
     InterestRate : [null, Validators.required],
     InspectorCost: [null, Validators.required],
-    ToolAmbience: [null, Validators.required]     
+    ToolAmbience: [null, Validators.required],
+     TransportType: ['cost'],  // 👈 default is "cost"
+  TransportCost: [null],
+  TransportPercentage: [null]    
     })
 
     
@@ -158,16 +164,24 @@ onProcessChange(index: number, processId: string) {
   this.process$.pipe(take(1)).subscribe(processes => {
     const selectedProcess = processes.find(p => p._id === processId);
     if (selectedProcess) {
-      this.processSelection.at(index).patchValue({
+      const patchData: any = {
         processId: selectedProcess._id,
         processName: selectedProcess.processName,
         TonnageJaw: selectedProcess.TonnageJaw,
         Hours: selectedProcess.Hours,
         cycleTime: selectedProcess.cycleTime
-      });
+      };
+
+      // 🔹 If processName is PDC, auto-fill cavity from productForm
+      if (selectedProcess.processName === 'PDC') {
+        patchData.cavity = this.productForm.get('cavities')?.value || null;
+      }
+
+      this.processSelection.at(index).patchValue(patchData);
     }
   });
 }
+
 
 
 
@@ -197,6 +211,8 @@ onSave() {
     InterestRate: this.processForm.value.InterestRate,
     InspectorCost: this.processForm.value.InspectorCost,
     ToolAmbience: this.processForm.value.ToolAmbience,
+    packingRate: this.processForm.value.TransportCost,             // 👈 added
+    packingPercentage: this.processForm.value.TransportPercentage, // 👈 added
     revisionNumber: 1 
   };
 
@@ -216,6 +232,20 @@ calculateProcessValue(proc: any): number {
 }
 
 
+
+
+
+  onPackingChange(selected: string) {
+  this.showTransportInput = selected === 'domestic' || selected === 'international';
+
+  if (!this.showTransportInput) {
+    this.processForm.patchValue({
+      TransportCost: null,
+      TransportPercentage: null,
+      TransportType: 'cost'
+    });
+  }
+}
 
 
 

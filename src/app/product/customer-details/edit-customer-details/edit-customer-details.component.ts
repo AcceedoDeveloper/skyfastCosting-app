@@ -16,6 +16,7 @@ import * as Action from '../../store/product.actions';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { MatStepperModule } from '@angular/material/stepper';
+import {MatRadioModule} from '@angular/material/radio';
 
 
 
@@ -31,7 +32,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatSelectModule,
     CommonModule,
     MatDialogModule,
-    MatStepperModule
+    MatStepperModule,
+    MatRadioModule
   ],
   templateUrl: './edit-customer-details.component.html',
   styleUrl: './edit-customer-details.component.scss'
@@ -89,6 +91,10 @@ if (data?.revisions?.length) {
       packing: [revision?.Packing || ''],
       toolAmbience: [revision?.ToolAmbience || ''],
 
+
+
+      
+
       castingWeight: [revision?.castingWeight ?? 0],
       cavities: [revision?.cavities ?? 0],
       meltingLoss: [revision?.meltingLoss ?? 0],
@@ -96,6 +102,11 @@ if (data?.revisions?.length) {
 
       // 👇 rawMaterial IDs for mat-select
       rawMaterial: [revision?.rawMaterial?.map((r: any) => r._id) || []],
+
+      packingPercentage: [revision?.packingPercentage ?? null],
+  packingRate: [revision?.packingRate ?? null],
+
+      
 
       processes: this.fb.array([])
     });
@@ -171,6 +182,9 @@ onSave() {
       InspectorCost: formValue.inspectorCost,
       ToolAmbience: formValue.toolAmbience,
 
+      packingPercentage: formValue.packingPercentage,
+  packingRate: formValue.packingRate,
+
       customerName: typeof this.data?.customerName === 'string' 
         ? this.data.customerName 
         : this.data?.customerName?.customerName || '',
@@ -232,18 +246,27 @@ onProcessSelected(processId: string, index: number) {
     if (selectedProc) {
       const processGroup = this.processes.at(index);
 
-      processGroup.patchValue({
+      const patchData: any = {
         processName: selectedProc.processName,
         TonnageJaw: selectedProc.TonnageJaw,
         Hours: selectedProc.Hours,
         cycleTime: selectedProc.cycleTime,
-        cavity: selectedProc.cavity,
         cost: selectedProc.cost,
         calculation: selectedProc.calculation
-      });
+      };
+
+      // 🔹 If processName is PDC → auto-fill cavity from customerForm
+      if (selectedProc.processName === 'PDC') {
+        patchData.cavity = this.customerForm.get('cavities')?.value || 0;
+      } else {
+        patchData.cavity = selectedProc.cavity; // fallback
+      }
+
+      processGroup.patchValue(patchData);
     }
   });
 }
+
 
 
 }

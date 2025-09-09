@@ -83,6 +83,7 @@
             <th class="subtable">Product</th>
             <th class="subtable">Raw Materials</th>
             <th class="subtable">Processes</th>
+            <th class="subtable" >Downlaod</th>
           </tr>
         </thead>
        <tbody>
@@ -110,6 +111,17 @@
 <td class="wide-col">
   {{ getProcessList(rev.processes) }}
 </td>
+
+
+<td class="small-col">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="downloadQuotation(c.customerName.customerName, c.partName, rev.revisionNumber)"
+    >
+      Download
+    </button>
+  </td>
 
   </tr>
 

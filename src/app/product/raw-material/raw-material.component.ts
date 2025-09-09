@@ -52,7 +52,7 @@ export class RawMaterialComponent implements OnInit {
 
     this.rawMaterialForm = this.fb.group({
       GradeName: ['', Validators.required],
-      RatePerKg: ['', [Validators.required, Validators.min(1)]],
+      RatePerKg: ['', [Validators.required, Validators.min(0.01)]],
     });
     
   }

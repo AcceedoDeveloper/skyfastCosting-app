@@ -51,7 +51,7 @@
            <div class="corediv">
 
               <mat-form-field appearance="outline">
-            <mat-label>Casting Weight</mat-label>
+            <mat-label>Casting Weight (In Kg)</mat-label>
             <input matInput type="number" formControlName="castingWeight" />
           </mat-form-field>
 
@@ -103,12 +103,12 @@
 
           <mat-form-field appearance="outline" class="half-width">
             <mat-label>Tonnage/Jaw</mat-label>
-            <input matInput formControlName="TonnageJaw" />
+            <input matInput formControlName="TonnageJaw" readonly />
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Cost Per Hr</mat-label>
-            <input matInput type="number" formControlName="Hours" />
+            <mat-label>Machine / per hr</mat-label>
+            <input matInput type="number" formControlName="Hours" readonly />
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="half-width">
@@ -152,18 +152,15 @@
           <h3 style="color:#3d8adc;;">Commercial Terms</h3>
           <hr style="border: 0.2px solid #000000;">
 
-          <div class="field-row">
-            <label class="label1" style="font-size:15px; font-weight: bold;">Interest Rate %</label>
-              <input class="lab" matInput type="number" formControlName="interestRate" />
-          </div>
+          
 
           <div class="field-row">
-            <label class="label1" style="font-size: 15px; font-weight: bold;">Tool Ambience</label>
+            <label class="label1" style="font-size: 15px; font-weight: bold;">Tool Cost</label>
               <input class="lab" matInput type="text" formControlName="toolAmbience" />
           </div>
 
           <div class="field-row">
-            <label class="label1" style="font-size:15px; font-weight: bold;">Inspection Cost %</label>
+            <label class="label1" style="font-size:15px; font-weight: bold;">Inspection Cost </label>
               <input class="lab" matInput type="number" formControlName="inspectorCost" />
           </div>
         </div>
@@ -179,23 +176,44 @@
         </div>
 
         <!-- Transportation -->
-        <div class="summary-card">
-          <h3 style="color:#3d8adc;;">Transportation</h3>
-          <hr style="border: 0.2px solid #000000;">
-          <div class="field-row single">
-            <label style="font-size: 15px; font-weight: bold;">Packing</label>
-              <mat-select class="lab1" formControlName="packing">
-                <mat-option *ngFor="let option of packingOptions" [value]="option">
-                  {{ option }}
-                </mat-option>
-              </mat-select>
-          </div>
-        </div>
+       <div class="summary-card">
+  <h3 style="color:#3d8adc;;">Transportation</h3>
+  <hr style="border: 0.2px solid #000000;">
+
+  <div class="field-row">
+    <label class="label1" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost)</label>
+    <input class="lab" matInput type="number" formControlName="interestRate" />
+  </div>
+
+  <div class="field-row">
+    <label class="label1" style="font-size:15px; font-weight: bold;">Packing Percentage</label>
+    <input class="lab" matInput type="number" formControlName="packingPercentage" />
+  </div>
+
+  <div class="field-row">
+    <label class="label1" style="font-size:15px; font-weight: bold;">Packing Rate</label>
+    <input class="lab" matInput type="number" formControlName="packingRate" />
+  </div>
+
+  <div class="field-row single">
+    <label style="font-size: 15px; font-weight: bold;">Packing</label>
+    <mat-select class="lab1" formControlName="packing"  >
+      <mat-option *ngFor="let option of packingOptions" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-select>
+  </div>
+
+
+
+  
+</div>
+
 
       </div>
 
       <div class="step-actions">
-        <button class="btn btn-warning" (click)="incrementRevision() " >Save As New Revision</button>
+        <button class="btn btn-warning" matStepperNext (click)="incrementRevision() " >Save As New Revision</button>
         <button class="btn btn-primary"  matStepperNext (click)="onSave()">Save</button>
       </div>
     </div>

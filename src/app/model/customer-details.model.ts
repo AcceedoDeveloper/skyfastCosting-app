@@ -38,6 +38,8 @@ export interface Revision {
   selected?: boolean;
   noOfProcess?: number;
   noOfRawMaterial?: number;
+  packingPercentage?: number;
+  packingRate?: number;
 }
 
 

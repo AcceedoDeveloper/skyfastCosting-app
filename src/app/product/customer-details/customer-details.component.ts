@@ -18,6 +18,7 @@ import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialo
 import { EditCustomerDetailsComponent } from './edit-customer-details/edit-customer-details.component';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ProductService} from '../../services/product.service';
 
 
 @Component({
@@ -44,7 +45,7 @@ showComparePopup: boolean = false;
 
 
 
-  constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog) {
+  constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog, private productservices: ProductService) {
   }
 
   ngOnInit(): void {
@@ -64,6 +65,7 @@ this.customers$ = this.store.select(selectAllCustomers).pipe(
 );
   this.customers$.subscribe(customers => {
       console.log('Customers from store:', customers);
+      console.table(customers);
     }
     );
 
@@ -211,7 +213,22 @@ getProcessList(processes: any[] | undefined): string {
   return processes.map(p => p.processName).join(', ');
 }
 
-
+downloadQuotation(customerName: string, partName: string, revision: number) {
+  this.productservices.downloadQuotation(customerName, partName, revision).subscribe({
+    next: (blob) => {
+      // Create a blob URL and trigger download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Quotation_${customerName}_${partName}_Rev${revision}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url); // cleanup
+    },
+    error: (err) => {
+      console.error('❌ Download failed:', err);
+    }
+  });
+}
 
 }
 
