@@ -1,1 +1,202 @@
-<p>permission works!</p>
+<div class="machine-type-container">
+
+  <div class="header">
+  <h2 style="font-weight: bold;">Permission</h2>
+  
+  <button class="btn" mat-raised-button color="primary" (click)="toggleForm()" >
+    <mat-icon>add</mat-icon> Add Permission
+  </button>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- pop -->
+
+<div *ngIf="showForm" class="popup-overlay">
+  <div class="popup">
+  
+
+     <h3>Add Permission</h3>
+      <button class="close-btn" (click)="showForm = false">&times;</button>
+
+
+<!-- <button (click)="toggleForm()"> Form</button> -->
+
+<form *ngIf="showForm">
+  <label>Select the role</label>
+  <select>
+    <option *ngFor="let role of roles$ | async" [value]="role._id">
+      {{ role.role }}
+    </option>
+  </select>
+</form>
+
+ 
+
+      <ul class="nav-list">
+
+  <li class="nav-item" routerLink="/dashboard/dashh" routerLinkActive="active-link">
+    <div class="nav-item-content">
+   <input type="checkbox" class="nav-checkbox">
+      <span class="nav-text" >Dashboard</span>
+    </div>
+  </li>
+
+
+  <!-- User Management -->
+ <li class="nav-item has-submenu" >
+  <div class="nav-item-content">
+    <input 
+      type="checkbox" 
+      class="nav-checkbox"
+      [attr.data-group]="'user'"
+      (change)="onParentCheckboxChange('user', $event)"
+    >
+    <span class="nav-text">User Management</span>
+  </div>
+
+  <ul class="submenu">
+    <li (click)="$event.stopPropagation()">
+      <input 
+        type="checkbox" 
+        class="submenu-checkbox"
+        [attr.data-group]="'user'"
+        (change)="onSubCheckboxChange('user')"
+      > User
+    </li>
+
+    <li (click)="$event.stopPropagation()">
+      <input 
+        type="checkbox" 
+        class="submenu-checkbox"
+        [attr.data-group]="'user'"
+        (change)="onSubCheckboxChange('user')"
+      > Role
+    </li>
+
+
+
+    <li (click)="$event.stopPropagation()">
+      <input 
+        type="checkbox" 
+        class="submenu-checkbox"
+        [attr.data-group]="'user'"
+        (change)="onSubCheckboxChange('user')"
+      > Shift
+    </li>
+
+    <li (click)="$event.stopPropagation()">
+      <input 
+        type="checkbox" 
+        class="submenu-checkbox"
+        [attr.data-group]="'user'"
+        (change)="onSubCheckboxChange('user')"
+      > Customer
+    </li>
+  </ul>
+</li>
+
+
+ 
+
+
+
+
+
+<div class="div1">
+
+    <li class="nav-item has-submenu" id="Companymagement">
+      <div class="nav-item-content">
+        <input 
+          type="checkbox"
+          class="nav-checkbox"
+          [attr.data-group]="'company'"
+          (change)="onParentCheckboxChange('company', $event)">
+        <span class="nav-text">Company Management</span>
+      </div>
+    
+      <ul class="submenu">
+        <li (click)="$event.stopPropagation()">
+          <input 
+            type="checkbox" 
+            class="submenu-checkbox"
+            [attr.data-group]="'company'"
+            (change)="onSubCheckboxChange('company')"
+          > Company Preferences
+        </li>
+    
+        <li (click)="$event.stopPropagation()">
+          <input 
+            type="checkbox" 
+            class="submenu-checkbox"
+            [attr.data-group]="'company'"
+            (change)="onSubCheckboxChange('company')"
+          > Permission
+        </li>
+      </ul>
+    </li>
+    
+    
+    
+    <!-- Material & Process Management -->
+    <li class="nav-item has-submenu" id="MaterialProcessmagement">
+      <div class="nav-item-content">
+        <input 
+          type="checkbox"
+          class="nav-checkbox"
+          [attr.data-group]="'Material'"
+          (change)="onParentCheckboxChange('Material', $event)">
+        <span class="nav-text">Material & Process Management</span>
+      </div>
+    
+      <ul class="submenu">
+        <li (click)="$event.stopPropagation()">
+          <input 
+            type="checkbox" 
+            class="submenu-checkbox"
+            [attr.data-group]="'Material'"
+            (change)="onSubCheckboxChange('Material')"
+          > Raw Material
+        </li>
+    
+        <li (click)="$event.stopPropagation()">
+          <input 
+            type="checkbox" 
+            class="submenu-checkbox"
+            [attr.data-group]="'Material'"
+            (change)="onSubCheckboxChange('Material')"
+          > Process
+        </li>
+      </ul>
+    </li>
+</div>
+<!-- Company Management -->
+
+<div class="div1">
+
+  <!-- Product List -->
+  <li class="nav-item"  id="ProductList" >
+    <div class="nav-item-content">
+      <input type="checkbox" class="nav-checkbox" />
+      <span class="nav-text">Quotation Generator</span>
+    </div>
+  </li>
+  
+  <!-- Reports -->
+  <li class="nav-item" id="Reports">
+    <div class="nav-item-content">
+      <input type="checkbox" class="nav-checkbox" />
+      <span class="nav-text">Reports</span>
+    </div>
+  </li>
+</div>
+
+
+</ul>
+
+  </div>
+</div>
