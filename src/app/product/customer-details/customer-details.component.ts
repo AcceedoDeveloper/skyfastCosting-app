@@ -21,6 +21,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProductService} from '../../services/product.service';
 
 
+
 @Component({
   selector: 'app-customer-details',
   imports: [
@@ -192,9 +193,9 @@ getCellClass(field: string): string {
   const val2 = this.selectedRevisions[1][field];
 
   if (val1 !== val2) {
-    return 'highlight-diff'; // Apply red background if different
+    return 'highlight-diff';
   }
-  return ''; // No class if same
+  return ''; 
 }
 isDifferent(value1: any, value2: any): boolean {
   return value1 !== value2;
@@ -229,6 +230,56 @@ downloadQuotation(customerName: string, partName: string, revision: number) {
     }
   });
 }
+
+// download
+// downloadQuotation(customer: any) {
+//   const latestRev = this.getLatestRevision(customer);
+
+//   // today (start)
+//   const today = new Date();
+//   const start = today.toISOString().split('T')[0]; // yyyy-MM-dd
+
+//   // one month later (end)
+//   const nextMonth = new Date(today);
+//   nextMonth.setMonth(nextMonth.getMonth() + 1);
+//   const end = nextMonth.toISOString().split('T')[0];
+
+//   const params = {
+//     CustomerName: customer.customerName?.customerName,
+//     partName: customer.partName,
+//     Revision: latestRev?.revisionNumber || 1,
+//     yearNo: today.getFullYear().toString(),
+//     start: start,
+//     end: end
+//   };
+
+//   const apiUrl = 'http://localhost:3005/customer/quotation';
+
+//   this.http.get(apiUrl, { params, responseType: 'blob' }).subscribe({
+//     next: (response: Blob) => {
+//       const blob = new Blob([response], { type: 'application/pdf' });
+//       const url = window.URL.createObjectURL(blob);
+
+//       const a = document.createElement('a');
+//       a.href = url;
+//       a.download = `Quotation_${customer.partName}_Rev${params.Revision}.pdf`;
+//       a.click();
+
+//       window.URL.revokeObjectURL(url);
+//     },
+//     error: err => {
+//       console.error(' Error downloading quotation:', err);
+//     }
+//   });
+// }
+
+
+
+
+
+
+
+
 
 }
 

@@ -1,137 +1,140 @@
 <app-loading-spinner *ngIf="(isLoading$ | async) || (forgotPasswordLoading$ | async)">
 </app-loading-spinner>
 
-<div class="login-page-container">
-  <div class="login-wrapper">
-    <div class="login-form-section">
-      <h2>LOGIN</h2>
-      <p class="subtitle">Access your account</p>
+<div class="login-center">
 
-      <!-- Message Container with Fixed Height -->
-      <div class="message-container">
-        <div *ngIf="authMessage"
-             [ngClass]="{'error-message': authMessageType === 'error', 'success-message': authMessageType === 'success'}"
-             class="temp-message">
-          {{ authMessage }}
+  <div class="login-page-container">
+    <div class="login-wrapper">
+      <div class="login-form-section">
+        <h2>LOGIN</h2>
+        <p class="subtitle">Access your account</p>
+  
+        <!-- Message Container with Fixed Height -->
+        <div class="message-container">
+          <div *ngIf="authMessage"
+               [ngClass]="{'error-message': authMessageType === 'error', 'success-message': authMessageType === 'success'}"
+               class="temp-message">
+            {{ authMessage }}
+          </div>
+        </div>
+  
+        <!-- Login Form -->
+        <form *ngIf="!showForgotPassword" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <input type="text" placeholder="Username" formControlName="userName" required />
+            <div *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched"
+                 class="error-message">
+              <span *ngIf="loginForm.get('userName')?.errors?.['required']">
+                Username is required.
+              </span>
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <input type="password" placeholder="Password" formControlName="password" required />
+            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                 class="error-message">
+              <span *ngIf="loginForm.get('password')?.errors?.['required']">
+                Password is required.
+              </span>
+            </div>
+          </div>
+  
+          <button type="submit" [disabled]="loginForm.invalid || (isLoading$ | async)">
+            {{ (isLoading$ | async) ? 'Logging in...' : 'Login Now' }}
+          </button>
+  
+          <div class="forgot-password-link">
+            <a href="javascript:void(0)" (click)="onForgotPassword()">Forgot Password?</a>
+          </div>
+        </form>
+  
+        <!-- Forgot Password Section -->
+        <div class="OTP" *ngIf="showForgotPassword">
+          <h3>Login through OTP</h3>
+  
+          <!-- Email Input Step -->
+          <div *ngIf="!otpSent" class="forgot-password-step">
+            <p>Enter your email address to receive an OTP</p>
+            <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSendOtp()">
+              <div class="form-group">
+                <input type="email" placeholder="Email Address" formControlName="email" required
+                       [class]="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched ? 'error' : ''" />
+                <div *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched"
+                     class="error-message">
+                  <span *ngIf="forgotPasswordForm.get('email')?.errors?.['required']">
+                    Email is required.
+                  </span>
+                  <span *ngIf="forgotPasswordForm.get('email')?.errors?.['email']">
+                    Please enter a valid email address.
+                  </span>
+                </div>
+              </div>
+  
+              <button type="submit" [disabled]="forgotPasswordForm.invalid || (forgotPasswordLoading$ | async)">
+                {{ (forgotPasswordLoading$ | async) ? 'Sending OTP...' : 'Send OTP' }}
+              </button>
+            </form>
+          </div>
+  
+          <!-- OTP Verification Step -->
+          <div *ngIf="otpSent" class="otp-section">
+            <p>We've sent a verification OTP to your email</p>
+            <p class="email-display">{{ forgotPasswordForm.get('email')?.value }}</p>
+  
+            <div class="otp-timer">
+              <p *ngIf="timeLeft > 0" class="timer-text">
+                Code expires in: <span class="timer-countdown">{{ formatTime(timeLeft) }}</span>
+              </p>
+              <p *ngIf="timeLeft === 0" class="timer-expired">
+                Code expired. <a href="javascript:void(0)" (click)="onResendOtp()">Resend code</a>
+              </p>
+            </div>
+  
+            <form [formGroup]="otpForm" (ngSubmit)="onVerifyOtp()">
+              <div class="form-group">
+                <label>Enter Verification OTP</label>
+                <div class="otp-input-container">
+                  <input type="text" maxlength="1" class="otp-digit" formControlName="digit1"
+                         (keyup)="moveToNext($event, 'digit2')" #firstDigit [disabled]="timeLeft === 0">
+                  <input type="text" maxlength="1" class="otp-digit" formControlName="digit2"
+                         (keyup)="moveToNext($event, 'digit3')" (keydown)="moveToPrevious($event, 'digit1')"
+                         [disabled]="timeLeft === 0">
+                  <input type="text" maxlength="1" class="otp-digit" formControlName="digit3"
+                         (keyup)="moveToNext($event, 'digit4')" (keydown)="moveToPrevious($event, 'digit2')"
+                         [disabled]="timeLeft === 0">
+                  <input type="text" maxlength="1" class="otp-digit" formControlName="digit4"
+                         (keyup)="moveToNext($event, 'digit5')" (keydown)="moveToPrevious($event, 'digit3')"
+                         [disabled]="timeLeft === 0">
+                  <input type="text" maxlength="1" class="otp-digit" formControlName="digit5"
+                         (keyup)="moveToNext($event, 'digit6')" (keydown)="moveToPrevious($event, 'digit4')"
+                         [disabled]="timeLeft === 0">
+                  <input type="text" maxlength="1" class="otp-digit" formControlName="digit6"
+                         (keydown)="moveToPrevious($event, 'digit5')" [disabled]="timeLeft === 0">
+                </div>
+              </div>
+  
+              <button type="submit"
+                      [disabled]="otpForm.invalid || (forgotPasswordLoading$ | async) || timeLeft === 0"
+                      class="verify-button">
+                {{ (forgotPasswordLoading$ | async) ? 'Verifying...' : 'Verify OTP' }}
+              </button>
+  
+              <div class="resend-otp" *ngIf="timeLeft > 0">
+                <p>Didn't receive the OTP? <a href="javascript:void(0)" (click)="onResendOtp()">Resend</a></p>
+              </div>
+            </form>
+          </div>
+  
+          <div class="back-to-login">
+            <a href="javascript:void(0)" (click)="onBackToLogin()">Back to Login</a>
+          </div>
         </div>
       </div>
-
-      <!-- Login Form -->
-      <form *ngIf="!showForgotPassword" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <input type="text" placeholder="Username" formControlName="userName" required />
-          <div *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched"
-               class="error-message">
-            <span *ngIf="loginForm.get('userName')?.errors?.['required']">
-              Username is required.
-            </span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <input type="password" placeholder="Password" formControlName="password" required />
-          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-               class="error-message">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']">
-              Password is required.
-            </span>
-          </div>
-        </div>
-
-        <button type="submit" [disabled]="loginForm.invalid || (isLoading$ | async)">
-          {{ (isLoading$ | async) ? 'Logging in...' : 'Login Now' }}
-        </button>
-
-        <div class="forgot-password-link">
-          <a href="javascript:void(0)" (click)="onForgotPassword()">Forgot Password?</a>
-        </div>
-      </form>
-
-      <!-- Forgot Password Section -->
-      <div class="OTP" *ngIf="showForgotPassword">
-        <h3>Login through OTP</h3>
-
-        <!-- Email Input Step -->
-        <div *ngIf="!otpSent" class="forgot-password-step">
-          <p>Enter your email address to receive an OTP</p>
-          <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSendOtp()">
-            <div class="form-group">
-              <input type="email" placeholder="Email Address" formControlName="email" required
-                     [class]="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched ? 'error' : ''" />
-              <div *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched"
-                   class="error-message">
-                <span *ngIf="forgotPasswordForm.get('email')?.errors?.['required']">
-                  Email is required.
-                </span>
-                <span *ngIf="forgotPasswordForm.get('email')?.errors?.['email']">
-                  Please enter a valid email address.
-                </span>
-              </div>
-            </div>
-
-            <button type="submit" [disabled]="forgotPasswordForm.invalid || (forgotPasswordLoading$ | async)">
-              {{ (forgotPasswordLoading$ | async) ? 'Sending OTP...' : 'Send OTP' }}
-            </button>
-          </form>
-        </div>
-
-        <!-- OTP Verification Step -->
-        <div *ngIf="otpSent" class="otp-section">
-          <p>We've sent a verification OTP to your email</p>
-          <p class="email-display">{{ forgotPasswordForm.get('email')?.value }}</p>
-
-          <div class="otp-timer">
-            <p *ngIf="timeLeft > 0" class="timer-text">
-              Code expires in: <span class="timer-countdown">{{ formatTime(timeLeft) }}</span>
-            </p>
-            <p *ngIf="timeLeft === 0" class="timer-expired">
-              Code expired. <a href="javascript:void(0)" (click)="onResendOtp()">Resend code</a>
-            </p>
-          </div>
-
-          <form [formGroup]="otpForm" (ngSubmit)="onVerifyOtp()">
-            <div class="form-group">
-              <label>Enter Verification OTP</label>
-              <div class="otp-input-container">
-                <input type="text" maxlength="1" class="otp-digit" formControlName="digit1"
-                       (keyup)="moveToNext($event, 'digit2')" #firstDigit [disabled]="timeLeft === 0">
-                <input type="text" maxlength="1" class="otp-digit" formControlName="digit2"
-                       (keyup)="moveToNext($event, 'digit3')" (keydown)="moveToPrevious($event, 'digit1')"
-                       [disabled]="timeLeft === 0">
-                <input type="text" maxlength="1" class="otp-digit" formControlName="digit3"
-                       (keyup)="moveToNext($event, 'digit4')" (keydown)="moveToPrevious($event, 'digit2')"
-                       [disabled]="timeLeft === 0">
-                <input type="text" maxlength="1" class="otp-digit" formControlName="digit4"
-                       (keyup)="moveToNext($event, 'digit5')" (keydown)="moveToPrevious($event, 'digit3')"
-                       [disabled]="timeLeft === 0">
-                <input type="text" maxlength="1" class="otp-digit" formControlName="digit5"
-                       (keyup)="moveToNext($event, 'digit6')" (keydown)="moveToPrevious($event, 'digit4')"
-                       [disabled]="timeLeft === 0">
-                <input type="text" maxlength="1" class="otp-digit" formControlName="digit6"
-                       (keydown)="moveToPrevious($event, 'digit5')" [disabled]="timeLeft === 0">
-              </div>
-            </div>
-
-            <button type="submit"
-                    [disabled]="otpForm.invalid || (forgotPasswordLoading$ | async) || timeLeft === 0"
-                    class="verify-button">
-              {{ (forgotPasswordLoading$ | async) ? 'Verifying...' : 'Verify OTP' }}
-            </button>
-
-            <div class="resend-otp" *ngIf="timeLeft > 0">
-              <p>Didn't receive the OTP? <a href="javascript:void(0)" (click)="onResendOtp()">Resend</a></p>
-            </div>
-          </form>
-        </div>
-
-        <div class="back-to-login">
-          <a href="javascript:void(0)" (click)="onBackToLogin()">Back to Login</a>
-        </div>
+  
+      <div class="login-image-section">
+        <img src="/wmremove-transformed (1).png" alt="Login Illustration" />
       </div>
-    </div>
-
-    <div class="login-image-section">
-      <img src="/wmremove-transformed (1).png" alt="Login Illustration" />
     </div>
   </div>
 </div>

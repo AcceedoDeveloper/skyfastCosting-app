@@ -58,12 +58,24 @@
           </ul>
         </li>
 
-        <li class="nav-item" routerLink="/system/companypreferences" routerLinkActive="active-link">
+        <li class="nav-item has-submenu" (click)="toggleSubmenu('Company-Management')">
           <div class="nav-item-content">
             <span class="material-icons nav-icon">person</span>
             <span class="nav-text">Company Management</span>
           </div>
+          <ul class="submenu" *ngIf="activeSubmenu === 'Company-Management'">
+                <li routerLink="/system/companypreferences">
+              <span class="material-icons submenu-icon">settings</span> Company Preferences
+            </li>
+
+             <li routerLink="/system/permissions">
+              <span class="material-icons submenu-icon">admin_panel_settings</span>  Permission
+            </li>
+          </ul>
         </li>
+
+
+
 
         <li class="nav-item has-submenu" (click)="toggleSubmenu('material-process')">
           <div class="nav-item-content">
