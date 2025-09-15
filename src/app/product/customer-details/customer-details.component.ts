@@ -119,6 +119,19 @@ onEdit(customer: CustomerDetails) {
 }
 
 
+onRevisionSelect(revision: any, event: any) {
+  if (event.checked) {
+    if (!this.selectedRevisions.includes(revision)) {
+      this.selectedRevisions.push(revision);
+    }
+  } else {
+    this.selectedRevisions = this.selectedRevisions.filter(r => r !== revision);
+  }
+}
+
+
+
+
 
 getLatestRevision(c: any) {
   return c?.revisions && c.revisions.length > 0
@@ -146,24 +159,14 @@ getLatestrevisionNumber(c: any) {
   }
 }
 
-onRevisionSelect(revision: any, event: any) {
-  if (event.checked) {
-    if (this.selectedRevisions.length < 2) {
-      this.selectedRevisions.push(revision);
-    } else {
-      event.source.checked = false; // restrict to 2
-    }
-  } else {
-    this.selectedRevisions = this.selectedRevisions.filter(r => r !== revision);
-  }
-}
+
 
 canCompare(): boolean {
-  return this.selectedRevisions.length === 2;
+  return this.selectedRevisions.length >= 2;
 }
 
 openComparePopup() {
-  if (this.selectedRevisions.length === 2) {
+  if (this.selectedRevisions.length >= 2) {
     this.showComparePopup = true;
   }
 }
@@ -175,28 +178,29 @@ closeComparePopup() {
 
 onRevisionSelectPopup(revision: any, event: any) {
   if (event.checked) {
-    if (this.selectedRevisions.length < 2) {
+    // ✅ Add revision if not already selected
+    if (!this.selectedRevisions.includes(revision)) {
       this.selectedRevisions.push(revision);
-    } else {
-      event.source.checked = false; // restrict to 2
     }
   } else {
+    // ✅ Remove revision when unchecked
     this.selectedRevisions = this.selectedRevisions.filter(r => r !== revision);
   }
 }
 
+getCellClass(field: string, revision: any): string {
+  if (!this.selectedRevisions || this.selectedRevisions.length <= 1) return '';
 
-getCellClass(field: string): string {
-  if (!this.selectedRevisions || this.selectedRevisions.length < 2) return '';
+  const firstValue = this.selectedRevisions[0][field];
+  const isDifferent = this.selectedRevisions.some(r => r[field] !== firstValue);
 
-  const val1 = this.selectedRevisions[0][field];
-  const val2 = this.selectedRevisions[1][field];
-
-  if (val1 !== val2) {
-    return 'highlight-diff';
-  }
-  return ''; 
+  return isDifferent ? 'highlight-diff' : '';
 }
+
+
+
+
+
 isDifferent(value1: any, value2: any): boolean {
   return value1 !== value2;
 }
@@ -230,48 +234,6 @@ downloadQuotation(customerName: string, partName: string, revision: number) {
     }
   });
 }
-
-// download
-// downloadQuotation(customer: any) {
-//   const latestRev = this.getLatestRevision(customer);
-
-//   // today (start)
-//   const today = new Date();
-//   const start = today.toISOString().split('T')[0]; // yyyy-MM-dd
-
-//   // one month later (end)
-//   const nextMonth = new Date(today);
-//   nextMonth.setMonth(nextMonth.getMonth() + 1);
-//   const end = nextMonth.toISOString().split('T')[0];
-
-//   const params = {
-//     CustomerName: customer.customerName?.customerName,
-//     partName: customer.partName,
-//     Revision: latestRev?.revisionNumber || 1,
-//     yearNo: today.getFullYear().toString(),
-//     start: start,
-//     end: end
-//   };
-
-//   const apiUrl = 'http://localhost:3005/customer/quotation';
-
-//   this.http.get(apiUrl, { params, responseType: 'blob' }).subscribe({
-//     next: (response: Blob) => {
-//       const blob = new Blob([response], { type: 'application/pdf' });
-//       const url = window.URL.createObjectURL(blob);
-
-//       const a = document.createElement('a');
-//       a.href = url;
-//       a.download = `Quotation_${customer.partName}_Rev${params.Revision}.pdf`;
-//       a.click();
-
-//       window.URL.revokeObjectURL(url);
-//     },
-//     error: err => {
-//       console.error(' Error downloading quotation:', err);
-//     }
-//   });
-// }
 
 
 

@@ -132,14 +132,15 @@
   <!-- Compare button -->
   <tr>
     <td colspan="6" class="text-center">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="openComparePopup()"
-        [disabled]="!canCompare()"
-      >
-        Compare Selected
-      </button>
+     <button
+  mat-raised-button
+  color="primary"
+  (click)="openComparePopup()"
+  [disabled]="!canCompare()"
+>
+  Compare Selected
+</button>
+
     </td>
   </tr>
 </tbody>
@@ -167,226 +168,183 @@
   <div class="compare-popup-content" (click)="$event.stopPropagation()">
     <h3>Compare Revisions</h3>
 
-
-     <div class="revision-selector">
+    <!-- Revision Selection -->
+    <div class="revision-selector">
       <h4>Select Revisions to Compare</h4>
       <div class="revision-checkboxes">
         <div *ngFor="let rev of expandedCustomer?.revisions">
-        <mat-checkbox
-          [(ngModel)]="rev.selected"
-          (change)="onRevisionSelectPopup(rev, $event)"
-        >
-          Revision {{ rev.revisionNumber || 'N/A' }}
-        </mat-checkbox>
+          <mat-checkbox
+            [(ngModel)]="rev.selected"
+            (change)="onRevisionSelectPopup(rev, $event)"
+          >
+            Revision {{ rev.revisionNumber || 'N/A' }}
+          </mat-checkbox>
+        </div>
       </div>
-      </div>
-      
     </div>
 
+    <!-- Comparison Table -->
     <table class="table table-bordered">
       <thead>
         <tr>
           <th>Field</th>
-          <th>Revision {{ selectedRevisions[0]?.revisionNumber }}</th>
-    <th>Revision {{ selectedRevisions[1]?.revisionNumber }}</th>
+          <th *ngFor="let rev of selectedRevisions">
+            Revision {{ rev.revisionNumber }}
+          </th>
         </tr>
       </thead>
       <tbody>
+        <!-- Product Name -->
         <tr>
           <td><b>Product Name</b></td>
-          <td>{{ selectedRevisions[0].productName }}</td>
-          <td>{{ selectedRevisions[1].productName }}</td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('productName', rev)">
+            {{ rev.productName }}
+          </td>
         </tr>
-       <tr>
-    <td><b>Revision Number</b></td>
-    <td [ngClass]="getCellClass('revisionNumber')">{{ selectedRevisions[0].revisionNumber }}</td>
-    <td [ngClass]="getCellClass('revisionNumber')">{{ selectedRevisions[1].revisionNumber }}</td>
-  </tr>
 
-  <tr>
-    <td><b>Cavities</b></td>
-    <td [ngClass]="getCellClass('cavities')">{{ selectedRevisions[0].cavities }}</td>
-    <td [ngClass]="getCellClass('cavities')">{{ selectedRevisions[1].cavities }}</td>
-  </tr>
+        <!-- Revision Number -->
+        <tr>
+          <td><b>Revision Number</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('revisionNumber', rev)">
+            {{ rev.revisionNumber }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Casting Weight</b></td>
-    <td [ngClass]="getCellClass('castingWeight')">{{ selectedRevisions[0].castingWeight }}</td>
-    <td [ngClass]="getCellClass('castingWeight')">{{ selectedRevisions[1].castingWeight }}</td>
-  </tr>
+        <!-- Cavities -->
+        <tr>
+          <td><b>Cavities</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('cavities', rev)">
+            {{ rev.cavities }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Short Weight</b></td>
-    <td [ngClass]="getCellClass('shortWeight')">{{ selectedRevisions[0].shortWeight }}</td>
-    <td [ngClass]="getCellClass('shortWeight')">{{ selectedRevisions[1].shortWeight }}</td>
-  </tr>
+        <!-- Casting Weight -->
+        <tr>
+          <td><b>Casting Weight</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('castingWeight', rev)">
+            {{ rev.castingWeight }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Melting Loss</b></td>
-    <td [ngClass]="getCellClass('meltingLoss')">{{ selectedRevisions[0].meltingLoss }}</td>
-    <td [ngClass]="getCellClass('meltingLoss')">{{ selectedRevisions[1].meltingLoss }}</td>
-  </tr>
+        <!-- Short Weight -->
+        <tr>
+          <td><b>Short Weight</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('shortWeight', rev)">
+            {{ rev.shortWeight }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Rejection</b></td>
-    <td [ngClass]="getCellClass('Rejection')">{{ selectedRevisions[0].Rejection }}</td>
-    <td [ngClass]="getCellClass('Rejection')">{{ selectedRevisions[1].Rejection }}</td>
-  </tr>
+        <!-- Melting Loss -->
+        <tr>
+          <td><b>Melting Loss</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('meltingLoss', rev)">
+            {{ rev.meltingLoss }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Packing</b></td>
-    <td [ngClass]="getCellClass('Packing')">{{ selectedRevisions[0].Packing }}</td>
-    <td [ngClass]="getCellClass('Packing')">{{ selectedRevisions[1].Packing }}</td>
-  </tr>
+        <!-- Rejection -->
+        <tr>
+          <td><b>Rejection</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('Rejection', rev)">
+            {{ rev.Rejection }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Interest Rate</b></td>
-    <td [ngClass]="getCellClass('InterestRate')">{{ selectedRevisions[0].InterestRate }}</td>
-    <td [ngClass]="getCellClass('InterestRate')">{{ selectedRevisions[1].InterestRate }}</td>
-  </tr>
+        <!-- Packing -->
+        <tr>
+          <td><b>Packing</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('Packing', rev)">
+            {{ rev.Packing }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Inspector Cost</b></td>
-    <td [ngClass]="getCellClass('InspectorCost')">{{ selectedRevisions[0].InspectorCost }}</td>
-    <td [ngClass]="getCellClass('InspectorCost')">{{ selectedRevisions[1].InspectorCost }}</td>
-  </tr>
+        <!-- Interest Rate -->
+        <tr>
+          <td><b>Interest Rate</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('InterestRate', rev)">
+            {{ rev.InterestRate }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Status</b></td>
-    <td [ngClass]="getCellClass('Status')">{{ selectedRevisions[0].Status }}</td>
-    <td [ngClass]="getCellClass('Status')">{{ selectedRevisions[1].Status }}</td>
-  </tr>
+        <!-- Inspector Cost -->
+        <tr>
+          <td><b>Inspector Cost</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('InspectorCost', rev)">
+            {{ rev.InspectorCost }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>Tool Ambience</b></td>
-    <td [ngClass]="getCellClass('ToolAmbience')">{{ selectedRevisions[0].ToolAmbience }}</td>
-    <td [ngClass]="getCellClass('ToolAmbience')">{{ selectedRevisions[1].ToolAmbience }}</td>
-  </tr>
+        <!-- Status -->
+        <tr>
+          <td><b>Status</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('Status', rev)">
+            {{ rev.Status }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>No. of Raw Materials</b></td>
-    <td [ngClass]="getCellClass('noOfRawMaterials')">{{ selectedRevisions[0].noOfRawMaterials }}</td>
-    <td [ngClass]="getCellClass('noOfRawMaterials')">{{ selectedRevisions[1].noOfRawMaterials }}</td>
-  </tr>
+        <!-- Tool Ambience -->
+        <tr>
+          <td><b>Tool Ambience</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('ToolAmbience', rev)">
+            {{ rev.ToolAmbience }}
+          </td>
+        </tr>
 
-  <tr>
-    <td><b>No. of Processes</b></td>
-    <td [ngClass]="getCellClass('noOfProcess')">{{ selectedRevisions[0].noOfProcess }}</td>
-    <td [ngClass]="getCellClass('noOfProcess')">{{ selectedRevisions[1].noOfProcess }}</td>
-  </tr>
+        <!-- No. of Raw Materials -->
+        <tr>
+          <td><b>No. of Raw Materials</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('noOfRawMaterials', rev)">
+            {{ rev.noOfRawMaterials }}
+          </td>
+        </tr>
 
-      <!-- Raw Materials -->
-<tr>
-  <td><b>Raw Materials</b></td>
-  <td>
-    <div *ngFor="let mat of selectedRevisions[0].rawMaterial; let i = index">
-      <span [ngClass]="{
-        'diff': isDifferent(mat.GradeName, selectedRevisions[1]?.rawMaterial?.[i]?.GradeName)
-      }">
-        {{ mat.GradeName }}
-      </span>
-      (<span [ngClass]="{
-        'diff': isDifferent(mat.RatePerKg, selectedRevisions[1]?.rawMaterial?.[i]?.RatePerKg)
-      }">
-        {{ mat.RatePerKg | number:'1.2-2' }} Rs/Kg
-      </span>)
-    </div>
-  </td>
-  <td>
-    <div *ngFor="let mat of selectedRevisions[1].rawMaterial; let i = index">
-      <span [ngClass]="{
-        'diff': isDifferent(mat.GradeName, selectedRevisions[0]?.rawMaterial?.[i]?.GradeName)
-      }">
-        {{ mat.GradeName }}
-      </span>
-      (<span [ngClass]="{
-        'diff': isDifferent(mat.RatePerKg, selectedRevisions[0]?.rawMaterial?.[i]?.RatePerKg)
-      }">
-        {{ mat.RatePerKg | number:'1.2-2' }} Rs/Kg
-      </span>)
-    </div>
-  </td>
-</tr>
+        <!-- No. of Processes -->
+        <tr>
+          <td><b>No. of Processes</b></td>
+          <td *ngFor="let rev of selectedRevisions" [ngClass]="getCellClass('noOfProcess', rev)">
+            {{ rev.noOfProcess }}
+          </td>
+        </tr>
 
+        <!-- Raw Materials -->
+        <tr>
+          <td><b>Raw Materials</b></td>
+          <td *ngFor="let rev of selectedRevisions">
+            <div *ngFor="let mat of rev.rawMaterial; let i = index">
+              <span [ngClass]="{'diff': mat.GradeName !== selectedRevisions[0]?.rawMaterial?.[i]?.GradeName}">
+                {{ mat.GradeName }}
+              </span>
+              (<span [ngClass]="{'diff': mat.RatePerKg !== selectedRevisions[0]?.rawMaterial?.[i]?.RatePerKg}">
+                {{ mat.RatePerKg | number:'1.2-2' }} Rs/Kg
+              </span>)
+            </div>
+          </td>
+        </tr>
 
         <!-- Processes -->
-<tr>
-  <td><b>Processes</b></td>
-  <td>
-    <div *ngFor="let p of selectedRevisions[0].processes; let i = index">
-      <div class="process-block">
-        <p><b>Processes Name:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.processName, selectedRevisions[1]?.processes?.[i]?.processName)}">
-            {{ p.processName }}
-          </span>
-        </p>
-        <p><b>Tonnage/Jaw:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.TonnageJaw, selectedRevisions[1]?.processes?.[i]?.TonnageJaw)}">
-            {{ p.TonnageJaw }}
-          </span>
-        </p>
-        <p><b>Hours:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.Hours, selectedRevisions[1]?.processes?.[i]?.Hours)}">
-            {{ p.Hours }}
-          </span>
-        </p>
-        <p><b>Cycle time/Weight:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.cycleTime, selectedRevisions[1]?.processes?.[i]?.cycleTime)}">
-            {{ p.cycleTime }}
-          </span>
-        </p>
-        <p><b>Cost:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.cost, selectedRevisions[1]?.processes?.[i]?.cost)}">
-            {{ p.cost | number:'1.2-2' }}
-          </span>
-        </p>
-      </div>
-      <hr />
-    </div>
-  </td>
-  <td>
-    <div *ngFor="let p of selectedRevisions[1].processes; let i = index">
-      <div class="process-block">
-        <p><b>Processes Name:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.processName, selectedRevisions[0]?.processes?.[i]?.processName)}">
-            {{ p.processName }}
-          </span>
-        </p>
-        <p><b>Tonnage/Jaw:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.TonnageJaw, selectedRevisions[0]?.processes?.[i]?.TonnageJaw)}">
-            {{ p.TonnageJaw }}
-          </span>
-        </p>
-        <p><b>Hours:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.Hours, selectedRevisions[0]?.processes?.[i]?.Hours)}">
-            {{ p.Hours }}
-          </span>
-        </p>
-        <p><b>Cycle time/Weight:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.cycleTime, selectedRevisions[0]?.processes?.[i]?.cycleTime)}">
-            {{ p.cycleTime }}
-          </span>
-        </p>
-        <p><b>Cost:</b> 
-          <span [ngClass]="{'diff': isDifferent(p.cost, selectedRevisions[0]?.processes?.[i]?.cost)}">
-            {{ p.cost | number:'1.2-2' }}
-          </span>
-        </p>
-      </div>
-      <hr />
-    </div>
-  </td>
-</tr>
-
+        <tr>
+          <td><b>Processes</b></td>
+          <td *ngFor="let rev of selectedRevisions">
+            <div *ngFor="let p of rev.processes; let i = index" class="process-block">
+              <p><b>Process Name:</b> {{ p.processName }}</p>
+              <p><b>Tonnage/Jaw:</b> {{ p.TonnageJaw }}</p>
+              <p><b>Hours:</b> {{ p.Hours }}</p>
+              <p><b>Cycle time/Weight:</b> {{ p.cycleTime }}</p>
+              <p><b>Cost:</b> {{ p.cost | number:'1.2-2' }}</p>
+              <hr />
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
+    <!-- Close Button -->
     <div id="closebtn">
-      <button  class="btn btn-danger"  (click)="closeComparePopup()">Close</button>
-
+      <button class="btn btn-danger" (click)="closeComparePopup()">Close</button>
     </div>
   </div>
 </div>
+
 
 
 
