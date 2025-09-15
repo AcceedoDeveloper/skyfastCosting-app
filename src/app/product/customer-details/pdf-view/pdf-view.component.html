@@ -1,0 +1,97 @@
+<div class="quotation" *ngIf="quotationData">
+  <!-- Header -->
+  <div class="header">
+    QUOTATION
+    <div style="float: right;">
+      Qtn. No: SF/{{ quotationData?.Revision }}/{{ quotationData?.results[0]?._id | slice:-4 }}
+      <br>
+      Date:
+    </div>
+  </div>
+
+  <!-- Customer Info -->
+  <div class="customer-info">
+    <strong>Customer Name & Address:</strong><br>
+    {{ quotationData?.results[0]?.customerName?.customerName }}<br>
+    {{ quotationData?.results[0]?.customerName?.address }}
+  </div>
+
+  <!-- Part Details -->
+  <table>
+    <tr>
+      <td>Customer Drawing No</td>
+      <td>{{ quotationData?.results[0]?.partName }}</td>
+    </tr>
+    <tr>
+      <td>Part Name</td>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.productName }}</td>
+    </tr>
+    <tr>
+      <td>Revision No</td>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.revisionNumber }}</td>
+    </tr>
+  </table>
+
+  <!-- Material Cost -->
+  <h3>Material Cost</h3>
+  <table>
+    <tr>
+      <th>Raw Material Spec</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.rawMaterial[0]?.GradeName }}</td>
+      <th>Raw Material price/kg</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.rawMaterial[0]?.RatePerKg }}</td>
+    </tr>
+    <tr>
+      <th>Melting Loss</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.meltingLoss }}</td>
+      <th>Casting Weight</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.castingWeight }}</td>
+    </tr>
+  </table>
+
+  <!-- Process Cost -->
+  <h3>Process Cost</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Process Name</th>
+        <th>TonnageJaw</th>
+        <th>Hours</th>
+        <th>Cycle Time</th>
+        <th>Cavity</th>
+        <th>Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of quotationData?.results[0]?.revisions[0]?.processes; let i=index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ p.processName }}</td>
+        <td>{{ p.TonnageJaw }}</td>
+        <td>{{ p.Hours }}</td>
+        <td>{{ p.cycleTime }}</td>
+        <td>{{ p.cavity }}</td>
+        <td>{{ p.cost | number:'1.4-4' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Total Price -->
+  <h3>Total Quoted Price / Piece</h3>
+  <table>
+    <tr>
+      <th>Rejection</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.Rejection }}</td>
+      <th>Inspector Cost</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.InspectorCost }}</td>
+      <th>Tool Ambience</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.ToolAmbience }}</td>
+    </tr>
+    <tr>
+      <th>Packing</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.Packing }}</td>
+      <th>Interest Rate</th>
+      <td>{{ quotationData?.results[0]?.revisions[0]?.InterestRate }}</td>
+    </tr>
+  </table>
+</div>

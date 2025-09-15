@@ -73,4 +73,14 @@ private apiUrl = 'http://localhost:3005';
   deleteCustomer(id: string): Observable<any> {
     return this.http.delete(`${this.config.getCostingUrl('deleteCustomerDetails')}/${id}`);
   }
+
+// quotation.service.ts
+quotationData(customerName: string, partName: string, revision: number): Observable<any> {
+  return this.http.get<any>(
+    `http://localhost:3005/getQuotationData?CustomerName=${customerName}&partName=${partName}&Revision=${revision}`
+  );
+}
+
+
+
 }

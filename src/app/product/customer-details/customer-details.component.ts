@@ -20,6 +20,8 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProductService} from '../../services/product.service';
 import html2pdf from 'html2pdf.js';
+import { CustomerResponse} from '../../model/pdf.model';
+ 
 
 
 @Component({
@@ -43,13 +45,16 @@ export class CustomerDetailsComponent implements OnInit{
 selectedRevisions: any[] = [];
 showComparePopup: boolean = false;
    expandedCustomer: any = null;
-
+  quotationData!: CustomerResponse; 
 
 
   constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog, private productservices: ProductService) {
   }
 
   ngOnInit(): void {
+
+
+ 
 
     
 this.customers$ = this.store.select(selectAllCustomers).pipe(
@@ -242,6 +247,18 @@ downloadQuotation(customerName: string, partName: string, revision: number) {
   }
 
 
+downloadQuotations(customerName: string, partName: string, revision: number): void {
+  this.productservices.quotationData(customerName, partName, revision).subscribe({
+    next: (res) => {
+      this.quotationData = res;
+      console.log('Quotation Data:', this.quotationData);
+      
+    },
+    error: (err) => {
+      console.error('Error fetching quotation:', err);
+    }
+  });
+}
 
 
 
