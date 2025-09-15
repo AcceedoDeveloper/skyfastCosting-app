@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 import * as customerActions from '../store/product.actions';
 import { selectAllCustomers } from '../store/product.selectors';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +19,7 @@ import { EditCustomerDetailsComponent } from './edit-customer-details/edit-custo
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProductService} from '../../services/product.service';
-
+import html2pdf from 'html2pdf.js';
 
 
 @Component({
@@ -33,7 +33,7 @@ import { ProductService} from '../../services/product.service';
     MatInputModule,
     MatIconModule,
     FormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,  
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
@@ -120,15 +120,14 @@ onEdit(customer: CustomerDetails) {
 
 
 onRevisionSelect(revision: any, event: any) {
-  if (event.checked) {
-    if (!this.selectedRevisions.includes(revision)) {
-      this.selectedRevisions.push(revision);
-    }
-  } else {
-    this.selectedRevisions = this.selectedRevisions.filter(r => r !== revision);
-  }
+  revision.selected = event.checked; // keep track of checkbox state
+  this.selectedRevisions = this.expandedCustomer.revisions.filter((r: any) => r.selected);
 }
 
+onRevisionSelectPopup(revision: any, event: any) {
+  revision.selected = event.checked; // sync popup selection
+  this.selectedRevisions = this.expandedCustomer.revisions.filter((r: any) => r.selected);
+}
 
 
 
@@ -167,6 +166,8 @@ canCompare(): boolean {
 
 openComparePopup() {
   if (this.selectedRevisions.length >= 2) {
+    // rebuild to avoid any leftover duplicates
+    this.selectedRevisions = this.expandedCustomer.revisions.filter((r: any) => r.selected);
     this.showComparePopup = true;
   }
 }
@@ -176,17 +177,7 @@ closeComparePopup() {
 }
 
 
-onRevisionSelectPopup(revision: any, event: any) {
-  if (event.checked) {
-    // ✅ Add revision if not already selected
-    if (!this.selectedRevisions.includes(revision)) {
-      this.selectedRevisions.push(revision);
-    }
-  } else {
-    // ✅ Remove revision when unchecked
-    this.selectedRevisions = this.selectedRevisions.filter(r => r !== revision);
-  }
-}
+
 
 getCellClass(field: string, revision: any): string {
   if (!this.selectedRevisions || this.selectedRevisions.length <= 1) return '';
@@ -237,7 +228,18 @@ downloadQuotation(customerName: string, partName: string, revision: number) {
 
 
 
+ downloadPDF() {
+    const element = document.getElementById('pdfContent')!;
+    const options = {
+      margin: 10,
+      filename: 'angular-demo.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
 
+    html2pdf().from(element).set(options).save();
+  }
 
 
 
