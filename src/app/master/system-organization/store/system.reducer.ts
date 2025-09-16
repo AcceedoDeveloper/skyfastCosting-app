@@ -3,7 +3,7 @@ import { createReducer, on, State } from '@ngrx/store';
 import * as RoleActions from './system.actions';
 import { Role, Department, Shift, HostingMail } from '../../../model/role.model';
 import { Company } from '../../../model/company.model';
-
+import { Permission } from '../../../model/permission.model';
 export const systemFeatureKey = 'roles'; 
 
 export interface RoleState {
@@ -12,6 +12,7 @@ export interface RoleState {
   shift: Shift[];
   hostingMail: any[];
   companies: Company[];
+    permissions: Permission[];  // ✅ added permissions
    error: any;
 }
 
@@ -19,6 +20,7 @@ export const initialState: RoleState = {
   roles: [],
   department: [],
   shift: [],
+   permissions: [],  // ✅ initialize permissions
   hostingMail: [],
   companies: [],
   error: null
@@ -143,6 +145,27 @@ on(RoleActions.loadHostingMailSuccess, (state, { hostingMail }) => ({
     )
   })),
 
+
+// ====== Permissions ======
+  on(RoleActions.loadPermissionsSuccess, (state, { permissions }) => ({
+    ...state,
+    permissions,
+    error: null
+  })),
+  on(RoleActions.addPermissionSuccess, (state, { permission }) => ({
+    ...state,
+    permissions: [...state.permissions, permission]
+  })),
+  on(RoleActions.updatePermissionSuccess, (state, { updatedPermission }) => ({
+    ...state,
+    permissions: state.permissions.map((p: Permission) =>
+      p._id === updatedPermission._id ? updatedPermission : p
+    )
+  })),
+  on(RoleActions.deletePermissionSuccess, (state, { id }) => ({
+    ...state,
+    permissions: state.permissions.filter((p: Permission) => p._id !== id)
+  })),
 
 
 

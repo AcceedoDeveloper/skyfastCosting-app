@@ -10,6 +10,10 @@ import {Department, Role, Shift, HostingMail } from '../../../model/role.model';
 import { CompanyService } from '../../../services/company.service';
 import { Company } from '../../../model/company.model';
 
+// import { Permission } from '../../../model/permission.model';
+import { Permission } from '../../../model/permission.model';
+
+
 @Injectable()
 export class RoleEffects {
 
@@ -382,6 +386,82 @@ updateCompany$ = createEffect(() =>
     )
   )
 );
+
+// ================= Permission Effects =================
+
+loadPermissions$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.loadPermissions),
+    tap(() => console.log('loadPermissions action received')),
+    mergeMap(() =>
+      this.roleService.getPermissions().pipe(
+        tap(permissions => console.log('Permissions loaded from service:', permissions)),
+        map((permissions) => RoleActions.loadPermissionsSuccess({ permissions })),
+        catchError(error => {
+          this.toastr.error('Failed to load permissions.');
+          console.error('loadPermissions error:', error);
+          return of(RoleActions.loadPermissionsFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+addPermission$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.addPermission),
+    mergeMap(action =>
+      this.roleService.createPermission(action.permission).pipe( 
+        map((response: any) => {
+          this.toastr.success('Permission added successfully!');
+          const permission: Permission = response.permission || response;
+          return RoleActions.addPermissionSuccess({ permission });
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to add permission.');
+          return of(RoleActions.addPermissionFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+updatePermission$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.updatePermission),
+    mergeMap(action =>
+      this.roleService.updatePermission(action.id, action.permission).pipe(
+        map((updatedPermission: Permission) => {
+          this.toastr.success('Permission updated successfully!');
+          return RoleActions.updatePermissionSuccess({ updatedPermission });
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to update permission.');
+          return of(RoleActions.updatePermissionFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
+deletePermission$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(RoleActions.deletePermission),
+    mergeMap(action =>
+      this.roleService.deletePermission(action.id).pipe(
+        map(() => {
+          this.toastr.success('Permission deleted successfully!');
+          return RoleActions.deletePermissionSuccess({ id: action.id });
+        }),
+        catchError(error => {
+          this.toastr.error('Failed to delete permission.');
+          return of(RoleActions.deletePermissionFailure({ error }));
+        })
+      )
+    )
+  )
+);
+
 
 
 

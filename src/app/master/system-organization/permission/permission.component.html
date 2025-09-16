@@ -1,202 +1,120 @@
 <div class="machine-type-container">
-
+  <!-- Header -->
   <div class="header">
-  <h2 style="font-weight: bold;">Permission</h2>
-  
-  <button class="btn" mat-raised-button color="primary" (click)="toggleForm()" >
-    <mat-icon>add</mat-icon> Add Permission
-  </button>
+    <h2>Permission</h2>
+    <button mat-raised-button color="primary" (click)="toggleForm()">
+      <mat-icon>add</mat-icon> Add Permission
+    </button>
   </div>
-</div>
 
-
-
-
-
-
-<!-- pop -->
-
-<div *ngIf="showForm" class="popup-overlay">
-  <div class="popup">
-  
-
-     <h3>Add Permission</h3>
+  <!-- Popup Form -->
+  <div *ngIf="showForm" class="popup-overlay">
+    <div class="popup">
+      <h3>{{ existingPermissionId ? 'Edit Permission' : 'Add Permission' }}</h3>
       <button class="close-btn" (click)="showForm = false">&times;</button>
 
+      <!-- Select Role -->
+      <form>
+        <label for="role">Select Role</label>
+        <select id="role" [(ngModel)]="selectedRole" name="role" (ngModelChange)="onRoleChange()">
+          <option *ngFor="let role of roles$ | async" [ngValue]="role._id">{{ role.role }}</option>
+        </select>
+      </form>
 
-<!-- <button (click)="toggleForm()"> Form</button> -->
+      <!-- Initial Screen -->
+      <div *ngIf="selectedRole" class="initial-screen">
+        <label for="initialScreen">Initial Screen</label>
+        <select id="initialScreen" [(ngModel)]="initialScreen" name="initialScreen">
+          <option value="dashboard">Dashboard</option>
+          <option value="user">User Management</option>
+          <option value="company">Company Management</option>
+          <option value="material">Material & Process Management</option>
+          <option value="quotation">Quotation Generator</option>
+          <option value="reports">Reports</option>
+        </select>
+      </div>
 
-<form *ngIf="showForm">
-  <label>Select the role</label>
-  <select>
-    <option *ngFor="let role of roles$ | async" [value]="role._id">
-      {{ role.role }}
-    </option>
-  </select>
-</form>
-
- 
-
+      <!-- Permissions Checkboxes -->
       <ul class="nav-list">
-
-  <li class="nav-item" routerLink="/dashboard/dashh" routerLinkActive="active-link">
-    <div class="nav-item-content">
-   <input type="checkbox" class="nav-checkbox">
-      <span class="nav-text" >Dashboard</span>
-    </div>
-  </li>
-
-
-  <!-- User Management -->
- <li class="nav-item has-submenu" >
-  <div class="nav-item-content">
-    <input 
-      type="checkbox" 
-      class="nav-checkbox"
-      [attr.data-group]="'user'"
-      (change)="onParentCheckboxChange('user', $event)"
-    >
-    <span class="nav-text">User Management</span>
-  </div>
-
-  <ul class="submenu">
-    <li (click)="$event.stopPropagation()">
-      <input 
-        type="checkbox" 
-        class="submenu-checkbox"
-        [attr.data-group]="'user'"
-        (change)="onSubCheckboxChange('user')"
-      > User
-    </li>
-
-    <li (click)="$event.stopPropagation()">
-      <input 
-        type="checkbox" 
-        class="submenu-checkbox"
-        [attr.data-group]="'user'"
-        (change)="onSubCheckboxChange('user')"
-      > Role
-    </li>
-
-
-
-    <li (click)="$event.stopPropagation()">
-      <input 
-        type="checkbox" 
-        class="submenu-checkbox"
-        [attr.data-group]="'user'"
-        (change)="onSubCheckboxChange('user')"
-      > Shift
-    </li>
-
-    <li (click)="$event.stopPropagation()">
-      <input 
-        type="checkbox" 
-        class="submenu-checkbox"
-        [attr.data-group]="'user'"
-        (change)="onSubCheckboxChange('user')"
-      > Customer
-    </li>
-  </ul>
-</li>
-
-
- 
-
-
-
-
-
-<div class="div1">
-
-    <li class="nav-item has-submenu" id="Companymagement">
-      <div class="nav-item-content">
-        <input 
-          type="checkbox"
-          class="nav-checkbox"
-          [attr.data-group]="'company'"
-          (change)="onParentCheckboxChange('company', $event)">
-        <span class="nav-text">Company Management</span>
-      </div>
-    
-      <ul class="submenu">
-        <li (click)="$event.stopPropagation()">
-          <input 
-            type="checkbox" 
-            class="submenu-checkbox"
-            [attr.data-group]="'company'"
-            (change)="onSubCheckboxChange('company')"
-          > Company Preferences
+        <!-- Dashboard -->
+        <li class="nav-item">
+          <div class="nav-item-content">
+            <input type="checkbox" id="dashboard" [(ngModel)]="permissions.dashboard" name="dashboard" />
+            <label for="dashboard" class="nav-text">Dashboard</label>
+          </div>
         </li>
-    
-        <li (click)="$event.stopPropagation()">
-          <input 
-            type="checkbox" 
-            class="submenu-checkbox"
-            [attr.data-group]="'company'"
-            (change)="onSubCheckboxChange('company')"
-          > Permission
+
+        <!-- User Management -->
+        <li class="nav-item has-submenu">
+          <div class="nav-item-content">
+            <input type="checkbox" id="userParent" [(ngModel)]="permissions.user.parent" name="userParent"
+              (change)="toggleGroup('user')" />
+            <label for="userParent" class="nav-text">User Management</label>
+          </div>
+          <ul class="submenu">
+            <li *ngFor="let item of userSubItems">
+              <input type="checkbox" [id]="'user-' + item.key" [(ngModel)]="permissions.user.children[item.key]"
+                [name]="'user-' + item.key" (change)="checkParent('user')" />
+              <label [for]="'user-' + item.key">{{ item.label }}</label>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Company Management -->
+        <li class="nav-item has-submenu">
+          <div class="nav-item-content">
+            <input type="checkbox" id="companyParent" [(ngModel)]="permissions.company.parent" name="companyParent"
+              (change)="toggleGroup('company')" />
+            <label for="companyParent" class="nav-text">Company Management</label>
+          </div>
+          <ul class="submenu">
+            <li *ngFor="let item of companySubItems">
+              <input type="checkbox" [id]="'company-' + item.key" [(ngModel)]="permissions.company.children[item.key]"
+                [name]="'company-' + item.key" (change)="checkParent('company')" />
+              <label [for]="'company-' + item.key">{{ item.label }}</label>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Material & Process Management -->
+        <li class="nav-item has-submenu">
+          <div class="nav-item-content">
+            <input type="checkbox" id="materialParent" [(ngModel)]="permissions.material.parent" name="materialParent"
+              (change)="toggleGroup('material')" />
+            <label for="materialParent" class="nav-text">Material & Process Management</label>
+          </div>
+          <ul class="submenu">
+            <li *ngFor="let item of materialSubItems">
+              <input type="checkbox" [id]="'material-' + item.key" [(ngModel)]="permissions.material.children[item.key]"
+                [name]="'material-' + item.key" (change)="checkParent('material')" />
+              <label [for]="'material-' + item.key">{{ item.label }}</label>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Quotation -->
+        <li class="nav-item">
+          <div class="nav-item-content">
+            <input type="checkbox" id="quotation" [(ngModel)]="permissions.quotation" name="quotation" />
+            <label for="quotation" class="nav-text">Quotation Generator</label>
+          </div>
+        </li>
+
+        <!-- Reports -->
+        <li class="nav-item">
+          <div class="nav-item-content">
+            <input type="checkbox" id="reports" [(ngModel)]="permissions.reports" name="reports" />
+            <label for="reports" class="nav-text">Reports</label>
+          </div>
         </li>
       </ul>
-    </li>
-    
-    
-    
-    <!-- Material & Process Management -->
-    <li class="nav-item has-submenu" id="MaterialProcessmagement">
-      <div class="nav-item-content">
-        <input 
-          type="checkbox"
-          class="nav-checkbox"
-          [attr.data-group]="'Material'"
-          (change)="onParentCheckboxChange('Material', $event)">
-        <span class="nav-text">Material & Process Management</span>
+
+      <!-- Save Button -->
+      <div class="form-actions">
+        <button mat-raised-button color="primary" (click)="savePermission()">
+          {{ existingPermissionId ? 'Update Permission' : 'Save Permission' }}
+        </button>
       </div>
-    
-      <ul class="submenu">
-        <li (click)="$event.stopPropagation()">
-          <input 
-            type="checkbox" 
-            class="submenu-checkbox"
-            [attr.data-group]="'Material'"
-            (change)="onSubCheckboxChange('Material')"
-          > Raw Material
-        </li>
-    
-        <li (click)="$event.stopPropagation()">
-          <input 
-            type="checkbox" 
-            class="submenu-checkbox"
-            [attr.data-group]="'Material'"
-            (change)="onSubCheckboxChange('Material')"
-          > Process
-        </li>
-      </ul>
-    </li>
-</div>
-<!-- Company Management -->
-
-<div class="div1">
-
-  <!-- Product List -->
-  <li class="nav-item"  id="ProductList" >
-    <div class="nav-item-content">
-      <input type="checkbox" class="nav-checkbox" />
-      <span class="nav-text">Quotation Generator</span>
     </div>
-  </li>
-  
-  <!-- Reports -->
-  <li class="nav-item" id="Reports">
-    <div class="nav-item-content">
-      <input type="checkbox" class="nav-checkbox" />
-      <span class="nav-text">Reports</span>
-    </div>
-  </li>
-</div>
-
-
-</ul>
-
   </div>
 </div>

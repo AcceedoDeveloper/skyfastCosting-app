@@ -1,13 +1,12 @@
 <div *ngIf="isLoggedIn$ | async; else loginPageLayout">
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="navbar-brand">
       <a routerLink="/" class="navbar-item brand-text">Cost Management</a>
     </div>
 
     <div class="navbar-menu">
-      <div class="navbar-start">
-        <a routerLink="/todos" routerLinkActive="is-active" class="navbar-item"></a>
-      </div>
+      <div class="navbar-start"></div>
 
       <div class="navbar-end">
         <div class="profile-container">
@@ -16,7 +15,7 @@
           </button>
           <div class="profile-dropdown" *ngIf="showDropdown">
             <div class="dropdown-username">
-              {{userName}} <br>
+              {{ userName }} - <br />
               {{ userRole }}
             </div>
             <button class="dropdown-logout" (click)="logout()">Logout</button>
@@ -26,87 +25,21 @@
     </div>
   </nav>
 
+  <!-- Sidebar + Main -->
   <div class="sidenav-container">
     <aside class="custom-sidenav">
       <div class="sidenav-header"></div>
       <ul class="nav-list">
-        <li class="nav-item" routerLink="/dashboard/dashh" routerLinkActive="active-link">
-          <div class="nav-item-content">
-            <span class="material-icons nav-icon">dashboard</span>
-            <span class="nav-text">Dashboard</span>
+        <li *ngFor="let item of sidebarItems" [ngClass]="{'nav-item': true, 'has-submenu': item.submenu}">
+          <div class="nav-item-content" (click)="item.submenu ? toggleSubmenu(item.label) : null" [routerLink]="item.route" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: false}">
+            <span class="material-icons nav-icon">{{ item.icon }}</span>
+            <span class="nav-text">{{ item.label }}</span>
           </div>
-        </li>
-
-        <li class="nav-item has-submenu" (click)="toggleSubmenu('user-management')">
-          <div class="nav-item-content">
-            <span class="material-icons nav-icon">group</span>
-            <span class="nav-text">User Management</span>
-          </div>
-          <ul class="submenu" *ngIf="activeSubmenu === 'user-management'">
-            <li routerLink="/entity">
-              <span class="material-icons submenu-icon">person</span>&nbsp; User
-            </li>
-            <li routerLink="/system/roles">
-              <span class="material-icons submenu-icon">security</span>&nbsp; Role
-            </li>
-            <li routerLink="/system/shifts">
-              <span class="material-icons submenu-icon">people</span>&nbsp; Shift
-            </li>
-            <li routerLink="/entity/customers">
-              <span class="material-icons submenu-icon">business</span>&nbsp; Customer
+          <ul class="submenu" *ngIf="item.submenu && activeSubmenu === item.label">
+            <li *ngFor="let subItem of item.submenu" [routerLink]="subItem.route" routerLinkActive="active-link">
+              <span class="material-icons submenu-icon">{{ subItem.icon }}</span>&nbsp; {{ subItem.label }}
             </li>
           </ul>
-        </li>
-
-        <li class="nav-item has-submenu" (click)="toggleSubmenu('Company-Management')">
-          <div class="nav-item-content">
-            <span class="material-icons nav-icon">person</span>
-            <span class="nav-text">Company Management</span>
-          </div>
-          <ul class="submenu" *ngIf="activeSubmenu === 'Company-Management'">
-                <li routerLink="/system/companypreferences">
-              <span class="material-icons submenu-icon">settings</span> Company Preferences
-            </li>
-
-             <li routerLink="/system/permissions">
-              <span class="material-icons submenu-icon">admin_panel_settings</span>  Permission
-            </li>
-          </ul>
-        </li>
-
-
-
-
-        <li class="nav-item has-submenu" (click)="toggleSubmenu('material-process')">
-          <div class="nav-item-content">
-            <span class="material-icons nav-icon">inventory_2</span>
-            <span class="nav-text">Material & Process Management</span>
-          </div>
-          <ul class="submenu" *ngIf="activeSubmenu === 'material-process'">
-            <li routerLink="/product/raw-materials">
-              <span class="material-icons submenu-icon">list_alt</span> Raw Material
-            </li>
-            <li routerLink="/product">
-              <span class="material-icons submenu-icon">category</span> Process
-            </li>
-          </ul>
-        </li>
-
-
-
-
-        <li class="nav-item" routerLink="/product/quatation" routerLinkActive="active-link">
-          <div class="nav-item-content">
-            <span class="material-icons nav-icon">person</span>
-            <span class="nav-text">Quotation Generator</span>
-          </div>
-        </li>
-
-        <li class="nav-item" routerLink="/dashboard/report" routerLinkActive="active-link">
-          <div class="nav-item-content">
-            <span class="material-icons nav-icon">bar_chart</span>
-            <span class="nav-text">Reports</span>
-          </div>
         </li>
       </ul>
     </aside>

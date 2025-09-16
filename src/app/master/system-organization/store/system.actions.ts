@@ -1,6 +1,8 @@
 // store/role.actions.ts
 import { createAction, props } from '@ngrx/store';
 import { Role, Department, Shift, HostingMail } from '../../../model/role.model';
+
+import { Permission } from '../../../model/permission.model';
 import { Company } from '../../../model/company.model';
 
 
@@ -22,6 +24,71 @@ export const deleteRoleSuccess = createAction('[Role] Delete Role Success', prop
 
 // Common Failure
 export const apiFailure = createAction('[Role API] Failure', props<{ error: any }>());
+
+
+//permission 
+
+// ======================
+// Load Permissions
+// ======================
+export const loadPermissions = createAction('[Permission] Load Permissions');
+export const loadPermissionsSuccess = createAction(
+  '[Permission] Load Permissions Success',
+  props<{ permissions: Permission[] }>()
+);
+export const loadPermissionsFailure = createAction(
+  '[Permission] Load Permissions Failure',
+  props<{ error: any }>()
+);
+
+// ======================
+// Add Permission
+// ======================
+export const addPermission = createAction(
+  '[Permission] Add Permission',
+  props<{ permission: Permission }>()
+);
+export const addPermissionSuccess = createAction(
+  '[Permission] Add Permission Success',
+  props<{ permission: Permission }>()
+);
+export const addPermissionFailure = createAction(
+  '[Permission] Add Permission Failure',
+  props<{ error: any }>()
+);
+
+// ======================
+// Update Permission
+// ======================
+export const updatePermission = createAction(
+  '[Permission] Update Permission',
+  props<{ id: string; permission: Permission }>()
+);
+export const updatePermissionSuccess = createAction(
+  '[Permission] Update Permission Success',
+  props<{ updatedPermission: Permission }>()
+);
+export const updatePermissionFailure = createAction(
+  '[Permission] Update Permission Failure',
+  props<{ error: any }>()
+);
+
+// ======================
+// Delete Permission
+// ======================
+export const deletePermission = createAction(
+  '[Permission] Delete Permission',
+  props<{ id: string }>()
+);
+export const deletePermissionSuccess = createAction(
+  '[Permission] Delete Permission Success',
+  props<{ id: string }>()
+);
+export const deletePermissionFailure = createAction(
+  '[Permission] Delete Permission Failure',
+  props<{ error: any }>()
+);
+
 
 
 export const loadDepartment = createAction('[Department] Load Department');
