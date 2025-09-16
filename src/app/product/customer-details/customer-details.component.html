@@ -352,8 +352,13 @@
 
 
  <!-- PDF  -->
-<div id="pdfContent" *ngIf="pdfview" >
-  <div >
+
+
+
+
+<div  class="compare-popup"   *ngIf="pdfview" >
+<div  class="compare-popup-content">
+  <div id="pdfContent">
 
     <div class="quotation" *ngIf="quotationData" >
       <!-- Top header band: left spacer/logo, centered title, right meta table -->
@@ -564,12 +569,16 @@
   </div>
 
 
-    <div>
+    <div class="button-da" >
       <button type="button" class="btn btn-danger" (click)="closeda()">close</button>
       <button  type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
 
     </div>
 </div>
+</div>
+
+ 
+
 
 
 

@@ -79,6 +79,7 @@ if (data?.revisions?.length) {
       customerName: [data?.customerName.customerName || '', Validators.required],
       productName: [revision?.productName || '', Validators.required],
       partName: [data?.partName || '', Validators.required],
+      drawingNo: [data?.drawingNo || '', Validators.required],
 
       // counts (fallback if missing)
       noOfRawMaterials: [revision?.rawMaterial?.length ?? 0],
@@ -90,6 +91,7 @@ if (data?.revisions?.length) {
       inspectorCost: [revision?.InspectorCost ?? 0],
       packing: [revision?.Packing || ''],
       toolAmbience: [revision?.ToolAmbience || ''],
+      overHeadsPercent: [revision?.overHeadsPercent ?? 0],
 
 
 
