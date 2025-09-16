@@ -175,3 +175,502 @@ text-align: center;
 vertical-align: middle;
 // background-color: #c8b273;
 }
+
+// PDF-specific styles - nested under #pdfContent to prevent conflicts
+#pdfContent {
+  font-family: Arial, sans-serif;
+  margin: 10px;
+  line-height: 1.4;
+  color: #000000; // Ensure all text is black
+  
+  // Add page borders and styling
+  @media print {
+    @page {
+      margin: 0.4in;
+      border: 2px solid #000000;
+      size: A4;
+    }
+    
+    // Ensure continuous flow
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  
+  // Add page border styling for screen view
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #000000;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .quotation {
+    margin: 0 auto;
+    border: 1px solid #000000;
+    padding: 15px;
+    background-color: #ffffff;
+    max-width: 800px;
+    width: 100%;
+    box-sizing: border-box;
+    page-break-inside: auto; // Allow content to flow across pages
+  }
+  
+  /* Top header block to match reference */
+  /* Header band styling */
+  .header-band {
+    width: 100%;
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    margin-bottom: 6px;
+  }
+  .header-band td {
+    border: 1px solid #000000;
+    vertical-align: middle;
+  }
+  .header-band .band-left { width: 25%; height: 20px; }
+  .header-band .band-title {
+    width: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .header-band .band-right { width: 25%; padding: 0; }
+  .qmeta {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+  }
+  .qmeta td {
+    border: 1px solid #000000;
+    padding: 4px 6px;
+    white-space: nowrap;
+  }
+  .qmeta .label { font-weight: normal; }
+  .qmeta .colon { text-align: center; width: 8px; }
+  .qmeta .value { font-weight: bold; }
+  
+  .customer-info {
+    margin-bottom: 25px;
+    color: #000000;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+
+ /* Outer Table */
+.header-grid {
+  width: 100%;
+  border: 1px solid #000;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.header-grid > tbody > tr > td {
+  border: 1px solid #000; /* only outer table cells get borders */
+  vertical-align: top;
+}
+.customer-block {
+  width: 45%;
+  padding: 8px;
+}
+.details-block {
+  width: 55%;
+  padding: 8px;
+}
+
+/* Inner Table (right side details) */
+.inner-details {
+  width: 100%;
+  border-collapse: collapse;
+}
+.inner-details td {
+  border: none;  /* 🚀 removes inner borders */
+  padding: 4px 6px;
+}
+.label {
+  width: 40%;
+  font-weight: bold;
+}
+.value {
+  width: 60%;
+}
+
+
+  
+  h3 {
+    color: #000000;
+    font-weight: bold;
+    margin: 25px 0 15px 0;
+    font-size: 16px;
+  }
+  
+  .osp-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #000000;
+  }
+  
+  .osp-no {
+    font-weight: bold;
+  }
+  
+  .osp-description {
+    font-weight: bold;
+  }
+  
+  table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    table-layout: fixed; // Force table to respect width constraints
+    overflow: hidden;
+    page-break-inside: auto; // Allow table to split across pages
+  }
+  
+  th, td {
+    border: 1px solid #000000;
+    padding: 8px 6px;
+    text-align: left;
+    color: #000000;
+    background-color: #ffffff;
+    font-size: 12px;
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+    font-size: 11px;
+    padding: 8px 6px;
+    white-space: normal;
+    line-height: 1.3;
+  }
+  
+  // Specific styling for process cost table
+  table:has(th:contains("Opn No")) {
+    th, td {
+      font-size: 11px;
+      padding: 6px 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      line-height: 1.2;
+    }
+    
+    th {
+      font-size: 11px;
+      padding: 8px 4px;
+      background-color: #f2f2f2;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    // Column-specific text alignment to match image exactly
+    th:nth-child(1), td:nth-child(1) { text-align: left; } // Opn No
+    th:nth-child(2), td:nth-child(2) { text-align: left; } // Opn Code
+    th:nth-child(3), td:nth-child(3) { text-align: left; } // Machine
+    th:nth-child(4), td:nth-child(4) { text-align: left; } // Machine Hour Rate
+    th:nth-child(5), td:nth-child(5) { text-align: left; } // No. of Cavities
+    th:nth-child(6), td:nth-child(6) { text-align: left; } // No. of Cores Mech
+    th:nth-child(7), td:nth-child(7) { text-align: left; } // No. of Cores Hy.
+    th:nth-child(8), td:nth-child(8) { text-align: left; } // Hourly Output
+    th:nth-child(9), td:nth-child(9) { text-align: left; } // Batch Qty
+    th:nth-child(10), td:nth-child(10) { text-align: right; } // Process Cost
+    
+    
+    // Ensure table headers repeat on new pages
+    thead {
+      display: table-header-group;
+      page-break-inside: avoid;
+    }
+    
+    tbody {
+      display: table-row-group;
+    }
+    
+    // Set specific column widths for process table (9 columns now; last column wider)
+    th:nth-child(1), td:nth-child(1) { width: 6%; } // Opn No
+    th:nth-child(2), td:nth-child(2) { width: 6%; } // Opn Code
+    th:nth-child(3), td:nth-child(3) { width: 18%; } // Machine
+    th:nth-child(4), td:nth-child(4) { width: 12%; } // Machine Hour Rate
+    th:nth-child(5), td:nth-child(5) { width: 10%; } // No. of Cavities
+    th:nth-child(6), td:nth-child(6) { width: 8%; } // No. of Cores Mech
+    th:nth-child(7), td:nth-child(7) { width: 8%; } // No. of Cores Hy.
+    th:nth-child(8), td:nth-child(8) { width: 12%; } // Hourly Output
+    th:nth-child(9), td:nth-child(9) { width: 40%; white-space: normal; } // Process Cost (fill right gap)
+    td.process-cost-wide { width: 100%; }
+  }
+
+  /* Integrated Total Quoted Price rows styling inside the same table */
+  .tqp-label {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .tqp-header th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Section header row inside process table */
+  .section-header {
+    text-align: center;
+    font-weight: bold;
+    background-color: #f2f2f2;
+  }
+
+  .terms-cell { padding: 0; }
+  .terms-grid { width: 100%; border-collapse: collapse; }
+  .terms-grid th, .terms-grid td {
+    border: 1px solid #000000;
+    padding: 6px 8px;
+    font-size: 11px;
+    text-align: left;
+  }
+
+  /* Process nested table when embedded under Material Cost */
+  .process-cell { padding: 0; }
+  .process-nested { width: 100%; border-collapse: collapse; }
+  .process-nested th, .process-nested td { border: 1px solid #000000; padding: 6px 4px; }
+
+  /* Material table attached directly under header grid */
+  .material-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  .material-table td, .material-table th { border: 1px solid #000000; padding: 6px 8px; }
+  
+  // Ensure all text in tables is visible
+  tbody tr td {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+  
+  // Style for total rows
+  tr:has(td:contains("Total")) {
+    font-weight: bold;
+    background-color: #f5f5f5;
+    
+    td {
+      background-color: #f5f5f5 !important;
+      color: #000000 !important;
+    }
+  }
+  
+  .terms {
+    margin-top: 20px;
+    color: #000000;
+  }
+  
+  .terms li {
+    margin-bottom: 10px;
+    color: #000000;
+  }
+  
+  // Ensure all text elements are visible
+  * {
+    color: #000000 !important;
+  }
+  
+  // Override any inherited white text
+  .quotation * {
+    color: #000000 !important;
+  }
+  
+  // Style for bold text in material cost table
+  td strong {
+    color: #000000 !important;
+    font-weight: bold;
+  }
+  
+  // Ensure proper spacing and alignment
+  .quotation {
+    page-break-inside: auto; // Allow content to flow across pages
+  }
+
+  .mainquotation {
+    padding: 20px;
+    border-bottom: 2px solid #0e1635;
+    background-color: #f8f9fa;
+  }
+  
+  .quotationheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .quotationheader img {
+    height: 20px;
+  }
+  
+  .quotationheader h3 {
+    font-size: 24px;
+    color: #0e1635;
+    font-weight: bold;
+  }
+  
+  .headerdate h6 {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  
+  // Allow table splitting across pages with proper continuation
+  table {
+    page-break-inside: auto; // Allow table to split across pages
+    page-break-after: avoid;
+  }
+  
+  // Allow rows to split but keep header with content
+  tr {
+    page-break-inside: avoid; // Keep individual rows together
+    page-break-after: avoid;
+  }
+  
+  // Ensure table headers repeat on new pages
+  thead {
+    display: table-header-group;
+  }
+  
+  tbody {
+    display: table-row-group;
+  }
+  
+  // Add page break before Total Quoted Price section
+  h3:contains("Total Quoted Price") {
+    page-break-before: always;
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+  
+  // Alternative approach - target the h3 element directly
+  h3 {
+    &:nth-of-type(3) { // Assuming Total Quoted Price is the 3rd h3
+      page-break-before: always;
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
+  }
+  
+  // Page break class for specific elements
+  .page-break-before {
+    page-break-before: always;
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+  
+  // Ensure proper spacing for terms section
+  .terms {
+    margin-top: 25px;
+    margin-bottom: 15px;
+  }
+  
+  // Better table cell alignment
+  td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  // Specific styling for material cost table
+  table:has(td:contains("Raw Material Spec")) {
+    th, td {
+      font-size: 13px;
+      padding: 10px 8px;
+      text-align: left;
+    }
+    
+    td strong {
+      font-weight: bold;
+      color: #000000;
+    }
+  }
+  
+  // Specific styling for the process cost table to make it more compact
+  table:has(th:contains("Process Cost")) {
+    font-size: 10px;
+    
+    th, td {
+      padding: 4px 2px;
+      font-size: 10px;
+    }
+  }
+  
+  // Styling for total quoted price table
+  table:has(th:contains("Net Material Cost")) {
+    th, td {
+      font-size: 12px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    
+    // Special styling for merged header cells
+    th[rowspan="2"] {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      vertical-align: middle;
+    }
+    
+    // Set specific column widths for total quoted price table
+    th:nth-child(1), td:nth-child(1) { width: 15%; } // Total quoted price / piece (merged)
+    th:nth-child(2), td:nth-child(2) { width: 18%; } // Net Material Cost
+    th:nth-child(3), td:nth-child(3) { width: 18%; } // Total Labour Cost
+    th:nth-child(4), td:nth-child(4) { width: 22%; } // Profit, ICC & Over Heads
+    th:nth-child(5), td:nth-child(5) { width: 15%; } // Tool Amortization
+    th:nth-child(6), td:nth-child(6) { width: 12%; } // Total price
+  }
+}
+
+
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none; /* hidden by default */
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Popup Box */
+.popup {
+  background: #fff;
+  border-radius: 10px;
+  width: 400px;
+  max-height: 80vh; /* responsive height */
+  overflow-y: auto; /* scroll only if needed */
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+
+.button-da{
+  margin-left: 800px;
+  display: flex;
+  gap: 10px;
+}

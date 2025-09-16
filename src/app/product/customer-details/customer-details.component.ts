@@ -21,7 +21,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProductService} from '../../services/product.service';
 import html2pdf from 'html2pdf.js';
 import { CustomerResponse} from '../../model/pdf.model';
- 
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -46,9 +46,9 @@ selectedRevisions: any[] = [];
 showComparePopup: boolean = false;
    expandedCustomer: any = null;
   quotationData!: CustomerResponse; 
+  pdfview : boolean = false;
 
-
-  constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog, private productservices: ProductService) {
+  constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog, private productservices: ProductService,  private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -252,15 +252,20 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
     next: (res) => {
       this.quotationData = res;
       console.log('Quotation Data:', this.quotationData);
+      this.pdfview= true;
       
     },
     error: (err) => {
       console.error('Error fetching quotation:', err);
     }
   });
+
+
 }
 
-
+closeda(){
+  this.pdfview = false;
+}
 
 }
 

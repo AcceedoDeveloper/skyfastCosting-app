@@ -351,205 +351,225 @@
 
 
 
+ <!-- PDF  -->
+<div id="pdfContent" *ngIf="pdfview" >
+  <div >
 
-<div id="pdfContent">
-  <div class="quotation" class="quotation" *ngIf="quotationData">
-        <div class="header">
-            QUOTATION
-            <div style="float: right;">
-                Qtn. No: SF/{{ quotationData.Revision }} <br>
-                Date: {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}
-            </div>
+    <div class="quotation" *ngIf="quotationData" >
+      <!-- Top header band: left spacer/logo, centered title, right meta table -->
+ 
+      <div class="mainquotation">
+        <div class="quotationheader">
+          <img src="/sky.png" alt="SKYFAST">
+          <h3>QUOTATION</h3>
+          <div class="headerdate">
+            <h6>Qtn. No : SF/{{ quotationData.Revision }} </h6>
+            <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
+          </div>
         </div>
-        
-        <div class="customer-info">
+      </div>
+      <!-- Header grid to match reference: left address block + right details table -->
+      <table class="header-grid">
+        <tr>
+          <!-- Customer Block -->
+          <td class="customer-block">
             <strong>Customer Name & Address:</strong><br>
-           {{ quotationData.results[0].customerName.customerName }} <br>
-    {{ quotationData.results[0].customerName.address }}
-        </div>
-        
-        <table>
-            <tr>
-                <td>Customer Drawing No</td>
-                <td>{{ quotationData.results[0].partName }}</td>
-            </tr>
-            <tr>
-                <td>Part No</td>
-                <td>{{ quotationData.partName }} REV "{{ quotationData.Revision }}"</td>
-            </tr>
-            <tr>
-                <td>Part Name</td>
-                <td>{{ quotationData.results[0].revisions[0].productName }}</td>
-            </tr>
-        </table>
-        
-        <h3>Material Cost</h3>
-        <table>
-            <tr>
-                <th>Raw Material Spec</th>
-                <td>A 413</td>
-                <th>Finish weight/pc</th>
-                <td>NA</td>
-            </tr>
-            <tr>
-                <th>Raw Material price/kg +10% inventory cost</th>
-                <td>250</td>
-                <th>Raw Material cost/pc (Rm.wt/pc x Rm.price/kg)</th>
-                <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
-            </tr>
-            <tr>
-                <th>Component Weight (Kg)</th>
-                <td>0.172</td>
-                <th>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</th>
-                <td>NA</td>
-            </tr>
-            <tr>
-                <th>Mellting Loss</th>
-                <td>{{ quotationData.results[0].revisions[0].meltingLoss }}</td>
-                <th>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</th>
-                <td>NA</td>
-            </tr>
-            <tr>
-                <th>Raw Material weight/pc</th>
-                <td>{{ quotationData.results[0].revisions[0].rawMaterialWeight }}</td>
-                <th>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</th>
-                <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
-            </tr>
-        </table>
-        
-        <h3>Process Cost</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Opn No</th>
-                    <th>Opn Code</th>
-                    <th>Machine</th>
-                    <th>Machine Hour Rate</th>
-                    <th>No. of Cavities</th>
-                    <th>No. of Cores Mech</th>
-                    <th>No. of Cores Hy.</th>
-                    <th>Hourly Output</th>
-                    <th>Batch Qty</th>
-                    <th>Process Cost / casting</th>
-                </tr>
-            </thead>
-            <tbody>
-               <tr  *ngFor="let process of quotationData.results[0].revisions[0]?.processes; let i = index" >
-                 <td>{{ i + 1 }}</td>
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ process.processName }}</td>
-                   <td>{{ process.Hours }}</td>
-                    <td>{{ process.cavity }}</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>{{ process.cycleTime }}</td>
-                    <td>{{ process.cost | number:'1.2-2' }}</td>
-               </tr>
-               <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{ quotationData.results[0].revisions[0].sumOfProcessCost }}</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td></td>
-                    <td>Oil shot & Rejections</td>
-                    <td>{{ quotationData.results[0].revisions[0].Rejection }}%</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-<td>{{ (quotationData.results[0].revisions[0].sumOfProcessCost * 0.05) | number:'1.2-2' }}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>Total Process cost/pc (L) :</td>
-                    <td>{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <h3>Total Quoted Price / Piece</h3>
-        <table>
-            <tr>
-                <th></th>
-                <th>Net Material Cost (M)</th>
-                <th>Total Labour Cost (L)</th>
-              
-                <th>ICC & Over Heads 15%</th>
-                <th>Tool Amortization</th>
-                <th>Total price</th>
-            </tr>
-            <tr>
-                <td></td>
-                <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
-                <td>{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                <td>{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 }}</td>
-                <td>{{ quotationData.results[0].revisions[0].ToolAmbience }}</td>
-                <td>{{ quotationData.results[0].revisions[0].TotalPrice }}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>Profit, ICC & Over Heads 15%</th>
-                <td>{{ quotationData.results[0].revisions[0].rawMaterialCost * 1.15 }}</td>
-                <td>{{ (quotationData.results[0].revisions[0].TotalProcessCost) * 1.15 | number:'1.2-2' }}</td>
-                <td></td>
-                <td>{{ quotationData.results[0].revisions[0].ToolAmbience }}</td>
-                <td>{{ quotationData.results[0].revisions[0].TotalPrice }}</td>
-            </tr>
-        </table>
-        
-        <h3>Other Terms and Conditions</h3>
-        <table>
-            <tr>
-                <th>Packing & Forwarding</th>
-                <td>Yours</td>
-                <th>Mode of Transport</th>
-                <td>Road</td>
-                <th>Freight:</th>
-                <td>Paid</td>
-            </tr>
-            <tr>
-                <th>Insurance</th>
-                <td>NA</td>
-                <th>Payment Terms</th>
-                <td>30 Days</td>
-                <td colspan="2"></td>
-            </tr>
-            <tr>
-                <th>Applicable Tax</th>
-                <td colspan="5">CGST / SGST / IGST</td>
-            </tr>
-        </table>
-        
-        <div class="terms">
-            <strong>Other Terms & Conditions</strong>
-            <ul>
-                <li>(i) Validity of the quotation 30-Days</li>
-                <li>(ii) Delivery Time: 15-days from the receipt of order</li>
-                <li>(iii) Materials cost are revised on quarterly basis and subject to market fluctuation</li>
-                <li>(iv) Raw materials invertory cost 15 %</li>
-            </ul>
-        </div>
+            {{ quotationData.results[0].customerName.customerName }} <br>
+            {{ quotationData.results[0].customerName.address }}
+          </td>
+      
+          <!-- Details Block -->
+          <td class="details-block">
+            <table class="inner-details">
+              <tr>
+                <td class="label">Customer Drawing No</td>
+                <td class="value">: {{ quotationData.results[0].partName }}</td>
+              </tr>
+              <tr>
+                <td class="label">Part No</td>
+                <td class="value">: {{ quotationData.partName }} REV "{{ quotationData.Revision }}"</td>
+              </tr>
+              <tr>
+                <td class="label">Part Name</td>
+                <td class="value">: {{ quotationData.results[0].revisions[0].productName }}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      
+      
+      <table class="material-table">
+          <tr>
+              <td colspan="4" class="section-header">Material Cost</td>
+          </tr>
+          <tr>
+              <td><strong>Raw Material Spec</strong></td>
+              <td>A 413</td>
+              <td><strong>Finish weight/pc</strong></td>
+              <td>NA</td>
+          </tr>
+          <tr>
+              <td><strong>Raw Material price/kg +10% inventory cost</strong></td>
+              <td>250</td>
+              <td><strong>Raw Material cost/pc (Rm.wt/pc x Rm.price/kg)</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
+          </tr>
+          <tr>
+              <td><strong>Component Weight (Kg)</strong></td>
+              <td>0.172</td>
+              <td><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
+              <td>NA</td>
+          </tr>
+          <tr>
+              <td><strong>Mellting Loss</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].meltingLoss }}</td>
+              <td><strong>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</strong></td>
+              <td>NA</td>
+          </tr>
+          <tr>
+              <td><strong>Raw Material weight/pc</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialWeight }}</td>
+              <td><strong>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
+          </tr>
+          <!-- Insert Process Cost as part of the same outer table -->
+          <tr>
+              <td colspan="4" class="section-header">Process Cost</td>
+          </tr>
+          <tr>
+              <td colspan="4" class="process-cell">
+                  <div class="osp-info">
+                      <span class="osp-no">OSP No :</span>
+                      <span class="osp-description">OSP Description :</span>
+                  </div>
+                  <table class="process-nested">
+          <thead>
+              <tr>
+                  <th>Opn No</th>
+                  <th>Opn Code</th>
+                  <th>Machine</th>
+                  <th>Machine Hour Rate</th>
+                  <th>No. of Cavities</th>
+                  <th>No. of Cores Mech</th>
+                  <th>No. of Cores Hy.</th>
+                  <th>Hourly Output</th>
+                
+                  <th colspan="2">Process Cost/casting</th>
+              </tr>
+          </thead>
+          <tbody>
+             <tr  *ngFor="let process of quotationData.results[0].revisions[0]?.processes; let i = index" >
+               <td>{{ i + 1 }}</td>
+                <td>{{ (i + 1) * 10 }}</td>
+                <td>{{ process.processName }}</td>
+                 <td>{{ process.Hours }}</td>
+                  <td>{{ process.cavity }}</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td colspan="2" class="process-cost-wide">{{ process.cost | number:'1.2-2' }}</td>
+             </tr>
+             <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  
+                  <td colspan="2">{{ quotationData.results[0].revisions[0].sumOfProcessCost }}</td>
+              </tr>
+              <tr>
+                  <td>6</td>
+                  <td></td>
+                  <td>Oil shot & Rejections</td>
+                  <td>{{ quotationData.results[0].revisions[0].Rejection }}%</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  
+                  <td>-</td>
+                  <td colspan="2">{{ (quotationData.results[0].revisions[0].sumOfProcessCost * 0.05) | number:'1.2-2' }}</td>
+              </tr>
+              <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+    
+                  <td colspan="2">Total Process cost/pc (L) :</td>
+                  <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
+              </tr>
+              <!-- Integrated Total Quoted Price section within the same table -->
+              <tr class="tqp-header">
+                  <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
+                  <th colspan="1">Net Material Cost (M)</th>
+                  <th colspan="2">Total Labour Cost (L)</th>
+                  <th colspan="2">Profit, ICC & Over Heads 15%</th>
+                  <th colspan="1">Tool Amortization</th>
+                  <th colspan="2">Total price</th>
+              </tr>
+              <tr>
+                
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
+                  <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
+                  <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 | number:'1.2-2' }}</td>
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].ToolAmbience }}</td>
+                  <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice }}</td>
+              </tr>
+   
+              <!-- Other Terms and conditions separator inside the same table -->
+              <tr>
+                  <td colspan="10" class="section-header">Other Terms and conditions</td>
+              </tr>
+              <tr>
+                  <td colspan="10" class="terms-cell">
+                      <table class="terms-grid">
+                          <tr>
+                              <th>Packing & Forwarding</th>
+                              <td>Yours</td>
+                              <th>Mode of Transport</th>
+                              <td>Road</td>
+                              <th>Freight:</th>
+                              <td>Paid</td>
+                          </tr>
+                          <tr>
+                              <th>Insurance</th>
+                              <td>NA</td>
+                              <th>Payment Terms</th>
+                              <td>30 Days</td>
+                              <td colspan="2"></td>
+                          </tr>
+                          <tr>
+                              <th>Applicable Tax</th>
+                              <td colspan="5">CGST / SGST / IGST</td>
+                          </tr>
+                      </table>
+                  </td>
+              </tr>
+                  </tbody>
+                  </table>
+              </td>
+          </tr>
+      </table>
+
+      
+  
+  </div>
+  </div>
+
+
+    <div>
+      <button type="button" class="btn btn-danger" (click)="closeda()">close</button>
+      <button  type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
+
     </div>
 </div>
 
-<button (click)="downloadPDF()">Download PDF</button>
 
 
