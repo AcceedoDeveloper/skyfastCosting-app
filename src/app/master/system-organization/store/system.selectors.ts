@@ -37,3 +37,19 @@ export const selectCompany = createSelector(
 );
 
 export const selectRoleError = createSelector(selectRoleState, state => state.error);
+
+
+
+
+export const selectAllPermissions = createSelector(
+  selectRoleState,
+  (state: RoleState) => state.permissions
+);
+
+export const selectPermissionError = createSelector(
+  selectRoleState,
+  (state: RoleState) => state.error
+);
+
+
+

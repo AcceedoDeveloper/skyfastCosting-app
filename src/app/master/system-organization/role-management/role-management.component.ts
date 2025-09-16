@@ -1,67 +1,39 @@
 import { Component, OnInit } from '@angular/core';
-import { Role} from '../../../model/role.model';
+import { Role } from '../../../model/role.model';
 import * as RoleActions from '../store/system.actions';
 import { selectAllRoles } from '../store/system.selectors';
-import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { tap } from 'rxjs/operators';
-import { CommonModule, } from '@angular/common';
-import { MatIconModule} from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ConfrimDialogComponent} from '../../../shared/confrim-dialog/confrim-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-role-management',
   standalone: true,
-  imports: [
-    CommonModule, 
-    MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,  
-    FormsModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule],
   templateUrl: './role-management.component.html',
-  styleUrl: './role-management.component.scss'
+  styleUrls: ['./role-management.component.scss']
 })
-export class RoleManagementComponent  implements OnInit {
-
-  constructor(private store : Store, private dialog : MatDialog){}
-
-roles$!: Observable<Role[]>;
- newRoleName: string = '';
+export class RoleManagementComponent implements OnInit {
+  roles$!: Observable<Role[]>;
+  newRoleName: string = '';
   isEditMode: boolean = false;
   editingId: string | null = null;
 
-ngOnInit() {
+  constructor(private store: Store) {}
 
-  this.roles$ = this.store.select(selectAllRoles);
-  this.roles$.subscribe(roles => {
-    console.log('Roles from store:', roles);
-  });
+  ngOnInit() {
+    this.roles$ = this.store.select(selectAllRoles);
+    this.store.dispatch(RoleActions.loadRoles());
+  }
 
-  this.store.dispatch(RoleActions.loadRoles());
-}
-
- addRole() {
+  addRole() {
     if (!this.newRoleName.trim()) return;
     this.store.dispatch(RoleActions.addRole({ role: { role: this.newRoleName } as Role }));
     this.store.dispatch(RoleActions.loadRoles());
     this.newRoleName = '';
-  }
-
-  updateRole() {
-    if (!this.newRoleName.trim() || !this.editingId) return;
-    this.store.dispatch(RoleActions.updateRole({
-      id: this.editingId,
-      role: { role: this.newRoleName } as Role
-    }));
-    this.store.dispatch(RoleActions.loadRoles());
-    this.cancelEdit();
   }
 
   editRole(role: Role) {
@@ -70,27 +42,23 @@ ngOnInit() {
     this.newRoleName = role.role;
   }
 
+  updateRole() {
+    if (!this.newRoleName.trim() || !this.editingId) return;
+    this.store.dispatch(RoleActions.updateRole({ id: this.editingId, role: { role: this.newRoleName } as Role }));
+    this.store.dispatch(RoleActions.loadRoles());
+    this.cancelEdit();
+  }
+
   cancelEdit() {
     this.isEditMode = false;
     this.editingId = null;
     this.newRoleName = '';
   }
 
-deleteRole(id: string) {
-  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
-    width: '350px',
-    data: {
-      title: 'Delete Role',
-      message: 'Are you sure you want to delete this role?'
-    }
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    if (result === 'confirm') {
+  deleteRole(id: string) {
+    if (confirm('Are you sure you want to delete this role?')) {
       this.store.dispatch(RoleActions.deleteRole({ id }));
-    } 
-  });
-}
-
-
+      this.store.dispatch(RoleActions.loadRoles());
+    }
+  }
 }

@@ -57,3 +57,8 @@ export const verifyOtpFailure = createAction(
 export const resetForgotPasswordState = createAction(
   '[Forgot Password] Reset State'
 );
+
+export const setUser = createAction(
+  '[Auth] Set User',
+  props<{ user: User }>()
+);

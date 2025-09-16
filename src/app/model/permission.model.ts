@@ -1,53 +1,11 @@
-// role.model.ts
-
-export interface Role {
-  _id: string;
-  role: string;
-  createdAt?: string;
-  updatedAt?: string;
-  __v: number;
-}
-
-export interface Department {
-  _id: string;
-  department: string;
-  departmentCode: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-}
-
-export interface Shift {
-  _id: string;
-  shiftName: string;
-  startTime: string;
-  endTime: string;
-  createdAt: string; // ISO Date string
-  updatedAt: string; // ISO Date string
-  __v: number;
-}
-
-export interface HostingMail {
-  _id: string;
-  smtpServer: string;
-  portNo: string;
-  emailId: string;
-  password: string;
-  EncryptionType: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-}
-
-
-// permission.model 
+// permission.model.ts
 
 export interface Permission {
   _id?: string;
   role: string;
   screens: Screens;
   initialScreen: string;
-   __v: number;
+   __v?: number;
 }
 
 export interface Screens {
