@@ -178,8 +178,7 @@
         <div *ngFor="let rev of expandedCustomer?.revisions">
           <mat-checkbox
             [(ngModel)]="rev.selected"
-            (change)="onRevisionSelectPopup(rev, $event)"
-          >
+            (change)="onRevisionSelectPopup(rev, $event)">
             Revision {{ rev.revisionNumber || 'N/A' }}
           </mat-checkbox>
         </div>
@@ -358,6 +357,11 @@
 
 <div  class="compare-popup"   *ngIf="pdfview" >
 <div  class="compare-popup-content">
+      <div class="button-da" >
+      <button type="button" class="btn btn-danger" (click)="closeda()">close</button>
+      <button  type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
+
+    </div>
   <div id="pdfContent">
 
     <div class="quotation" *ngIf="quotationData" >
@@ -388,15 +392,15 @@
             <table class="inner-details">
               <tr>
                 <td class="label">Customer Drawing No</td>
-                <td class="value">: {{ quotationData.results[0].partName }}</td>
+                <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
               </tr>
               <tr>
                 <td class="label">Part No</td>
-                <td class="value">: {{ quotationData.partName }} REV "{{ quotationData.Revision }}"</td>
+                <td class="value">: </td>
               </tr>
               <tr>
                 <td class="label">Part Name</td>
-                <td class="value">: {{ quotationData.results[0].revisions[0].productName }}</td>
+                <td class="value">: {{ quotationData.results[0].partName }}</td>
               </tr>
             </table>
           </td>
@@ -410,19 +414,19 @@
           </tr>
           <tr>
               <td><strong>Raw Material Spec</strong></td>
-              <td>A 413</td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].GradeName }}</td>
               <td><strong>Finish weight/pc</strong></td>
               <td>NA</td>
           </tr>
           <tr>
               <td><strong>Raw Material price/kg +10% inventory cost</strong></td>
-              <td>250</td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }}</td>
               <td><strong>Raw Material cost/pc (Rm.wt/pc x Rm.price/kg)</strong></td>
               <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
           </tr>
           <tr>
               <td><strong>Component Weight (Kg)</strong></td>
-              <td>0.172</td>
+              <td>{{ quotationData.results[0].revisions[0].castingWeight }}</td>
               <td><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
               <td>NA</td>
           </tr>
@@ -488,7 +492,7 @@
                   <td colspan="2">{{ quotationData.results[0].revisions[0].sumOfProcessCost }}</td>
               </tr>
               <tr>
-                  <td>6</td>
+                  <td>{{ quotationData.results[0].revisions[0].noOfProcess + 1}}</td>
                   <td></td>
                   <td>Oil shot & Rejections</td>
                   <td>{{ quotationData.results[0].revisions[0].Rejection }}%</td>
@@ -515,7 +519,7 @@
                   <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
                   <th colspan="1">Net Material Cost (M)</th>
                   <th colspan="2">Total Labour Cost (L)</th>
-                  <th colspan="2">Profit, ICC & Over Heads 15%</th>
+                  <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
                   <th colspan="1">Tool Amortization</th>
                   <th colspan="2">Total price</th>
               </tr>
@@ -569,11 +573,7 @@
   </div>
 
 
-    <div class="button-da" >
-      <button type="button" class="btn btn-danger" (click)="closeda()">close</button>
-      <button  type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
 
-    </div>
 </div>
 </div>
 

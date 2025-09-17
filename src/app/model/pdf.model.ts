@@ -14,6 +14,7 @@ export interface CustomerDetailss {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  drawingNo: string;
 }
 
 export interface CustomerName {
@@ -52,6 +53,7 @@ export interface Revision {
   TotalProcessCost: number;
   overHeadsCost: number;
   TotalPrice: number;
+  overHeadsPercent: number; 
 }
 
 export interface RawMaterial {
