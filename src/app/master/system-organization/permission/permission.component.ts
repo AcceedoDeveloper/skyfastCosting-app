@@ -6,16 +6,34 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, take, takeUntil } from 'rxjs';
+
 import { Role } from '../../../model/role.model';
 import { Permission } from '../../../model/permission.model';
 import { selectAllRoles, selectAllPermissions } from '../store/system.selectors';
 import * as RoleActions from '../store/system.actions';
 
-interface UserChildren { user: boolean; role: boolean; shift: boolean; customer: boolean; }
-interface CompanyChildren { companyPreferences: boolean; permission: boolean; }
-interface MaterialChildren { rawMaterial: boolean; process: boolean; }
+// ---------- Types ----------
+interface UserChildren {
+  user: boolean;
+  role: boolean;
+  shift: boolean;
+  customer: boolean;
+}
 
-interface PermissionGroup<T> { parent: boolean; children: T; }
+interface CompanyChildren {
+  companyPreferences: boolean;
+  permission: boolean;
+}
+
+interface MaterialChildren {
+  rawMaterial: boolean;
+  process: boolean;
+}
+
+interface PermissionGroup<T> {
+  parent: boolean;
+  children: T;
+}
 
 interface Permissions {
   dashboard: boolean;
@@ -26,7 +44,10 @@ interface Permissions {
   reports: boolean;
 }
 
-interface SubItem<K> { key: K; label: string; }
+interface SubItem<K> {
+  key: K;
+  label: string;
+}
 
 @Component({
   selector: 'app-permission',
@@ -36,15 +57,21 @@ interface SubItem<K> { key: K; label: string; }
   styleUrls: ['./permission.component.scss']
 })
 export class PermissionComponent implements OnInit, OnDestroy {
+  // ---------- Store Observables ----------
   roles$!: Observable<Role[]>;
   permissions$!: Observable<Permission[]>;
-  destroy$ = new Subject<void>();
+
+  // ---------- Local States ----------
+  private destroy$ = new Subject<void>();
+  permissionsList: Permission[] = [];
+  roleMap: Record<string, string> = {};
 
   showForm = false;
   selectedRole: string | null = null;
   initialScreen: string | null = null;
   existingPermissionId: string | null = null;
 
+  // ---------- Permission State ----------
   permissions: Permissions = this.getEmptyPermissions();
 
   userSubItems: SubItem<keyof UserChildren>[] = [
@@ -69,10 +96,25 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.permissions$ = this.store.select(selectAllPermissions);
   }
 
+  // ---------- Lifecycle ----------
   ngOnInit(): void {
-    console.log('🟢 PermissionComponent initialized');
+    console.log('PermissionComponent initialized');
+
     this.store.dispatch(RoleActions.loadRoles());
     this.store.dispatch(RoleActions.loadPermissions());
+
+    // Build role map
+    this.roles$.pipe(takeUntil(this.destroy$)).subscribe(roles => {
+      this.roleMap = roles.reduce((acc, r) => {
+        acc[r._id] = r.role;
+        return acc;
+      }, {} as Record<string, string>);
+    });
+
+    // Track all permissions
+    this.permissions$.pipe(takeUntil(this.destroy$)).subscribe(permissions => {
+      this.permissionsList = permissions;
+    });
   }
 
   ngOnDestroy(): void {
@@ -80,31 +122,36 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // ---------- UI Actions ----------
   toggleForm() {
     this.showForm = !this.showForm;
-    console.log(`📝 Form toggled -> ${this.showForm ? 'OPEN' : 'CLOSED'}`);
+    console.log(`Form toggled -> ${this.showForm ? 'OPEN' : 'CLOSED'}`);
     if (!this.showForm) this.resetPermissions();
   }
 
   onRoleChange() {
-    if (!this.selectedRole) return this.resetPermissions();
+    if (!this.selectedRole) {
+      this.resetPermissions();
+      return;
+    }
 
-    console.log('🔄 Role changed:', this.selectedRole);
+    console.log('Role changed:', this.selectedRole);
 
     this.permissions$.pipe(take(1)).subscribe((all) => {
-      const res = all.find(p => p.role === this.selectedRole);
-      if (res) {
-        this.existingPermissionId = res._id || null;
-        this.loadPermissions(res);
-        console.log('📡 Existing permission loaded from store:', res);
+      const existing = all.find(p => p.role === this.selectedRole);
+      if (existing) {
+        this.existingPermissionId = existing._id || null;
+        this.loadPermissions(existing);
+        console.log('Existing permission loaded:', existing);
       } else {
         this.existingPermissionId = null;
         this.permissions = this.getEmptyPermissions();
-        console.log('ℹ️ No existing permission found, using empty permissions');
+        console.log('No existing permission found, using empty permissions');
       }
     });
   }
 
+  // ---------- Permission Handling ----------
   private getEmptyPermissions(): Permissions {
     return {
       dashboard: false,
@@ -117,83 +164,73 @@ export class PermissionComponent implements OnInit, OnDestroy {
   }
 
   toggleGroup<K extends keyof Omit<Permissions, 'dashboard' | 'quotation' | 'reports'>>(group: K) {
-    const children = this.permissions[group].children as unknown as Record<string, boolean>;
+    const children = this.permissions[group].children as UserChildren | CompanyChildren | MaterialChildren;
     Object.keys(children).forEach(key => {
-      children[key] = this.permissions[group].parent;
+      (children as any)[key] = this.permissions[group].parent;
     });
-    console.log(`↪️ Children updated for ${group}:`, children);
+    console.log(`Children updated for ${group}:`, children);
   }
 
   checkParent<K extends keyof Omit<Permissions, 'dashboard' | 'quotation' | 'reports'>>(group: K) {
-    const children = this.permissions[group].children as unknown as Record<string, boolean>;
+    const children = this.permissions[group].children as UserChildren | CompanyChildren | MaterialChildren;
     this.permissions[group].parent = Object.values(children).every(Boolean);
-    console.log(`🔍 Checked parent status for ${group}:`, this.permissions[group].parent);
+    console.log(`Checked parent status for ${group}:`, this.permissions[group].parent);
   }
 
-  get isDirty(): boolean {
-    return !!this.selectedRole && this.permissions && this.permissions !== this.getEmptyPermissions();
-  }
+  savePermission() {
+    if (!this.selectedRole) {
+      alert('Please select a role!');
+      return;
+    }
 
+    const payload: Permission = {
+      role: this.selectedRole,
+      initialScreen: this.initialScreen || 'dashboard',
+      screens: this.permissions
+    };
 
-savePermission() {
-  if (!this.selectedRole) return alert('Please select a role!');
+    console.log('💾 Saving permission payload via NgRx:', payload);
 
-  const payload: Permission = {
-    role: this.selectedRole,
-    initialScreen: this.initialScreen || 'dashboard',
-    screens: this.permissions
-  };
+    if (this.existingPermissionId) {
+      this.store.dispatch(RoleActions.updatePermission({ id: this.existingPermissionId, permission: payload }));
+    } else {
+      this.store.dispatch(RoleActions.addPermission({ permission: payload }));
+    }
 
-  console.log('💾 Saving permission payload via NgRx:', payload);
-
-  if (this.existingPermissionId) {
-    this.store.dispatch(RoleActions.updatePermission({ id: this.existingPermissionId, permission: payload }));
-  } else {
-    this.store.dispatch(RoleActions.addPermission({ permission: payload }));
-  }
-
-  // Auto-refresh permissions list from store
-  this.store.dispatch(RoleActions.loadPermissions());
-
-  // Auto-close form after saving
-  this.showForm = false;
-  this.resetPermissions();
-  alert('✅ Permissions saved successfully!');
-}
-
-
-deletePermission() {
-  if (!this.existingPermissionId) return alert('No permission exists to delete.');
-
-  if (confirm('Are you sure you want to delete this permission?')) {
-    this.store.dispatch(RoleActions.deletePermission({ id: this.existingPermissionId }));
-
-    // Auto-refresh permissions list from store
     this.store.dispatch(RoleActions.loadPermissions());
-
-    // Auto-close form after deletion
     this.showForm = false;
     this.resetPermissions();
-    alert('🗑️ Permission deleted successfully!');
+    // alert('Permissions saved successfully!');
   }
-}
 
+  deletePermission() {
+    if (!this.existingPermissionId) {
+      alert('No permission exists to delete.');
+      return;
+    }
 
-
+    if (confirm('Are you sure you want to delete this permission?')) {
+      this.store.dispatch(RoleActions.deletePermission({ id: this.existingPermissionId }));
+      this.store.dispatch(RoleActions.loadPermissions());
+      this.showForm = false;
+      this.resetPermissions();
+      alert('Permission deleted successfully!');
+    }
+  }
 
   loadPermissions(savedData: Permission) {
     this.selectedRole = savedData.role;
     this.initialScreen = savedData.initialScreen || 'dashboard';
-    const screens = savedData.screens;
 
     this.permissions = {
-      dashboard: !!screens.dashboard,
-      user: { parent: !!screens.user?.parent, children: { ...screens.user?.children } },
-      company: { parent: !!screens.company?.parent, children: { ...screens.company?.children } },
-      material: { parent: !!screens.material?.parent, children: { ...screens.material?.children } },
-      quotation: !!screens.quotation,
-      reports: !!screens.reports,
+      dashboard: !!savedData.screens.dashboard,
+      user: { parent: !!savedData.screens.user?.parent, children: { ...savedData.screens.user?.children } },
+      company: { parent: !!savedData.screens.company?.parent, children: { ...savedData.screens.company?.children } },
+      material: { parent: !!savedData.screens.material?.parent, children: { ...savedData.screens.material?.children } },
+      quotation: !!savedData.screens.quotation,
+      reports: !!savedData.screens.reports,
     };
+
     console.log('📥 Permissions loaded into form:', this.permissions);
   }
 
@@ -204,4 +241,40 @@ deletePermission() {
     this.selectedRole = null;
     this.existingPermissionId = null;
   }
-} 
+
+  editPermission(p: Permission) {
+    this.existingPermissionId = p._id || null;
+    this.loadPermissions(p);
+    this.showForm = true;
+  }
+
+  deletePermissionById(id?: string) {
+    if (!id) {
+      alert('Invalid permission id');
+      return;
+    }
+    if (confirm('Are you sure you want to delete this permission?')) {
+      this.store.dispatch(RoleActions.deletePermission({ id }));
+      this.store.dispatch(RoleActions.loadPermissions());
+      alert('Permission deleted successfully!');
+    }
+  }
+
+getEnabledChildNames(children: UserChildren | CompanyChildren | MaterialChildren | undefined): string {
+  if (!children) return '';
+
+  let labels: SubItem<string>[] = [];
+  if ('user' in children) {
+    labels = this.userSubItems;
+  } else if ('companyPreferences' in children) {
+    labels = this.companySubItems;
+  } else if ('rawMaterial' in children) {
+    labels = this.materialSubItems;
+  }
+
+  return Object.keys(children)
+    .filter(key => children[key as keyof typeof children])
+    .map(key => labels.find(item => item.key === key)?.label || key)
+    .join(', ');
+}
+}

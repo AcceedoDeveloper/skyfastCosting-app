@@ -2,10 +2,83 @@
   <!-- Header -->
   <div class="header">
     <h2>Permission</h2>
-    <button mat-raised-button color="primary" (click)="toggleForm()">
+    <button mat-raised-button color="primary" id="hbtn" (click)="toggleForm()">
       <mat-icon>add</mat-icon> Add Permission
     </button>
   </div>
+
+  <!-- Table -->
+<!-- Table -->
+<!-- Table -->
+<div class="table-container max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg" *ngIf="permissionsList.length">
+  <table class="w-full border-collapse">
+    <thead id="theader" class="bg-gray-800 text-white">
+      <tr>
+        <th class="p-4 text-left font-semibold">Name</th>
+        <th class="p-4 text-left font-semibold">Permission Info</th>
+        <th class="p-4 text-left font-semibold">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of permissionsList" class="border-b hover:bg-gray-50">
+        <td class="p-4">{{ roleMap[p.role] || p.role }}</td>
+
+        <td class="p-4">
+          <div class="flex flex-col space-y-2">
+
+            <!-- Always show Initial -->
+            <!-- <div><strong>Initial:</strong> {{ p.initialScreen }}</div> -->
+
+            <!-- Only show names if enabled -->
+            <div *ngIf="p.screens.dashboard">
+              <strong>Dashboard</strong>
+            </div>
+
+            <div *ngIf="p.screens.user.parent">
+              <strong>User</strong>
+              <span *ngIf="p.screens.user.children">
+                ({{ getEnabledChildNames(p.screens.user.children) || 'None' }})
+              </span>
+            </div>
+
+            <div *ngIf="p.screens.company.parent">
+              <strong>Company</strong>
+              <span *ngIf="p.screens.company.children">
+                ({{ getEnabledChildNames(p.screens.company.children) || 'None' }})
+              </span>
+            </div>
+
+            <div *ngIf="p.screens.material.parent">
+              <strong>Material</strong>
+              <span *ngIf="p.screens.material.children">
+                ({{ getEnabledChildNames(p.screens.material.children) || 'None' }})
+              </span>
+            </div>
+
+            <div *ngIf="p.screens.quotation">
+              <strong>Quotation</strong>
+            </div>
+
+            <div *ngIf="p.screens.reports">
+              <strong>Reports</strong>
+            </div>
+
+          </div>
+        </td>
+
+        <td class="p-4 actions flex space-x-2">
+          <mat-icon class="icon text-blue-500 hover:text-blue-700 cursor-pointer" (click)="editPermission(p)">edit</mat-icon>
+          <mat-icon class="icon text-red-500 hover:text-red-700 cursor-pointer" (click)="deletePermissionById(p._id!)">delete</mat-icon>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+  
 
   <!-- Popup Form -->
   <div *ngIf="showForm" class="popup-overlay">
@@ -17,12 +90,14 @@
       <form>
         <label for="role">Select Role</label>
         <select id="role" [(ngModel)]="selectedRole" name="role" (ngModelChange)="onRoleChange()">
-          <option *ngFor="let role of roles$ | async" [ngValue]="role._id">{{ role.role }}</option>
+          <option *ngFor="let role of roles$ | async" [ngValue]="role._id">
+            {{ role.role }}
+          </option>
         </select>
       </form>
 
       <!-- Initial Screen -->
-      <div *ngIf="selectedRole" class="initial-screen">
+      <!-- <div *ngIf="selectedRole" class="initial-screen">
         <label for="initialScreen">Initial Screen</label>
         <select id="initialScreen" [(ngModel)]="initialScreen" name="initialScreen">
           <option value="dashboard">Dashboard</option>
@@ -32,7 +107,7 @@
           <option value="quotation">Quotation Generator</option>
           <option value="reports">Reports</option>
         </select>
-      </div>
+      </div> -->
 
       <!-- Permissions Checkboxes -->
       <ul class="nav-list">
