@@ -19,6 +19,9 @@ import { ProductService} from '../../services/product.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
+import { PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-process',
@@ -30,7 +33,9 @@ import { ToastrService } from 'ngx-toastr';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatPaginatorModule,
+    FormsModule
   ],
   templateUrl: './process.component.html',
   styleUrl: './process.component.scss'
@@ -39,6 +44,13 @@ export class ProcessComponent implements OnInit {
   selectedFile: File | null = null;
 
   process$!: Observable<Process[]>;
+   paginatedUsers: Process[] = [];
+   filteredProcesses: Process[] = [];
+    pageSize = 5;
+  pageIndex = 0;
+  allProcesses: Process[] = [];
+  searchTerm: string = '';
+
   
   constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog, 
     private uploadService : ProductService, private snackBar: MatSnackBar, private tooser : ToastrService) {
@@ -48,6 +60,8 @@ export class ProcessComponent implements OnInit {
 
     this.process$ = this.store.select(selectAllProcess);
     this.process$.subscribe(process => {
+      this.allProcesses = process;
+    this.applyFilter();
       console.log('Process from store:', process);
     }
     ); 
@@ -58,7 +72,18 @@ export class ProcessComponent implements OnInit {
   selectedProcessId: string | null = null;
 
 
-
+ applyFilter() {
+    if (!this.searchTerm) {
+      this.filteredProcesses = this.allProcesses;
+    } else {
+      const lowerTerm = this.searchTerm.toLowerCase();
+      this.filteredProcesses = this.allProcesses.filter(p =>
+        p.processName.toLowerCase().includes(lowerTerm)
+      );
+    }
+    this.pageIndex = 0; // reset paginator to first page
+    this.updatePaginatedUsers();
+  }
 togglePopup(processId: string) {
   this.selectedProcessId = this.selectedProcessId === processId ? null : processId;
 }
@@ -70,7 +95,18 @@ togglePopup(processId: string) {
 //   return (hours / 3600 / cycleTime) / cavity;
 // }
 
+updatePaginatedUsers() {
+  const startIndex = this.pageIndex * this.pageSize;
+  const endIndex = startIndex + this.pageSize;
+  this.paginatedUsers = this.filteredProcesses.slice(startIndex, endIndex);
+}
 
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedUsers();
+  }
 
   openAddDialog() {
     const dialogRef = this.dialog.open(AddProcessComponent, {

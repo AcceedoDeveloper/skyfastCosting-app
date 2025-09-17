@@ -206,3 +206,78 @@ button {
   border-radius: 6px;
   font-weight: 500;
 }
+
+/* Search container */
+.search-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+/* Input wrapper to allow icon + clear button */
+.search-input {
+  position: relative;
+  width: 320px;
+  max-width: 100%;
+}
+
+/* The search input itself */
+.search-input input[type="text"] {
+  width: 100%;
+  padding: 10px 40px 10px 14px; /* room for icon on right */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  color: #222;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* focus state */
+.search-input input[type="text"]:focus {
+  outline: none;
+  border-color: #5073fb; /* matches your save button color you mentioned earlier */
+  box-shadow: 0 6px 18px rgba(80,115,251,0.12);
+}
+
+/* search icon (left or right) */
+.search-input .search-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 18px;
+  color: #7a7a7a;
+}
+
+/* optional clear button in the input */
+.search-input .clear-btn {
+  position: absolute;
+  right: 34px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 16px;
+  color: #7a7a7a;
+}
+.search-input .clear-btn:hover {
+  color: #333;
+}
+
+/* Small screen responsiveness */
+@media (max-width: 720px) {
+  .search-container {
+    justify-content: stretch;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+}

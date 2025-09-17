@@ -1,6 +1,24 @@
 <div class="customer-container">
   <div class="header">
     <h2>Customer Details</h2>
+
+    <div class="search-container">
+  <div class="search-input">
+    <input 
+      type="text" 
+      placeholder=" Search by Customer or Part Name"
+      [(ngModel)]="searchTerm"
+      (input)="applyFilter()" />
+    <button 
+      type="button" 
+      class="clear-btn" 
+      *ngIf="searchTerm" 
+      (click)="searchTerm=''; applyFilter()">✕</button>
+  </div>
+</div>
+
+
+
     <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
   </div>
 
@@ -22,7 +40,7 @@
 
 
         
-   <ng-container *ngFor="let c of customers$ | async">
+   <ng-container *ngFor="let c of filteredCustomers$ | async">
   <tr>
     <td>{{ c.customerName.customerName }}</td>
     <td>{{ c.partName }}</td>

@@ -5,6 +5,15 @@
   <h2 style="font-weight: bold;">Process List</h2>
   </div>
 
+ <div class="search-container">
+  <div class="search-input">
+    <input type="text" placeholder="Search Process Name" [(ngModel)]="searchTerm" (input)="applyFilter()" />
+    <button type="button" class="clear-btn" *ngIf="searchTerm" (click)="searchTerm=''; applyFilter()">✕</button>
+    <mat-icon class="search-icon">search</mat-icon>
+  </div>
+</div>
+
+
 <div class="file-upload-container">
   <input type="file" (change)="onFileSelected($event)" />
   <button type="button" class="btn btn-secondary" (click)="onUpload()">Upload</button>
@@ -13,41 +22,43 @@
 
 <button  mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">+ Add Process</button>
 </div>
-  <!-- Show data when available -->
-  <ng-container *ngIf="process$ | async as processes; else loading">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Process Name</th>
-          <th>Tonnage / Jaw</th>
-          <th>Cost Per Hr</th>
-          <th>machineCentre</th>
-          <th>Actions</th>
+ <ng-container *ngIf="allProcesses.length > 0; else loading">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Process Name</th>
+        <th>Tonnage / Jaw</th>
+        <th>Cost Per Hr</th>
+        <th>Machine Centre</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of paginatedUsers">
+        <td>{{ p.processName }}</td>
+        <td>{{ p.TonnageJaw }}</td>
+        <td>{{ p.Hours }}</td>
+        <td>{{ p.machineCentre }}</td>
+        <td class="actions">
+          <mat-icon class="icon" (click)="openEditDialog(p)">edit</mat-icon>
+          <mat-icon class="icon" (click)="onDelete(p._id)">delete</mat-icon>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of processes">
-          <td>{{ p.processName }}</td>
-          <td>{{ p.TonnageJaw }}</td>
-          <td>{{ p.Hours }}</td>
-          <td>{{p.machineCentre}}</td>
-          <td class="actions">
-            <mat-icon
-               class="icon" (click)="openEditDialog(p)">edit</mat-icon>
-            <mat-icon
-              
-              class="icon" (click)="onDelete(p._id)">delete</mat-icon>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </ng-container>
+  <mat-paginator
+    [length]="filteredProcesses.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+</ng-container>
 
-  <!-- Fallback template -->
-  <ng-template #loading>
-    <p>Loading process data...</p>
-  </ng-template>
+<ng-template #loading>
+  <p>Loading process data...</p>
+</ng-template>
+
 </div>
 
 

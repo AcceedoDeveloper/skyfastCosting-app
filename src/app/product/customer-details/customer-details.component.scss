@@ -674,3 +674,40 @@ vertical-align: middle;
   display: flex;
   gap: 10px;
 }
+
+.search-container {
+  display: flex;
+  justify-content: flex-start;
+  margin: 10px 0;
+}
+
+.search-input {
+  position: relative;
+  width: 300px;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+}
+
+.search-input input:focus {
+  border-color: #5073fb;
+  box-shadow: 0 0 6px rgba(80,115,251,0.25);
+}
+
+.search-input .clear-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: #777;
+  cursor: pointer;
+}

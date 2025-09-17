@@ -42,6 +42,8 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class CustomerDetailsComponent implements OnInit{
   customers$!: Observable<CustomerDetails[]>;
+  filteredCustomers$!: Observable<CustomerDetails[]>;
+searchTerm: string = '';
 selectedRevisions: any[] = [];
 showComparePopup: boolean = false;
    expandedCustomer: any = null;
@@ -69,6 +71,8 @@ this.customers$ = this.store.select(selectAllCustomers).pipe(
     }))
   )
 );
+
+  this.filteredCustomers$ = this.customers$;
   this.customers$.subscribe(customers => {
       console.log('Customers from store:', customers);
       console.table(customers);
@@ -79,6 +83,18 @@ this.customers$ = this.store.select(selectAllCustomers).pipe(
     this.store.dispatch(customerActions.loadCustomers());
     
   }
+
+
+  applyFilter(): void {
+  this.filteredCustomers$ = this.customers$.pipe(
+    map(customers =>
+      customers.filter(c =>
+        c.customerName.customerName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        c.partName.toLowerCase().includes(this.searchTerm.toLowerCase())
+      )
+    )
+  );
+}
 openAddProductDialog() {
   const dialogRef = this.dialog.open(AddCustomerDetailsComponent, {
     width: '590%',
