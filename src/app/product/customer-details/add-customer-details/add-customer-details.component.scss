@@ -301,6 +301,18 @@ transition: all 0.2s ease;
   
     .label1 {
       flex: 0 0 auto; /* Prevent label from stretching */
+      margin-top: 25px;
+    }
+
+    .reject{
+      margin-top: 20px;
+    }
+    .pack{
+      margin-top: 18px;
+    }
+
+    .carry{
+      margin-right: 100px;
     }
 
 
@@ -553,4 +565,71 @@ table, th, td {
 .tablebg {
   background-color: #f2f2f2;   /* light grey for highlighted cells */
   font-weight: bold;
+}
+
+
+
+.field-row3 {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Space between elements */
+  margin-bottom: 15px; /* Space between rows */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+}
+
+
+
+.label1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+ 
+ /* Slightly lighter for secondary labels */
+  min-width: 100px;
+}
+.lab4{
+  margin-left: 20px;
+  margin-top: 25px;
+}
+.transport{
+  margin-left: 785px;
+}
+.percent{
+  margin-left: 40px;
+}
+.cost{
+  margin-left: 5px;
+}
+
+mat-radio-group {
+  display: flex;
+  gap: 10px; /* Space between radio buttons */
+  align-items: center;
+}
+
+.mat-radio-button {
+  font-size: 14px;
+  color: #333;
+}
+
+.trans{
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+}
+.lab11 {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 150px; /* Fixed width for inputs */
+  font-size: 14px;
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+  margin-left: 25px;
+  margin-bottom: 8px;
+}
+
+.lab11:focus {
+  outline: none;
+  border-color: #007bff; 
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); 
 }

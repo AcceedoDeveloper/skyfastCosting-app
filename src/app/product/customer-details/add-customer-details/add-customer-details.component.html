@@ -191,12 +191,12 @@
 
            
              <div class="field-row">
-              <label class="label1" style="font-size:15px; font-weight: bold;">Tool Cost</label>
+              <label class="label1" style="font-size:15px; font-weight: bold;">Tool Cost (Rs)</label>
               <input class="lab" matInput type="string" formControlName="ToolAmbience" />
             </div>
 
             <div class="field-row">
-              <label class="label1" style="font-size:15px; font-weight: bold;">Inspector Cost </label>
+              <label class="label1" style="font-size:15px; font-weight: bold;">Inspector Cost (Rs) </label>
               <input class="lab" matInput type="number" formControlName="InspectorCost" />
             </div>
 
@@ -213,7 +213,7 @@
             <h3 style="color: #3d8adc;;">Rejection</h3>
             <hr style="border: 0.2px solid #000000;">
             <div class="field-row">
-              <label style="font-size:15px; font-weight: bold;">Rejection %</label>
+              <label class="reject" style="font-size:15px; font-weight: bold;">Rejection %</label>
               <input class="lab" matInput type="number" formControlName="Rejection" />
             </div>
           </div>
@@ -224,12 +224,12 @@
             <hr style="border: 0.2px solid #000000;">
 
              <div class="field-row">
-              <label class="label1" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost)</label>
+              <label class="label1  carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost)</label>
               <input class="lab" matInput type="number" formControlName="InterestRate" />
             </div>
             
             <div class="field-row single">
-              <label style="font-size:15px; font-weight: bold;">Packing</label>
+              <label class="pack" style="font-size:15px; font-weight: bold;">Packing</label>
                 
                 <mat-select class="lab1" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
                   <mat-option  *ngFor="let option of packingOptions" [value]="option">
@@ -239,30 +239,32 @@
             </div>
           </div>
 
-
-       <div class="field-row" *ngIf="showTransportInput">
-  <label style="font-size:15px; font-weight: bold;">Transport</label>
-
-  <!-- Radio Buttons -->
-  <mat-radio-group formControlName="TransportType">
-    <mat-radio-button value="cost">Cost</mat-radio-button>
-    <mat-radio-button value="percentage">Percentage</mat-radio-button>
-  </mat-radio-group>
-
-  <!-- Input shown based on selection -->
-  <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'cost'">
-    <label class="label1">Transport Cost</label>
-    <input class="lab" matInput type="number" formControlName="TransportCost" />
-  </div>
-
-  <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'percentage'">
-    <label class="label1">Transport %</label>
-    <input class="lab" matInput type="number" formControlName="TransportPercentage" />
-  </div>
-</div>
-
+          
 
         </div>
+        <div class="transport">
+          <div class="field-row3" *ngIf="showTransportInput">
+     <label class="trans" style="font-size:15px; font-weight: bold;">Transport</label>
+   
+     <!-- Radio Buttons -->
+     <mat-radio-group formControlName="TransportType">
+       <mat-radio-button class="cost" value="cost">Cost</mat-radio-button>
+       <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+     </mat-radio-group>
+   
+     <!-- Input shown based on selection -->
+     <div class="field-row3" *ngIf="processForm.get('TransportType')?.value === 'cost'">
+       <h3 class="label1" style="font-size:15px; font-weight: bold;">Transport Cost (Rs)</h3>
+       <input class="lab4" matInput type="number" formControlName="TransportCost" />
+     </div>
+   
+     <div class="field-row3" *ngIf="processForm.get('TransportType')?.value === 'percentage'">
+       <label class="label1" style="font-size:15px; font-weight: bold;">Transport %</label>
+       <input class="lab4" matInput type="number" formControlName="TransportPercentage" />
+     </div>
+   </div>
+   </div>
+   
       </div>
 
     </form>
