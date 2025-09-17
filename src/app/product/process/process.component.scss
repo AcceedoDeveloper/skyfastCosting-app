@@ -177,3 +177,32 @@ tr:hover {
   border-color: #c8b273;      
   box-shadow: 0 3px 8px rgba(200,178,115,0.25);
 }
+/* Container for file input + button */
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* spacing between input and button */
+  margin-top: 16px;
+}
+
+/* Style the file input */
+input[type="file"] {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type="file"]:hover {
+  border-color: #3f51b5; /* Angular Material primary color */
+  background-color: #f1f1ff;
+}
+
+/* Upload button */
+button {
+  border-radius: 6px;
+  font-weight: 500;
+}

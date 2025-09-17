@@ -17,8 +17,9 @@ export interface Process {
   cavity: number;
   cycleTime: string;
   calculation: number;
-  cost: number;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
+  cost?: number;
+  machineCentre: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  __v?: number;
 }

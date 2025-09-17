@@ -61,12 +61,13 @@ export const productReducer = createReducer(
     process: state.process.filter(p => p._id !== id)
   })),
 
-  on(ProductActions.updateProcessSuccess, (state, { updatedProcess }) => ({
-    ...state,
-    process: state.process.map(p =>
-      p._id === updatedProcess._id ? updatedProcess : p
-    )
-  })),
+ on(ProductActions.updateProcessSuccess, (state, { updatedProcess }) => ({
+  ...state,
+  process: state.process.map(p =>
+    p._id === updatedProcess._id ? { ...p, ...updatedProcess } : p
+  )
+})),
+
 
 
 

@@ -191,7 +191,7 @@
         <tr>
           <th>Field</th>
           <th *ngFor="let rev of selectedRevisions">
-            Revision {{ rev.revisionNumber }}
+            {{ rev.revisionName}}
           </th>
         </tr>
       </thead>
@@ -351,17 +351,17 @@
 
 
  <!-- PDF  -->
-
-
-
-
 <div  class="compare-popup"   *ngIf="pdfview" >
 <div  class="compare-popup-content">
-      <div class="button-da" >
-      <button type="button" class="btn btn-danger" (click)="closeda()">close</button>
-      <button  type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
 
-    </div>
+<div  class="button-das" style="margin-left: 85%;" >
+ <button mat-icon-button color="warn" >
+  <mat-icon (click)="closeda()">cancel</mat-icon>
+</button>
+</div>
+
+
+      
   <div id="pdfContent">
 
     <div class="quotation" *ngIf="quotationData" >
@@ -372,7 +372,9 @@
           <img src="/sky.png" alt="SKYFAST">
           <h3>QUOTATION</h3>
           <div class="headerdate">
-            <h6>Qtn. No : SF/{{ quotationData.Revision }} </h6>
+                       
+
+            <h6>Qtn. No : SF{{ quotationData.results[0].createdAt | date:'dd/MM/yy' }}/{{  quotationData.results[0].revisions[0].revisionName }} </h6>
             <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
           </div>
         </div>
@@ -396,7 +398,7 @@
               </tr>
               <tr>
                 <td class="label">Part No</td>
-                <td class="value">: </td>
+                <td class="value">: {{  quotationData.results[0].revisions[0].productName }}  </td>
               </tr>
               <tr>
                 <td class="label">Part Name</td>
@@ -422,7 +424,7 @@
               <td><strong>Raw Material price/kg +10% inventory cost</strong></td>
               <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }}</td>
               <td><strong>Raw Material cost/pc (Rm.wt/pc x Rm.price/kg)</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</td>
           </tr>
           <tr>
               <td><strong>Component Weight (Kg)</strong></td>
@@ -438,9 +440,9 @@
           </tr>
           <tr>
               <td><strong>Raw Material weight/pc</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterialWeight }}</td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3'}}</td>
               <td><strong>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</td>
           </tr>
           <!-- Insert Process Cost as part of the same outer table -->
           <tr>
@@ -477,7 +479,7 @@
                   <td>-</td>
                   <td>-</td>
                   <td>-</td>
-                  <td colspan="2" class="process-cost-wide">{{ process.cost | number:'1.2-2' }}</td>
+                  <td colspan="2" class="process-cost-wide">{{ process.cost | number:'1.2-3' }}</td>
              </tr>
              <tr>
                   <td></td>
@@ -489,7 +491,7 @@
                   <td></td>
                   <td></td>
                   
-                  <td colspan="2">{{ quotationData.results[0].revisions[0].sumOfProcessCost }}</td>
+                  <td colspan="2">{{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}</td>
               </tr>
               <tr>
                   <td>{{ quotationData.results[0].revisions[0].noOfProcess + 1}}</td>
@@ -525,11 +527,11 @@
               </tr>
               <tr>
                 
-                  <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost }}</td>
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3'}}</td>
                   <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
                   <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 | number:'1.2-2' }}</td>
                   <td colspan="1">{{ quotationData.results[0].revisions[0].ToolAmbience }}</td>
-                  <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice }}</td>
+                  <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
               </tr>
    
               <!-- Other Terms and conditions separator inside the same table -->
@@ -571,7 +573,11 @@
   
   </div>
   </div>
+<div class="button-da" >
+      <button type="button" class="btn btn-danger" (click)="closeda()">close</button>
+      <button  type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
 
+    </div>
 
 
 </div>

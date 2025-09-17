@@ -54,6 +54,7 @@ export interface Revision {
   overHeadsCost: number;
   TotalPrice: number;
   overHeadsPercent: number; 
+  revisionName: string;
 }
 
 export interface RawMaterial {

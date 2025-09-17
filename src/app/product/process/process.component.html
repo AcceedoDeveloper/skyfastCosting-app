@@ -5,6 +5,12 @@
   <h2 style="font-weight: bold;">Process List</h2>
   </div>
 
+<div class="file-upload-container">
+  <input type="file" (change)="onFileSelected($event)" />
+  <button type="button" class="btn btn-secondary" (click)="onUpload()">Upload</button>
+</div>
+
+
 <button  mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">+ Add Process</button>
 </div>
   <!-- Show data when available -->
@@ -15,7 +21,7 @@
           <th>Process Name</th>
           <th>Tonnage / Jaw</th>
           <th>Cost Per Hr</th>
-          
+          <th>machineCentre</th>
           <th>Actions</th>
 
         </tr>
@@ -25,7 +31,7 @@
           <td>{{ p.processName }}</td>
           <td>{{ p.TonnageJaw }}</td>
           <td>{{ p.Hours }}</td>
-
+          <td>{{p.machineCentre}}</td>
           <td class="actions">
             <mat-icon
                class="icon" (click)="openEditDialog(p)">edit</mat-icon>

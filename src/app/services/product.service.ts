@@ -14,6 +14,9 @@ export class ProductService {
 
 private apiUrl = 'http://localhost:3005';
 
+ private apiUrl2 = 'http://localhost:3005/uploadProcessExcel';
+
+
   constructor(private http: HttpClient, private config : ConfigService) {}
 
  getRawMaterials(): Observable<RawMaterial[]> {
@@ -41,7 +44,7 @@ private apiUrl = 'http://localhost:3005';
     return this.http.post<Process>(this.config.getCostingUrl('createProcess'), process);
   }
 
-  updateProcess(id: string, process: Process): Observable<Process> {
+  updateProcess(id: string, process: Partial<Process>): Observable<Process> {
     return this.http.put<Process>(`${this.config.getCostingUrl('updateProcess')}/${id}`, process);
   }
 
@@ -81,6 +84,14 @@ quotationData(customerName: string, partName: string, revision: number): Observa
   );
 }
 
+
+
+  uploadFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(this.apiUrl2, formData);
+  }
 
 
 }

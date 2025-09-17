@@ -15,8 +15,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AddProcessComponent } from './add-process/add-process.component';
 import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
-
-
+import { ProductService} from '../../services/product.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-process',
@@ -27,16 +29,19 @@ import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialo
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSnackBarModule
   ],
   templateUrl: './process.component.html',
   styleUrl: './process.component.scss'
 })
 export class ProcessComponent implements OnInit {
+  selectedFile: File | null = null;
 
   process$!: Observable<Process[]>;
   
-  constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog) {
+  constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog, 
+    private uploadService : ProductService, private snackBar: MatSnackBar, private tooser : ToastrService) {
   }
 
   ngOnInit(): void {
@@ -90,9 +95,35 @@ togglePopup(processId: string) {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(
-          processActions.updateProcess({ id: process._id, process: result })
-        );
+        console.log('update data', result);
+         const payload = {
+      processName: result.processName,
+      machineCentre: result.machineCentre,
+      TonnageJaw: result.TonnageJaw,
+      Hours: result.Hours
+    };
+
+
+    console.log('data', payload);
+
+
+    this.uploadService.updateProcess(result._id, payload).subscribe({
+        next: (updated) => {
+          console.log('Process updated successfully', updated);
+          this.tooser.success('Process updated successfully!');
+          this.store.dispatch(processActions.loadProcess());
+        },
+        error: (err) => {
+          console.error('Error updating process', err);
+          this.tooser.error('Failed to update process.');
+
+        }
+      });
+    
+        
+        // this.store.dispatch(
+        //   processActions.updateProcess({ id: process._id, process: payload })
+        // );
       }
     });
   }
@@ -112,6 +143,31 @@ onDelete(id: string) {
     } 
   });
 }
+ onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
 
+ onUpload(): void {
+      if (!this.selectedFile) {
+      this.snackBar.open('Please select a file first!', 'Close', {
+        duration: 3000, 
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+        panelClass: ['custom-snackbar']
+      });
+      return;
+    }
+
+    this.uploadService.uploadFile(this.selectedFile).subscribe({
+      next: (res) => {
+        console.log('Upload success:', res);
+        this.store.dispatch(processActions.loadProcess());
+      },
+      error: (err) => {
+        console.error('Upload error:', err);
+        alert('Upload failed!');
+      }
+    });
+  }
 
 }

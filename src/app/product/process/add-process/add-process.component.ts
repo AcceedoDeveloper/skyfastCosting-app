@@ -38,7 +38,7 @@ export class AddProcessComponent {
       processName: [data?.process?.processName || '', Validators.required],
       TonnageJaw: [data?.process?.TonnageJaw || '', Validators.required],
       Hours: [data?.process?.Hours || '', Validators.required],
-      cycleTime: [data?.process?.cycleTime || '', Validators.required],
+     machineCentre: [data?.process?.machineCentre || '', Validators.required],
     });
   }
 
@@ -49,18 +49,11 @@ export class AddProcessComponent {
   onSave() {
     if (this.processForm.valid) {
       const payload = { ...this.data?.process, ...this.processForm.value };
+      console.log('data', payload);
+      
       this.dialogRef.close(payload);
     }
   }
 
-  calculateProcessCost(): number {
-    const hours = this.processForm.get('Hours')?.value || 0;
-    const cycleTime = this.processForm.get('cycleTime')?.value || 1;
-    
-    if (hours === 0 || cycleTime === 0) return 0;
-    
-    // Calculate cost per hour based on cycle time
-    const costPerHour = (1 / cycleTime) * hours;
-    return +(costPerHour).toFixed(2);
-  }
+
 }
