@@ -66,7 +66,7 @@ export class AddCustomerDetailsComponent implements OnInit{
       customerName: ['', Validators.required],
       productName: ['', Validators.required],
       partName: ['', Validators.required],
-      cavities: [null, Validators.required],
+      drawingNo: ['', Validators.required],      
       castingWeight: [null, Validators.required],
       shortWeight: [null, Validators.required],
       meltingLoss: [null, Validators.required],
@@ -83,7 +83,8 @@ export class AddCustomerDetailsComponent implements OnInit{
     ToolAmbience: [null, Validators.required],
      TransportType: ['cost'],  // 👈 default is "cost"
   TransportCost: [null],
-  TransportPercentage: [null]    
+  TransportPercentage: [null],
+  overHeadsPercent : [null, Validators.required]    
     })
 
     
@@ -115,6 +116,8 @@ export class AddCustomerDetailsComponent implements OnInit{
     if (formValue.rawMaterial.length === 0) {
       delete formValue.rawMaterial;
     }
+    console.log('data', formValue);
+    
    
           this.store.dispatch(Action.AddCustomerDetailsComponent({ customer: formValue }));
           this.actions$
@@ -211,9 +214,10 @@ onSave() {
     InterestRate: this.processForm.value.InterestRate,
     InspectorCost: this.processForm.value.InspectorCost,
     ToolAmbience: this.processForm.value.ToolAmbience,
-    packingRate: this.processForm.value.TransportCost,             // 👈 added
-    packingPercentage: this.processForm.value.TransportPercentage, // 👈 added
-    revisionNumber: 1 
+    packingRate: this.processForm.value.TransportCost,             
+    packingPercentage: this.processForm.value.TransportPercentage, 
+    revisionNumber: 1 ,
+    overHeadsPercent: this.processForm.value.overHeadsPercent
   };
 
   console.log('Final JSON (Full):', result);

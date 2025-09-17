@@ -27,17 +27,31 @@
             <input matInput type="text" formControlName="customerName" readonly/>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Part No</mat-label>
-            <input matInput type="text" formControlName="productName" readonly />
+
+           <mat-form-field appearance="outline">
+            <mat-label>drawingNo</mat-label>
+            <input matInput type="text" formControlName="drawingNo" readonly />
           </mat-form-field>
+
+         
 
           <mat-form-field appearance="outline">
             <mat-label>Part Name</mat-label>
             <input matInput type="text" formControlName="partName" readonly />
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+           <mat-form-field appearance="outline">
+            <mat-label>Part No</mat-label>
+            <input matInput type="text" formControlName="productName" readonly />
+          </mat-form-field>
+
+      
+
+          </div>
+
+           <div class="corediv">
+
+                <mat-form-field appearance="outline">
             <mat-label>Raw Materials</mat-label>
             <mat-select formControlName="rawMaterial" multiple>
               <mat-option *ngFor="let raw of (rawMaterial$ | async)" [value]="raw._id">
@@ -46,19 +60,12 @@
             </mat-select>
           </mat-form-field>
 
-          </div>
-
-           <div class="corediv">
-
               <mat-form-field appearance="outline">
             <mat-label>Casting Weight (In Kg)</mat-label>
             <input matInput type="number" formControlName="castingWeight" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Cavities</mat-label>
-            <input matInput type="number" formControlName="cavities" />
-          </mat-form-field>
+
 
           <mat-form-field appearance="outline">
             <mat-label>Melting Loss</mat-label>
@@ -163,6 +170,11 @@
             <label class="label1" style="font-size:15px; font-weight: bold;">Inspection Cost </label>
               <input class="lab" matInput type="number" formControlName="inspectorCost" />
           </div>
+
+             <div class="field-row">
+            <label class="label1" style="font-size:15px; font-weight: bold;">overHeadsPercent </label>
+              <input class="lab" matInput type="number" formControlName="overHeadsPercent" />
+          </div>
         </div>
 
         <!-- Rejection -->
@@ -219,10 +231,6 @@
     </div>
     </mat-step>
 
-    <mat-step>
-       <ng-template matStepLabel>Quotation view</ng-template>
-
-    </mat-step>
 
   </mat-horizontal-stepper>
 </form>

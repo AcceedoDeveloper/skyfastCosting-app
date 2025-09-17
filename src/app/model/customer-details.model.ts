@@ -40,6 +40,7 @@ export interface Revision {
   noOfRawMaterial?: number;
   packingPercentage?: number;
   packingRate?: number;
+   overHeadsPercent: number;
 }
 
 
@@ -49,6 +50,7 @@ export interface CustomerDetails {
   customerName: Customer;
   productName: string;
   partName: string;
+  drawingNo: string;
   cavities: number;
   castingWeight: number;
   shortWeight: number;
@@ -65,6 +67,7 @@ export interface CustomerDetails {
   updatedAt?: Date;
   __v?: number;
   revisions: Revision[];
+ 
   
 
 }
