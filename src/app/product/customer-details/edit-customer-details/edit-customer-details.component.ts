@@ -216,6 +216,7 @@ onSave() {
 
 
   }
+   this.dialogRef.close();
 }
 
 incrementRevision() {

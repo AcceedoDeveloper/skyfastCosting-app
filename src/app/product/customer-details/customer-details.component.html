@@ -1,26 +1,25 @@
-<div class="customer-container">
-  <div class="header">
-    <h2>Customer Details</h2>
+<div class="main">
 
-    <div class="search-container">
+  <div class="customer-container">
+
+<div class="subheader">
+
+  <h2>Customer Details</h2>
+  <div class="header">
+   
+
+     <div class="search-container">
   <div class="search-input">
-    <input 
-      type="text" 
-      placeholder=" Search by Customer or Part Name"
-      [(ngModel)]="searchTerm"
-      (input)="applyFilter()" />
-    <button 
-      type="button" 
-      class="clear-btn" 
-      *ngIf="searchTerm" 
-      (click)="searchTerm=''; applyFilter()">✕</button>
+    <input type="text" placeholder="Search" [(ngModel)]="searchTerm" (input)="applyFilter()" />
+    <button type="button" class="clear-btn" *ngIf="searchTerm" (click)="searchTerm=''; applyFilter()">✕</button>
+    <mat-icon class="search-icon">search</mat-icon>
+  </div>
+</div>
+    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
   </div>
 </div>
 
 
-
-    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
-  </div>
 
   <ng-container *ngIf="customers$ | async as customers; else loading">
     <table class="table table-bordered">
@@ -37,152 +36,134 @@
         </tr>
       </thead>
       <tbody>
-
-
-        
-   <ng-container *ngFor="let c of filteredCustomers$ | async">
-  <tr>
-    <td>{{ c.customerName.customerName }}</td>
-    <td>{{ c.partName }}</td>
-    <td>{{ getLatestRevision(c)?.productName }}</td>
-     <!-- <td>{{c.revisionNumber}}</td> -->
-
-<td>
-  {{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}
-</td>
-
-
-
-    <td> 
-  <ng-container *ngIf="getLatestRevision(c)">
-    {{ getLatestRevision(c).noOfRawMaterials }}
-  </ng-container>
-  <ng-template #noMaterial>
-    <span>No Raw Materials</span>
-  </ng-template>
-</td>
-
-
-    <td>
-      <ng-container *ngIf="getLatestRevision(c) ; else noProcess">
-       {{getLatestRevision(c).noOfProcess}}
-      </ng-container>
-      <ng-template #noProcess>
-        <span>No Processes</span>
-      </ng-template>
-    </td>
-   <!-- <td>
-  <button >Download Quotation</button>
-</td> -->
-<td>
-<a href="javascript:void(0)" 
-   style="color: #1976d2; cursor: pointer;"
-   (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-  Download Quotation
-</a>
-
-</td>
-
-
-
-
-
-    <td class="actions">
-      <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
-      <mat-icon class="icon" (click)="onDelete(c._id)">delete</mat-icon>
-      <ng-container >
-<mat-icon class="icon" (click)="toggleCompare(c)">
-  {{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}
-</mat-icon>
-      </ng-container>
-    </td>
-  </tr>
-
-  <!-- 🔽 Nested table row -->
-  <tr  *ngIf="expandedCustomer === c">
-    <td id="subbg" colspan="8">
-      <table class="table table-sm table-bordered nested-table">
-        <thead >
-          <tr >
-            <th class="subtable" >Revision</th>
-            <th class="subtable">Product</th>
-            <th class="subtable">Raw Materials</th>
-            <th class="subtable">Processes</th>
-            <th class="subtable" >Downlaod</th>
+        <ng-container *ngFor="let c of filteredCustomers$ | async">
+          <tr>
+            <td>{{ c.customerName.customerName }}</td>
+            <td>{{ c.partName }}</td>
+            <td>{{ getLatestRevision(c)?.productName }}</td>
+            <td>
+              {{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}
+            </td>
+            <td> 
+              <ng-container *ngIf="getLatestRevision(c)">
+                {{ getLatestRevision(c).noOfRawMaterials }}
+              </ng-container>
+              <ng-template #noMaterial>
+                <span>No Raw Materials</span>
+              </ng-template>
+            </td>
+            <td>
+              <ng-container *ngIf="getLatestRevision(c) ; else noProcess">
+                {{getLatestRevision(c).noOfProcess}}
+              </ng-container>
+              <ng-template #noProcess>
+                <span>No Processes</span>
+              </ng-template>
+            </td>
+            <td>
+              <a href="javascript:void(0)" 
+                style="color: #1976d2; cursor: pointer;"
+                (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                Download Quotation
+              </a>
+            </td>
+            <td class="actions">
+              <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
+              <mat-icon class="icon" (click)="onDelete(c._id)">delete</mat-icon>
+              <ng-container>
+                <mat-icon class="icon" (click)="toggleCompare(c)">
+                  {{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+              </ng-container>
+            </td>
           </tr>
-        </thead>
-       <tbody>
-  <tr *ngFor="let rev of c.revisions; let i = index">
-    <!-- Revision -->
-    <td class="small-col">
-      <mat-checkbox
-        [(ngModel)]="rev.selected"
-        (change)="onRevisionSelect(rev, $event)"
-      ></mat-checkbox>
-      Revision {{ rev.revisionNumber || (i + 1) }}
-    </td>
 
-    <!-- Product -->
-    <td class="small-col" id="small-colname">
-      {{ rev.productName }}
-    </td>
+          <!-- 🔽 Nested table row -->
+          <tr *ngIf="expandedCustomer === c">
+            <td id="subbg" colspan="8">
+              <table class="table table-sm table-bordered nested-table">
+                <thead>
+                  <tr>
+                    <th class="subtable">Revision</th>
+                    <th class="subtable">Product</th>
+                    <th class="subtable">Raw Materials</th>
+                    <th class="subtable">Processes</th>
+                    <th class="subtable">Downlaod</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let rev of c.revisions; let i = index">
+                    <!-- Revision -->
+                    <td class="small-col">
+                      <mat-checkbox
+                        [(ngModel)]="rev.selected"
+                        (change)="onRevisionSelect(rev, $event)"
+                      ></mat-checkbox>
+                      Revision {{ rev.revisionNumber || (i + 1) }}
+                    </td>
 
-  <!-- Raw Materials (comma separated) -->
-<td class="wide-col">
-  {{ getRawMaterialList(rev.rawMaterial) }}
-</td>
+                    <!-- Product -->
+                    <td class="small-col" id="small-colname">
+                      {{ rev.productName }}
+                    </td>
 
-<!-- Processes (comma separated) -->
-<td class="wide-col">
-  {{ getProcessList(rev.processes) }}
-</td>
+                    <!-- Raw Materials (comma separated) -->
+                    <td class="wide-col">
+                      {{ getRawMaterialList(rev.rawMaterial) }}
+                    </td>
 
+                    <!-- Processes (comma separated) -->
+                    <td class="wide-col">
+                      {{ getProcessList(rev.processes) }}
+                    </td>
 
-<td class="small-col">
-    <button
-      mat-raised-button
-      color="accent"
-      (click)="downloadQuotation(c.customerName.customerName, c.partName, rev.revisionNumber)"
-    >
-      Download
-    </button>
-  </td>
+                    <td class="small-col">
+                      <button
+                        mat-raised-button
+                        color="accent"
+                        (click)="downloadQuotation(c.customerName.customerName, c.partName, rev.revisionNumber)"
+                      >
+                        Download
+                      </button>
+                    </td>
+                  </tr>
 
-  </tr>
-
-  <!-- Compare button -->
-  <tr>
-    <td colspan="6" class="text-center">
-     <button
-  mat-raised-button
-  color="primary"
-  (click)="openComparePopup()"
-  [disabled]="!canCompare()"
->
-  Compare Selected
-</button>
-
-    </td>
-  </tr>
-</tbody>
-
-      </table>
-    </td>
-  </tr>
-</ng-container>
-
-
-
-
-
+                  <!-- Compare button -->
+                  <tr>
+                    <td colspan="6" class="text-center">
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="openComparePopup()"
+                        [disabled]="!canCompare()"
+                      >
+                        Compare Selected
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
+
+    <mat-paginator
+      [length]="totalFiltered$ | async"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
   </ng-container>
 
   <ng-template #loading>
     <p>Loading customer data...</p>
   </ng-template>
 </div>
+
+</div>
+
 
 
 <div class="compare-popup" *ngIf="showComparePopup" (click)="closeComparePopup()">

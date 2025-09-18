@@ -382,7 +382,7 @@ transition: all 0.2s ease;
   line-height: 1;
 }
 
-.process-row {
+.process-row1 {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -392,6 +392,23 @@ transition: all 0.2s ease;
 .field {
   flex: 1;
   min-width: 150px;
+}
+
+
+.formula-box {
+  
+  min-width: 150px;
+  background: #e3f2fd;
+  border: 2px solid #2196f3;
+  border-radius: 8px;
+
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
+}
+
+.formula-box span {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #0d47a1;
 }
 
 .delete-btn {
@@ -406,20 +423,10 @@ transition: all 0.2s ease;
   transition: all 0.2s ease;
 }
 
-/* Reset default styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
-body {
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
-  color: #333;
-}
 
-/* Main Quotation Container */
+
+
 .mainquotation {
   padding: 20px;
   border-bottom: 2px solid #0e1635;
@@ -448,7 +455,7 @@ body {
   color: #666;
 }
 
-/* Customer Section */
+
 .Customermain {
   display: flex;
   justify-content: space-between;
@@ -476,7 +483,7 @@ body {
   color: #007bff;
 }
 
-/* Material and Process Cost Tables */
+
 .materialcost {
   padding: 20px;
 }
@@ -633,3 +640,13 @@ mat-radio-group {
   border-color: #007bff; 
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); 
 }
+
+.fortrans {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+
+

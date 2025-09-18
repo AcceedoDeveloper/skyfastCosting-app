@@ -128,6 +128,7 @@ export class AddCustomerDetailsComponent implements OnInit{
     .subscribe(({ customer }) => {
       this.Cusid = customer._id;
       console.log('✅ Newly created customer ID:', customer._id);
+       
     });
 
           this.addProcessSelection();
@@ -223,6 +224,8 @@ onSave() {
   console.log('Final JSON (Full):', result);
 
   this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
+ this.dialogRef.close();
+
 }
 
 calculateProcessValue(proc: any): number {
@@ -248,7 +251,9 @@ calculateProcessValue(proc: any): number {
       TransportPercentage: null,
       TransportType: 'cost'
     });
+    
   }
+  
 }
 
 

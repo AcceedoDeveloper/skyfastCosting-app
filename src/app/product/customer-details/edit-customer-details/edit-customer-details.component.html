@@ -162,17 +162,17 @@
           
 
           <div class="field-row">
-            <label class="label1 tool" style="font-size: 15px; font-weight: bold;">Tool Cost</label>
+            <label class="label1 tool" style="font-size: 15px; font-weight: bold;">Tool Cost (₹)</label>
               <input class="lab" matInput type="text" formControlName="toolAmbience" />
           </div>
 
           <div class="field-row">
-            <label class="label1 inspect" style="font-size:15px; font-weight: bold;">Inspection Cost </label>
+            <label class="label1 inspect" style="font-size:15px; font-weight: bold;">Inspection Cost (₹)</label>
               <input class="lab" matInput type="number" formControlName="inspectorCost" />
           </div>
 
              <div class="field-row">
-            <label class="label1" style="font-size:15px; font-weight: bold;">overHeadsPercent </label>
+            <label class="label1" style="font-size:15px; font-weight: bold;">overHeadsPercent (%)</label>
               <input class="lab" matInput type="number" formControlName="overHeadsPercent" />
           </div>
         </div>
@@ -182,7 +182,7 @@
           <h3 style="color:#3d8adc;;">Rejection</h3>
           <hr style="border: 0.2px solid #000000;">
           <div class="field-row single">
-            <label class="reject" style="font-size: 15px; font-weight: bold;">Rejection %</label>
+            <label class="reject" style="font-size: 15px; font-weight: bold;">Rejection (%)</label>
               <input class="lab" matInput type="number" formControlName="rejection" />
           </div>
         </div>
@@ -193,21 +193,11 @@
   <hr style="border: 0.2px solid #000000;">
 
   <div class="field-row">
-    <label class="label1 carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost)</label>
+    <label class="label1 carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost ₹)</label>
     <input class="lab carrycost" matInput type="number" formControlName="interestRate" />
   </div>
 
-  <div class="field-row">
-    <label class="label1 percent" style="font-size:15px; font-weight: bold;">Packing Percentage</label>
-    <input class="lab" matInput type="number" formControlName="packingPercentage" />
-  </div>
-
-  <div class="field-row">
-    <label class="label1 rate" style="font-size:15px; font-weight: bold;">Packing Rate</label>
-    <input class="lab" matInput type="number" formControlName="packingRate" />
-  </div>
-
-  <div class="field-row single">
+    <div class="field-row single">
     <label class="packing" style="font-size: 15px; font-weight: bold;">Packing</label>
     <mat-select class="lab1" formControlName="packing"  >
       <mat-option *ngFor="let option of packingOptions" [value]="option">
@@ -215,6 +205,18 @@
       </mat-option>
     </mat-select>
   </div>
+
+  <div class="field-row">
+    <label class="label1 percent" style="font-size:15px; font-weight: bold;">Packing Percentage (%)</label>
+    <input class="lab" matInput type="number" formControlName="packingPercentage" />
+  </div>
+
+  <div class="field-row">
+    <label class="label1 rate" style="font-size:15px; font-weight: bold;">Packing Rate (₹)</label>
+    <input class="lab" matInput type="number" formControlName="packingRate" />
+  </div>
+
+
 
 
 

@@ -1,9 +1,9 @@
 <div class="process-container">
   <div class="header">
-    <div class="cust">
+   
   
   <h2 style="font-weight: bold;">Process List</h2>
-  </div>
+
 
  <div class="search-container">
   <div class="search-input">
@@ -15,13 +15,15 @@
 
 
 <div class="file-upload-container">
-  <input type="file" (change)="onFileSelected($event)" />
+  <input class="file-upload-container-input" type="file" (change)="onFileSelected($event)" />
   <button type="button" class="btn btn-secondary" (click)="onUpload()">Upload</button>
 </div>
 
 
 <button  mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">+ Add Process</button>
 </div>
+
+
  <ng-container *ngIf="allProcesses.length > 0; else loading">
   <table class="table table-bordered">
     <thead>
