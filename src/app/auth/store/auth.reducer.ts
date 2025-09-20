@@ -1,4 +1,3 @@
-
 import { createReducer, on } from "@ngrx/store";
 import * as AuthActions from './auth.action';
 import { User } from "../../model/auth.model";
@@ -55,6 +54,13 @@ export const authReducer = createReducer(
     error: null
   })),
 
+  on(AuthActions.setUser, (state, { user }) => ({
+    ...state,
+    user,
+    isLoggedIn: true,
+    error: null
+  })),
+
   on(AuthActions.loginFailure, (state, { error }) => ({
     ...state,
     user: null,
@@ -68,15 +74,14 @@ export const authReducer = createReducer(
     ...state,
     user: null,
     token: null,
-    isAuthenticated: false,
-    error: null,
+    isLoggedIn: false,
+    error: null
   })),
 
   on(AuthActions.logoutUser, () => ({
     ...initialState
   })),
 
- 
   on(AuthActions.forgotPassword, (state, { email }) => ({
     ...state,
     forgotPassword: {

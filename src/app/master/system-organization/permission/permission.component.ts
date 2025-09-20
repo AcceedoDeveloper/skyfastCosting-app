@@ -173,7 +173,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
   checkParent<K extends keyof Omit<Permissions, 'dashboard' | 'quotation' | 'reports'>>(group: K) {
     const children = this.permissions[group].children as UserChildren | CompanyChildren | MaterialChildren;
-    this.permissions[group].parent = Object.values(children).every(Boolean);
+    this.permissions[group].parent = Object.values(children).some(Boolean); // Changed from 'every' to 'some'
     console.log(`Checked parent status for ${group}:`, this.permissions[group].parent);
   }
 
@@ -231,6 +231,11 @@ export class PermissionComponent implements OnInit, OnDestroy {
       reports: !!savedData.screens.reports,
     };
 
+    // Ensure parent is set correctly based on children
+    this.checkParent('user');
+    this.checkParent('company');
+    this.checkParent('material');
+
     console.log('📥 Permissions loaded into form:', this.permissions);
   }
 
@@ -260,21 +265,21 @@ export class PermissionComponent implements OnInit, OnDestroy {
     }
   }
 
-getEnabledChildNames(children: UserChildren | CompanyChildren | MaterialChildren | undefined): string {
-  if (!children) return '';
+  getEnabledChildNames(children: UserChildren | CompanyChildren | MaterialChildren | undefined): string {
+    if (!children) return '';
 
-  let labels: SubItem<string>[] = [];
-  if ('user' in children) {
-    labels = this.userSubItems;
-  } else if ('companyPreferences' in children) {
-    labels = this.companySubItems;
-  } else if ('rawMaterial' in children) {
-    labels = this.materialSubItems;
+    let labels: SubItem<string>[] = [];
+    if ('user' in children) {
+      labels = this.userSubItems;
+    } else if ('companyPreferences' in children) {
+      labels = this.companySubItems;
+    } else if ('rawMaterial' in children) {
+      labels = this.materialSubItems;
+    }
+
+    return Object.keys(children)
+      .filter(key => children[key as keyof typeof children])
+      .map(key => labels.find(item => item.key === key)?.label || key)
+      .join(', ');
   }
-
-  return Object.keys(children)
-    .filter(key => children[key as keyof typeof children])
-    .map(key => labels.find(item => item.key === key)?.label || key)
-    .join(', ');
-}
 }

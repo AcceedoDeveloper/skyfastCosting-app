@@ -1,4 +1,3 @@
-
 import { createAction, props } from "@ngrx/store";
 import { AuthResponse, User } from "../../model/auth.model";
 
@@ -9,7 +8,7 @@ export const loginUser = createAction(
 
 export const loginSuccess = createAction(
   '[Auth API] Login Success',
-  props<{authResponse : AuthResponse}>()
+  props<{ authResponse: AuthResponse }>()
 );
 
 export const loginFailure = createAction(
@@ -23,7 +22,6 @@ export const logoutUser = createAction(
 
 export const autoLogout = createAction('[Auth] Auto Logout');
 
-// Forgot Password Actions
 export const forgotPassword = createAction(
   '[Forgot Password] Forgot Password',
   props<{ email: string }>()

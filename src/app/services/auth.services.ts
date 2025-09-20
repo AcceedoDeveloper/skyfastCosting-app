@@ -1,13 +1,12 @@
-
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import {  Observable, throwError } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { AuthResponse, User } from "../model/auth.model";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
-  providedIn : 'root'
+  providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
@@ -45,9 +44,9 @@ export class AuthService {
     console.error('AuthService Error:', error);
     let errorMessage = 'An unknown error occurred during authentication.';
     if (error.message) {
-        errorMessage = error.message;
+      errorMessage = error.message;
     } else if (error.status) {
-        errorMessage = `Server error: ${error.status}`;
+      errorMessage = `Server error: ${error.status}`;
     }
     return throwError(() => new Error(errorMessage));
   }

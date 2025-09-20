@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
 import { Router, RouterOutlet, RouterModule, NavigationEnd } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, filter, takeUntil } from 'rxjs';
+import { Observable, Subject, filter, takeUntil, combineLatest } from 'rxjs';
 import * as AuthActions from './auth/store/auth.action';
 import * as AuthSelectors from './auth/store/auth.selector';
 import * as RoleActions from '../app/master/system-organization/store/system.actions';
@@ -10,10 +10,9 @@ import * as RoleSelectors from '../app/master/system-organization/store/system.s
 import { User } from './model/auth.model';
 import { Permission } from './model/permission.model';
 
-// Interface definitions remain the same
 interface SidebarItem {
   label: string;
-    route: string | null; 
+  route: string | null;
   icon: string;
   submenu?: SidebarItem[];
 }
@@ -32,7 +31,6 @@ interface Permissions {
   quotation: boolean;
   reports: boolean;
 }
-
 
 @Component({
   selector: 'app-root',
@@ -65,52 +63,36 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Persist and retrieve last route
     const lastRoute = sessionStorage.getItem('lastRoute') || this.router.url;
 
-    // Parse user from sessionStorage safely
-    const token = sessionStorage.getItem('token');
-    let user: User | null = null;
-    try {
-      const userJson = sessionStorage.getItem('user');
-      if (userJson) {
-        user = JSON.parse(userJson) as User;
-      }
-    } catch (e) {
-      console.error('Failed to parse user from sessionStorage:', e);
-    }
+    combineLatest([this.isLoggedIn$, this.user$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([isLoggedIn, user]) => {
+        if (isLoggedIn && user) {
+          this.userName = user.userName;
+          this.userRole = user.role?.role || '';
+          this.store.dispatch(RoleActions.loadPermissions());
+          this.loadPermissions(user.role?._id || '');
+          if (lastRoute && !lastRoute.includes('/login')) {
+            this.router.navigateByUrl(lastRoute);
+          }
+        } else {
+          this.permissions = this.getEmptyPermissions();
+          this.sidebarItems = [];
+          this.router.navigate(['/login']);
+        }
+      });
 
-    if (!token || !user) {
-      this.store.dispatch(AuthActions.logoutUser());
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    // Restore user state
-    this.store.dispatch(AuthActions.setUser({ user }));
-
-    // Subscribe to user changes
-    this.user$.pipe(takeUntil(this.destroy$)).subscribe(user => {
-      if (user) {
-        this.userName = user.userName;
-        this.userRole = user.role?.role || '';
-        this.store.dispatch(RoleActions.loadPermissions());
-        this.loadPermissions(user.role?._id || '');
-      } else {
-        this.permissions = this.getEmptyPermissions();
-        this.sidebarItems = [];
-        this.router.navigate(['/login']);
-      }
-    });
-
-    // Subscribe to permissions changes
     this.permissions$.pipe(takeUntil(this.destroy$)).subscribe(permissions => {
-      if (user && user.role?._id && permissions.length > 0) {
-        this.autoRefreshPermissions(user.role._id, permissions);
+      if (permissions.length > 0) {
+        this.user$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+          if (user && user.role?._id) {
+            this.autoRefreshPermissions(user.role._id, permissions);
+          }
+        });
       }
     });
 
-    // Handle route changes and persist last route
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroy$)
@@ -119,7 +101,6 @@ export class AppComponent implements OnInit, OnDestroy {
       sessionStorage.setItem('lastRoute', event.urlAfterRedirects);
     });
 
-    // Handle permission errors
     this.store.select(RoleSelectors.selectPermissionError).pipe(takeUntil(this.destroy$)).subscribe(error => {
       if (error) {
         console.error('Permission loading failed:', error);
@@ -128,11 +109,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.router.navigate(['/login']);
       }
     });
-
-    // Attempt to restore last route
-    if (lastRoute && !lastRoute.includes('/login')) {
-      this.router.navigateByUrl(lastRoute);
-    }
   }
 
   ngOnDestroy(): void {
@@ -231,25 +207,24 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (screens.dashboard) sidebar.push({ label: 'Dashboard', route: '/dashboard/dashh', icon: 'dashboard' });
 
-  if (screens.user?.parent || this.anyTrue(screens.user?.children)) {
-  sidebar.push({
-    label: 'User Management',
-    route: null,            // ⬅ changed from '' to null
-    icon: 'group',
-    submenu: [
-      screens.user.children.user ? { label: 'User', route: '/entity', icon: 'person' } : null,
-      screens.user.children.role ? { label: 'Role', route: '/system/roles', icon: 'security' } : null,
-      screens.user.children.shift ? { label: 'Shift', route: '/system/shifts', icon: 'people' } : null,
-      screens.user.children.customer ? { label: 'Customer', route: '/entity/customers', icon: 'business' } : null
-    ].filter(Boolean) as SidebarItem[]
-  });
-}
-
+    if (screens.user?.parent || this.anyTrue(screens.user?.children)) {
+      sidebar.push({
+        label: 'User Management',
+        route: null,
+        icon: 'group',
+        submenu: [
+          screens.user.children.user ? { label: 'User', route: '/entity', icon: 'person' } : null,
+          screens.user.children.role ? { label: 'Role', route: '/system/roles', icon: 'security' } : null,
+          screens.user.children.shift ? { label: 'Shift', route: '/system/shifts', icon: 'people' } : null,
+          screens.user.children.customer ? { label: 'Customer', route: '/entity/customers', icon: 'business' } : null
+        ].filter(Boolean) as SidebarItem[]
+      });
+    }
 
     if (screens.company?.parent || this.anyTrue(screens.company?.children)) {
       sidebar.push({
         label: 'Company Management',
-       route: null,  
+        route: null,
         icon: 'apartment',
         submenu: [
           screens.company.children.companyPreferences ? { label: 'Company Preferences', route: '/system/companypreferences', icon: 'settings' } : null,
@@ -261,7 +236,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (screens.material?.parent || this.anyTrue(screens.material?.children)) {
       sidebar.push({
         label: 'Material & Process Management',
-       route: null,  
+        route: null,
         icon: 'inventory_2',
         submenu: [
           screens.material.children.rawMaterial ? { label: 'Raw Material', route: '/product/raw-materials', icon: 'list_alt' } : null,
@@ -292,4 +267,4 @@ export class AppComponent implements OnInit, OnDestroy {
     sessionStorage.removeItem('lastRoute');
     this.router.navigate(['/login']);
   }
-} 
+}

@@ -1,4 +1,5 @@
 import { Role } from "./role.model";
+
 export interface User {
   _id: string;
   UserCode: string;
@@ -10,12 +11,10 @@ export interface User {
   role: Role;
 }
 
-
 export interface AuthResponse {
   user: User;
   accessToken: string;
 }
-
 
 export interface AuthState {
   forgotPassword: any;

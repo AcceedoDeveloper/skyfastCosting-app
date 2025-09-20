@@ -47,7 +47,7 @@ export interface Permission {
   role: string;
   screens: Screens;
   initialScreen: string;
-   __v: number;
+  __v: number;
 }
 
 export interface Screens {
@@ -81,9 +81,8 @@ export interface MaterialChildren {
   process: boolean;
 }
 
-
 export interface PermissionState {
-  list: Permission[];   
-  loading: boolean;      
-  error: any;            
+  list: Permission[];
+  loading: boolean;
+  error: any;
 }

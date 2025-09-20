@@ -1,4 +1,3 @@
-
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { AuthState } from "../../model/auth.model";
 import { authFeatureKey } from './auth.reducer';
@@ -34,7 +33,6 @@ export const selectUserId = createSelector(
   selectUser,
   user => user?._id ?? null
 );
-
 
 export const selectForgotPasswordState = createSelector(
   selectAuthState,

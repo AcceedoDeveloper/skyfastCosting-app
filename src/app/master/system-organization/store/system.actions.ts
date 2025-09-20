@@ -1,10 +1,7 @@
-// store/role.actions.ts
 import { createAction, props } from '@ngrx/store';
 import { Role, Department, Shift, HostingMail } from '../../../model/role.model';
-
 import { Permission } from '../../../model/permission.model';
 import { Company } from '../../../model/company.model';
-
 
 // Load
 export const loadRoles = createAction('[Role] Load Roles');
@@ -25,12 +22,7 @@ export const deleteRoleSuccess = createAction('[Role] Delete Role Success', prop
 // Common Failure
 export const apiFailure = createAction('[Role API] Failure', props<{ error: any }>());
 
-
-//permission 
-
-// ======================
-// Load Permissions
-// ======================
+// Permission
 export const loadPermissions = createAction('[Permission] Load Permissions');
 export const loadPermissionsSuccess = createAction(
   '[Permission] Load Permissions Success',
@@ -41,9 +33,6 @@ export const loadPermissionsFailure = createAction(
   props<{ error: any }>()
 );
 
-// ======================
-// Add Permission
-// ======================
 export const addPermission = createAction(
   '[Permission] Add Permission',
   props<{ permission: Permission }>()
@@ -57,9 +46,6 @@ export const addPermissionFailure = createAction(
   props<{ error: any }>()
 );
 
-// ======================
-// Update Permission
-// ======================
 export const updatePermission = createAction(
   '[Permission] Update Permission',
   props<{ id: string; permission: Permission }>()
@@ -73,9 +59,6 @@ export const updatePermissionFailure = createAction(
   props<{ error: any }>()
 );
 
-// ======================
-// Delete Permission
-// ======================
 export const deletePermission = createAction(
   '[Permission] Delete Permission',
   props<{ id: string }>()
@@ -89,12 +72,8 @@ export const deletePermissionFailure = createAction(
   props<{ error: any }>()
 );
 
-
-
 export const loadDepartment = createAction('[Department] Load Department');
 export const loadDepartmentSuccess = createAction('[Department] Load Department Success', props<{ department: Department[] }>());
-
-
 
 export const addDepartment = createAction(
   '[Department] Add Department',
@@ -105,7 +84,6 @@ export const addDepartmentSuccess = createAction(
   '[Department] Add Department Success',
   props<{ department: Department }>()
 );
-
 
 export const deleteDepartment = createAction(
   '[Department] Delete Department',
@@ -130,8 +108,6 @@ export const updateDepartmentSuccess = createAction(
 export const loadshift = createAction('[shift] Load shift');
 export const loadShiftSuccess = createAction('[shift] Load shift Success', props<{ shift: Shift[] }>());
 
-
-
 export const addShift = createAction(
   '[Shift] Add Shift',
   props<{ shift: Shift }>()
@@ -152,7 +128,6 @@ export const updateShiftSuccess = createAction(
   props<{ updateshift: Shift }>()
 );
 
-
 export const deleteShift = createAction(
   '[shift] Delete shift',
   props<{ id: string }>()
@@ -162,8 +137,6 @@ export const deleteShiftSuccess = createAction(
   '[Shift] Delete Shift Success',
   props<{ id: string }>()
 );
-
-
 
 export const loadHostingMail = createAction('[HostingMail] Load HostingMail');
 export const loadHostingMailSuccess = createAction(
@@ -201,9 +174,6 @@ export const deleteHostingMailSuccess = createAction(
   props<{ id: string }>()
 );
 
-
-
-
 export const loadCompany = createAction('[Company] Load Company');
 export const loadCompanySuccess = createAction(
   '[Company] Load Company Success',
@@ -239,5 +209,3 @@ export const updateCompanySuccess = createAction(
   '[Company] Update Company Success',
   props<{ updatedCompany: Company }>()
 );
-
-
