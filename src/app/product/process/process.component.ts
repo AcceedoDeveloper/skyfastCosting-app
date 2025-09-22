@@ -197,6 +197,7 @@ onDelete(id: string) {
     this.uploadService.uploadFile(this.selectedFile).subscribe({
       next: (res) => {
         console.log('Upload success:', res);
+        this.tooser.success('Process updated successfully!');
         this.store.dispatch(processActions.loadProcess());
       },
       error: (err) => {

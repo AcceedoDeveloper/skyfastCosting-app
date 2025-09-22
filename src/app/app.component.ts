@@ -40,6 +40,9 @@ interface Permissions {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+
+  title: string = 'Quality_Management';
+
   private store = inject(Store);
   private router = inject(Router);
 

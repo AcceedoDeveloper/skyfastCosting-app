@@ -256,20 +256,38 @@ export class CustomerDetailsComponent implements OnInit {
     html2pdf().from(element).set(options).save();
   }
 
-  downloadQuotations(customerName: string, partName: string, revision: number): void {
-    this.productservices.quotationData(customerName, partName, revision).subscribe({
-      next: (res) => {
-        this.quotationData = res;
-        console.log('Quotation Data:', this.quotationData);
-        this.pdfview = true;
-      },
-      error: (err) => {
-        console.error('Error fetching quotation:', err);
-      }
-    });
-  }
 
-  closeda() {
-    this.pdfview = false;
-  }
+
+downloadQuotations(customerName: string, partName: string, revision: number): void {
+  this.productservices.quotationData(customerName, partName, revision).subscribe({
+    next: (res) => {
+      this.quotationData = res;
+      console.log('Quotation Data:', this.quotationData);
+      this.pdfview= true;
+      
+    },
+    error: (err) => {
+      console.error('Error fetching quotation:', err);
+    }
+  });
+
+
 }
+
+closeda(){
+  this.pdfview = false;
+}
+
+
+
+isProcessFieldDifferent(field: string, index: number): boolean {
+  if (!this.selectedRevisions || this.selectedRevisions.length <= 1) return false;
+
+  const firstValue = this.selectedRevisions[0]?.processes?.[index]?.[field];
+  return this.selectedRevisions.some(
+    rev => rev?.processes?.[index]?.[field] !== firstValue
+  );
+}
+
+}
+
