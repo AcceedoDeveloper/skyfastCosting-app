@@ -114,7 +114,7 @@
       <mat-label>Select Process</mat-label>
       <mat-select formControlName="processId" (selectionChange)="onProcessChange(i, $event.value)">
         <mat-option *ngFor="let p of (process$ | async)" [value]="p._id">
-          {{ p.processName }}
+         {{ p.processName }} {{ p.machineCentre }} 
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -224,7 +224,7 @@
             <hr style="border: 0.2px solid #000000;">
 
              <div class="field-row">
-              <label class="label1  carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost ₹)</label>
+              <label class="label1  carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost %)</label>
               <input class="lab" matInput type="number" formControlName="InterestRate" />
             </div>
             

@@ -165,6 +165,7 @@ tr:hover {
   border: 1px solid #e0e0e0;  
   border-radius: 30px;        
   font-size: 15px;
+  margin-top: 125px;
   font-weight: 500;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -179,6 +180,7 @@ tr:hover {
 .file-upload-container {
   display: flex;
   align-items: center;
+  margin-top: 130px;
   gap: 12px; /* spacing between input and button */
   // margin-top: 16px;
 }
@@ -213,6 +215,7 @@ button {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-top: 130px;
   gap: 12px;
   // margin: 12px 0;
 }

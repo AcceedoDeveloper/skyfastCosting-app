@@ -65,17 +65,17 @@
             <input matInput type="number" formControlName="castingWeight" />
           </mat-form-field>
 
-
+          <mat-form-field appearance="outline">
+            <mat-label>Short Weight</mat-label>
+            <input matInput type="number" formControlName="shortWeight" />
+          </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Melting Loss</mat-label>
             <input matInput type="number" formControlName="meltingLoss" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Short Weight</mat-label>
-            <input matInput type="number" formControlName="shortWeight" />
-          </mat-form-field>
+          
 
 
            </div>
@@ -103,7 +103,7 @@
             <mat-label>Process Name</mat-label>
             <mat-select formControlName="processId" (selectionChange)="onProcessSelected($event.value, i)">
               <mat-option *ngFor="let proc of (process$ | async)" [value]="proc._id">
-                {{ proc.processName }}
+                {{ proc.processName }} {{ proc.machineCentre }} 
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -193,7 +193,7 @@
   <hr style="border: 0.2px solid #000000;">
 
   <div class="field-row">
-    <label class="label1 carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost ₹)</label>
+    <label class="label1 carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost %)</label>
     <input class="lab carrycost" matInput type="number" formControlName="interestRate" />
   </div>
 
