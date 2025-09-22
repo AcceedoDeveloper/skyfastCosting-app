@@ -323,29 +323,51 @@
         </tr>
 
         <!-- Processes -->
-       <tr>
+<tr>
   <td><b>Processes</b></td>
   <td *ngFor="let rev of selectedRevisions">
     <div *ngFor="let p of rev.processes; let i = index" class="process-block">
-      <p [ngClass]="{'highlight-diff': isProcessFieldDifferent('processName', i)}">
-        <b>Process Name:</b> {{ p.processName }}
+
+      <p>
+        <b>Process Name:</b>
+        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('processName', i)}">
+          {{ p.processName }}
+        </span>
       </p>
-      <p [ngClass]="{'highlight-diff': isProcessFieldDifferent('TonnageJaw', i)}">
-        <b>Tonnage/Jaw:</b> {{ p.TonnageJaw }}
+
+      <p>
+        <b>Tonnage/Jaw:</b>
+        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('TonnageJaw', i)}">
+          {{ p.TonnageJaw }}
+        </span>
       </p>
-      <p [ngClass]="{'highlight-diff': isProcessFieldDifferent('Hours', i)}">
-        <b>Hours:</b> {{ p.Hours }}
+
+      <p>
+        <b>Hours:</b>
+        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('Hours', i)}">
+          {{ p.Hours }}
+        </span>
       </p>
-      <p [ngClass]="{'highlight-diff': isProcessFieldDifferent('cycleTime', i)}">
-        <b>Cycle time/Weight:</b> {{ p.cycleTime }}
+
+      <p>
+        <b>Cycle time/Weight:</b>
+        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('cycleTime', i)}">
+          {{ p.cycleTime }}
+        </span>
       </p>
-      <p [ngClass]="{'highlight-diff': isProcessFieldDifferent('cost', i)}">
-        <b>Cost:</b> {{ p.cost | number:'1.2-2' }}
+
+      <p>
+        <b>Cost:</b>
+        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('cost', i)}">
+          {{ p.cost | number:'1.2-2' }}
+        </span>
       </p>
+
       <hr />
     </div>
   </td>
 </tr>
+
 
       </tbody>
     </table>
