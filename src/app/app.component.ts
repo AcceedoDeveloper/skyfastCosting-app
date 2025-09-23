@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
 import { Router, RouterOutlet, RouterModule, NavigationEnd } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, filter, takeUntil, combineLatest } from 'rxjs';
+import { Observable, Subject, filter, takeUntil, combineLatest, of } from 'rxjs';
 import * as AuthActions from './auth/store/auth.action';
 import * as AuthSelectors from './auth/store/auth.selector';
 import * as RoleActions from '../app/master/system-organization/store/system.actions';
@@ -40,11 +40,10 @@ interface Permissions {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-
-  title: string = 'Quality_Management';
-
   private store = inject(Store);
   private router = inject(Router);
+
+    title: string = 'Quality_Management';
 
   isLoggedIn$: Observable<boolean>;
   user$: Observable<User | null>;
@@ -52,12 +51,13 @@ export class AppComponent implements OnInit, OnDestroy {
   userName: string = '';
   userRole: string = '';
   permissions: Permissions = this.getEmptyPermissions();
-  showHeader: boolean = true;
   showDropdown: boolean = false;
   activeSubmenu: string | null = null;
   sidebarItems: SidebarItem[] = [];
   private permissionsCache = new Map<string, Permission>();
   private destroy$ = new Subject<void>();
+  loading: boolean = true;
+  error: string | null = null;
 
   constructor() {
     this.isLoggedIn$ = this.store.select(AuthSelectors.selectIsLoggedIn);
@@ -66,33 +66,77 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const lastRoute = sessionStorage.getItem('lastRoute') || this.router.url;
+    // Initial state check from sessionStorage
+    const token = sessionStorage.getItem('token');
+    let user: User | null = null;
+    try {
+      const userJson = sessionStorage.getItem('user');
+      if (userJson) {
+        user = JSON.parse(userJson) as User;
+      }
+    } catch (e) {
+      console.error('Failed to parse user from sessionStorage at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), e);
+      this.handleUnauthenticatedState();
+      return;
+    }
 
+    // Set initial state based on session
+    if (token && user) {
+      this.store.dispatch(AuthActions.setUser({ user }));
+    } else {
+      this.store.dispatch(AuthActions.logoutUser()); // Ensure unauthenticated state
+      this.handleUnauthenticatedState();
+    }
+
+    // Wait for store to stabilize
     combineLatest([this.isLoggedIn$, this.user$])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([isLoggedIn, user]) => {
-        if (isLoggedIn && user) {
-          this.userName = user.userName;
-          this.userRole = user.role?.role || '';
-          this.store.dispatch(RoleActions.loadPermissions());
-          this.loadPermissions(user.role?._id || '');
-          if (lastRoute && !lastRoute.includes('/login')) {
-            this.router.navigateByUrl(lastRoute);
+      .subscribe({
+        next: ([isLoggedIn, user]) => {
+          console.log('AppComponent: isLoggedIn=', isLoggedIn, 'user=', user, 'at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }));
+          this.loading = false;
+          if (isLoggedIn && user) {
+            this.userName = user.userName || '';
+            this.userRole = user.role?.role || '';
+            this.store.dispatch(RoleActions.loadPermissions());
+            this.loadPermissions(user.role?._id || '');
+            const lastRoute = sessionStorage.getItem('lastRoute') || '/system';
+            if (lastRoute && !lastRoute.includes('/login')) {
+              this.router.navigateByUrl(lastRoute);
+            } else {
+              this.router.navigate(['/system']);
+            }
+          } else {
+            this.permissions = this.getEmptyPermissions();
+            this.sidebarItems = [];
+            if (this.router.url !== '/login') {
+              this.router.navigate(['/login']);
+            }
           }
-        } else {
-          this.permissions = this.getEmptyPermissions();
-          this.sidebarItems = [];
-          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          console.error('Error in combineLatest subscription at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), err);
+          this.loading = false;
+          this.error = 'An error occurred. Redirecting to login...';
+          this.handleUnauthenticatedState();
         }
       });
 
-    this.permissions$.pipe(takeUntil(this.destroy$)).subscribe(permissions => {
-      if (permissions.length > 0) {
-        this.user$.pipe(takeUntil(this.destroy$)).subscribe(user => {
-          if (user && user.role?._id) {
-            this.autoRefreshPermissions(user.role._id, permissions);
-          }
-        });
+    this.permissions$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (permissions) => {
+        if (permissions.length > 0) {
+          this.user$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+            if (user && user.role?._id) {
+              this.autoRefreshPermissions(user.role._id, permissions);
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error in permissions$ subscription at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), err);
+        this.loading = false;
+        this.error = 'Failed to load permissions. Redirecting to login...';
+        this.handleUnauthenticatedState();
       }
     });
 
@@ -100,16 +144,18 @@ export class AppComponent implements OnInit, OnDestroy {
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
-      this.showHeader = !event.urlAfterRedirects.includes('/login');
+      this.showDropdown = false;
       sessionStorage.setItem('lastRoute', event.urlAfterRedirects);
     });
 
     this.store.select(RoleSelectors.selectPermissionError).pipe(takeUntil(this.destroy$)).subscribe(error => {
       if (error) {
-        console.error('Permission loading failed:', error);
+        console.error('Permission loading failed at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), error);
+        this.loading = false;
+        this.error = 'Permission loading failed. Redirecting to login...';
         this.permissions = this.getEmptyPermissions();
         this.sidebarItems = [];
-        this.router.navigate(['/login']);
+        this.handleUnauthenticatedState();
       }
     });
   }
@@ -128,6 +174,15 @@ export class AppComponent implements OnInit, OnDestroy {
       quotation: false,
       reports: false
     };
+  }
+
+  private handleUnauthenticatedState(): void {
+    this.loading = false;
+    this.permissions = this.getEmptyPermissions();
+    this.sidebarItems = [];
+    if (this.router.url !== '/login') {
+      this.router.navigate(['/login']);
+    }
   }
 
   anyTrue(children: any): boolean {
@@ -260,8 +315,8 @@ export class AppComponent implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.profile-container') && !target.closest('.profile-dropdown')) this.showDropdown = false;
-    if (!target.closest('.submenu') && !target.closest('.has-submenu')) this.activeSubmenu = null;
+    if (!target.closest('.profile-container')) this.showDropdown = false;
+    if (!target.closest('.nav-item-content') && !target.closest('.submenu')) this.activeSubmenu = null;
   }
 
   logout() {

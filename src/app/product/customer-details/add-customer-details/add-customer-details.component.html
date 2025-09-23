@@ -30,15 +30,19 @@
 
                  <mat-form-field appearance="outline" class="full-width">
               <mat-label>drawingNo</mat-label>
-              <input matInput formControlName="drawingNo">
+              <input type="number" matInput formControlName="drawingNo">
             </mat-form-field>
     
             
     
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Part Name</mat-label>
-              <input matInput formControlName="partName">
-            </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Part Name</mat-label>
+  <input matInput formControlName="partName">
+  <mat-error *ngIf="productForm.get('partName')?.hasError('duplicatePartName')">
+    ❌ This part name already exists.
+  </mat-error>
+</mat-form-field>
+
 
 
             <mat-form-field appearance="outline" class="full-width">

@@ -22,6 +22,10 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatRadioModule} from '@angular/material/radio';
 import { Actions, ofType } from '@ngrx/effects';
 import {  take } from 'rxjs/operators';
+import { CustomerDetails } from '../../../model/customer-details.model';
+import * as customerActions from '../../store/product.actions';
+import* as Selector from '../../store/product.selectors';
+
 
 
 @Component({
@@ -44,6 +48,9 @@ import {  take } from 'rxjs/operators';
 })
 export class AddCustomerDetailsComponent implements OnInit{
 
+  customerdeatilas$! : Observable<CustomerDetails[]>;
+  partName: String[] =[]; 
+
     productForm!: FormGroup;
     processForm!: FormGroup;
     custoemr$! : Observable<Customer[]>;
@@ -65,7 +72,7 @@ export class AddCustomerDetailsComponent implements OnInit{
     this.productForm = this.fb.group({
       customerName: ['', Validators.required],
       productName: ['', Validators.required],
-      partName: ['', Validators.required],
+       partName: ['', [Validators.required, this.duplicatePartNameValidator.bind(this)]],
       drawingNo: ['', Validators.required],      
       castingWeight: [null, Validators.required],
       shortWeight: [null, Validators.required],
@@ -102,14 +109,30 @@ export class AddCustomerDetailsComponent implements OnInit{
     this.process$.subscribe(processes => {
       console.log('Processes from store:', processes);
     });
+
+    this.customerdeatilas$ = this.store.select(Selector.selectAllCustomers);
+    this.customerdeatilas$.subscribe(res =>{
+      this.partName = res.map(c => c.partName);
+      console.log('partname',this.partName);
+      
+      
+      
+    })
     
+    this.store.dispatch(customerActions.loadCustomers())
     this.store.dispatch(loadCustomer());
     this.store.dispatch(Action.loadRawMaterials());
     this.store.dispatch(Action.loadProcess());
 
   }
 
-  
+  duplicatePartNameValidator(control: any) {
+  if (!control.value) return null;
+  const enteredPartName = control.value.trim();
+  return this.partName.includes(enteredPartName)
+    ? { duplicatePartName: true }
+    : null;
+}
 
   save() {
     const formValue = { ...this.productForm.value,  };
