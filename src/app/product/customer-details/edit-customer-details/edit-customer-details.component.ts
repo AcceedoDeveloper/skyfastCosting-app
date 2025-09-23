@@ -93,7 +93,7 @@ if (data?.revisions?.length) {
       interestRate: [revision?.InterestRate ?? 0],
       inspectorCost: [revision?.InspectorCost ?? 0],
       packing: [revision?.Packing || ''],
-      toolAmbience: [revision?.ToolAmbience || ''],
+      toolAmbience: [revision?.ToolAmbience ],
       overHeadsPercent: [revision?.overHeadsPercent ],
       DieLifeTime: [ revision?.DieLifeTime ],
 
