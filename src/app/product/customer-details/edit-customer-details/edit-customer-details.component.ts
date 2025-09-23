@@ -82,7 +82,7 @@ if (data?.revisions?.length) {
       customerName: [data?.customerName.customerName || '', Validators.required],
       productName: [revision?.productName || '', Validators.required],
       partName: [data?.partName || '', Validators.required],
-      drawingNo: [data?.drawingNo ?? 0, Validators.required],
+      drawingNo: [data?.drawingNo ?? 0, ],
 
       // counts (fallback if missing)
       noOfRawMaterials: [revision?.rawMaterial?.length ?? 0],

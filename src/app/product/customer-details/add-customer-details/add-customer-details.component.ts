@@ -72,7 +72,7 @@ export class AddCustomerDetailsComponent implements OnInit{
     this.productForm = this.fb.group({
       customerName: ['', Validators.required],
       productName: ['', Validators.required],
-       partName: ['', [Validators.required, this.duplicatePartNameValidator.bind(this)]],
+       partName: ['', [ this.duplicatePartNameValidator.bind(this)]],
       drawingNo: ['', Validators.required],      
       castingWeight: [null, Validators.required],
       shortWeight: [null, Validators.required],
