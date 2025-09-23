@@ -17,6 +17,8 @@ import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { MatStepperModule } from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
+import * as customerActions from '../../store/product.actions';
+import* as Selector from '../../store/product.selectors';
 
 
 
@@ -39,6 +41,8 @@ import {MatRadioModule} from '@angular/material/radio';
   styleUrl: './edit-customer-details.component.scss'
 })
 export class EditCustomerDetailsComponent implements OnInit {
+    customerdeatilas$! : Observable<CustomerDetails[]>;
+  partName: String[] =[]; 
   rawMaterial$! : Observable<RawMaterial[]>;
   process$!: Observable<Process[]>;
   customerForm: FormGroup;
@@ -137,7 +141,26 @@ if (data?.revisions?.length) {
       console.log('process', process);
       
     })
+
+
+       this.customerdeatilas$ = this.store.select(Selector.selectAllCustomers);
+        this.customerdeatilas$.subscribe(res =>{
+          this.partName = res.map(c => c.partName);
+          console.log('partname',this.partName);
+          
+          
+          
+        })
   }
+
+
+    duplicatePartNameValidator(control: any) {
+  if (!control.value) return null;
+  const enteredPartName = control.value.trim();
+  return this.partName.includes(enteredPartName)
+    ? { duplicatePartName: true }
+    : null;
+}
 
   addProcess(proc: any = null) {
     this.processes.push(

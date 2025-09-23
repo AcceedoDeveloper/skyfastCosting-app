@@ -91,7 +91,8 @@ export class AddCustomerDetailsComponent implements OnInit{
      TransportType: ['cost'],  // 👈 default is "cost"
   TransportCost: [null],
   TransportPercentage: [null],
-  overHeadsPercent : [null, Validators.required]    
+  overHeadsPercent : [null, Validators.required],
+  dieLifeTime : [null, Validators.required]   
     })
 
     
@@ -241,7 +242,8 @@ onSave() {
     packingRate: this.processForm.value.TransportCost,             
     packingPercentage: this.processForm.value.TransportPercentage, 
     revisionNumber: 1 ,
-    overHeadsPercent: this.processForm.value.overHeadsPercent
+    overHeadsPercent: this.processForm.value.overHeadsPercent,
+    DieLifeTime: this.processForm.value.dieLifeTime
   };
 
   console.log('Final JSON (Full):', result);
