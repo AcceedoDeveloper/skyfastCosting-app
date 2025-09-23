@@ -572,7 +572,7 @@
               </tr>
               <tr>
                   <td colspan="10" class="terms-cell">
-                      <table class="terms-grid">
+                      <table class="terms-grid"  *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic' " >
                           <tr>
                               <th>Packing & Forwarding</th>
                               <td>Yours</td>
@@ -586,6 +586,44 @@
                               <td>NA</td>
                               <th>Payment Terms</th>
                               <td>30 Days</td>
+                              <td colspan="2"></td>
+                          </tr>
+                          <tr>
+                              <th>Applicable Tax</th>
+                              <td colspan="5">CGST / SGST / IGST</td>
+                          </tr>
+                      </table>
+                        <table class="terms-grid"  *ngIf="quotationData.results[0].revisions[0].Packing === 'international' " >
+                          <tr>
+                              <th>CMM Inspectiong</th>
+                              <td>  {{quotationData.results[0].revisions[0].CMMInspection}} 
+</td>
+                              <th>Mode of Transport</th>
+                              <td>Road</td>
+                              <th>Freight:</th>
+                              <td>Ex works</td>
+                          </tr>
+                          <tr>
+                              <th>Insurance</th>
+                              <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
+                              <th>Payment Terms</th>
+                              <td>30 Days</td>
+                              <td>packing</td>
+                          </tr>
+                            <tr>
+                              <th>See Packing</th>
+                              <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
+                              <th></th>
+                              <td></td>
+                              <td colspan="2"></td>
+                          </tr>
+                         
+
+                           <tr>
+                              <th> Payment 90 days(ICC)	</th>
+                              <td>{{quotationData.results[0].revisions[0].Payment90DaysICC}}</td>
+                              <th></th>
+                              <td></td>
                               <td colspan="2"></td>
                           </tr>
                           <tr>

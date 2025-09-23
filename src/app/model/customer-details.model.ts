@@ -67,12 +67,16 @@ export interface CustomerDetails {
   Packing?: string;
   InterestRate?: number;
   InspectorCost?: number;
-
+ CMMInspection: number,
+    Insurance: number,
+    SeaPacking: number,
+    Payment90DaysICC: number
   ToolAmbience?: string;
   createdAt?: Date;
   updatedAt?: Date;
   __v?: number;
   revisions: Revision[];
+  
  
   
 

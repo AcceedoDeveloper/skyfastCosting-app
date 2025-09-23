@@ -55,6 +55,10 @@ export interface Revision {
   TotalPrice: number;
   overHeadsPercent: number; 
   revisionName: string;
+  CMMInspection: number,
+    Insurance: number,
+    SeaPacking: number,
+    Payment90DaysICC: number
 }
 
 export interface RawMaterial {
