@@ -41,6 +41,11 @@ export interface Revision {
   packingPercentage?: number;
   packingRate?: number;
    overHeadsPercent: number;
+     DieLifeTime?: number;
+      CMMInspection: number,
+    Insurance: number,
+    SeaPacking: number,
+    Payment90DaysICC: number
 }
 
 
@@ -50,7 +55,7 @@ export interface CustomerDetails {
   customerName: Customer;
   productName: string;
   partName: string;
-  drawingNo: string;
+  drawingNo: number;
   cavities: number;
   castingWeight: number;
   shortWeight: number;
@@ -62,6 +67,7 @@ export interface CustomerDetails {
   Packing?: string;
   InterestRate?: number;
   InspectorCost?: number;
+
   ToolAmbience?: string;
   createdAt?: Date;
   updatedAt?: Date;

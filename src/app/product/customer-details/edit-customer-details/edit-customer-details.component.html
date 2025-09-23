@@ -30,7 +30,7 @@
 
            <mat-form-field appearance="outline">
             <mat-label>drawingNo</mat-label>
-            <input matInput type="text" formControlName="drawingNo"  />
+            <input matInput type="number" formControlName="drawingNo"  />
           </mat-form-field>
 
          
@@ -175,6 +175,11 @@
             <label class="label1" style="font-size:15px; font-weight: bold;">overHeadsPercent (%)</label>
               <input class="lab" matInput type="number" formControlName="overHeadsPercent" />
           </div>
+
+           <div class="field-row">
+            <label class="label1" style="font-size:15px; font-weight: bold;">DieLifeTime</label>
+              <input class="lab" matInput type="number" formControlName="DieLifeTime" />
+          </div>
         </div>
 
         <!-- Rejection -->
@@ -205,6 +210,29 @@
       </mat-option>
     </mat-select>
   </div>
+
+
+  <div *ngIf="customerForm.get('packing')?.value === 'international'" class="extra-fields">
+  <div class="field-row">
+    <label style="font-weight: bold;">CMM Inspection</label>
+    <input class="lab" matInput type="number" formControlName="CMMInspection" />
+  </div>
+
+  <div class="field-row">
+    <label style="font-weight: bold;">Insurance</label>
+    <input class="lab" matInput type="number" formControlName="Insurance" />
+  </div>
+
+  <div class="field-row">
+    <label style="font-weight: bold;">Sea Packing</label>
+    <input class="lab" matInput type="number" formControlName="SeaPacking" />
+  </div>
+
+  <div class="field-row">
+    <label style="font-weight: bold;">Payment 90 Days ICC</label>
+    <input class="lab" matInput type="number" formControlName="Payment90DaysICC" />
+  </div>
+</div>
 
   <div class="field-row">
     <label class="label1 percent" style="font-size:15px; font-weight: bold;">Packing Percentage (%)</label>

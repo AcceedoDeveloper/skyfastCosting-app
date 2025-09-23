@@ -42,7 +42,6 @@ import* as Selector from '../../store/product.selectors';
 })
 export class EditCustomerDetailsComponent implements OnInit {
     customerdeatilas$! : Observable<CustomerDetails[]>;
-  partName: String[] =[]; 
   rawMaterial$! : Observable<RawMaterial[]>;
   process$!: Observable<Process[]>;
   customerForm: FormGroup;
@@ -83,7 +82,7 @@ if (data?.revisions?.length) {
       customerName: [data?.customerName.customerName || '', Validators.required],
       productName: [revision?.productName || '', Validators.required],
       partName: [data?.partName || '', Validators.required],
-      drawingNo: [data?.drawingNo || '', Validators.required],
+      drawingNo: [data?.drawingNo ?? 0, Validators.required],
 
       // counts (fallback if missing)
       noOfRawMaterials: [revision?.rawMaterial?.length ?? 0],
@@ -95,11 +94,15 @@ if (data?.revisions?.length) {
       inspectorCost: [revision?.InspectorCost ?? 0],
       packing: [revision?.Packing || ''],
       toolAmbience: [revision?.ToolAmbience || ''],
-      overHeadsPercent: [revision?.overHeadsPercent ?? 0],
+      overHeadsPercent: [revision?.overHeadsPercent ],
+      DieLifeTime: [ revision?.DieLifeTime ],
 
 
 
-      
+      CMMInspection: [revision?.CMMInspection],
+  Insurance: [revision?.Insurance],
+  SeaPacking: [revision?.SeaPacking],
+  Payment90DaysICC: [revision?.Payment90DaysICC],
 
       castingWeight: [revision?.castingWeight ?? 0],
       cavities: [revision?.cavities ?? 0],
@@ -143,24 +146,11 @@ if (data?.revisions?.length) {
     })
 
 
-       this.customerdeatilas$ = this.store.select(Selector.selectAllCustomers);
-        this.customerdeatilas$.subscribe(res =>{
-          this.partName = res.map(c => c.partName);
-          console.log('partname',this.partName);
-          
-          
-          
-        })
+    
   }
 
 
-    duplicatePartNameValidator(control: any) {
-  if (!control.value) return null;
-  const enteredPartName = control.value.trim();
-  return this.partName.includes(enteredPartName)
-    ? { duplicatePartName: true }
-    : null;
-}
+
 
   addProcess(proc: any = null) {
     this.processes.push(
@@ -206,9 +196,19 @@ onSave() {
       InterestRate: formValue.interestRate,
       InspectorCost: formValue.inspectorCost,
       ToolAmbience: formValue.toolAmbience,
+      overHeadsPercent: formValue.overHeadsPercent,
+      DieLifeTime: formValue.DieLifeTime,
 
       packingPercentage: formValue.packingPercentage,
   packingRate: formValue.packingRate,
+
+
+   ...(formValue.packing === 'international' && {
+    CMMInspection: formValue.CMMInspection,
+    Insurance: formValue.Insurance,
+    SeaPacking: formValue.SeaPacking,
+    Payment90DaysICC: formValue.Payment90DaysICC
+  }),
 
       customerName: typeof this.data?.customerName === 'string' 
         ? this.data.customerName 
@@ -240,6 +240,8 @@ onSave() {
 
   }
    this.dialogRef.close();
+       this.store.dispatch(Action.loadCustomers());
+
 }
 
 incrementRevision() {
