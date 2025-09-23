@@ -196,7 +196,7 @@
            
              <div class="field-row">
               <label class="label1" style="font-size:15px; font-weight: bold;">Tool Cost (₹)</label>
-              <input class="lab" matInput type="string" formControlName="ToolAmbience" />
+              <input class="lab" matInput type="number" formControlName="ToolAmbience" />
             </div>
 
             <div class="field-row">
@@ -247,6 +247,29 @@
                   </mat-option>
                 </mat-select>
             </div>
+
+
+            <div *ngIf="processForm.get('Packing')?.value === 'international'" class="extra-fields">
+  <div class="field-row">
+    <label style="font-weight: bold;">CMM Inspection</label>
+    <input class="lab" matInput type="number" formControlName="CMMInspection" />
+  </div>
+
+  <div class="field-row">
+    <label style="font-weight: bold;">Insurance</label>
+    <input class="lab" matInput type="number" formControlName="Insurance" />
+  </div>
+
+  <div class="field-row">
+    <label style="font-weight: bold;">Sea Packing</label>
+    <input class="lab" matInput type="number" formControlName="SeaPacking" />
+  </div>
+
+  <div class="field-row">
+    <label style="font-weight: bold;">Payment 90 Days ICC</label>
+    <input class="lab" matInput type="number" formControlName="Payment90DaysICC" />
+  </div>
+</div>
               <div >
           <div class="field-row3" *ngIf="showTransportInput">
      <label class="trans" style="font-size:15px; font-weight: bold;">Transport</label>

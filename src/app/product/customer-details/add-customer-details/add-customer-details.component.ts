@@ -87,12 +87,16 @@ export class AddCustomerDetailsComponent implements OnInit{
     Packing : [null, Validators.required],
     InterestRate : [null, Validators.required],
     InspectorCost: [null, Validators.required],
-    ToolAmbience: [null, Validators.required],
+    ToolAmbience: ['', Validators.required],
      TransportType: ['cost'],  // 👈 default is "cost"
   TransportCost: [null],
   TransportPercentage: [null],
   overHeadsPercent : [null, Validators.required],
-  dieLifeTime : [null, Validators.required]   
+  dieLifeTime : [null, Validators.required],
+  CMMInspection: [null],
+  Insurance: [null],
+  SeaPacking: [null],
+  Payment90DaysICC: [null],   
     })
 
     
@@ -243,7 +247,13 @@ onSave() {
     packingPercentage: this.processForm.value.TransportPercentage, 
     revisionNumber: 1 ,
     overHeadsPercent: this.processForm.value.overHeadsPercent,
-    DieLifeTime: this.processForm.value.dieLifeTime
+    DieLifeTime: this.processForm.value.dieLifeTime,
+
+    CMMInspection: this.processForm.value.CMMInspection,
+    Insurance: this.processForm.value.Insurance,
+    SeaPacking: this.processForm.value.SeaPacking,
+    Payment90DaysICC: this.processForm.value.Payment90DaysICC
+
   };
 
   console.log('Final JSON (Full):', result);
