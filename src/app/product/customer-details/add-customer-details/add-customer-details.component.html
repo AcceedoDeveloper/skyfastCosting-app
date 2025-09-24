@@ -183,15 +183,17 @@
   <mat-step>
     <ng-template matStepLabel>other-details</ng-template>
 
+ 
     <form  [formGroup]="processForm" >
+    <div class="other-details">
+     
 
-      <div class="other-details">
         <div class="summary-row">
 
           <!-- Commercial Terms -->
           <div class="summary-card">
             <h3 style="color:#3d8adc;;">Commercial Terms</h3>
-            <hr style="border: 0.2px solid #000000;">
+            <!-- <hr style="border: 0.2px solid #000000;"> -->
 
            
              <div class="field-row">
@@ -216,90 +218,108 @@
               <input class="lab" matInput type="number" formControlName="dieLifeTime" />
             </div>
 
-          </div>
-
-          <!-- Rejection -->
-          <div class="summary-card">
-            <h3 style="color: #3d8adc;;">Rejection</h3>
-            <hr style="border: 0.2px solid #000000;">
-            <div class="field-row">
+     <!-- Rejection -->
+          <div >
+            <h3 style="color:#3d8adc;;">Rejection</h3>
+            <!-- <hr style="border: 0.2px solid #000000;"> -->
+            <div class="field-row single">
               <label class="reject" style="font-size:15px; font-weight: bold;">Rejection (%)</label>
               <input class="lab" matInput type="number" formControlName="Rejection" />
             </div>
           </div>
 
-          <!-- Transportation -->
-          <div class="summary-card">
-            <h3 style="color: #3d8adc;;">Transportation</h3>
-            <hr style="border: 0.2px solid #000000;">
 
-             <div class="field-row">
-              <label class="label1  carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost %)</label>
-              <input class="lab" matInput type="number" formControlName="InterestRate" />
-            </div>
-            
-            <div class="field-row single">
-              <label class="pack" style="font-size:15px; font-weight: bold;">Packing</label>
-                
-                <mat-select class="lab1" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
-                  <mat-option  *ngFor="let option of packingOptions" [value]="option">
-                    {{ option }}
-                  </mat-option>
-                </mat-select>
-            </div>
-
-
-            <div *ngIf="processForm.get('Packing')?.value === 'international'" class="extra-fields">
-  <div class="field-row">
-    <label style="font-weight: bold;">CMM Inspection</label>
-    <input class="lab" matInput type="number" formControlName="CMMInspection" />
-  </div>
-
-  <div class="field-row">
-    <label style="font-weight: bold;">Insurance</label>
-    <input class="lab" matInput type="number" formControlName="Insurance" />
-  </div>
-
-  <div class="field-row">
-    <label style="font-weight: bold;">Sea Packing</label>
-    <input class="lab" matInput type="number" formControlName="SeaPacking" />
-  </div>
-
-  <div class="field-row">
-    <label style="font-weight: bold;">Payment 90 Days ICC</label>
-    <input class="lab" matInput type="number" formControlName="Payment90DaysICC" />
-  </div>
-</div>
-              <div >
-          <div class="field-row3" *ngIf="showTransportInput">
-     <label class="trans" style="font-size:15px; font-weight: bold;">Transport</label>
-   
-     <!-- Radio Buttons -->
-     <mat-radio-group formControlName="TransportType">
-       <mat-radio-button class="cost" value="cost">Cost</mat-radio-button>
-       <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
-     </mat-radio-group>
-   
-     <!-- Input shown based on selection -->
-     <div class="field-row3" *ngIf="processForm.get('TransportType')?.value === 'cost'">
-      <div class="fortrans">
-        <h3 class="label11" style="font-size:15px; font-weight: bold;">Transport Cost (₹)</h3>
-        <input class="lab41" matInput type="number" formControlName="TransportCost" />
-
-      </div>
-     </div>
-   
-     <div class="field-row3" *ngIf="processForm.get('TransportType')?.value === 'percentage'">
-       <label class="label1" style="font-size:15px; font-weight: bold;">Transport %</label>
-       <input class="lab4" matInput type="number" formControlName="TransportPercentage" />
-     </div>
-   </div>
-   </div>
           </div>
 
-          
+     
+          <!-- Transportation -->
+       <div class="summary-card1">
+         <h3 style="color: #3d8adc;;">Transportation</h3>
+         <!-- <hr style="border: 0.2px solid #000000;"> -->
 
-        </div>
+         <div class="subdiv">
+
+          <div class="subdiv2">
+            <div class="field-row">
+             <label class="label1  carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost %)</label>
+             <input class="lab" matInput type="number" formControlName="InterestRate" />
+           </div>
+
+           </div>
+
+           <div class="subdiv2">
+
+
+           
+           <div class="field-row ">
+             <label class="pack" style="font-size:15px; font-weight: bold;">Packing</label>
+               
+               <mat-select class="lab" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
+                 <mat-option  *ngFor="let option of packingOptions" [value]="option">
+                   {{ option }}
+                 </mat-option>
+               </mat-select>
+           </div>
+
+
+           <div *ngIf="processForm.get('Packing')?.value === 'international'" class="extra-fields">
+ <div class="field-row">
+   <label style="font-weight: bold;">CMM Inspection</label>
+   <input class="lab" matInput type="number" formControlName="CMMInspection" />
+ </div>
+
+ <div class="field-row">
+   <label style="font-weight: bold;">Insurance</label>
+   <input class="lab" matInput type="number" formControlName="Insurance" />
+ </div>
+
+ <div class="field-row">
+   <label style="font-weight: bold;">Sea Packing</label>
+   <input class="lab" matInput type="number" formControlName="SeaPacking" />
+ </div>
+
+ <div class="field-row">
+   <label style="font-weight: bold;">Payment 90 Days ICC</label>
+   <input class="lab" matInput type="number" formControlName="Payment90DaysICC" />
+ </div>
+</div>
+             <div >
+   
+               <div class="field-row3" *ngIf="showTransportInput">
+    <label class="trans" style="font-size:15px; font-weight: bold;">Transport</label>
+  
+    <!-- Radio Buttons -->
+    <mat-radio-group formControlName="TransportType">
+      <mat-radio-button class="cost" value="cost">Cost</mat-radio-button>
+      <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+    </mat-radio-group>
+  
+    <!-- Input shown based on selection -->
+    <div  class="field-row" *ngIf="processForm.get('TransportType')?.value === 'cost'">
+      <label class="label1  carry" style="font-size:15px; font-weight: bold;">Transport Cost (₹)</label>
+       <!-- <h3 class="label1  carry" style="font-size:12px; ">Transport Cost (₹)</h3> -->
+       <input class="lab"  matInput type="number" formControlName="TransportCost" />
+
+   
+    </div>
+  
+    <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'percentage'">
+      <label class="label1  carry" style="font-size:15px; font-weight: bold;">Transport %</label>
+      <input class="lab" matInput type="number" formControlName="TransportPercentage" />
+    </div>
+  </div>
+  </div>
+
+         </div>
+    
+         </div>
+         
+
+       
+</div>
+     
+          </div>
+
       
    
       </div>

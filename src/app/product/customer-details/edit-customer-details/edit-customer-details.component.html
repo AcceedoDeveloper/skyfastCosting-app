@@ -1,266 +1,298 @@
-<h2 mat-dialog-title>
-  {{ data ? 'Edit Customer' : 'Add Customer' }}
-</h2>
-
-<form [formGroup]="customerForm" mat-dialog-content class="customer-form">
-  <mat-horizontal-stepper linear #stepper>
-    
-    <!-- Step 1: Basic Details -->
-    <mat-step [stepControl]="customerForm">
-      <form [formGroup]="customerForm">
-        <ng-template matStepLabel>Basic Details</ng-template>
 
 
-          <div class="title">
-          <h4 class="pd" >Product details</h4>
-          <h4 class="ci">Core Input</h4>
-        </div>
-
-        <div class="maininputdiv">
-
-
-
-          <div class="prodiv">
-
-             <mat-form-field appearance="outline">
-            <mat-label>Customer Name</mat-label>
-            <input matInput type="text" formControlName="customerName" />
-          </mat-form-field>
-
-
-           <mat-form-field appearance="outline">
-            <mat-label>drawingNo</mat-label>
-            <input matInput type="number" formControlName="drawingNo"  />
-          </mat-form-field>
-
-         
-
-          <mat-form-field appearance="outline">
-            <mat-label>Part Name</mat-label>
-            <input matInput type="text" formControlName="partName"  />
-          </mat-form-field>
-
-           <mat-form-field appearance="outline">
-            <mat-label>Part No</mat-label>
-            <input matInput type="text" formControlName="productName"  />
-          </mat-form-field>
-
+  <form [formGroup]="customerForm" mat-dialog-content >
+    <mat-horizontal-stepper linear #stepper>
       
-
+      <!-- Step 1: Basic Details -->
+      <mat-step [stepControl]="customerForm">
+        <form [formGroup]="customerForm">
+          <ng-template matStepLabel>Basic Details</ng-template>
+  
+  
+            <div class="title">
+            <h4 class="pd" >Product details</h4>
+            <h4 class="ci">Core Input</h4>
           </div>
-
-           <div class="corediv">
-
-                <mat-form-field appearance="outline">
-            <mat-label>Raw Materials</mat-label>
-            <mat-select formControlName="rawMaterial" multiple>
-              <mat-option *ngFor="let raw of (rawMaterial$ | async)" [value]="raw._id">
-                {{ raw.GradeName }} <!--(₹{{ raw.RatePerKg }}/g)  -->
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-              <mat-form-field appearance="outline">
-            <mat-label>Casting Weight (In Kg)</mat-label>
-            <input matInput type="number" formControlName="castingWeight" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Short Weight</mat-label>
-            <input matInput type="number" formControlName="shortWeight" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Melting Loss</mat-label>
-            <input matInput type="number" formControlName="meltingLoss" />
-          </mat-form-field>
-
-          
-
-
-           </div>
-         
-
+  
+          <div class="maininputdiv">
+  
+  
+  
+            <div class="prodiv">
+  
+               <mat-form-field appearance="outline">
+              <mat-label>Customer Name</mat-label>
+              <input matInput type="text" formControlName="customerName" />
+            </mat-form-field>
+  
+  
+             <mat-form-field appearance="outline">
+              <mat-label>drawingNo</mat-label>
+              <input matInput type="number" formControlName="drawingNo"  />
+            </mat-form-field>
+  
+           
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Part Name</mat-label>
+              <input matInput type="text" formControlName="partName"  />
+            </mat-form-field>
+  
+             <mat-form-field appearance="outline">
+              <mat-label>Part No</mat-label>
+              <input matInput type="text" formControlName="productName"  />
+            </mat-form-field>
+  
         
+  
+            </div>
+  
+             <div class="corediv">
+  
+                  <mat-form-field appearance="outline">
+              <mat-label>Raw Materials</mat-label>
+              <mat-select formControlName="rawMaterial" multiple>
+                <mat-option *ngFor="let raw of (rawMaterial$ | async)" [value]="raw._id">
+                  {{ raw.GradeName }} <!--(₹{{ raw.RatePerKg }}/g)  -->
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+  
+                <mat-form-field appearance="outline">
+              <mat-label>Casting Weight (In Kg)</mat-label>
+              <input matInput type="number" formControlName="castingWeight" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Short Weight</mat-label>
+              <input matInput type="number" formControlName="shortWeight" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Melting Loss</mat-label>
+              <input matInput type="number" formControlName="meltingLoss" />
+            </mat-form-field>
+  
+            
+  
+  
+             </div>
+           
+  
+          
+          </div>
+  
+          <div class="step-actions">
+            <button class="btn btn-primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+  
+      <!-- Step 2: Processes -->
+      <mat-step>
+
+        <ng-template matStepLabel>Processes</ng-template>
+        <div class="classbtn">
+
+          <button class="addbtn" mat-mini-fab color="primary" (click)="addProcess()">
+            <mat-icon>add</mat-icon>
+          </button>
         </div>
 
+
+        <div class="process-container" formArrayName="processes">
+        
+          <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Process Name</mat-label>
+              <mat-select formControlName="processId" (selectionChange)="onProcessSelected($event.value, i)">
+                <mat-option *ngFor="let proc of (process$ | async)" [value]="proc._id">
+                  {{ proc.processName }} {{ proc.machineCentre }} 
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Tonnage/Jaw</mat-label>
+              <input matInput formControlName="TonnageJaw" readonly />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Machine / per hr</mat-label>
+              <input matInput type="number" formControlName="Hours" readonly />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Cycle Time / Weight</mat-label>
+              <input matInput type="number" formControlName="cycleTime" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Cavity</mat-label>
+              <input matInput type="number" formControlName="cavity" />
+            </mat-form-field>
+  
+           <div class="formula-box">
+          <h5>  Cost
+        {{ calculateProcessValue(proc.value) }}
+      </h5>
+        </div>
+  
+            <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcess(i)">
+              <mat-icon class="icon">delete</mat-icon>
+            </button>
+            
+          </div>
+             
+        </div>
+  
+    
+  
         <div class="step-actions">
           <button class="btn btn-primary" matStepperNext>Next</button>
         </div>
-      </form>
-    </mat-step>
+      </mat-step>
 
-    <!-- Step 2: Processes -->
-    <mat-step>
-      <ng-template matStepLabel>Processes</ng-template>
-      <button class="addbtn" mat-mini-fab color="primary" (click)="addProcess()">
-        <mat-icon>add</mat-icon>
-      </button>
-      <div class="process-container" formArrayName="processes">
+
+
+
       
-        <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Process Name</mat-label>
-            <mat-select formControlName="processId" (selectionChange)="onProcessSelected($event.value, i)">
-              <mat-option *ngFor="let proc of (process$ | async)" [value]="proc._id">
-                {{ proc.processName }} {{ proc.machineCentre }} 
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Tonnage/Jaw</mat-label>
-            <input matInput formControlName="TonnageJaw" readonly />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Machine / per hr</mat-label>
-            <input matInput type="number" formControlName="Hours" readonly />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Cycle Time / Weight</mat-label>
-            <input matInput type="number" formControlName="cycleTime" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Cavity</mat-label>
-            <input matInput type="number" formControlName="cavity" />
-          </mat-form-field>
-
-         <div class="formula-box">
-        <h5>  Cost
-      {{ calculateProcessValue(proc.value) }}
-    </h5>
-      </div>
-
-          <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcess(i)">
-            <mat-icon class="icon">delete</mat-icon>
-          </button>
-          
-        </div>
-           
-      </div>
-
   
-
-      <div class="step-actions">
-        <button class="btn btn-primary" matStepperNext>Next</button>
-      </div>
-    </mat-step>
-
-  <mat-step>
-      <ng-template matStepLabel>Other Details</ng-template>
-     <div class="other-details">
-      <div class="summary-row">
-
-        <!-- Commercial Terms -->
-        <div class="summary-card">
-          <h3 style="color:#3d8adc;;">Commercial Terms</h3>
-          <hr style="border: 0.2px solid #000000;">
-
-          
-
-          <div class="field-row">
-            <label class="label1 tool" style="font-size: 15px; font-weight: bold;">Tool Cost (₹)</label>
-              <input class="lab" matInput type="number" formControlName="toolAmbience" />
-          </div>
-
-          <div class="field-row">
-            <label class="label1 inspect" style="font-size:15px; font-weight: bold;">Inspection Cost (₹)</label>
-              <input class="lab" matInput type="number" formControlName="inspectorCost" />
-          </div>
-
+    <mat-step>
+        <ng-template matStepLabel>Other Details</ng-template>
+       <div class="other-details">
+        <div class="summary-row">
+  
+          <!-- Commercial Terms -->
+          <div class="summary-card">
+            <h3 style="color:#3d8adc;;">Commercial Terms</h3>
+            
+  
+            
+  
+            <div class="field-row">
+              <label class="label1 tool" style="font-size: 15px; font-weight: bold;">Tool Cost (₹)</label>
+                <input class="lab" matInput type="number" formControlName="toolAmbience" />
+            </div>
+  
+            <div class="field-row">
+              <label class="label1 inspect" style="font-size:15px; font-weight: bold;">Inspection Cost (₹)</label>
+                <input class="lab" matInput type="number" formControlName="inspectorCost" />
+            </div>
+  
+               <div class="field-row">
+              <label class="label1" style="font-size:15px; font-weight: bold;">overHeadsPercent (%)</label>
+                <input class="lab" matInput type="number" formControlName="overHeadsPercent" />
+            </div>
+  
              <div class="field-row">
-            <label class="label1" style="font-size:15px; font-weight: bold;">overHeadsPercent (%)</label>
-              <input class="lab" matInput type="number" formControlName="overHeadsPercent" />
-          </div>
-
-           <div class="field-row">
-            <label class="label1" style="font-size:15px; font-weight: bold;">DieLifeTime</label>
-              <input class="lab" matInput type="number" formControlName="DieLifeTime" />
-          </div>
-        </div>
-
-        <!-- Rejection -->
-        <div class="summary-card">
-          <h3 style="color:#3d8adc;;">Rejection</h3>
-          <hr style="border: 0.2px solid #000000;">
-          <div class="field-row single">
-            <label class="reject" style="font-size: 15px; font-weight: bold;">Rejection (%)</label>
-              <input class="lab" matInput type="number" formControlName="rejection" />
-          </div>
-        </div>
-
-        <!-- Transportation -->
-       <div class="summary-card">
-  <h3 style="color:#3d8adc;;">Transportation</h3>
-  <hr style="border: 0.2px solid #000000;">
-
-  <div class="field-row">
-    <label class="label1 carry" style="font-size:15px; font-weight: bold;">ICC (Inventory Carry Cost %)</label>
-    <input class="lab carrycost" matInput type="number" formControlName="interestRate" />
-  </div>
-
-    <div class="field-row single">
-    <label class="packing" style="font-size: 15px; font-weight: bold;">Packing</label>
-    <mat-select class="lab1" formControlName="packing"  >
-      <mat-option *ngFor="let option of packingOptions" [value]="option">
-        {{ option }}
-      </mat-option>
-    </mat-select>
-  </div>
-
-
-  <div *ngIf="customerForm.get('packing')?.value === 'international'" class="extra-fields">
-  <div class="field-row">
-    <label style="font-weight: bold;">CMM Inspection</label>
-    <input class="lab" matInput type="number" formControlName="CMMInspection" />
-  </div>
-
-  <div class="field-row">
-    <label style="font-weight: bold;">Insurance</label>
-    <input class="lab" matInput type="number" formControlName="Insurance" />
-  </div>
-
-  <div class="field-row">
-    <label style="font-weight: bold;">Sea Packing</label>
-    <input class="lab" matInput type="number" formControlName="SeaPacking" />
-  </div>
-
-  <div class="field-row">
-    <label style="font-weight: bold;">Payment 90 Days ICC</label>
-    <input class="lab" matInput type="number" formControlName="Payment90DaysICC" />
-  </div>
-</div>
-
-  <div class="field-row">
-    <label class="label1 percent" style="font-size:15px; font-weight: bold;">Packing Percentage (%)</label>
-    <input class="lab" matInput type="number" formControlName="packingPercentage" />
-  </div>
-
-  <div class="field-row">
-    <label class="label1 rate" style="font-size:15px; font-weight: bold;">Packing Rate (₹)</label>
-    <input class="lab" matInput type="number" formControlName="packingRate" />
-  </div>
-
-
-
-
-
+              <label class="label1" style="font-size:15px; font-weight: bold;">DieLifeTime</label>
+                <input class="lab" matInput type="number" formControlName="DieLifeTime" />
+            </div>
   
-</div>
+                         <!-- Rejection -->
+          <div >
+            <h3 style="color:#3d8adc;;">Rejection</h3>
+            <!-- <hr style="border: 0.2px solid #000000;"> -->
+            <div class="field-row single">
+              <label class="reject" style="font-size: 15px; font-weight: bold;">Rejection (%)</label>
+                <input class="lab" matInput type="number" formControlName="rejection" />
+            </div>
+          </div>
+       
+          </div>
+  
+      
+  
+          <!-- Transportation -->
+         <div class="summary-card1">
+  
+  
+    <h3 style="color:#3d8adc;;">Transportation</h3>
+    <!-- <hr style="border: 0.2px solid #000000;"> -->
+  
+  
+    <div class="subdiv">
+      <!--1 div  -->
+      <div class="subdiv2">
+    
+        <div class="field-row">
+          <label class="label1 carry" style="font-size:12px; font-weight: bold;"> <strong>ICC </strong>(Inventory Carry Cost %)</label>
+          <input class="lab carrycost" matInput type="number" formControlName="interestRate" />
+        </div>
+      
+          <div class="field-row">
+          <label class="label1 percent" style="font-size:15px; font-weight: bold;">Packing Percentage (%)</label>
+          <input class="lab" matInput type="number" formControlName="packingPercentage" />
+        </div>
+      
+        <div class="field-row">
+          <label class="label1 rate" style="font-size:15px; font-weight: bold;">Packing Rate (₹)</label>
+          <input class="lab" matInput type="number" formControlName="packingRate" />
+        </div>
+    
 
-
+    
+    
       </div>
-
-      <div class="step-actions">
-        <button class="btn btn-warning" matStepperNext (click)="incrementRevision() " >Save As New Revision</button>
-        <button class="btn btn-primary"  matStepperNext (click)="onSave()">Save</button>
+    
+     <!--2 div  -->
+    <div class="subdiv2">
+      <div class="field-row single">
+      <label class="packing" style="font-size: 15px; font-weight: bold;">Packing</label>
+      <mat-select class="lab" formControlName="packing"  >
+        <mat-option *ngFor="let option of packingOptions" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-select>
       </div>
+      
+      
+      <div *ngIf="customerForm.get('packing')?.value === 'international'" class="extra-fields">
+      <div class="field-row">
+      <label style="font-weight: bold;">CMM Inspection</label>
+      <input class="lab" matInput type="number" formControlName="CMMInspection" />
+      </div>
+      
+      <div class="field-row">
+      <label style="font-weight: bold;">Insurance</label>
+      <input class="lab" matInput type="number" formControlName="Insurance" />
+      </div>
+      
+      <div class="field-row">
+      <label style="font-weight: bold;">Sea Packing</label>
+      <input class="lab" matInput type="number" formControlName="SeaPacking" />
+      </div>
+      
+      <div class="field-row">
+      <label style="font-weight: bold;">Payment 90 Days ICC</label>
+      <input class="lab" matInput type="number" formControlName="Payment90DaysICC" />
+      </div>
+      </div>
+    
     </div>
-    </mat-step>
+      
+    </div>
+  
+  
+  
+  
+  
+  
+    
+  </div>
+  
+  
+        </div>
+  
+        <div class="step-actions">
+          <button class="btn btn-warning" matStepperNext (click)="incrementRevision() " >Save As New Revision</button>
+          <button class="btn btn-primary"  matStepperNext (click)="onSave()">Save</button>
+        </div>
+      </div>
+      </mat-step>
+  
+  
+    </mat-horizontal-stepper>
+  </form>
 
-
-  </mat-horizontal-stepper>
-</form>
