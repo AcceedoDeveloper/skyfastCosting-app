@@ -72,7 +72,7 @@ export const loadCustomersSuccess = createAction(
 // Add
 export const AddCustomerDetailsComponent = createAction(
   '[CustomerDetails] Add Customer',
-  props<{ customer: CustomerDetails }>()
+  props<{ customer: FormData }>()
 );
 
 export const addCustomerSuccess = createAction(

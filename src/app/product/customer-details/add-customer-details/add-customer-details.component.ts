@@ -25,7 +25,8 @@ import {  take } from 'rxjs/operators';
 import { CustomerDetails } from '../../../model/customer-details.model';
 import * as customerActions from '../../store/product.actions';
 import* as Selector from '../../store/product.selectors';
-
+import { ProductService } from '../../../services/product.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -48,6 +49,9 @@ import* as Selector from '../../store/product.selectors';
 })
 export class AddCustomerDetailsComponent implements OnInit{
 
+    selectedFile: File | null = null;
+  previewUrl: string | ArrayBuffer | null = null;
+
   customerdeatilas$! : Observable<CustomerDetails[]>;
   partName: String[] =[]; 
 
@@ -65,7 +69,8 @@ export class AddCustomerDetailsComponent implements OnInit{
     private store: Store,
      private actions$: Actions, 
     private dialogRef: MatDialogRef<AddCustomerDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private productservices : ProductService
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +136,18 @@ export class AddCustomerDetailsComponent implements OnInit{
 
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+
+      // Preview
+      const reader = new FileReader();
+      reader.onload = e => this.previewUrl = reader.result;
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
   duplicatePartNameValidator(control: any) {
   if (!control.value) return null;
   const enteredPartName = control.value.trim();
@@ -139,29 +156,45 @@ export class AddCustomerDetailsComponent implements OnInit{
     : null;
 }
 
-  save() {
-    const formValue = { ...this.productForm.value,  };
-    if (formValue.rawMaterial.length === 0) {
-      delete formValue.rawMaterial;
-    }
-    console.log('data', formValue);
-    
-   
-          this.store.dispatch(Action.AddCustomerDetailsComponent({ customer: formValue }));
-          this.actions$
-    .pipe(
-      ofType(Action.addCustomerSuccess),
-      take(1) 
-    )
-    .subscribe(({ customer }) => {
-      this.Cusid = customer._id;
-      console.log('✅ Newly created customer ID:', customer._id);
-       
+ save() {
+  const formValue = { ...this.productForm.value };
+  if (formValue.rawMaterial.length === 0) {
+    delete formValue.rawMaterial;
+  }
+
+  console.log('data', formValue);
+
+  if (this.selectedFile) {
+    // Send FormData directly to service, not via NgRx
+    const formData = new FormData();
+
+    Object.entries(formValue).forEach(([key, value]) => {
+      if (Array.isArray(value) || typeof value === 'object') {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value as any);
+      }
     });
 
-          this.addProcessSelection();
+    formData.append('drawingImage', this.selectedFile);
 
+    // Call service directly
+    this.productservices.createCustomerDetails(formData).subscribe({
+      next: (customer) => {
+        this.Cusid = customer._id;
+        console.log('✅ Customer created with image:', customer._id);
+      },
+      error: (err) => console.error(err)
+    });
+
+  } else {
+    // No image → safe to dispatch via NgRx
+    this.store.dispatch(Action.AddCustomerDetailsComponent({ customer: formValue }));
   }
+
+  this.addProcessSelection();
+}
+
 
   close() {
     this.dialogRef.close();

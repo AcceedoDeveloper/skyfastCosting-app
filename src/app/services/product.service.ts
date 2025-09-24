@@ -57,9 +57,13 @@ private apiUrl = 'http://localhost:3005';
     return this.http.get<CustomerDetails[]>(this.config.getCostingUrl('getCustomerDetails'));
   }
 
-  createCustomerDetails(customerDetails: CustomerDetails): Observable<CustomerDetails> {
-    return this.http.post<CustomerDetails>(this.config.getCostingUrl('createCustomerDetails'), customerDetails);
-  }
+createCustomerDetails(customerDetails: FormData): Observable<CustomerDetails> {
+  return this.http.post<CustomerDetails>(
+    this.config.getCostingUrl('createCustomerDetails'),
+    customerDetails
+  );
+}
+
 
   updateCustomer(id: string, customer: CustomerDetails): Observable<CustomerDetails> {
     console.log('data', customer);
