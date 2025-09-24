@@ -65,11 +65,14 @@ createCustomerDetails(customerDetails: FormData): Observable<CustomerDetails> {
 }
 
 
-  updateCustomer(id: string, customer: CustomerDetails): Observable<CustomerDetails> {
-    console.log('data', customer);
-    
-    return this.http.put<CustomerDetails>(`${this.config.getCostingUrl('updateCustomerDetails')}/${id}`, customer);
-  }
+updateCustomer(id: string, customer: any): Observable<any> {
+  // If customer is FormData, HttpClient will automatically set multipart headers
+  return this.http.put<any>(
+    `${this.config.getCostingUrl('updateCustomerDetails')}/${id}`,
+    customer
+  );
+}
+
 
 
   downloadQuotation(customerName: string, partName: string, revision: number): Observable<Blob> {

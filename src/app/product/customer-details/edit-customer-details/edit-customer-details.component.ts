@@ -19,7 +19,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
 import * as customerActions from '../../store/product.actions';
 import* as Selector from '../../store/product.selectors';
-
+import { ProductService } from '../../../services/product.service';
 
 
 
@@ -49,7 +49,8 @@ export class EditCustomerDetailsComponent implements OnInit {
   selectedRevisionIndex = 0; // default first revision
   packingOptions: string[] = ["none", "domestic", "international"];
 
-
+selectedFile: File | null = null;
+previewUrl: string | ArrayBuffer | null = null;
 
 
   get processes(): FormArray {
@@ -61,6 +62,7 @@ export class EditCustomerDetailsComponent implements OnInit {
     private dialogRef: MatDialogRef<EditCustomerDetailsComponent>,
     private store : Store,
     @Inject(MAT_DIALOG_DATA) public data: CustomerDetails | null
+    , private productservices : ProductService
   ) {
 
     console.log('data', data);
@@ -171,26 +173,111 @@ if (data?.revisions?.length) {
     this.processes.removeAt(index);
   }
 
+  onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    this.selectedFile = input.files[0];
+
+    // Preview
+    const reader = new FileReader();
+    reader.onload = e => this.previewUrl = reader.result;
+    reader.readAsDataURL(this.selectedFile);
+  }
+}
+
+// onSave() {
+//   if (this.customerForm.valid) {
+//     const formValue = this.customerForm.value;
+
+//     let selectedRawMaterials: any[] = [];
+//     this.rawMaterial$.pipe(take(1)).subscribe(allRawMaterials => {
+//       selectedRawMaterials = (formValue.rawMaterial || []).map((id: string) => {
+//         const found = allRawMaterials.find(r => r._id === id);
+//         return found ? found.GradeName : id; // ✅ store only grade names
+//       });
+//     });
+
+//     const updatedCustomer = {
+//       productName: formValue.productName,
+//       cavities: formValue.cavities,
+//       castingWeight: formValue.castingWeight,
+//       shortWeight: formValue.shortWeight,
+//       meltingLoss: formValue.meltingLoss,
+
+//       // 👇 Map with correct casing
+//       Rejection: formValue.rejection,
+//       Packing: formValue.packing,
+//       InterestRate: formValue.interestRate,
+//       InspectorCost: formValue.inspectorCost,
+//       ToolAmbience: formValue.toolAmbience,
+//       overHeadsPercent: formValue.overHeadsPercent,
+//       DieLifeTime: formValue.DieLifeTime,
+
+//       packingPercentage: formValue.packingPercentage,
+//   packingRate: formValue.packingRate,
+
+
+//    ...(formValue.packing === 'international' && {
+//     CMMInspection: formValue.CMMInspection,
+//     Insurance: formValue.Insurance,
+//     SeaPacking: formValue.SeaPacking,
+//     Payment90DaysICC: formValue.Payment90DaysICC
+//   }),
+
+//       customerName: typeof this.data?.customerName === 'string' 
+//         ? this.data.customerName 
+//         : this.data?.customerName?.customerName || '',
+
+//       rawMaterial: selectedRawMaterials,
+//       processes: formValue.processes.map((p: any) => ({
+//         processName: p.processName,
+//         TonnageJaw: p.TonnageJaw,
+//         Hours: p.Hours,
+//         cycleTime: p.cycleTime,
+//         cavity: p.cavity
+//       })),
+
+//       revisionNumber: this.revisionNumber
+//     };
+
+//     console.log('📦 Final Payload (Correct):', updatedCustomer);
+
+//     this.store.dispatch(
+//       Action.updateCustomer({
+//         id: this.data?._id!,
+//         customer: updatedCustomer
+//       })
+//     );
+
+//     this.store.dispatch(Action.loadCustomers());
+
+
+//   }
+//    this.dialogRef.close();
+//        this.store.dispatch(Action.loadCustomers());
+
+// }
+
 onSave() {
   if (this.customerForm.valid) {
     const formValue = this.customerForm.value;
 
+    // ✅ Build rawMaterial names
     let selectedRawMaterials: any[] = [];
     this.rawMaterial$.pipe(take(1)).subscribe(allRawMaterials => {
       selectedRawMaterials = (formValue.rawMaterial || []).map((id: string) => {
         const found = allRawMaterials.find(r => r._id === id);
-        return found ? found.GradeName : id; // ✅ store only grade names
+        return found ? found.GradeName : id;
       });
     });
 
-    const updatedCustomer = {
+    // ✅ Construct full customer object
+    const updatedCustomer: any = {
       productName: formValue.productName,
       cavities: formValue.cavities,
       castingWeight: formValue.castingWeight,
       shortWeight: formValue.shortWeight,
       meltingLoss: formValue.meltingLoss,
-
-      // 👇 Map with correct casing
       Rejection: formValue.rejection,
       Packing: formValue.packing,
       InterestRate: formValue.interestRate,
@@ -198,24 +285,22 @@ onSave() {
       ToolAmbience: formValue.toolAmbience,
       overHeadsPercent: formValue.overHeadsPercent,
       DieLifeTime: formValue.DieLifeTime,
-
       packingPercentage: formValue.packingPercentage,
-  packingRate: formValue.packingRate,
+      packingRate: formValue.packingRate,
 
+      ...(formValue.packing === 'international' && {
+        CMMInspection: formValue.CMMInspection,
+        Insurance: formValue.Insurance,
+        SeaPacking: formValue.SeaPacking,
+        Payment90DaysICC: formValue.Payment90DaysICC
+      }),
 
-   ...(formValue.packing === 'international' && {
-    CMMInspection: formValue.CMMInspection,
-    Insurance: formValue.Insurance,
-    SeaPacking: formValue.SeaPacking,
-    Payment90DaysICC: formValue.Payment90DaysICC
-  }),
-
-      customerName: typeof this.data?.customerName === 'string' 
-        ? this.data.customerName 
+      customerName: typeof this.data?.customerName === 'string'
+        ? this.data.customerName
         : this.data?.customerName?.customerName || '',
 
       rawMaterial: selectedRawMaterials,
-      processes: formValue.processes.map((p: any) => ({
+      processes: (formValue.processes || []).map((p: any) => ({
         processName: p.processName,
         TonnageJaw: p.TonnageJaw,
         Hours: p.Hours,
@@ -226,23 +311,38 @@ onSave() {
       revisionNumber: this.revisionNumber
     };
 
-    console.log('📦 Final Payload (Correct):', updatedCustomer);
 
-    this.store.dispatch(
-      Action.updateCustomer({
-        id: this.data?._id!,
-        customer: updatedCustomer
-      })
-    );
+    console.log('data', updatedCustomer);
+    
 
-    this.store.dispatch(Action.loadCustomers());
+    // ✅ Decide between FormData and JSON
+    let payload: any;
+    if (this.selectedFile) {
+      const formData = new FormData();
+      Object.entries(updatedCustomer).forEach(([key, value]) => {
+        if (Array.isArray(value) || typeof value === 'object') {
+          formData.append(key, JSON.stringify(value)); // serialize arrays/objects
+        } else {
+          formData.append(key, value as any);
+        }
+      });
+      formData.append('drawingImage', this.selectedFile);
+      payload = formData;
+    } else {
+      payload = updatedCustomer;
+    }
 
-
+    // ✅ Call service directly
+    this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
+      next: (res) => {
+        console.log('✅ Customer updated:', res);
+        this.dialogRef.close(true);
+      },
+      error: (err) => console.error('❌ Update failed:', err)
+    });
   }
-   this.dialogRef.close();
-       this.store.dispatch(Action.loadCustomers());
-
 }
+
 
 incrementRevision() {
   this.revisionNumber++;

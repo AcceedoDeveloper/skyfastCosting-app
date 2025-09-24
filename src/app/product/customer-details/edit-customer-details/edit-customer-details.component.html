@@ -13,7 +13,7 @@
             <h4 class="pd" >Product details</h4>
             <h4 class="ci">Core Input</h4>
           </div>
-  
+
           <div class="maininputdiv">
   
   
@@ -81,6 +81,16 @@
   
           
           </div>
+           
+  
+          
+                <div class="file-upload">
+  <input type="file" (change)="onFileSelected($event)" />
+  <img *ngIf="previewUrl || data?.drawingImage" 
+       [src]="previewUrl || data?.drawingImage" 
+       alt="Preview" 
+       style="width:100px; height:100px; object-fit:cover; margin-top:10px;" />
+</div>
   
           <div class="step-actions">
             <button class="btn btn-primary" matStepperNext>Next</button>

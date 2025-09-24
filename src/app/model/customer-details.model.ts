@@ -53,6 +53,7 @@ export interface CustomerDetails {
   _id?: string; // optional before save
   customerId: Customer; 
   customerName: Customer;
+  drawingImage?: string;  
   productName: string;
   partName: string;
   drawingNo: number;
