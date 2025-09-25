@@ -547,7 +547,7 @@
                   <td>{{ process.cavity }}</td>
                   <td>-</td>
                   <td>-</td>
-                  <td>-</td>
+                  <td>{{ process.HourlyOutput }}</td>
                   <td colspan="2" class="process-cost-wide">{{ process.cost | number:'1.2-3' }}</td>
              </tr>
              <tr>
@@ -572,7 +572,7 @@
                   <td>-</td>
                   
                   <td>-</td>
-                  <td colspan="2">{{ (quotationData.results[0].revisions[0].sumOfProcessCost * 0.05) | number:'1.2-2' }}</td>
+                  <td colspan="2">{{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</td>
               </tr>
               <tr>
                   <td></td>
@@ -599,7 +599,7 @@
                   <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3'}}</td>
                   <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
                   <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 | number:'1.2-2' }}</td>
-                  <td colspan="1">{{ quotationData.results[0].revisions[0].ToolAmbience }}</td>
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
                   <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
               </tr>
    
@@ -623,7 +623,8 @@
                               <td>NA</td>
                               <th>Payment Terms</th>
                               <td>30 Days</td>
-                              <td colspan="2"></td>
+                              <th>Packing</th>
+                              <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
                           </tr>
                           <tr>
                               <th>Applicable Tax</th>
@@ -645,14 +646,14 @@
                               <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
                               <th>Payment Terms</th>
                               <td>30 Days</td>
-                              <td>packing</td>
+                              <td>Packing</td>
                           </tr>
                             <tr>
                               <th>See Packing</th>
                               <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
                               <th></th>
                               <td></td>
-                              <td colspan="2"></td>
+                              <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
                           </tr>
                          
 

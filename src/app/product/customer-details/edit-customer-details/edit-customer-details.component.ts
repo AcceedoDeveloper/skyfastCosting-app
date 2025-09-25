@@ -364,7 +364,7 @@ incrementRevision() {
   const cycleTime = Number(proc.cycleTime) || 1; // prevent divide by 0
   const cavity = Number(proc.cavity) || 1;
 
-  return +(hours / 3600 / cycleTime / cavity).toFixed(4); // rounded to 4 decimals
+  return +(hours / (3600 / cycleTime)/ cavity).toFixed(4); // rounded to 4 decimals
 }
 
 

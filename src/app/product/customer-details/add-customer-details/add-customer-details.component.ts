@@ -314,7 +314,7 @@ calculateProcessValue(proc: any): number {
   const cycleTime = Number(proc.cycleTime) || 1; // avoid divide by zero
   const cavity = Number(proc.cavity) || 1;
 
-  return +(hours / 3600 / cycleTime / cavity).toFixed(4); // rounded to 4 decimals
+  return +(hours /( 3600 / cycleTime) / cavity).toFixed(4); // rounded to 4 decimals
 }
 
 

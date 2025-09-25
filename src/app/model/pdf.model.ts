@@ -56,6 +56,8 @@ export interface Revision {
   TotalPrice: number;
   overHeadsPercent: number; 
   revisionName: string;
+  toolCost: number,
+  PackingCost: number
   CMMInspection: number,
     Insurance: number,
     SeaPacking: number,
@@ -80,4 +82,5 @@ export interface Process {
   cycleTime: number;
   cost: number;
   cavity: number;
+   HourlyOutput: number;
 }
