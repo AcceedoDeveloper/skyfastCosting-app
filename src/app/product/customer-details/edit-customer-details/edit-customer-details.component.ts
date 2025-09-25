@@ -105,6 +105,7 @@ if (data?.revisions?.length) {
   Insurance: [revision?.Insurance],
   SeaPacking: [revision?.SeaPacking],
   Payment90DaysICC: [revision?.Payment90DaysICC],
+  currency: [revision?.currency ],
 
       castingWeight: [revision?.castingWeight ?? 0],
       cavities: [revision?.cavities ?? 0],
@@ -292,7 +293,8 @@ onSave() {
         CMMInspection: formValue.CMMInspection,
         Insurance: formValue.Insurance,
         SeaPacking: formValue.SeaPacking,
-        Payment90DaysICC: formValue.Payment90DaysICC
+        Payment90DaysICC: formValue.Payment90DaysICC,
+        currency: formValue.currency
       }),
 
       customerName: typeof this.data?.customerName === 'string'

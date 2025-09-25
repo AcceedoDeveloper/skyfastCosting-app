@@ -101,7 +101,8 @@ export class AddCustomerDetailsComponent implements OnInit{
   CMMInspection: [null],
   Insurance: [null],
   SeaPacking: [null],
-  Payment90DaysICC: [null],   
+  Payment90DaysICC: [null],
+  currency: ['USD']   
     })
 
     
@@ -285,7 +286,8 @@ onSave() {
     CMMInspection: this.processForm.value.CMMInspection,
     Insurance: this.processForm.value.Insurance,
     SeaPacking: this.processForm.value.SeaPacking,
-    Payment90DaysICC: this.processForm.value.Payment90DaysICC
+    Payment90DaysICC: this.processForm.value.Payment90DaysICC,
+    currency: this.processForm.value.currency,
 
   };
 

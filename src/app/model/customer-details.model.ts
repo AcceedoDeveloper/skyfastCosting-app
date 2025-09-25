@@ -45,7 +45,8 @@ export interface Revision {
       CMMInspection: number,
     Insurance: number,
     SeaPacking: number,
-    Payment90DaysICC: number
+    Payment90DaysICC: number,
+    currency: string
 }
 
 
