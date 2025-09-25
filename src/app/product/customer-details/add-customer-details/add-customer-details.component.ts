@@ -27,7 +27,7 @@ import * as customerActions from '../../store/product.actions';
 import* as Selector from '../../store/product.selectors';
 import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { selectLastAddedCustomer } from '../../store/product.selectors';
 
 @Component({
   selector: 'app-add-customer-details',
@@ -134,6 +134,13 @@ export class AddCustomerDetailsComponent implements OnInit{
     this.store.dispatch(loadCustomer());
     this.store.dispatch(Action.loadRawMaterials());
     this.store.dispatch(Action.loadProcess());
+
+    this.store.select(selectLastAddedCustomer).subscribe(customer => {
+    if (customer) {
+      this.Cusid = customer._id;
+      console.log('✅ Customer ID from NgRx:', this.Cusid);
+    }
+  });
 
   }
 
@@ -292,6 +299,8 @@ onSave() {
   };
 
   console.log('Final JSON (Full):', result);
+  console.log('data id',this.Cusid);
+  
 
   this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
  this.dialogRef.close();

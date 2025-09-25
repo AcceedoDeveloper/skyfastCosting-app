@@ -25,3 +25,9 @@ export const selectRawMaterialError = createSelector(
   selectRawMaterialState,
   (state: ProductState) => state.error
 );
+
+
+export const selectLastAddedCustomer = createSelector(
+selectRawMaterialState,
+  (state: ProductState) => state.lastAddedCustomer
+);

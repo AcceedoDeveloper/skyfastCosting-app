@@ -7,6 +7,7 @@ export interface ProductState {
   rawMaterials: RawMaterial[];
   process: Process[];
   customersDeatiil: CustomerDetails[];
+  lastAddedCustomer?: CustomerDetails;
   error: any;
 }
 
@@ -14,6 +15,7 @@ export const initialState: ProductState = {
   rawMaterials: [],
   customersDeatiil: [],
   process: [],
+   lastAddedCustomer: undefined,
   error: null,
 };
 
@@ -80,7 +82,8 @@ export const productReducer = createReducer(
 
 on(ProductActions.addCustomerSuccess, (state, { customer }) => ({
   ...state,
-  customersDeatiil: [...state.customersDeatiil, customer]  // ✅ use correct key
+  customersDeatiil: [...state.customersDeatiil, customer],  // ✅ use correct key
+   lastAddedCustomer: customer
 })),
 
 on(ProductActions.updateCustomerSuccess, (state, { updatedCustomer }) => ({
