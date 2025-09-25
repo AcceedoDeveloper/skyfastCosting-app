@@ -59,10 +59,18 @@ export interface Revision {
   toolCost: number,
   PackingCost: number
   CMMInspection: number,
-    Insurance: number,
-    SeaPacking: number,
-    Payment90DaysICC: number,
-
+  Insurance: number,
+  SeaPacking: number,
+  Payment90DaysICC: number,
+  currency: string,
+sumOfProcessCostEUR: string;
+sumOfProcessCostUSD: string;
+RejectionCostEUR: string;
+RejectionCostUSD: string;
+TotalProcessCostEUR: string;
+TotalProcessCostUSD: string;
+TotalPriceEUR : string;
+TotalPriceUSD : string;
 }
 
 export interface RawMaterial {
@@ -83,4 +91,6 @@ export interface Process {
   cost: number;
   cavity: number;
    HourlyOutput: number;
+   ProcessCostEUR: number;
+   ProcessCostUSD: number;
 }

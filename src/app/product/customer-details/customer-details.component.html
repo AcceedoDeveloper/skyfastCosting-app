@@ -466,7 +466,358 @@
            
 <table class="inner-details" >
          <div class="image-box">
-  <img [src]="getDrawingImage()" alt="Customer Drawing" />
+  <img [src]="getDrawingImage()"  />
+</div>
+</table>
+
+   
+
+            </div>
+           
+          </td>
+        </tr>
+      </table>
+      
+      
+      <table class="material-table">
+          <tr>
+              <td colspan="4" class="section-header">Material Cost</td>
+          </tr>
+          <tr>
+              <td><strong>Raw Material Spec</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].GradeName }}</td>
+              <td><strong>Finish weight/pc</strong></td>
+              <td>NA</td>
+          </tr>
+          <tr>
+              <td><strong>Raw Material price/kg +10% inventory cost</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }}</td>
+              <td><strong>Raw Material cost/pc (Rm.wt/pc x Rm.price/kg)</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</td>
+          </tr>
+          <tr>
+              <td><strong>Component Weight (Kg)</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].castingWeight }}</td>
+              <td><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
+              <td>NA</td>
+          </tr>
+          <tr>
+              <td><strong>Mellting Loss</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].meltingLoss }}</td>
+              <td><strong>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</strong></td>
+              <td>NA</td>
+          </tr>
+          <tr>
+              <td><strong>Raw Material weight/pc</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3'}}</td>
+              <td><strong>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</strong></td>
+              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</td>
+          </tr>
+          <!-- Insert Process Cost as part of the same outer table -->
+          <tr>
+              <td colspan="4" class="section-header">Process Cost</td>
+          </tr>
+          <tr>
+              <td colspan="4" class="process-cell">
+                  <div class="osp-info">
+                      <span class="osp-no">OSP No :</span>
+                      <span class="osp-description">OSP Description :</span>
+                  </div>
+                  <table class="process-nested">
+          <thead>
+              <tr>
+                  <th>Opn No</th>
+                  <th>Opn Code</th>
+                  <th>Machine</th>
+                  <th>Machine Hour Rate</th>
+                  <th>No. of Cavities</th>
+                  <th>No. of Cores Mech</th>
+                  <th>No. of Cores Hy.</th>
+                  <th>Hourly Output</th>
+                  <th >Process Cost/casting</th>
+                  <th *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD'">Process Cost (USD)</th>
+
+    <!-- Show EURO column only if currency is EURO -->
+    <th *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO'">Process Cost (EURO)</th>
+              </tr>
+          </thead>
+          <tbody>
+             <tr  *ngFor="let process of quotationData.results[0].revisions[0]?.processes; let i = index" >
+               <td>{{ i + 1 }}</td>
+                <td>{{ (i + 1) * 10 }}</td>
+                <td>{{ process.processName }}</td>
+                 <td>{{ process.Hours }}</td>
+                  <td>{{ process.cavity }}</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>{{ process.HourlyOutput }}</td>
+                  <td  class="process-cost-wide">{{ process.cost | number:'1.2-3' }}</td>
+<!-- Show only if currency = USD and ProcessCostUSD is not null -->
+<td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' && process.ProcessCostUSD != null">
+  {{ process.ProcessCostUSD | number:'1.2-3' }}
+</td>
+
+<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
+<td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' && process.ProcessCostEUR != null">
+  {{ process.ProcessCostEUR | number:'1.2-3' }}
+</td>
+
+
+             </tr>
+             <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  
+                  <td >{{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}</td>
+                 <!-- Show only if currency = USD and ProcessCostUSD is not null -->
+<td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
+  {{ quotationData.results[0].revisions[0].sumOfProcessCostUSD| number:'1.2-3' }}
+</td>
+
+<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
+<td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
+  {{ quotationData.results[0].revisions[0].sumOfProcessCostEUR| number:'1.2-3' }}
+</td>
+
+              </tr>
+              <tr>
+                  <td>{{ quotationData.results[0].revisions[0].noOfProcess + 1}}</td>
+                  <td></td>
+                  <td>Oil shot & Rejections</td>
+                  <td>{{ quotationData.results[0].revisions[0].Rejection }}%</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  
+                  <td>-</td>
+                  <td >{{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</td>
+                  <td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
+  {{ quotationData.results[0].revisions[0].RejectionCostUSD| number:'1.2-3' }}
+</td>
+
+<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
+<td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
+  {{ quotationData.results[0].revisions[0].RejectionCostEUR | number:'1.2-3' }}
+</td>
+              </tr>
+              <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+    
+                  <td colspan="2">Total Process cost/pc (L) :</td>
+                  <td >{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
+                            <td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
+  {{ quotationData.results[0].revisions[0].TotalProcessCostUSD| number:'1.2-3' }}
+</td>
+
+<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
+<td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
+  {{ quotationData.results[0].revisions[0].TotalProcessCostEUR| number:'1.2-3' }}
+</td>
+
+              </tr>
+              <!-- Integrated Total Quoted Price section within the same table -->
+              <tr class="tqp-header">
+                  <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
+                  <th colspan="1">Net Material Cost (M)</th>
+                  <th colspan="2">Total Labour Cost (L)</th>
+                  <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
+                  <th colspan="1">Tool Amortization</th>
+                  <th colspan="2">Total price</th>
+              </tr>
+              <tr>
+                
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3'}}</td>
+                  <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
+                  <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 | number:'1.2-2' }}</td>
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
+                  <td >{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
+                    <td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
+  {{ quotationData.results[0].revisions[0].TotalPriceUSD| number:'1.2-3' }}
+</td>
+
+<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
+<td class="process-cost-wide"
+    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
+  {{ quotationData.results[0].revisions[0].TotalPriceEUR| number:'1.2-3' }}
+</td>
+              </tr>
+   
+              <!-- Other Terms and conditions separator inside the same table -->
+              <tr>
+                  <td colspan="10" class="section-header">Other Terms and conditions</td>
+              </tr>
+              <tr>
+                  <td colspan="10" class="terms-cell">
+                      <table class="terms-grid"  *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic' " >
+                          <tr>
+                              <th>Packing & Forwarding</th>
+                              <td>Yours</td>
+                              <th>Mode of Transport</th>
+                              <td>Road</td>
+                              <th>Freight:</th>
+                              <td>Paid</td>
+                          </tr>
+                          <tr>
+                              <th>Insurance</th>
+                              <td>NA</td>
+                              <th>Payment Terms</th>
+                              <td>30 Days</td>
+                              <th>Packing</th>
+                              <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
+                          </tr>
+                          <tr>
+                              <th>Applicable Tax</th>
+                              <td colspan="5">CGST / SGST / IGST</td>
+                          </tr>
+                      </table>
+                        <table class="terms-grid"  *ngIf="quotationData.results[0].revisions[0].Packing === 'international' " >
+                          <tr>
+                              <th>CMM Inspectiong</th>
+                              <td>  {{quotationData.results[0].revisions[0].CMMInspection}} 
+</td>
+                              <th>Mode of Transport</th>
+                              <td>Road</td>
+                              <th>Freight:</th>
+                              <td>Ex works</td>
+                          </tr>
+                          <tr>
+                              <th>Insurance</th>
+                              <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
+                              <th>Payment Terms</th>
+                              <td>30 Days</td>
+                              <td>Packing</td>
+                              <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
+                          </tr>
+                            <tr>
+                              <th>See Packing</th>
+                              <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
+                              <th></th>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+
+                          </tr>
+                         
+
+                           <tr>
+                              <th> Payment 90 days(ICC)	</th>
+                              <td>{{quotationData.results[0].revisions[0].Payment90DaysICC}}</td>
+                              <th></th>
+                              <td></td>
+                              <td colspan="2"></td>
+                          </tr>
+                          <tr>
+                              <th>Applicable Tax</th>
+                              <td colspan="5">CGST / SGST / IGST</td>
+                          </tr>
+                      </table>
+                  </td>
+              </tr>
+                  </tbody>
+                  </table>
+              </td>
+          </tr>
+      </table>
+
+      
+  
+  </div>
+  </div>
+<div class="button-da" >
+      <button type="button" class="btn btn-danger" (click)="closeda()">close</button>
+      <button  type="button" class="btn btn-primary" (click)="downloadPDF()">Download PDF</button>
+
+    </div>
+
+
+</div>
+</div>
+
+ 
+
+
+
+
+ <!-- domestic PDF  -->
+<div  class="compare-popup"   *ngIf="domesticpdf" >
+<div  class="compare-popup-content">
+
+<div  class="button-das" style="margin-left: 85%;" >
+ <button mat-icon-button color="warn" >
+  <mat-icon (click)="closeda()">cancel</mat-icon>
+</button>
+</div>
+
+
+      
+  <div id="pdfContent">
+
+    <div class="quotation" *ngIf="quotationData" >
+      <!-- Top header band: left spacer/logo, centered title, right meta table -->
+ 
+      <div class="mainquotation">
+        <div class="quotationheader">
+          <img src="/sky.png" alt="SKYFAST">
+          <h3>QUOTATION</h3>
+          <div class="headerdate">
+                       
+
+            <h6>Qtn. No : {{ quotationData.results[0].createdAt | date:'dd/MM/yy' }}/{{  quotationData.results[0].revisions[0].revisionName }} </h6>
+            <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
+          </div>
+        </div>
+      </div>
+      <!-- Header grid to match reference: left address block + right details table -->
+      <table class="header-grid">
+        <tr>
+          <!-- Customer Block -->
+          <td class="customer-block">
+            <strong>Customer Name & Address:</strong><br>
+            {{ quotationData.results[0].customerName.customerName }} <br>
+            {{ quotationData.results[0].customerName.address }}
+          </td>
+      
+          <!-- Details Block -->
+          <td class="details-block">
+            <div class="details-container">
+ <table class="inner-details">
+              <tr>
+                <td class="label">Customer Drawing No</td>
+                <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
+              </tr>
+              <tr>
+                <td class="label">Part No</td>
+                <td class="value">: {{  quotationData.results[0].revisions[0].productName }}  </td>
+              </tr>
+              <tr>
+                <td class="label">Part Name</td>
+                <td class="value">: {{ quotationData.results[0].partName }}</td>
+              </tr>
+            </table>
+           
+<table class="inner-details" >
+         <div class="image-box">
+  <img [src]="getDrawingImage()" />
 </div>
 </table>
 
@@ -690,9 +1041,3 @@
 
 </div>
 </div>
-
- 
-
-
-
-

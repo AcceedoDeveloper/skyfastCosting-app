@@ -51,6 +51,7 @@ export class CustomerDetailsComponent implements OnInit {
   expandedCustomer: any = null;
   quotationData!: CustomerResponse;
   pdfview: boolean = false;
+  domesticpdf: boolean = false;
   currencyData: any[] = [];
   isEditing: boolean = false;
   private search$ = new BehaviorSubject<string>('');
@@ -267,7 +268,13 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
     next: (res) => {
       this.quotationData = res;
       console.log('Quotation Data:', this.quotationData);
-      this.pdfview= true;
+      if( this.quotationData.results[0].revisions[0].currency != null){
+            this.pdfview= true;
+      }
+      else{
+        this.domesticpdf = true;
+      }
+  
       
     },
     error: (err) => {
@@ -280,6 +287,7 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
 
 closeda(){
   this.pdfview = false;
+  this.domesticpdf = false;
 }
 
 getDrawingImage(): string {
@@ -346,4 +354,8 @@ saveCurrency(){
 })
 
 }
+
+
+
+
 }
