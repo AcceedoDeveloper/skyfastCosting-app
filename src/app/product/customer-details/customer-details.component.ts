@@ -51,11 +51,14 @@ export class CustomerDetailsComponent implements OnInit {
   expandedCustomer: any = null;
   quotationData!: CustomerResponse;
   pdfview: boolean = false;
-
+  currencyData: any[] = [];
+  isEditing: boolean = false;
   private search$ = new BehaviorSubject<string>('');
   private page$ = new BehaviorSubject<{ index: number; size: number }>({ index: 0, size: 10 });
 
-  constructor(private store: Store, private fb: FormBuilder, private dialog: MatDialog, private productservices: ProductService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private store: Store, private fb: FormBuilder, 
+    private dialog: MatDialog, private productservices: ProductService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.customers$ = this.store.select(selectAllCustomers).pipe(
@@ -97,6 +100,7 @@ export class CustomerDetailsComponent implements OnInit {
     });
 
     this.store.dispatch(customerActions.loadCustomers());
+    this.getCurrencyData();
   }
 
   applyFilter(): void {
@@ -278,6 +282,16 @@ closeda(){
   this.pdfview = false;
 }
 
+getDrawingImage(): string {
+  if (!this.quotationData?.results?.[0]?.drawingImage) {
+    return '';
+  }
+
+  console.log('image path:', 'http://localhost:3005' + encodeURI(this.quotationData.results[0].drawingImage));
+  
+  return 'http://localhost:3005' + encodeURI(this.quotationData.results[0].drawingImage);
+  
+}
 
 
 isProcessFieldDifferent(field: string, index: number): boolean {
@@ -289,5 +303,47 @@ isProcessFieldDifferent(field: string, index: number): boolean {
   );
 }
 
+
+getCurrencyData() {
+  this.productservices.getCurrencyRates().subscribe(
+(res) => {
+  this.currencyData = res;
+      console.log('Currency Data:', this.currencyData);
+    }
+  );
 }
 
+enableEdit() {
+  this.isEditing = true;
+}
+
+
+cancelEdit() {
+  this.isEditing = false;
+}
+
+
+saveCurrency(){
+  console.log('currency data to save:', this.currencyData);
+  this.isEditing = false;
+ const playload = {
+  EURO : this.currencyData[0].EURO,
+  USD : this.currencyData[0].USD
+ }
+ const id = this.currencyData[0]._id;
+
+ console.log('id', id);
+ console.log('data', playload);
+ 
+ this.productservices.updtaeCurrencyRates(id, playload).subscribe({
+  next: (res) => {
+    console.log('Currency updated successfully:', res);
+    this.getCurrencyData(); // Refresh data after update
+  },
+  error: (err) => {
+    console.error('Error updating currency:', err);
+  } 
+})
+
+}
+}

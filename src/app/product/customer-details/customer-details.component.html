@@ -6,7 +6,32 @@
 
   <h2>Customer Details</h2>
   <div class="header">
-   
+   <div class="card">
+  <div class="card-header">
+    Cost Estimation for USD/EURO  <mat-icon *ngIf="!isEditing" class="icon" (click)="enableEdit()">edit</mat-icon>
+
+  <!-- Save & Cancel buttons (only visible when editing) -->
+  <mat-icon *ngIf="isEditing" class="icon save" (click)="saveCurrency()">save</mat-icon>
+  <mat-icon *ngIf="isEditing" class="icon cancel" (click)="cancelEdit()">cancel</mat-icon>
+  </div>
+  <div class="card-body">
+<div class="currency-container" *ngFor="let item of currencyData">
+  <div class="currency-field">
+    <label>EURO</label>
+    <input type="number" [(ngModel)]="item.EURO" [disabled]="!isEditing" />
+  </div>
+  <div class="currency-field">
+    <label>USD</label>
+    <input type="number" [(ngModel)]="item.USD" [disabled]="!isEditing" />
+  </div>
+</div>
+
+
+
+
+
+  </div>
+</div>
 
      <div class="search-container">
   <div class="search-input">
@@ -423,7 +448,8 @@
       
           <!-- Details Block -->
           <td class="details-block">
-            <table class="inner-details">
+            <div class="details-container">
+ <table class="inner-details">
               <tr>
                 <td class="label">Customer Drawing No</td>
                 <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
@@ -437,6 +463,17 @@
                 <td class="value">: {{ quotationData.results[0].partName }}</td>
               </tr>
             </table>
+           
+<table class="inner-details" >
+         <div class="image-box">
+  <img [src]="getDrawingImage()" alt="Customer Drawing" />
+</div>
+</table>
+
+   
+
+            </div>
+           
           </td>
         </tr>
       </table>

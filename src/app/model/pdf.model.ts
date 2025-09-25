@@ -15,6 +15,7 @@ export interface CustomerDetailss {
   updatedAt: string;
   __v: number;
   drawingNo: string;
+  drawingImage: string;
 }
 
 export interface CustomerName {
@@ -58,7 +59,8 @@ export interface Revision {
   CMMInspection: number,
     Insurance: number,
     SeaPacking: number,
-    Payment90DaysICC: number
+    Payment90DaysICC: number,
+
 }
 
 export interface RawMaterial {

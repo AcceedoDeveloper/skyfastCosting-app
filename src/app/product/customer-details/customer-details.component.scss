@@ -20,7 +20,7 @@
 
 .header{
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   // margin-top: 5px;
   gap: 20px;
@@ -304,6 +304,7 @@ vertical-align: middle;
 .inner-details {
   width: 100%;
   border-collapse: collapse;
+   border: none;  
 }
 .inner-details td {
   border: none;  
@@ -808,4 +809,125 @@ vertical-align: middle;
   .search-input {
     width: 100%;
   }
+}
+.details-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px; /* space between left & right */
+}
+
+.inner-details {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 350px; /* adjust width */
+}
+
+.inner-details td {
+  padding: 6px 10px;
+}
+
+.label {
+  font-weight: bold;
+  width: 150px;
+}
+.image-box img {
+  width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.currency-container {
+  display: flex;
+  gap: 20px;
+}
+
+.currency-field {
+  display: flex;
+  flex-direction: column; /* label on top of input */
+
+  width: 150px; /* adjust as needed */
+}
+
+.currency-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.currency-field input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.currency-field input:focus {
+  border-color: #5073fb; /* highlight color */
+  box-shadow: 0 0 4px rgba(80, 115, 251, 0.4);
+  outline: none;
+}
+
+.icon{
+  font-size: 25px;
+  color: #555;
+  position: relative;
+  top: 5px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.icon {
+  cursor: pointer;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.icon.save {
+  color: green;
+}
+
+.icon.cancel {
+  color: red;
+}
+
+.currency-container {
+  display: flex;
+  gap: 20px;
+
+}
+.currency-field {
+  display: flex;
+  flex-direction: row; /* label and input side by side */
+  align-items: center; /* vertically align input with label */
+  gap: 10px; /* space between label and input */
+  width: auto; /* allow flexible width */
+}
+
+.currency-field label {
+  font-weight: 600;
+  margin-bottom: 0; /* remove bottom margin since it’s inline now */
+  min-width: 10px; /* optional: ensure labels have same width */
+}
+
+.currency-field input {
+  flex: 0 0 80px; /* don't grow, fixed 80px */
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+
+
+.currency-field input:focus {
+  border-color: #5073fb; /* highlight color */
+  box-shadow: 0 0 4px rgba(80, 115, 251, 0.4);
+  outline: none;
 }

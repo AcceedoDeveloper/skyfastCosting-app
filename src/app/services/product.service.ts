@@ -101,4 +101,13 @@ quotationData(customerName: string, partName: string, revision: number): Observa
   }
 
 
+  getCurrencyRates(): Observable<any> {
+    return this.http.get<any>(this.config.getCostingUrl('getCurrency'));
+  }
+
+  updtaeCurrencyRates(id : string, data: any): Observable<any> {
+    return this.http.put<any>(`${this.config.getCostingUrl('updateCurrency')}/${id}`, data);
+  }
+
+
 }

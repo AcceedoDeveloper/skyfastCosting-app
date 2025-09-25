@@ -72,7 +72,11 @@
     { "name": "getCustomerDetails", "url": "getCustomerDetails" },
     { "name": "createCustomerDetails", "url": "createCustomerDetails" },
     { "name": "updateCustomerDetails", "url": "updateCustomerDetails" },
-    { "name": "deleteCustomerDetails", "url": "deleteCustomerDetails" }
+    { "name": "deleteCustomerDetails", "url": "deleteCustomerDetails" },
+    { "name": "getCurrency", "url": "getCurrency" },
+        { "name": "updateCurrency", "url": "updateCurrency" }
+
+
 
 
 
