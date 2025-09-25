@@ -886,15 +886,18 @@ vertical-align: middle;
 .icon {
   cursor: pointer;
   margin-left: 8px;
+  margin-top: -12px;
   vertical-align: middle;
 }
 
 .icon.save {
   color: green;
+  margin-top: -12px;
 }
 
 .icon.cancel {
   color: red;
+  margin-top: -12px;
 }
 
 .currency-container {
@@ -919,6 +922,8 @@ vertical-align: middle;
 .currency-field input {
   flex: 0 0 80px; /* don't grow, fixed 80px */
   padding: 6px 8px;
+  width: 100%;
+  max-width: 300px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
