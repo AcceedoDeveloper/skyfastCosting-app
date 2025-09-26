@@ -74,10 +74,27 @@
     { "name": "updateCustomerDetails", "url": "updateCustomerDetails" },
     { "name": "deleteCustomerDetails", "url": "deleteCustomerDetails" },
     { "name": "getCurrency", "url": "getCurrency" },
-        { "name": "updateCurrency", "url": "updateCurrency" }
+    { "name": "updateCurrency", "url": "updateCurrency" },
+{ "name": "getPermission", "url": "getPermission" },
+{ "name": "createPermission", "url": "createPermission" },
+{ "name": "updatePermission", "url": "updatePermission" },
+{ "name": "deletePermission", "url": "deletePermission" },
 
 
 
+
+{
+  "name": "downloadQuotation",
+  "url": "customer/quotation/revision"
+},
+{
+  "name": "getQuotationData",
+  "url": "getQuotationData"
+},
+{
+  "name": "uploadProcessExcel",
+  "url": "uploadProcessExcel"
+}
 
 
 

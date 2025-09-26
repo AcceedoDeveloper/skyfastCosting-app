@@ -86,26 +86,37 @@ export class EntityService {
 
   // entity.service.ts --> permission
 // entity.service.ts
- getPermissions(): Observable<Permission[]> {
-    if (this.cachedPermissions) return of(this.cachedPermissions);
-    return this.http.get<Permission[]>(`${this.apiUrl}/getPermission`).pipe(tap(perms => this.cachedPermissions = perms));
-  }
+// 🔹 Permissions
+getPermissions(): Observable<Permission[]> {
+  if (this.cachedPermissions) return of(this.cachedPermissions);
+  return this.http
+    .get<Permission[]>(this.config.getCostingUrl('getPermission'))
+    .pipe(tap(perms => this.cachedPermissions = perms));
+}
 
-  getPermissionByRole(roleId: string): Observable<Permission | null> {
-    return this.getPermissions().pipe(map(perms => perms.find(p => p.role === roleId) || null));
-  }
+getPermissionByRole(roleId: string): Observable<Permission | null> {
+  return this.getPermissions()
+    .pipe(map(perms => perms.find(p => p.role === roleId) || null));
+}
 
-  createPermission(permission: Permission): Observable<Permission> {
-    return this.http.post<Permission>(`${this.apiUrl}/createPermission`, permission).pipe(tap(() => this.cachedPermissions = null));
-  }
+createPermission(permission: Permission): Observable<Permission> {
+  return this.http
+    .post<Permission>(this.config.getCostingUrl('createPermission'), permission)
+    .pipe(tap(() => this.cachedPermissions = null));
+}
 
-  updatePermission(id: string, permission: Permission): Observable<Permission> {
-    return this.http.patch<Permission>(`${this.apiUrl}/updatePermission/${id}`, permission).pipe(tap(() => this.cachedPermissions = null));
-  }
+updatePermission(id: string, permission: Permission): Observable<Permission> {
+  return this.http
+    .patch<Permission>(`${this.config.getCostingUrl('updatePermission')}/${id}`, permission)
+    .pipe(tap(() => this.cachedPermissions = null));
+}
 
-  deletePermission(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/deletePermission/${id}`).pipe(tap(() => this.cachedPermissions = null));
-  }
+deletePermission(id: string): Observable<any> {
+  return this.http
+    .delete(`${this.config.getCostingUrl('deletePermission')}/${id}`)
+    .pipe(tap(() => this.cachedPermissions = null));
+}
+
 
 
 }

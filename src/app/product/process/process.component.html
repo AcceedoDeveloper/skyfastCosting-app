@@ -24,7 +24,7 @@
 </div>
 
 
- <ng-container *ngIf="allProcesses.length > 0; else loading">
+ <ng-container *ngIf="allProcesses.length ; ">
   <table class="table table-bordered">
     <thead>
       <tr>
@@ -57,9 +57,7 @@
   </mat-paginator>
 </ng-container>
 
-<ng-template #loading>
-  <p>Loading process data...</p>
-</ng-template>
+
 
 </div>
 

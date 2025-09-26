@@ -12,9 +12,9 @@ import { ConfigService} from '../shared/config.service';
 })
 export class ProductService {
 
-private apiUrl = 'http://localhost:3005';
+// private apiUrl = 'http://localhost:3005';
 
- private apiUrl2 = 'http://localhost:3005/uploadProcessExcel';
+//  private apiUrl2 = 'http://localhost:3005/uploadProcessExcel';
 
 
   constructor(private http: HttpClient, private config : ConfigService) {}
@@ -75,29 +75,37 @@ updateCustomer(id: string, customer: any): Observable<any> {
 
 
 
-  downloadQuotation(customerName: string, partName: string, revision: number): Observable<Blob> {
-    const url = `${this.apiUrl}/customer/quotation/revision?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
-    return this.http.get(url, { responseType: 'blob' }); // blob = binary data
-  }
+
 
   deleteCustomer(id: string): Observable<any> {
     return this.http.delete(`${this.config.getCostingUrl('deleteCustomerDetails')}/${id}`);
   }
 
-// quotation.service.ts
-quotationData(customerName: string, partName: string, revision: number): Observable<any> {
-  return this.http.get<any>(
-    `http://localhost:3005/getQuotationData?CustomerName=${customerName}&partName=${partName}&Revision=${revision}`
-  );
-}
 
 
 
+
+
+ downloadQuotation(customerName: string, partName: string, revision: number): Observable<Blob> {
+    const url =
+      this.config.getCostingUrl("downloadQuotation") +
+      `?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
+    return this.http.get(url, { responseType: "blob" });
+  }
+
+  // 🔹 Get Quotation Data
+  quotationData(customerName: string, partName: string, revision: number): Observable<any> {
+    const url =
+      this.config.getCostingUrl("getQuotationData") +
+      `?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
+    return this.http.get<any>(url);
+  }
+
+  // 🔹 Upload File
   uploadFile(file: File): Observable<any> {
     const formData = new FormData();
-    formData.append('file', file);
-
-    return this.http.post(this.apiUrl2, formData);
+    formData.append("file", file);
+    return this.http.post(this.config.getCostingUrl("uploadProcessExcel"), formData);
   }
 
 

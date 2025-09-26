@@ -8,7 +8,6 @@ import  { ConfigService} from '../shared/config.service';
   providedIn: 'root'
 })
 export class MachineService {
-  private baseUrl = 'http://localhost:3005';
 
   constructor(private http: HttpClient, private config : ConfigService) {}
 

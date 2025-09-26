@@ -4,16 +4,19 @@ import { Observable, throwError } from "rxjs";
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { AuthResponse, User } from "../model/auth.model";
 import { v4 as uuidv4 } from 'uuid';
+import { ConfigService } from "../shared/config.service";
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private config = inject(ConfigService);
 
   login(credentials: { userName: string; password: string }): Observable<AuthResponse> {
-    const loginUrl = 'http://localhost:3005/login';
-    return this.http.post<any>(loginUrl, credentials).pipe(
+    return this.http.post<any>(this.config.getCostingUrl('login'), credentials).pipe(
       map(response => ({
         user: response.user,
         accessToken: response.token
@@ -22,16 +25,22 @@ export class AuthService {
     );
   }
 
+  // 🔹 Forgot Password
   forgotPassword(email: string): Observable<{ message: string }> {
-    const forgotPasswordUrl = 'http://localhost:3005/forgot-password';
-    return this.http.post<{ message: string }>(forgotPasswordUrl, { emailId: email }).pipe(
+    return this.http.post<{ message: string }>(
+      this.config.getCostingUrl('forgotPassword'),
+      { emailId: email }
+    ).pipe(
       catchError(this.handleError)
     );
   }
 
+  // 🔹 Verify OTP
   verifyOtp(email: string, otp: string): Observable<AuthResponse> {
-    const verifyOtpUrl = 'http://localhost:3005/verify-otp';
-    return this.http.post<any>(verifyOtpUrl, { emailId: email, otp }).pipe(
+    return this.http.post<any>(
+      this.config.getCostingUrl('verifyOtp'),
+      { emailId: email, otp }
+    ).pipe(
       map(response => ({
         user: response.user,
         accessToken: response.token
@@ -39,6 +48,7 @@ export class AuthService {
       catchError(this.handleError)
     );
   }
+
 
   private handleError(error: any): Observable<never> {
     console.error('AuthService Error:', error);
