@@ -241,14 +241,7 @@
           <input class="lab" matInput type="number" formControlName="packingRate" />
         </div>
     
-
-    
-    
-      </div>
-    
-     <!--2 div  -->
-    <div class="subdiv2">
-      <div class="field-row single">
+         <div class="field-row single">
       <label class="packing" style="font-size: 15px; font-weight: bold;">Packing</label>
       <mat-select class="lab" formControlName="packing"  >
         <mat-option *ngFor="let option of packingOptions" [value]="option">
@@ -256,6 +249,14 @@
         </mat-option>
       </mat-select>
       </div>
+
+    
+    
+      </div>
+    
+     <!--2 div  -->
+    <div class="subdiv2">
+     
       
       
       <div *ngIf="customerForm.get('packing')?.value === 'international'" class="extra-fields">

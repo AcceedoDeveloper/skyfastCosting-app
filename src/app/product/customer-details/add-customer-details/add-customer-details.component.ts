@@ -94,14 +94,14 @@ export class AddCustomerDetailsComponent implements OnInit{
     InspectorCost: [null, Validators.required],
     ToolAmbience: ['', Validators.required],
      TransportType: ['cost'],  // 👈 default is "cost"
-  TransportCost: [null],
-  TransportPercentage: [null],
+  TransportCost: [0],
+  TransportPercentage: [0],
   overHeadsPercent : [null, Validators.required],
   dieLifeTime : [null, Validators.required],
-  CMMInspection: [null],
-  Insurance: [null],
-  SeaPacking: [null],
-  Payment90DaysICC: [null],
+  CMMInspection: [0],
+  Insurance: [0],
+  SeaPacking: [0],
+  Payment90DaysICC: [0],
   currency: ['USD']   
     })
 
@@ -300,9 +300,35 @@ onSave() {
 
   console.log('Final JSON (Full):', result);
   console.log('data id',this.Cusid);
+
+
+   let payload: any;
+   if (this.selectedFile) {
+      const formData = new FormData();
+      Object.entries(result).forEach(([key, value]) => {
+        if (Array.isArray(value) || typeof value === 'object') {
+          formData.append(key, JSON.stringify(value)); // serialize arrays/objects
+        } else {
+          formData.append(key, value as any);
+        }
+      });
+      formData.append('drawingImage', this.selectedFile);
+      payload = formData;
+    } else {
+        this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
+    }
+
+    // ✅ Call service directly
+    this.productservices.updateCustomer(this.Cusid!, payload).subscribe({
+      next: (res) => {
+        console.log('✅ Customer updated:', res);
+        this.dialogRef.close(true);
+      },
+      error: (err) => console.error('❌ Update failed:', err)
+    });
   
 
-  this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
+  // this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
  this.dialogRef.close();
 
 }

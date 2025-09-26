@@ -30,7 +30,7 @@
 
                  <mat-form-field appearance="outline" class="full-width">
               <mat-label>drawingNo</mat-label>
-              <input type="number" matInput formControlName="drawingNo">
+              <input type="text" matInput formControlName="drawingNo">
             </mat-form-field>
     
             
@@ -84,7 +84,7 @@
           </div>
         </div>
 
- <div class="upload-container">
+ <!-- <div class="upload-container">
       <input 
         type="file" 
         accept="image/*" 
@@ -92,9 +92,7 @@
         #fileInput 
         (change)="onFileSelected($event)" 
       />
-
-
-    </div>
+    </div> -->
 
 
       </mat-dialog-content>
@@ -102,7 +100,7 @@
 
       <div class="step-actions">
         <button class="btn btn-danger" (click)="close()">Cancel</button>
-      <button type="button" class="btn btn-secondary" (click)="fileInput.click()">Upload Image</button>
+      <!-- <button type="button" class="btn btn-secondary" (click)="fileInput.click()">Upload Image</button> -->
         <button class="btn btn-primary" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
       </div>
     </form>
@@ -299,6 +297,17 @@
   </div>
 
          </div>
+
+
+                  <div class="file-upload subdiv2">
+  <input type="file" (change)="onFileSelected($event)" />
+  <img *ngIf="previewUrl || data?.drawingImage" 
+       [src]="previewUrl || data?.drawingImage" 
+       alt="Preview" 
+       style="width:100px; height:100px; object-fit:cover; margin-top:10px;" />
+</div>
+
+
     
          </div>
          

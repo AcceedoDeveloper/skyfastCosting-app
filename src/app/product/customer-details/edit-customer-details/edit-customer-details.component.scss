@@ -254,7 +254,6 @@ mat-form-field {
   transform: scale(1.2);
 }
 
-/* Other Details Section */
 .other-details {
   margin-top: 32px;
 }
@@ -265,15 +264,7 @@ mat-form-field {
   justify-content: space-between;
 }
 
-.summary-card,
-.summary-card1 {
-  flex: 1;
-  // background: #ffffff;
-  // border-radius: 12px;
-  padding: 28px;
-  // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  // border: 1px solid #e2e8f0;
-}
+
 
 .summary-card h3,
 .summary-card1 h3 {
@@ -365,83 +356,4 @@ table {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   overflow: hidden;
-}
-
-table th,
-table td {
-  padding: 16px;
-  border: 1px solid #e2e8f0;
-  text-align: left;
-  font-size: 15px;
-}
-
-table th {
-  background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-  color: #ffffff;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-table tr:nth-child(even) {
-  background-color: #f9fafb;
-}
-
-.tablebg {
-  background-color: #e5e7eb;
-  font-weight: 600;
-  color: #1e3a8a;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .maininputdiv,
-  .summary-row,
-  .subdiv {
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .lab {
-    width: 100%;
-  }
-
-  .summary-card,
-  .summary-card1 {
-    width: 100%;
-  }
-
-  .addbtn {
-    margin-left: 0;
-  }
-
-  table {
-    font-size: 14px;
-  }
-
-  .mainquotation {
-    margin: 20px;
-    padding: 20px;
-  }
-
-  .field-row label {
-    flex: 0 0 100%;
-    margin-bottom: 8px;
-  }
-
-  .field-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* Additional Micro-Interactions */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.process-row,
-.summary-card,
-.summary-card1 {
-  animation: fadeIn 0.5s ease-out;
 }
