@@ -266,36 +266,7 @@ mat-form-field {
 
 
 
-.summary-card h3,
-.summary-card1 h3 {
-  font-size: 16px;
-  font-weight: 500;
-  color: #1e3a8a;
-  margin-bottom: 28px;
-  letter-spacing: 0.75px;
-  text-transform: uppercase;
-  position: relative;
-  padding-bottom: 4px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-}
 
-.summary-card h3::after,
-.summary-card1 h3::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #6186ec, #60a5fa);
-  border-radius: 2px;
-  transition: width 0.9s ease;
-}
-
-.summary-card h3:hover::after,
-.summary-card1 h3:hover::after {
-  width: 80px;
-}
 
 .field-row {
   display: flex;
@@ -311,16 +282,7 @@ mat-form-field {
   flex: 0 0 40%;
 }
 
-.lab {
-  width: 55%;
-  padding: 12px;
-  font-size: 15px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  outline: none;
-  transition: all 0.3s ease;
-  background: #f9fafb;
-}
+
 
 .lab:focus {
   border-color: #1e3a8a;
@@ -357,3 +319,39 @@ table {
   border-radius: 10px;
   overflow: hidden;
 }
+  .lab {
+      width: 48%;
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .lab  {
+      outline: none;
+      border-color: #4bb1ec;
+      margin-top: 20px;
+      box-shadow: 0 0 4px rgba(63, 81, 181, 0.3);
+    }
+
+
+    .summary-card h3{
+ 
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.label1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+ 
+ /* Slightly lighter for secondary labels */
+  min-width: 100px;
+}
+
+   .label1 {
+      flex: 0 0 auto; /* Prevent label from stretching */
+      margin-top: 25px;
+    }

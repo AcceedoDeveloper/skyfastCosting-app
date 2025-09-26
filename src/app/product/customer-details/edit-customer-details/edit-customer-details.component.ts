@@ -20,7 +20,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import * as customerActions from '../../store/product.actions';
 import* as Selector from '../../store/product.selectors';
 import { ProductService } from '../../../services/product.service';
-
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -62,7 +62,8 @@ previewUrl: string | ArrayBuffer | null = null;
     private dialogRef: MatDialogRef<EditCustomerDetailsComponent>,
     private store : Store,
     @Inject(MAT_DIALOG_DATA) public data: CustomerDetails | null
-    , private productservices : ProductService
+    , private productservices : ProductService,
+    private toastr : ToastrService
   ) {
 
     console.log('data', data);
@@ -338,12 +339,19 @@ onSave() {
     this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
       next: (res) => {
         console.log('✅ Customer updated:', res);
+         this.toastr.success('Customer updated successfully!');
         this.dialogRef.close(true);
       },
-      error: (err) => console.error('❌ Update failed:', err)
+      error: (err) =>{
+          this.toastr.error('Failed to update customer');
+          console.error('❌ Update failed:', err);
+      } 
+      
     });
   }
 }
+
+
 
 
 incrementRevision() {

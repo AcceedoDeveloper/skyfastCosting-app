@@ -70,7 +70,8 @@ export class AddCustomerDetailsComponent implements OnInit{
      private actions$: Actions, 
     private dialogRef: MatDialogRef<AddCustomerDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private productservices : ProductService
+    private productservices : ProductService,
+     private toastr : ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -88,16 +89,16 @@ export class AddCustomerDetailsComponent implements OnInit{
 
     this.processForm = this.fb.group({
       processSelection: this.fb.array([]) ,
-      Rejection: [null, Validators.required],
+      Rejection: [0, Validators.required],
     Packing : [null, Validators.required],
-    InterestRate : [null, Validators.required],
-    InspectorCost: [null, Validators.required],
-    ToolAmbience: ['', Validators.required],
+    InterestRate : [0, Validators.required],
+    InspectorCost: [0, Validators.required],
+    ToolAmbience: [0, Validators.required],
      TransportType: ['cost'],  // 👈 default is "cost"
   TransportCost: [0],
   TransportPercentage: [0],
-  overHeadsPercent : [null, Validators.required],
-  dieLifeTime : [null, Validators.required],
+  overHeadsPercent : [0, Validators.required],
+  dieLifeTime : [0, Validators.required],
   CMMInspection: [0],
   Insurance: [0],
   SeaPacking: [0],
@@ -322,9 +323,13 @@ onSave() {
     this.productservices.updateCustomer(this.Cusid!, payload).subscribe({
       next: (res) => {
         console.log('✅ Customer updated:', res);
+        this.toastr.success('Customer updated successfully!');
         this.dialogRef.close(true);
       },
-      error: (err) => console.error('❌ Update failed:', err)
+      error: (err) =>{
+          this.toastr.error('Failed to update customer');
+          console.error('❌ Update failed:', err);
+      } 
     });
   
 

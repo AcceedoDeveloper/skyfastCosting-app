@@ -84,13 +84,7 @@
            
   
           
-                <div class="file-upload">
-  <input type="file" (change)="onFileSelected($event)" />
-  <img *ngIf="previewUrl || data?.drawingImage" 
-       [src]="previewUrl || data?.drawingImage" 
-       alt="Preview" 
-       style="width:100px; height:100px; object-fit:cover; margin-top:10px;" />
-</div>
+  
   
           <div class="step-actions">
             <button class="btn btn-primary" matStepperNext>Next</button>
@@ -181,7 +175,7 @@
             
   
             <div class="field-row">
-              <label class="label1 tool" style="font-size: 15px; font-weight: bold;">Tool Cost (₹)</label>
+              <label  class="label1" style="font-size:15px; font-weight: bold;">Tool Cost (₹)</label>
                 <input class="lab" matInput type="number" formControlName="toolAmbience" />
             </div>
   
@@ -215,7 +209,7 @@
       
   
           <!-- Transportation -->
-         <div class="summary-card1">
+         <div class="summary-card">
   
   
     <h3 style="color:#3d8adc;;">Transportation</h3>
@@ -250,7 +244,15 @@
       </mat-select>
       </div>
 
-    
+            <div class="file-upload">
+  <input type="file" (change)="onFileSelected($event)" />
+  <img *ngIf="previewUrl || data?.drawingImage" 
+       [src]="previewUrl || data?.drawingImage" 
+
+       style="width:100px; height:100px; object-fit:cover; margin-top:10px;" />
+
+       
+</div>
     
       </div>
     
