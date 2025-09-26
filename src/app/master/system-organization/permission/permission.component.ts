@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -6,11 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, take, takeUntil } from 'rxjs';
-
+import { ConfrimDialogComponent} from '../../../shared/confrim-dialog/confrim-dialog.component';
 import { Role } from '../../../model/role.model';
 import { Permission } from '../../../model/permission.model';
 import { selectAllRoles, selectAllPermissions } from '../store/system.selectors';
 import * as RoleActions from '../store/system.actions';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 // ---------- Types ----------
 interface UserChildren {
@@ -52,7 +53,7 @@ interface SubItem<K> {
 @Component({
   selector: 'app-permission',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, MatButtonModule, MatDialogModule],
   templateUrl: './permission.component.html',
   styleUrls: ['./permission.component.scss']
 })
@@ -60,6 +61,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   // ---------- Store Observables ----------
   roles$!: Observable<Role[]>;
   permissions$!: Observable<Permission[]>;
+   private dialog = inject(MatDialog); 
 
   // ---------- Local States ----------
   private destroy$ = new Subject<void>();
@@ -203,20 +205,30 @@ export class PermissionComponent implements OnInit, OnDestroy {
     // alert('Permissions saved successfully!');
   }
 
+  
+
   deletePermission() {
     if (!this.existingPermissionId) {
-      alert('No permission exists to delete.');
+     
       return;
     }
 
-    if (confirm('Are you sure you want to delete this permission?')) {
-      this.store.dispatch(RoleActions.deletePermission({ id: this.existingPermissionId }));
-      this.store.dispatch(RoleActions.loadPermissions());
-      this.showForm = false;
-      this.resetPermissions();
-      alert('Permission deleted successfully!');
-    }
+    const dialog = this.dialog.open(ConfrimDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to delete this permission?',
+      }
+    });
+
+    dialog.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+       this.store.dispatch(RoleActions.deletePermission({ id: this.existingPermissionId! }));
+      }
+    });
   }
+
+
 
   loadPermissions(savedData: Permission) {
     this.selectedRole = savedData.role;
@@ -253,17 +265,28 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.showForm = true;
   }
 
-  deletePermissionById(id?: string) {
-    if (!id) {
-      alert('Invalid permission id');
-      return;
+ deletePermissionById(id?: string) {
+  if (!id) {
+  
+    return;
+  }
+
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Permission',
+      message: 'Are you sure you want to delete this permission?'
     }
-    if (confirm('Are you sure you want to delete this permission?')) {
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
       this.store.dispatch(RoleActions.deletePermission({ id }));
       this.store.dispatch(RoleActions.loadPermissions());
-      alert('Permission deleted successfully!');
     }
-  }
+  });
+}
+
 
   getEnabledChildNames(children: UserChildren | CompanyChildren | MaterialChildren | undefined): string {
     if (!children) return '';

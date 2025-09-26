@@ -8,11 +8,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfrimDialogComponent } from '../../../shared/confrim-dialog/confrim-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-role-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, MatDialogModule],
   templateUrl: './role-management.component.html',
   styleUrls: ['./role-management.component.scss']
 })
@@ -22,7 +24,7 @@ export class RoleManagementComponent implements OnInit {
   isEditMode: boolean = false;
   editingId: string | null = null;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store,private dialog : MatDialog ) {}
 
   ngOnInit() {
     this.roles$ = this.store.select(selectAllRoles);
@@ -55,10 +57,21 @@ export class RoleManagementComponent implements OnInit {
     this.newRoleName = '';
   }
 
-  deleteRole(id: string) {
-    if (confirm('Are you sure you want to delete this role?')) {
+deleteRole(id: string) {
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Role',
+      message: 'Are you sure you want to delete this role?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'confirm') {
       this.store.dispatch(RoleActions.deleteRole({ id }));
       this.store.dispatch(RoleActions.loadRoles());
     }
-  }
+  });
+}
+
 }
