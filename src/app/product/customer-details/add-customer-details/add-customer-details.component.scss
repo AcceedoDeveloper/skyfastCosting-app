@@ -661,3 +661,37 @@ mat-radio-group {
   border: 1px solid #ddd;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+
+
+.info-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.info-icon {
+  margin-left: 4px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Popup hidden by default */
+.info-popup {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  width: 280px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+/* Show on hover/focus */
+.info-container:hover .info-popup,
+.info-container:focus .info-popup {
+  display: block;
+}

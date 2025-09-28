@@ -13,6 +13,11 @@ import { HostingMail } from '../../../model/role.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ProductService } from '../../../services/product.service';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+
+
 
 @Component({
   selector: 'app-company-preferences',
@@ -22,7 +27,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule,
+    FormsModule
   ],
   templateUrl: './company-preferences.component.html',
   styleUrl: './company-preferences.component.scss'
@@ -30,7 +37,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 export class CompanyPreferencesComponent implements OnInit {
   company$!: Observable<Company[]>;
   hosting$!: Observable<HostingMail[]>;
-
+  currencyData: any[] = [];
+  isEditing: boolean = false;
   companyForm!: FormGroup;
   hostingForm!: FormGroup;
 
@@ -39,7 +47,7 @@ export class CompanyPreferencesComponent implements OnInit {
   trackByCompanyId!: TrackByFunction<Company>;
   trackByHostingId!: TrackByFunction<HostingMail>;
 
-  constructor(private store: Store, private fb: FormBuilder) {}
+  constructor(private store: Store, private fb: FormBuilder,private productservices : ProductService  ) {}
 
   ngOnInit(): void {
     this.company$ = this.store.select(selectCompany);
@@ -49,6 +57,7 @@ export class CompanyPreferencesComponent implements OnInit {
       map(data => Array.isArray(data) ? data : [data])
     );
     this.store.dispatch(RoleActions.loadHostingMail());
+    this.getCurrencyData();
   }
 
 
@@ -103,4 +112,48 @@ export class CompanyPreferencesComponent implements OnInit {
       this.editingHosting = null;
     }
   }
+
+
+  getCurrencyData() {
+  this.productservices.getCurrencyRates().subscribe(
+(res) => {
+  this.currencyData = res;
+      console.log('Currency Data:', this.currencyData);
+    }
+  );
+}
+
+enableEdit() {
+  this.isEditing = true;
+}
+
+
+cancelEdit() {
+  this.isEditing = false;
+}
+
+
+saveCurrency(){
+  console.log('currency data to save:', this.currencyData);
+  this.isEditing = false;
+ const playload = {
+  EURO : this.currencyData[0].EURO,
+  USD : this.currencyData[0].USD
+ }
+ const id = this.currencyData[0]._id;
+
+ console.log('id', id);
+ console.log('data', playload);
+ 
+ this.productservices.updtaeCurrencyRates(id, playload).subscribe({
+  next: (res) => {
+    console.log('Currency updated successfully:', res);
+    this.getCurrencyData(); // Refresh data after update
+  },
+  error: (err) => {
+    console.error('Error updating currency:', err);
+  } 
+})
+
+}
 }

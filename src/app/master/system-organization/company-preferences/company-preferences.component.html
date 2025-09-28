@@ -80,12 +80,14 @@
   </div>
 
 
-  <div class="section" *ngIf="hosting$ | async as hostingList">
+  <div  *ngIf="hosting$ | async as hostingList">
     
   
-    <h2 class="section-title">HOSTING MAIL</h2>
+    <h2 class="section-title">HOSTING MAIL / Cost Estimation</h2>
 
-    <div class="card" *ngFor="let host of hostingList; trackBy: trackByHostingId">
+    <div class="card-container"> 
+
+       <div class="card" *ngFor="let host of hostingList; trackBy: trackByHostingId">
 
       <div class="kv-list" *ngIf="editingHosting?.id !== host._id">
         <div class="row">
@@ -147,5 +149,49 @@
         </div>
       </form>
     </div>
+
+
+
+
+   <div class="card">
+  <div >
+    Cost Estimation ( USD / EUR)  <mat-icon *ngIf="!isEditing" class="icon" (click)="enableEdit()">edit</mat-icon>
+
+  <!-- Save & Cancel buttons (only visible when editing) -->
+  <mat-icon *ngIf="isEditing" class="icon save" (click)="saveCurrency()">save</mat-icon>
+  <mat-icon *ngIf="isEditing" class="icon cancel" (click)="cancelEdit()">cancel</mat-icon>
+  </div>
+  <div class="card-body">
+<div class="currency-container" *ngFor="let item of currencyData">
+
+   <div class="kv-list" >
+        <div class="row">
+          <div class="label">EURO</div><div class="colon">:</div>
+          <div class="value">  <input type="number"  class="value" [(ngModel)]="item.EURO" [disabled]="!isEditing" /></div>
+        </div>
+        <div class="row">
+          <div class="label">USD</div><div class="colon">:</div>
+          <div class="value">    <input type="number"  class="value" [(ngModel)]="item.USD" [disabled]="!isEditing" />
+</div>
+        </div>
+     
+
+      
+      </div>
+ 
+</div>
+
+
+
+
+
+  </div>
+</div>
+
+  
+
+
+    </div>
+   
   </div>
 </div>

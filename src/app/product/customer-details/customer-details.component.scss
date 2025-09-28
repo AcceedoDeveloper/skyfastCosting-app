@@ -188,15 +188,23 @@ vertical-align: middle;
 padding: 0px 200px;
 text-align: center;
 vertical-align: middle;
-// background-color: #c8b273;
 }
 
-// PDF-specific styles - nested under #pdfContent to prevent conflicts
 #pdfContent {
   font-family: Arial, sans-serif;
   margin: 10px;
   line-height: 1.4;
   color: #000000; // Ensure all text is black
+
+
+  @media print {
+  #pdfContent {
+    transform: scale(0.75);   /* adjust until it fits */
+    transform-origin: top left;
+    width: 100%;
+  }
+}
+
   
   // Add page borders and styling
   @media print {
@@ -227,11 +235,11 @@ vertical-align: middle;
   }
   
   .quotation {
-    margin: 0 auto;
+  
     border: 1px solid #000000;
     padding: 15px;
     background-color: #ffffff;
-    max-width: 800px;
+  
     width: 100%;
     box-sizing: border-box;
     page-break-inside: auto; // Allow content to flow across pages
@@ -285,7 +293,7 @@ vertical-align: middle;
   width: 100%;
   border: 1px solid #000;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  min-height: 70px;
 }
 .header-grid > tbody > tr > td {
   border: 1px solid #000; /* only outer table cells get borders */
@@ -296,7 +304,7 @@ vertical-align: middle;
   padding: 8px;
 }
 .details-block {
-  width: 55%;
+  width: 30%;
   padding: 8px;
 }
 
@@ -330,7 +338,7 @@ vertical-align: middle;
   .osp-info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+
     font-size: 13px;
     color: #000000;
   }
@@ -469,7 +477,7 @@ vertical-align: middle;
 
   /* Material table attached directly under header grid */
   .material-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
-  .material-table td, .material-table th { border: 1px solid #000000; padding: 6px 8px; }
+  .material-table td, .material-table th { border: 1px solid #000000; padding: 4px 8px; }
   
   // Ensure all text in tables is visible
   tbody tr td {
@@ -520,8 +528,7 @@ vertical-align: middle;
   }
 
   .mainquotation {
-    padding: 20px;
-    border-bottom: 2px solid #0e1635;
+   
     background-color: #f8f9fa;
   }
   
@@ -529,7 +536,7 @@ vertical-align: middle;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+
   }
   
   .quotationheader img {
@@ -657,6 +664,8 @@ vertical-align: middle;
     th:nth-child(6), td:nth-child(6) { width: 12%; } // Total price
   }
 }
+
+
 
 
 
@@ -924,7 +933,6 @@ vertical-align: middle;
   padding: 6px 8px;
   width: 100%;
   max-width: 300px;
-  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
 }
@@ -936,3 +944,70 @@ vertical-align: middle;
   box-shadow: 0 0 4px rgba(80, 115, 251, 0.4);
   outline: none;
 }
+
+
+
+
+.info-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.info-icon {
+  position: relative;
+  top: 8px;
+  margin-left: 4px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Popup hidden by default */
+.info-popup3 {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  width: 280px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+
+.info-popup {
+  display: none;
+  position: absolute;
+  top: 50%;             /* vertically align with the icon */
+  right: 100%;          /* move to the left side of the container */
+  transform: translateY(-50%); /* center it vertically */
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  width: 280px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+
+/* Show on hover/focus */
+.info-container:hover .info-popup,
+.info-container:focus .info-popup {
+  display: block;
+}
+.info-container:hover .info-popup3,
+.info-container:focus .info-popup3 {
+  display: block;
+}
+
+
+.info-icon{
+  font-size: 18px;
+   color: #007bff;
+  position: relative;
+  top: 10px;
+
+}
+

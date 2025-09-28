@@ -20,6 +20,8 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ProductService } from '../../services/product.service';
 import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { CustomerResponse } from '../../model/pdf.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -41,6 +43,8 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
 })
+
+
 export class CustomerDetailsComponent implements OnInit {
   customers$!: Observable<CustomerDetails[]>;
   filteredCustomers$!: Observable<CustomerDetails[]>;
@@ -52,6 +56,8 @@ export class CustomerDetailsComponent implements OnInit {
   quotationData!: CustomerResponse;
   pdfview: boolean = false;
   domesticpdf: boolean = false;
+  pdfwithouticon: boolean = false;
+  domesticpdfwithouticon: boolean = false;
   currencyData: any[] = [];
   isEditing: boolean = false;
   private search$ = new BehaviorSubject<string>('');
@@ -59,7 +65,7 @@ export class CustomerDetailsComponent implements OnInit {
 
   constructor(
     private store: Store, private fb: FormBuilder, 
-    private dialog: MatDialog, private productservices: ProductService, private cdr: ChangeDetectorRef) {}
+    private dialog: MatDialog, private productservices: ProductService,) {}
 
   ngOnInit(): void {
     this.customers$ = this.store.select(selectAllCustomers).pipe(
@@ -248,18 +254,105 @@ export class CustomerDetailsComponent implements OnInit {
     });
   }
 
-  downloadPDF() {
-    const element = document.getElementById('pdfContent')!;
-    const options = {
-      margin: 10,
-      filename: 'angular-demo.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+  // downloadPDF() {
+  //   const element = document.getElementById('pdfContent')!;
+  //   const options = {
+  //     margin: 10,
+  //     filename: 'angular-demo.pdf',
+  //     image: { type: 'jpeg', quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  //   };
 
-    html2pdf().from(element).set(options).save();
-  }
+  //   html2pdf().from(element).set(options).save();
+  // }
+
+
+//   downloadPDF() {
+//   const element = document.getElementById('pdfContent')!;
+  
+//   const opt = {
+//     margin:       0,
+//     filename:     'quotation.pdf',
+//     image:        { type: 'jpeg', quality: 1 },
+//     html2canvas:  { scale: 2, useCORS: true },
+//     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+//     pagebreak:    { mode: ['avoid-all'] }  // prevent page breaks
+//   };
+
+//   // Force scale to single A4 by using html2canvas width/height vs jsPDF size
+//   html2pdf()
+//     .set(opt)
+//     .from(element)
+//     .toPdf()
+//     .get('pdf')
+//     .then(function (pdf) {
+//       const totalPages = pdf.internal.getNumberOfPages();
+
+//       // Get PDF dimensions
+//       const pdfWidth = pdf.internal.pageSize.getWidth();
+//       const pdfHeight = pdf.internal.pageSize.getHeight();
+
+//       // Scale content to fit 1 page
+//       pdf.setPage(1);
+//       pdf.internal.pageSize.width = pdfWidth;
+//       pdf.internal.pageSize.height = pdfHeight;
+
+//       // Content is automatically scaled by html2canvas
+//     })
+//     .save();
+// }
+
+// downloadPDF() {
+//   const element = document.getElementById('pdfContent')!;
+  
+//   html2canvas(element, { scale: 2, useCORS: true }).then((canvas: HTMLCanvasElement) => {
+//     const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+//     const pdf = new jsPDF('p', 'mm', 'a4');
+//     const pdfWidth = pdf.internal.pageSize.getWidth();
+//     const pdfHeight = pdf.internal.pageSize.getHeight();
+
+//     const imgProps = {
+//       width: canvas.width,
+//       height: canvas.height
+//     };
+//     const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+
+//     const imgWidth = imgProps.width * ratio;
+//     const imgHeight = imgProps.height * ratio;
+
+//     pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+//     pdf.save('quotation.pdf');
+//   });
+// }
+
+
+downloadPDF() {
+  const element = document.getElementById('pdfContent')!;
+
+  html2canvas(element, {
+    scale: 3,
+    useCORS: true,
+    backgroundColor: "#fff"
+  }).then((canvas: HTMLCanvasElement) => {
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();   // 210mm
+    const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+
+    // Keep aspect ratio
+    const imgWidth = pdfWidth;  
+    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    pdf.save('quotation.pdf');
+  });
+}
+
+
+
 
 
 
@@ -285,9 +378,36 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
 
 }
 
+
+
+
+viewQuatation(customerName: string, partName: string, revision: number): void {
+  this.productservices.quotationData(customerName, partName, revision).subscribe({
+    next: (res) => {
+      this.quotationData = res;
+      console.log('Quotation Data:', this.quotationData);
+      if( this.quotationData.results[0].revisions[0].currency != null){
+            this.pdfwithouticon = true;
+      }
+      else{
+        this.domesticpdfwithouticon = true;
+      }
+  
+      
+    },
+    error: (err) => {
+      console.error('Error fetching quotation:', err);
+    }
+  });
+
+
+}
+
 closeda(){
   this.pdfview = false;
   this.domesticpdf = false;
+  this.pdfwithouticon = false;
+  this.domesticpdfwithouticon = false;
 }
 
 getDrawingImage(): string {

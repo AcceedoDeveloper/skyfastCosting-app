@@ -237,3 +237,92 @@
     font-size: 14px;
   }
 }
+.card-container {
+  display: flex;
+  gap: 20px;
+  width: 100%; /* make container span full width */
+}
+
+.card {
+  flex: 1;            /* each card takes equal available space */
+  min-width: 0;       /* prevents overflow */
+  box-sizing: border-box;
+}
+
+
+
+
+
+.currency-field {
+  display: flex;
+  flex-direction: column; /* label on top of input */
+  margin-bottom: 50px;
+
+}
+
+.currency-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.currency-field input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.currency-field input:focus {
+  border-color: #5073fb; /* highlight color */
+  box-shadow: 0 0 4px rgba(80, 115, 251, 0.4);
+  outline: none;
+}
+
+.label {
+  margin-bottom: 20px;
+}
+
+.icon{
+  font-size: 25px;
+  color: #555;
+  position: relative;
+  top: 5px;
+}
+
+
+.icon {
+  cursor: pointer;
+  margin-left: 8px;
+  margin-top: -12px;
+  vertical-align: middle;
+}
+
+.icon.save {
+  color: green;
+  margin-top: -12px;
+}
+
+.icon.cancel {
+  color: red;
+  margin-top: -12px;
+}
+
+
+
+
+
+.currency-field input:focus {
+  border-color: #5073fb; /* highlight color */
+  box-shadow: 0 0 4px rgba(80, 115, 251, 0.4);
+  outline: none;
+}
+input {
+  flex: 0 0 80px; /* don't grow, fixed 80px */
+  padding: 6px 8px;
+  width: 100%;
+  max-width: 300px;
+  border: none;
+  font-size: 14px;
+}
