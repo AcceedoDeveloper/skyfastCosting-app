@@ -25,6 +25,12 @@ import jsPDF from 'jspdf';
 import { CustomerResponse } from '../../model/pdf.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { LoadingSpinnerComponent} from '../../shared/loading-spinner/loading-spinner.component'
+import { ToastrService } from 'ngx-toastr';
+
+
+
+
 
 @Component({
   selector: 'app-customer-details',
@@ -39,6 +45,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     FormsModule,
     MatCheckboxModule,
     MatPaginatorModule,
+    LoadingSpinnerComponent
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
@@ -59,13 +66,15 @@ export class CustomerDetailsComponent implements OnInit {
   pdfwithouticon: boolean = false;
   domesticpdfwithouticon: boolean = false;
   currencyData: any[] = [];
+  isPdfLoading$ = new BehaviorSubject<boolean>(false);
+
   isEditing: boolean = false;
   private search$ = new BehaviorSubject<string>('');
   private page$ = new BehaviorSubject<{ index: number; size: number }>({ index: 0, size: 10 });
 
   constructor(
     private store: Store, private fb: FormBuilder, 
-    private dialog: MatDialog, private productservices: ProductService,) {}
+    private dialog: MatDialog, private productservices: ProductService, private tooser : ToastrService ) {}
 
   ngOnInit(): void {
     this.customers$ = this.store.select(selectAllCustomers).pipe(
@@ -328,29 +337,63 @@ export class CustomerDetailsComponent implements OnInit {
 // }
 
 
+// downloadPDF() {
+//    this.isPdfLoading$.next(true); 
+//   const element = document.getElementById('pdfContent')!;
+
+//   html2canvas(element, {
+//     scale: 3,
+//     useCORS: true,
+//     backgroundColor: "#fff"
+//   }).then((canvas: HTMLCanvasElement) => {
+//     const imgData = canvas.toDataURL('image/png');
+
+//     const pdf = new jsPDF('p', 'mm', 'a4');
+//     const pdfWidth = pdf.internal.pageSize.getWidth();   // 210mm
+//     const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+
+//     // Keep aspect ratio
+//     const imgWidth = pdfWidth;  
+//     const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+//     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+//     pdf.save('quotation.pdf');
+//   });
+// }
+
+
 downloadPDF() {
-  const element = document.getElementById('pdfContent')!;
+  this.pdfwithouticon = false;
+  this.domesticpdfwithouticon = false;
+  this.domesticpdf = false;
+  this.pdfview = false;
+    this.isPdfLoading$.next(true); // start loader
+    
 
-  html2canvas(element, {
-    scale: 3,
-    useCORS: true,
-    backgroundColor: "#fff"
-  }).then((canvas: HTMLCanvasElement) => {
-    const imgData = canvas.toDataURL('image/png');
+    const element = document.getElementById('pdfContent')!;
 
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();   // 210mm
-    const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+    html2canvas(element, {
+      scale: 3,
+      useCORS: true,
+      backgroundColor: "#fff"
+    }).then((canvas: HTMLCanvasElement) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
 
-    // Keep aspect ratio
-    const imgWidth = pdfWidth;  
-    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    pdf.save('quotation.pdf');
-  });
-}
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save('quotation.pdf');
 
+      this.isPdfLoading$.next(false); // stop loader
+      this.tooser.success('quotation download successfully!');
+
+    }).catch(() => {
+      this.isPdfLoading$.next(false); // stop loader on error
+    });
+  }
 
 
 
