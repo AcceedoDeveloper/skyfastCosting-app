@@ -107,6 +107,7 @@
         <div class="process-container" formArrayName="processes">
         
           <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
+
             <mat-form-field appearance="outline" class="half-width">
               <mat-label>Process Name</mat-label>
               <mat-select formControlName="processId" (selectionChange)="onProcessSelected($event.value, i)">
@@ -126,20 +127,37 @@
               <input matInput type="number" formControlName="Hours" readonly />
             </mat-form-field>
   
-            <mat-form-field appearance="outline" class="half-width">
+            <mat-form-field appearance="outline" class="half-width11">
               <mat-label>Cycle Time / Weight</mat-label>
               <input matInput type="number" formControlName="cycleTime" />
             </mat-form-field>
   
-            <mat-form-field appearance="outline" class="half-width">
+            <mat-form-field appearance="outline" class="half-width1">
               <mat-label>Cavity</mat-label>
               <input matInput type="number" formControlName="cavity" />
             </mat-form-field>
   
-           <div >
+           <div class="cost">
           <h5>  Cost
         {{ calculateProcessValue(proc.value) }}
       </h5>
+
+       <div class="info-container" tabindex="0">
+  <mat-icon class="info-icon">info</mat-icon>
+<div class="info-popup dim">
+  <div class="info-content">
+
+    <h5> Formula: (Hours / (3600 / CycleTime) / Cavity)  </h5> 
+    <h5>
+      = ({{ proc.value.Hours || 0 }} / (3600 / {{ proc.value.cycleTime || 0 }}) / {{ proc.value.cavity || 0 }})
+   </h5> 
+   <strong>Result: {{ calculateProcessValue(proc.value) }}</strong>
+  </div>
+  
+
+</div>
+
+</div>
         </div>
   
             <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcess(i)">

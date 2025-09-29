@@ -181,6 +181,51 @@
 }
 
 
+
+.seconddiv {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  // background: yellow;
+}
+
+
+.carddiv {
+  flex: 1;                
+  display: flex;
+  flex-direction: column;  
+  justify-content: stretch;
+  min-height: 400px;       
+ 
+  padding: 15px;
+ 
+}
+
+
+.card-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardlastdiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  height: 100%;
+}
+
+.actions1 {
+   margin-top: 220px; 
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.currency-container{
+  margin-top: 20px;
+}
+
 @keyframes slideInLeft {
   from {
     transform: translateX(-20px);
@@ -239,14 +284,18 @@
 }
 .card-container {
   display: flex;
+  flex-direction: column;
   gap: 20px;
   width: 100%; /* make container span full width */
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
   flex: 1;            /* each card takes equal available space */
   min-width: 0;       /* prevents overflow */
   box-sizing: border-box;
+  // height: 100%;
 }
 
 

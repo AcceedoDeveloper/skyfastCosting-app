@@ -80,118 +80,154 @@
   </div>
 
 
-  <div  *ngIf="hosting$ | async as hostingList">
+  <div class="seconddiv" *ngIf="hosting$ | async as hostingList">
     
   
-    <h2 class="section-title">HOSTING MAIL / Cost Estimation</h2>
+    <!-- <h2 class="section-title">HOSTING MAIL / COST ESTIMATION</h2> -->
 
-    <div class="card-container"> 
-
-       <div class="card" *ngFor="let host of hostingList; trackBy: trackByHostingId">
-
-      <div class="kv-list" *ngIf="editingHosting?.id !== host._id">
-        <div class="row">
-          <div class="label">SMTP Server</div><div class="colon">:</div>
-          <div class="value">{{ host.smtpServer }}</div>
-        </div>
-        <div class="row">
-          <div class="label">Port</div><div class="colon">:</div>
-          <div class="value">{{ host.portNo }}</div>
-        </div>
-        <div class="row">
-          <div class="label">Email</div><div class="colon">:</div>
-          <div class="value">{{ host.emailId }}</div>
-        </div>
-        <div class="row">
-          <div class="label">Password</div><div class="colon">:</div>
-          <div class="value">{{host.password}}</div>
-        </div>
-        <div class="row">
-          <div class="label">Encryption</div><div class="colon">:</div>
-          <div class="value">{{ host.EncryptionType }}</div>
-        </div>
-
-        <div class="actions">
-          <button class="btn primary" (click)="editHosting(host)">Edit</button>
-        </div>
-      </div>
-
-
-      <form class="kv-list"
-            *ngIf="editingHosting?.id === host._id"
-            [formGroup]="hostingForm"
-            (ngSubmit)="saveHosting()">
-
-        <div class="row">
-          <div class="label">SMTP Server</div><div class="colon">:</div>
-          <div class="value"><input class="kv-input" type="text" formControlName="smtpServer" /></div>
-        </div>
-        <div class="row">
-          <div class="label">Port</div><div class="colon">:</div>
-          <div class="value"><input class="kv-input" type="number" formControlName="portNo" /></div>
-        </div>
-        <div class="row">
-          <div class="label">Email</div><div class="colon">:</div>
-          <div class="value"><input class="kv-input" type="email" formControlName="emailId" /></div>
-        </div>
-        <div class="row">
-          <div class="label">Password</div><div class="colon">:</div>
-          <div class="value"><input class="kv-input" type="password" formControlName="password" /></div>
-        </div>
-        <div class="row">
-          <div class="label">Encryption</div><div class="colon">:</div>
-          <div class="value"><input class="kv-input" type="text" formControlName="EncryptionType" /></div>
-        </div>
-
-        <div class="actions">
-          <button class="btn primary" type="submit" [disabled]="hostingForm.invalid">Update</button>
-          <button class="btn" type="button" (click)="cancelEditHosting()">Cancel</button>
-        </div>
-      </form>
-    </div>
-
-
-
-
-   <div class="card">
-  <div >
-    Cost Estimation ( USD / EUR)  <mat-icon *ngIf="!isEditing" class="icon" (click)="enableEdit()">edit</mat-icon>
-
-  <!-- Save & Cancel buttons (only visible when editing) -->
-  <mat-icon *ngIf="isEditing" class="icon save" (click)="saveCurrency()">save</mat-icon>
-  <mat-icon *ngIf="isEditing" class="icon cancel" (click)="cancelEdit()">cancel</mat-icon>
-  </div>
-  <div class="card-body">
-<div class="currency-container" *ngFor="let item of currencyData">
-
-   <div class="kv-list" >
-        <div class="row">
-          <div class="label">EURO</div><div class="colon">:</div>
-          <div class="value">  <input type="number"  class="value" [(ngModel)]="item.EURO" [disabled]="!isEditing" /></div>
-        </div>
-        <div class="row">
-          <div class="label">USD</div><div class="colon">:</div>
-          <div class="value">    <input type="number"  class="value" [(ngModel)]="item.USD" [disabled]="!isEditing" />
-</div>
-        </div>
-     
-
-      
-      </div>
- 
-</div>
-
-
-
-
-
-  </div>
-</div>
-
+    <div class="carddiv">
+       <h2 class="section-title">HOSTING MAIL </h2>
+      <div class="card-container"> 
+         
   
-
+         <div class="card" *ngFor="let host of hostingList; trackBy: trackByHostingId">
+  
+        <div class="kv-list" *ngIf="editingHosting?.id !== host._id">
+          <div class="row">
+            <div class="label">SMTP Server</div><div class="colon">:</div>
+            <div class="value">{{ host.smtpServer }}</div>
+          </div>
+          <div class="row">
+            <div class="label">Port</div><div class="colon">:</div>
+            <div class="value">{{ host.portNo }}</div>
+          </div>
+          <div class="row">
+            <div class="label">Email</div><div class="colon">:</div>
+            <div class="value">{{ host.emailId }}</div>
+          </div>
+          <div class="row">
+            <div class="label">Password</div><div class="colon">:</div>
+            <div class="value">{{host.password}}</div>
+          </div>
+          <div class="row">
+            <div class="label">Encryption</div><div class="colon">:</div>
+            <div class="value">{{ host.EncryptionType }}</div>
+          </div>
+  
+          <div class="actions">
+            <button class="btn primary" (click)="editHosting(host)">Edit</button>
+          </div>
+        </div>
+  
+  
+        <form class="kv-list"
+              *ngIf="editingHosting?.id === host._id"
+              [formGroup]="hostingForm"
+              (ngSubmit)="saveHosting()">
+  
+          <div class="row">
+            <div class="label">SMTP Server</div><div class="colon">:</div>
+            <div class="value"><input class="kv-input" type="text" formControlName="smtpServer" /></div>
+          </div>
+          <div class="row">
+            <div class="label">Port</div><div class="colon">:</div>
+            <div class="value"><input class="kv-input" type="number" formControlName="portNo" /></div>
+          </div>
+          <div class="row">
+            <div class="label">Email</div><div class="colon">:</div>
+            <div class="value"><input class="kv-input" type="email" formControlName="emailId" /></div>
+          </div>
+          <div class="row">
+            <div class="label">Password</div><div class="colon">:</div>
+            <div class="value"><input class="kv-input" type="password" formControlName="password" /></div>
+          </div>
+          <div class="row">
+            <div class="label">Encryption</div><div class="colon">:</div>
+            <div class="value"><input class="kv-input" type="text" formControlName="EncryptionType" /></div>
+          </div>
+  
+          <div class="actions">
+            <button class="btn primary" type="submit" [disabled]="hostingForm.invalid">Update</button>
+            <button class="btn" type="button" (click)="cancelEditHosting()">Cancel</button>
+          </div>
+        </form>
+      </div>
+  
+  
+  
+  
+    
+  
+  
+      </div>
 
     </div>
+
+
+      <div class="carddiv">
+<h2 class="section-title"> COST ESTIMATION</h2>
+        <div class="card-container">
+
+
+          <div class="card">
+
+            <div >
+             <strong>Cost Estimation ( USD / EUR)   </strong> 
+          
+          
+            </div>
+            
+            <div   class="currency-container">
+          <div *ngFor="let item of currencyData">
+          
+             <div class="kv-list" >
+
+              <div class="cardlastdiv">
+
+                <div>
+                  <div class="row">
+                    <div class="label">EURO</div><div class="colon">:</div>
+                    <div class="value">  <input type="number"  class="value" [(ngModel)]="item.EURO" [disabled]="!isEditing" /></div>
+                  </div>
+                  <div class="row">
+                    <div class="label">USD</div><div class="colon">:</div>
+                    <div class="value">    <input type="number"  class="value" [(ngModel)]="item.USD" [disabled]="!isEditing" />
+          </div>
+                  </div>
+  
+                </div>
+                 
+                   
+                    <div class="actions1">
+                      <button class="btn primary" *ngIf="!isEditing"  (click)="enableEdit()">Edit</button>
+                       <button class="btn primary" *ngIf="isEditing"  (click)="saveCurrency()">Update</button>
+              <button class="btn" *ngIf="isEditing"  (click)="cancelEdit()">Cancel</button>
+            
+            
+                    </div>
+                    
+              </div>
+
+          
+                
+                </div>
+           
+          </div>
+          
+          
+          
+          
+          
+            </div>
+          </div>
+           
+
+
+     </div>
+      </div>
+
    
   </div>
+
+
 </div>

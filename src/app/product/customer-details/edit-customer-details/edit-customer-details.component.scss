@@ -133,29 +133,35 @@ mat-form-field {
 /* Process Row */
 .process-row {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  justify-content:center;
   align-items: center;
   gap: 20px;
-  padding: 20px;
-  border-radius: 10px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  padding: 10px;
+ 
+// background: red;
   margin-bottom: 12px;
   transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
-.process-row:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
 
 .half-width {
-  flex: 1;
-  min-width: 160px;
+   flex: 1 1 110px;    
+  max-width: 230px;  
+}
+
+.half-width11 {
+  flex: 1 1 80px;    
+  max-width: 150px; 
+}
+.half-width1 {
+  flex: 1 1 60px;    
+  max-width: 100px; 
 }
 
 .process-container {
   margin-top: 28px;
+  // background: wheat;
 }
 
 /* Formula Box */
@@ -246,6 +252,7 @@ mat-form-field {
 
 .delete-btn {
   color: #dc2626;
+  margin-bottom: 10px;
   transition: all 0.3s ease;
 }
 
@@ -355,3 +362,96 @@ table {
       flex: 0 0 auto; /* Prevent label from stretching */
       margin-top: 25px;
     }
+
+
+
+    .cost {
+  width: 140px;             
+  min-height: 50px;         
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // background: yellow;
+  margin-bottom: 10px;
+
+
+}
+
+
+.cost h5 {
+  margin: 0;
+  font-size: clamp(12px, 1.2vw, 14px);  
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.info-container {
+
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  margin-left: 10px;
+}
+
+.info-icon {
+  color: #0052cc;
+  font-size: 1.5rem;
+  transition: color 0.2s ease;
+}
+
+.info-container:hover .info-icon {
+  color: #003d99;
+}
+
+.info-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  min-width: 300px;
+  text-align: center;
+}
+
+.info-popup.dim {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+}
+
+.info-container:focus .info-popup,
+.info-container:hover .info-popup {
+  opacity: 1;
+  visibility: visible;
+}
+
+.info-content h5 {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.info-content strong {
+  display: block;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #0052cc;
+}
+
+@media (max-width: 480px) {
+  .info-popup {
+    min-width: 250px;
+    padding: 1rem;
+  }
+
+  .cost h5 {
+    font-size: 1rem;
+  }
+}
