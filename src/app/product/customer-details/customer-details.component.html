@@ -583,13 +583,13 @@
 <!-- Show only if currency = USD and ProcessCostUSD is not null -->
 <td class="process-cost-wide"
     *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' && process.ProcessCostUSD != null">
-  {{ process.ProcessCostUSD | number:'1.2-3' }}
+  {{ process.ProcessCostUSD  }}
 </td>
 
 <!-- Show only if currency = EURO and ProcessCostEUR is not null -->
 <td class="process-cost-wide"
     *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' && process.ProcessCostEUR != null">
-  {{ process.ProcessCostEUR | number:'1.2-3' }}
+  {{ process.ProcessCostEUR  }}
 </td>
 
 
@@ -1380,13 +1380,13 @@
 <!-- Show only if currency = USD and ProcessCostUSD is not null -->
 <td class="process-cost-wide"
     *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' && process.ProcessCostUSD != null">
-  {{ process.ProcessCostUSD | number:'1.2-3' }}
+  {{ process.ProcessCostUSD }}
 </td>
 
 <!-- Show only if currency = EURO and ProcessCostEUR is not null -->
 <td class="process-cost-wide"
     *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' && process.ProcessCostEUR != null">
-  {{ process.ProcessCostEUR | number:'1.2-3' }}
+  {{ process.ProcessCostEUR  }}
 </td>
 
 
