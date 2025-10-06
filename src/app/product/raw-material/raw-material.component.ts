@@ -14,6 +14,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { RawMaterialPaginator } from './custom-paginator-intl-raw-material';
+
 
 @Component({
   selector: 'app-raw-material',
@@ -24,7 +29,11 @@ import { MatDialog } from '@angular/material/dialog';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-     MatIconModule
+     MatIconModule,
+     MatPaginatorModule
+  ],
+   providers: [
+    { provide: MatPaginatorIntl, useFactory: RawMaterialPaginator }
   ],
   templateUrl: './raw-material.component.html',
   styleUrl: './raw-material.component.scss'
@@ -35,27 +44,44 @@ export class RawMaterialComponent implements OnInit {
     editingId: string | null = null;
 
   rawMaterials$!: Observable<RawMaterial[]>;
+  rawMaterials: RawMaterial[] = [];
+  paginatedRawMaterials: RawMaterial[] = [];
+  pageSize = 10;
+  pageIndex = 0;
 
   constructor(private store: Store, private fb: FormBuilder, private dialog : MatDialog) {
   }
 
-  ngOnInit(): void {
-
+ngOnInit(): void {
     this.rawMaterials$ = this.store.select(selectAllRawMaterials);
-    this.rawMaterials$.subscribe(rawMaterials => {
-      console.log('Raw Materials from store:', rawMaterials);
-    }); 
+
+    this.rawMaterials$.subscribe(data => {
+      this.rawMaterials = data;
+      this.updatePaginatedRawMaterials();
+    });
 
     this.store.dispatch(rawActions.loadRawMaterials());
-
-
 
     this.rawMaterialForm = this.fb.group({
       GradeName: ['', Validators.required],
       RatePerKg: ['', [Validators.required, Validators.min(0.01)]],
     });
-    
   }
+
+
+
+  updatePaginatedRawMaterials() {
+    const startIndex = this.pageIndex * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedRawMaterials = this.rawMaterials.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedRawMaterials();
+  }
+
 
 
   onSubmit() {

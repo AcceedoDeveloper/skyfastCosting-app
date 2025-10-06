@@ -1,31 +1,18 @@
 .process-container
 {
-   margin: 20px auto;
-  padding: 10px;
   border-radius: 10px;
   // width: 1300px;
 }
 
-
 .table-bordered {
   // width: 1100px;
-  margin: 10px auto;
-  background: white;
- 
- box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
 
-
-  
-  
-      margin-top: 20px;
   width: 100%;
   border-collapse: collapse;
   overflow: auto;
-border-radius: 20px  ;
 
 text-align: center;
 overflow: hidden;
-  
 }
 
 td.actions {
@@ -257,6 +244,17 @@ button {
   font-size: 18px;
   color: #7a7a7a;
 }
+
+.table-container {
+  // width: 1100px;
+  margin: 10px auto;
+  border-radius: 10px;
+ box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
+
+  overflow-x: auto;    
+  overflow-y: auto;   
+}
+
 
 /* optional clear button in the input */
 .search-input .clear-btn {

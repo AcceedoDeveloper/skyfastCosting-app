@@ -27,8 +27,8 @@ import { ChangeDetectorRef } from '@angular/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { LoadingSpinnerComponent} from '../../shared/loading-spinner/loading-spinner.component'
 import { ToastrService } from 'ngx-toastr';
-
-
+import { CustomPaginator} from './custom-paginator-intl';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 
 
@@ -46,6 +46,9 @@ import { ToastrService } from 'ngx-toastr';
     MatCheckboxModule,
     MatPaginatorModule,
     LoadingSpinnerComponent
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useFactory: CustomPaginator }
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'

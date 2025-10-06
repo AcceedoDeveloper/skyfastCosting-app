@@ -24,7 +24,9 @@
 </div>
 
 
- <ng-container *ngIf="allProcesses.length ; ">
+<div class="table-container" >
+
+
   <table class="table table-bordered">
     <thead>
       <tr>
@@ -55,7 +57,10 @@
     [pageSizeOptions]="[5, 10, 20]"
     (page)="onPageChange($event)">
   </mat-paginator>
-</ng-container>
+
+
+</div>
+
 
 
 

@@ -22,6 +22,9 @@ import { ToastrService } from 'ngx-toastr';
 import { PageEvent } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
+import { ProcessPaginator } from './custom-paginator-intl-process';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+
 
 @Component({
   selector: 'app-process',
@@ -36,6 +39,9 @@ import { FormsModule } from '@angular/forms';
     MatSnackBarModule,
     MatPaginatorModule,
     FormsModule
+  ],
+   providers: [
+    { provide: MatPaginatorIntl, useFactory: ProcessPaginator }
   ],
   templateUrl: './process.component.html',
   styleUrl: './process.component.scss'

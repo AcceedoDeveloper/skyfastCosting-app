@@ -32,8 +32,18 @@
          </tr>
        </tbody>
      </table>
-  
+
+
+      <mat-paginator
+      [length]="rawMaterials.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
   </ng-container>
+
+  
+ 
 
   <!-- Fallback template -->
   <ng-template #loading>
