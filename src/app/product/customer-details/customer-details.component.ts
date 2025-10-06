@@ -156,9 +156,9 @@ export class CustomerDetailsComponent implements OnInit {
 
   onEdit(customer: CustomerDetails) {
     const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
-      width: '590%',
-      height: '650px',
-      maxWidth: '75vw',
+      width: '90vw',
+      maxWidth: '1200px',
+      maxHeight: '90vh',
       data: customer,
       disableClose:true, 
     });

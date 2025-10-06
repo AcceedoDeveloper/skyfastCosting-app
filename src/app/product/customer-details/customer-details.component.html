@@ -525,15 +525,15 @@
 </span>
               </td>
               <td><strong>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}
+              <td>{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}
                                     <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
 (Raw Material cost/pc - Scrap cost/pc)
   <br />
-   {{ quotationData.results[0].revisions[0].rawMaterialCost }} - 0
+   {{ quotationData.results[0].revisions[0].rawMaterialCost }} * {{ quotationData.results[0].revisions[0].InterestRate }}
   <br />  
-  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
+  <strong>Result: {{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</strong>
 </div>
 </span>
               </td>
@@ -712,7 +712,7 @@
               </tr>
               <tr>
                 
-                  <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3'}}</td>
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</td>
                   <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
                    <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost) 
                      + (quotationData.results[0].revisions[0].TotalProcessCost)) * (quotationData.results[0].revisions[0].overHeadsPercent / 100)  | number:'1.2-2' }}
@@ -893,7 +893,7 @@
             <div class="details-container">
  <table class="inner-details">
               <tr>
-                <td class="label">Customer Drawing No</td>
+                <td class="label">Drawing No</td>
                 <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
               </tr>
               <tr>
