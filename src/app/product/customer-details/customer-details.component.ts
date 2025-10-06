@@ -131,7 +131,8 @@ export class CustomerDetailsComponent implements OnInit {
     const dialogRef = this.dialog.open(AddCustomerDetailsComponent, {
       width: '590%',
       height: '650px',
-      maxWidth: '75vw'
+      maxWidth: '75vw',
+      disableClose:true, 
     });
   }
 
@@ -158,7 +159,8 @@ export class CustomerDetailsComponent implements OnInit {
       width: '590%',
       height: '650px',
       maxWidth: '75vw',
-      data: customer   // ✅ pass the selected customer to dialog
+      data: customer,
+      disableClose:true, 
     });
 
     dialogRef.afterClosed().subscribe(result => {

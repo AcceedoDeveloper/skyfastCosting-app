@@ -69,7 +69,8 @@ export class CustomerComponent implements OnInit {
     this.dialog.open(AddCustomerComponent, {
       width: '600px',
       height: '600px',
-      data: customer || {}
+      data: customer || {},
+      disableClose:true, 
     });
   }
 
