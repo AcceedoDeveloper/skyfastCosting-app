@@ -31,6 +31,8 @@ import {appReducers } from './store/app.state';
 import { localStorageSync } from 'ngrx-store-localstorage';
 
 import { provideHttpClient } from '@angular/common/http';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { CustomPaginatorIntl } from './shared/custom-paginator-intl.service';
 
 
 //AUth State
@@ -73,6 +75,7 @@ export const appConfig: ApplicationConfig = {
       deps: [ConfigService],
       multi: true
     },
+    { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl },
      provideAnimations(),
     importProvidersFrom(
       ToastrModule.forRoot({

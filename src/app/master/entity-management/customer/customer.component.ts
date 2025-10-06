@@ -10,6 +10,9 @@ import { AddCustomerComponent } from './add-customer/add-customer.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { ConfrimDialogComponent} from '../../../shared/confrim-dialog/confrim-dialog.component';
+import { PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { CustomerPaginatorIntl } from '../../../shared/customer-paginator-intl.service';
 
 @Component({
   selector: 'app-customer',
@@ -18,13 +21,22 @@ import { ConfrimDialogComponent} from '../../../shared/confrim-dialog/confrim-di
     CommonModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatPaginatorModule
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomerPaginatorIntl }
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss'
 })
 export class CustomerComponent implements OnInit {
   customer$!: Observable<Customer[]>;
+
+  customers: Customer[] = [];
+  paginatedCustomers: Customer[] = [];
+  pageSize = 5;
+  pageIndex = 0;
 
   private dialog = inject(MatDialog);
   private store = inject(Store);
@@ -33,10 +45,24 @@ export class CustomerComponent implements OnInit {
     this.customer$ = this.store.select(selectAllCustomers);
 
     this.customer$.subscribe(data => {
+      this.customers = data;
       console.log('Customers data:', data);
+      this.updatePaginatedCustomers();
     });
 
     this.store.dispatch(MachineTypeActions.loadCustomer());
+  }
+
+  updatePaginatedCustomers() {
+    const startIndex = this.pageIndex * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedCustomers = this.customers.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedCustomers();
   }
 
   openAddCustomer(customer?: Customer) {
