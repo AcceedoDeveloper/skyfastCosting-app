@@ -78,7 +78,8 @@ private dialog = inject(MatDialog);
 openAddUserPopup() {
  this.dialog.open(AddUserComponent, {
     width: '500px',
-    data: null  
+    data: null  ,
+     disableClose:true, 
   });
 
  
@@ -88,7 +89,8 @@ openAddUserPopup() {
 openEditUserPopup(user: User) {
  this.dialog.open(AddUserComponent, {
     width: '500px',
-    data: user   
+    data: user, 
+    disableClose:true,
   });
 }
 

@@ -52,7 +52,8 @@ export class ShiftManagementComponent implements OnInit {
        width: '410px',
       height: '295px',
       maxWidth: '35vw',
-        data: {}         
+        data: {}   ,
+         disableClose:true,      
       });
     }
 
@@ -61,7 +62,8 @@ editShift(shift: Shift) {
      width: '410px',
       height: '295px',
       maxWidth: '35vw',
-    data: shift   // ✅ pass shift to dialog
+    data: shift,   // ✅ pass shift to dialog
+    disableClose:true,
   });
 }
 

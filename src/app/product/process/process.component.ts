@@ -119,6 +119,7 @@ updatePaginatedUsers() {
       width: '600px',
       height:'auto',
       maxWidth: '45vw', 
+      disableClose:true,
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -132,7 +133,8 @@ updatePaginatedUsers() {
     const dialogRef = this.dialog.open(AddProcessComponent, {
       width: '600px',
       height:'auto',
-      data: { process }
+      data: { process },
+       disableClose:true,
     });
 
     dialogRef.afterClosed().subscribe(result => {

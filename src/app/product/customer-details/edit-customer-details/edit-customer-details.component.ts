@@ -227,7 +227,7 @@ if (data?.revisions?.length) {
 //   }),
 
 //       customerName: typeof this.data?.customerName === 'string' 
-//         ? this.data.customerName 
+
 //         : this.data?.customerName?.customerName || '',
 
 //       rawMaterial: selectedRawMaterials,
@@ -405,6 +405,9 @@ onProcessSelected(processId: string, index: number) {
   });
 }
 
+  close() {
+    this.dialogRef.close();
+  }
 
 
 }
