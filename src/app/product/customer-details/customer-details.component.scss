@@ -294,18 +294,24 @@ vertical-align: middle;
   border: 1px solid #000;
   border-collapse: collapse;
   min-height: 70px;
+  table-layout: fixed; /* Ensure consistent column widths */
 }
 .header-grid > tbody > tr > td {
   border: 1px solid #000; /* only outer table cells get borders */
   vertical-align: top;
+  height: 100%; /* Ensure both cells take full height */
 }
 .customer-block {
-  width: 45%;
+  width: 35%;
   padding: 8px;
+  vertical-align: top;
+  height: 100%;
 }
 .details-block {
-  width: 30%;
+  width: 65%;
   padding: 8px;
+  vertical-align: top;
+  height: 100%;
 }
 
 /* Inner Table (right side details) */
@@ -823,6 +829,8 @@ vertical-align: middle;
   display: flex;
   justify-content: space-between;
   gap: 40px; /* space between left & right */
+  align-items: flex-start; /* Align content to top */
+  min-height: 100%; /* Take full height of parent */
 }
 
 .inner-details {
@@ -839,12 +847,20 @@ vertical-align: middle;
   font-weight: bold;
   width: 150px;
 }
+.image-box {
+  display: flex;
+  align-items: flex-start; /* Align image to top */
+  margin-top: 10px; /* Add some spacing from the details above */
+}
+
 .image-box img {
-  width: 100%;
-  height: auto;
+  width: 200px; /* Fixed width */
+  height: 100px; /* Fixed height */
   border: 1px solid #ccc;
   padding: 5px;
   border-radius: 4px;
+  object-fit: cover; /* Maintain aspect ratio while filling the fixed dimensions */
+  object-position: center; /* Center the image within the fixed size */
 }
 
 .currency-container {
