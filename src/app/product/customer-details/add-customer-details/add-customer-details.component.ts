@@ -166,41 +166,14 @@ export class AddCustomerDetailsComponent implements OnInit{
 }
 
  save() {
+  // Just prepare the data and move to next step
+  // No API call needed here - everything will be saved in onSave()
   const formValue = { ...this.productForm.value };
   if (formValue.rawMaterial.length === 0) {
     delete formValue.rawMaterial;
   }
 
-  console.log('data', formValue);
-
-  if (this.selectedFile) {
-    // Send FormData directly to service, not via NgRx
-    const formData = new FormData();
-
-    Object.entries(formValue).forEach(([key, value]) => {
-      if (Array.isArray(value) || typeof value === 'object') {
-        formData.append(key, JSON.stringify(value));
-      } else {
-        formData.append(key, value as any);
-      }
-    });
-
-    formData.append('drawingImage', this.selectedFile);
-
-    // Call service directly
-    this.productservices.createCustomerDetails(formData).subscribe({
-      next: (customer) => {
-        this.Cusid = customer._id;
-        console.log('✅ Customer created with image:', customer._id);
-      },
-      error: (err) => console.error(err)
-    });
-
-  } else {
-    // No image → safe to dispatch via NgRx
-    this.store.dispatch(Action.AddCustomerDetailsComponent({ customer: formValue }));
-  }
-
+  console.log('Step 1 data prepared:', formValue);
   this.addProcessSelection();
 }
 
@@ -300,41 +273,36 @@ onSave() {
   };
 
   console.log('Final JSON (Full):', result);
-  console.log('data id',this.Cusid);
 
+  // Use only createCustomerDetails API
+  let payload: any;
+  if (this.selectedFile) {
+     const formData = new FormData();
+     Object.entries(result).forEach(([key, value]) => {
+       if (Array.isArray(value) || typeof value === 'object') {
+         formData.append(key, JSON.stringify(value)); // serialize arrays/objects
+       } else {
+         formData.append(key, value as any);
+       }
+     });
+     formData.append('drawingImage', this.selectedFile);
+     payload = formData;
+   } else {
+     payload = result;
+   }
 
-   let payload: any;
-   if (this.selectedFile) {
-      const formData = new FormData();
-      Object.entries(result).forEach(([key, value]) => {
-        if (Array.isArray(value) || typeof value === 'object') {
-          formData.append(key, JSON.stringify(value)); // serialize arrays/objects
-        } else {
-          formData.append(key, value as any);
-        }
-      });
-      formData.append('drawingImage', this.selectedFile);
-      payload = formData;
-    } else {
-        this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
-    }
-
-    // ✅ Call service directly
-    this.productservices.updateCustomer(this.Cusid!, payload).subscribe({
-      next: (res) => {
-        console.log('✅ Customer updated:', res);
-        this.toastr.success('Customer updated successfully!');
-        this.dialogRef.close(true);
-      },
-      error: (err) =>{
-          this.toastr.error('Failed to update customer');
-          console.error('❌ Update failed:', err);
-      } 
-    });
-  
-
-  // this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
- this.dialogRef.close();
+   // ✅ Call createCustomerDetails service directly
+   this.productservices.createCustomerDetails(payload).subscribe({
+     next: (res) => {
+       console.log('✅ Customer created:', res);
+       this.toastr.success('Customer created successfully!');
+       this.dialogRef.close(true);
+     },
+     error: (err) =>{
+         this.toastr.error('Failed to create customer');
+         console.error('❌ Create failed:', err);
+     } 
+   });
 
 }
 

@@ -8,7 +8,7 @@
   box-sizing: border-box;
 }
 
-/* Dialog Content Override */
+/* Dialog Content Override - Allow content to be visible */
 ::ng-deep .mat-mdc-dialog-content {
   overflow: visible !important;
   max-height: none !important;
@@ -24,11 +24,99 @@
   max-height: none !important;
 }
 
+/* Ensure stepper content doesn't scroll */
+::ng-deep .mat-stepper-content {
+  overflow: visible !important;
+}
+
+/* Ensure individual steps don't scroll except Processes step */
+::ng-deep .mat-step-content {
+  overflow: visible !important;
+}
+
 /* Dialog Form Styling */
 .dialog-form {
   padding: 24px;
+  padding-top: 32px;
   overflow: visible;
   max-height: none;
+  width: 100%;
+}
+
+/* Ensure Basic Details and Other Details sections don't scroll */
+.maininputdiv,
+.other-details,
+.summary-row,
+.summary-card,
+.prodiv,
+.corediv,
+.subdiv,
+.subdiv2,
+.field-row,
+.field-row3 {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Force remove scrolling from all stepper steps except Processes */
+::ng-deep .mat-stepper-horizontal .mat-step-content {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Remove scrolling from mat-step content */
+::ng-deep .mat-step-content {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Remove scrolling from form elements */
+::ng-deep .mat-step-content form {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Responsive Dialog Container */
+::ng-deep .mat-mdc-dialog-container {
+  width: 95vw !important;
+  max-width: 1400px !important;
+  min-width: 800px !important;
+  height: 650px !important;
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 1200px) {
+  ::ng-deep .mat-mdc-dialog-container {
+    width: 90vw !important;
+    max-width: 1000px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .mat-mdc-dialog-container {
+    width: 95vw !important;
+    max-width: none !important;
+    min-width: 300px !important;
+  }
+  
+  .dialog-form {
+    padding: 16px;
+  }
+  
+  .maininputdiv {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .summary-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .subdiv {
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 
 body {
@@ -153,6 +241,38 @@ mat-form-field {
   font-size: 15px;
 }
 
+/* Process Container with Scroll - Override the general no-scroll rule */
+.process-container {
+  margin-top: 28px;
+  max-height: 400px;
+  overflow-y: auto !important;
+  padding-right: 8px;
+}
+
+/* Ensure process container can scroll despite general overflow hidden */
+::ng-deep .process-container {
+  overflow-y: auto !important;
+}
+
+/* Custom scrollbar for process container */
+.process-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.process-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.process-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.process-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
 /* Process Row */
 .process-row {
   display: flex;
@@ -182,10 +302,6 @@ mat-form-field {
   max-width: 100px; 
 }
 
-.process-container {
-  margin-top: 28px;
-  // background: wheat;
-}
 
 /* Formula Box */
 .formula-box {
@@ -337,10 +453,8 @@ mat-form-field {
   gap: 24px;
   margin-top: 20px;
   padding: 16px 0;
-  border-top: 1px solid #e2e8f0;
   position: sticky;
   bottom: 0;
-  background: white;
   z-index: 10;
 }
 
