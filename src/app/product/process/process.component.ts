@@ -19,9 +19,10 @@ import { ProductService} from '../../services/product.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
+import { ProcessPaginatorIntl } from '../../shared/process-paginator-intl.service';
 
 @Component({
   selector: 'app-process',
@@ -37,6 +38,9 @@ import { FormsModule } from '@angular/forms';
     MatPaginatorModule,
     FormsModule
   ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: ProcessPaginatorIntl }
+  ],
   templateUrl: './process.component.html',
   styleUrl: './process.component.scss'
 })
@@ -46,7 +50,7 @@ export class ProcessComponent implements OnInit {
   process$!: Observable<Process[]>;
    paginatedUsers: Process[] = [];
    filteredProcesses: Process[] = [];
-    pageSize = 5;
+    pageSize = 10;
   pageIndex = 0;
   allProcesses: Process[] = [];
   searchTerm: string = '';

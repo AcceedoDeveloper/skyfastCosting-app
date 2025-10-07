@@ -1,6 +1,6 @@
 .process-container
 {
-   margin: 20px auto;
+   margin: 0px auto;
   padding: 10px;
   border-radius: 10px;
   // width: 1300px;
@@ -26,6 +26,23 @@ border-radius: 20px  ;
 text-align: center;
 overflow: hidden;
   
+}
+
+/* Table Container */
+.table-container {
+  margin-top: 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table-bordered {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 td.actions {
@@ -284,4 +301,92 @@ button {
   .search-input {
     width: 100%;
   }
+}
+
+/* Custom Paginator Styling */
+.custom-paginator {
+  margin: 0;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 20px 20px;
+  padding: 6px 6px;
+}
+
+/* Hide the default page size label */
+::ng-deep .custom-paginator .mat-paginator-page-size-label {
+  display: none !important;
+}
+
+/* Add custom text before the page size selector */
+::ng-deep .custom-paginator .mat-paginator-page-size {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .custom-paginator .mat-paginator-page-size::before {
+  content: "Process per page: ";
+  font-size: 14px;
+  font-weight: 600;
+  color: #0e1635;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+/* Style the page size selector */
+::ng-deep .custom-paginator .mat-select {
+  font-size: 14px;
+  color: #333;
+  min-width: 60px;
+}
+
+::ng-deep .custom-paginator .mat-select-trigger {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Style paginator buttons */
+::ng-deep .custom-paginator .mat-icon-button {
+  color: #0e1635;
+  width: 40px;
+  height: 40px;
+}
+
+::ng-deep .custom-paginator .mat-icon-button:hover {
+  background-color: rgba(14, 22, 53, 0.1);
+  border-radius: 50%;
+}
+
+::ng-deep .custom-paginator .mat-icon-button:disabled {
+  color: #ccc;
+}
+
+/* Style the range label */
+::ng-deep .custom-paginator .mat-paginator-range-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  margin: 0 16px;
+}
+
+/* Style the paginator container */
+::ng-deep .custom-paginator .mat-paginator-container {
+  padding: 0;
+  min-height: auto;
+}
+
+/* Style the paginator content */
+::ng-deep .custom-paginator .mat-paginator-page-size-select {
+  margin: 0 8px;
+}
+
+/* Override any global paginator text */
+::ng-deep .mat-paginator-page-size-label {
+  display: none !important;
+}
+
+/* Ensure our custom text shows */
+::ng-deep .custom-paginator .mat-paginator-page-size {
+  display: flex !important;
+  align-items: center !important;
 }

@@ -25,36 +25,40 @@
 
 
  <ng-container *ngIf="allProcesses.length ; ">
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Process Name</th>
-        <th>Tonnage / Jaw</th>
-        <th>Cost Per Hr</th>
-        <th>Machine Centre</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of paginatedUsers">
-        <td>{{ p.processName }}</td>
-        <td>{{ p.TonnageJaw }}</td>
-        <td>{{ p.Hours }}</td>
-        <td>{{ p.machineCentre }}</td>
-        <td class="actions">
-          <mat-icon class="icon" (click)="openEditDialog(p)">edit</mat-icon>
-          <mat-icon class="icon" (click)="onDelete(p._id)">delete</mat-icon>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-container">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Process Name</th>
+          <th>Tonnage / Jaw</th>
+          <th>Cost Per Hr</th>
+          <th>Machine Centre</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of paginatedUsers">
+          <td>{{ p.processName }}</td>
+          <td>{{ p.TonnageJaw }}</td>
+          <td>{{ p.Hours }}</td>
+          <td>{{ p.machineCentre }}</td>
+          <td class="actions">
+            <mat-icon class="icon" (click)="openEditDialog(p)">edit</mat-icon>
+            <mat-icon class="icon" (click)="onDelete(p._id)">delete</mat-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <mat-paginator
-    [length]="filteredProcesses.length"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
-  </mat-paginator>
+    <mat-paginator
+      [length]="filteredProcesses.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="custom-paginator">
+    </mat-paginator>
+  </div>
 </ng-container>
 
 

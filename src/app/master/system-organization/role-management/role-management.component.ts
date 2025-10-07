@@ -57,6 +57,10 @@ export class RoleManagementComponent implements OnInit {
     this.newRoleName = '';
   }
 
+  isAdminRole(role: Role): boolean {
+    return role.role.toLowerCase() === 'admin';
+  }
+
 deleteRole(id: string) {
   const dialogRef = this.dialog.open(ConfrimDialogComponent, {
     width: '350px',

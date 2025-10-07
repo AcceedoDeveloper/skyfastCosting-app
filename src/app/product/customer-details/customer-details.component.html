@@ -30,144 +30,148 @@
 
 
   <ng-container *ngIf="customers$ | async as customers; else loading">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Customer</th>
-          <th>Part Name</th>
-          <th>Part No</th>
-          <th>Revision</th>
-          <th>Raw Materials</th>
-          <th>Processes</th>
-          <th>Download</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let c of filteredCustomers$ | async">
+    <div class="table-container">
+      <table class="table table-bordered">
+        <thead>
           <tr>
-            <td>{{ c.customerName.customerName }}</td>
-            <td>{{ c.partName }}</td>
-            <td>{{ getLatestRevision(c)?.productName }}</td>
-            <td>
-              {{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}
-            </td>
-            <td> 
-              <ng-container *ngIf="getLatestRevision(c)">
-                {{ getLatestRevision(c).noOfRawMaterials }}
-              </ng-container>
-              <ng-template #noMaterial>
-                <span>No Raw Materials</span>
-              </ng-template>
-            </td>
-            <td>
-              <ng-container *ngIf="getLatestRevision(c) ; else noProcess">
-                {{getLatestRevision(c).noOfProcess}}
-              </ng-container>
-              <ng-template #noProcess>
-                <span>No Processes</span>
-              </ng-template>
-            </td>
-            <td>
-              <a href="javascript:void(0)" 
-                style="color: #1976d2; cursor: pointer;"
-                (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-                view /
-              </a>
-               <a href="javascript:void(0)" 
-                style="color: #1976d2; cursor: pointer;"
-                (click)="viewQuatation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-                download Quotation
-              </a>
-            </td>
-            <td class="actions">
-              <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
-              <mat-icon class="icon" (click)="onDelete(c._id)">delete</mat-icon>
-              <ng-container>
-                <mat-icon class="icon" (click)="toggleCompare(c)">
-                  {{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}
-                </mat-icon>
-              </ng-container>
-            </td>
+            <th>Customer</th>
+            <th>Part Name</th>
+            <th>Part No</th>
+            <th>Revision</th>
+            <th>Raw Materials</th>
+            <th>Processes</th>
+            <th>Download</th>
+            <th>Actions</th>
           </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let c of filteredCustomers$ | async">
+            <tr>
+              <td>{{ c.customerName.customerName }}</td>
+              <td>{{ c.partName }}</td>
+              <td>{{ getLatestRevision(c)?.productName }}</td>
+              <td>
+                {{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}
+              </td>
+              <td> 
+                <ng-container *ngIf="getLatestRevision(c)">
+                  {{ getLatestRevision(c).noOfRawMaterials }}
+                </ng-container>
+                <ng-template #noMaterial>
+                  <span>No Raw Materials</span>
+                </ng-template>
+              </td>
+              <td>
+                <ng-container *ngIf="getLatestRevision(c) ; else noProcess">
+                  {{getLatestRevision(c).noOfProcess}}
+                </ng-container>
+                <ng-template #noProcess>
+                  <span>No Processes</span>
+                </ng-template>
+              </td>
+              <td>
+                <a href="javascript:void(0)" 
+                  style="color: #1976d2; cursor: pointer;"
+                  (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                  view /
+                </a>
+                 <a href="javascript:void(0)" 
+                  style="color: #1976d2; cursor: pointer;"
+                  (click)="viewQuatation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                  download Quotation
+                </a>
+              </td>
+              <td class="actions">
+                <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
+                <mat-icon class="icon" (click)="onDelete(c._id)">delete</mat-icon>
+                <ng-container>
+                  <mat-icon class="icon" (click)="toggleCompare(c)">
+                    {{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}
+                  </mat-icon>
+                </ng-container>
+              </td>
+            </tr>
 
-          <!-- 🔽 Nested table row -->
-          <tr *ngIf="expandedCustomer === c">
-            <td id="subbg" colspan="8">
-              <table class="table table-sm table-bordered nested-table">
-                <thead>
-                  <tr>
-                    <th class="subtable">Revision</th>
-                    <th class="subtable">Product</th>
-                    <th class="subtable">Raw Materials</th>
-                    <th class="subtable">Processes</th>
-                    <th class="subtable">Downlaod</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let rev of c.revisions; let i = index">
-                    <!-- Revision -->
-                    <td class="small-col">
-                      <mat-checkbox
-                        [(ngModel)]="rev.selected"
-                        (change)="onRevisionSelect(rev, $event)"
-                      ></mat-checkbox>
-                      Revision {{ rev.revisionNumber || (i + 1) }}
-                    </td>
+            <!-- 🔽 Nested table row -->
+            <tr *ngIf="expandedCustomer === c">
+              <td id="subbg" colspan="8">
+                <table class="table table-sm table-bordered nested-table">
+                  <thead>
+                    <tr>
+                      <th class="subtable">Revision</th>
+                      <th class="subtable">Product</th>
+                      <th class="subtable">Raw Materials</th>
+                      <th class="subtable">Processes</th>
+                      <th class="subtable">Downlaod</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let rev of c.revisions; let i = index">
+                      <!-- Revision -->
+                      <td class="small-col">
+                        <mat-checkbox
+                          [(ngModel)]="rev.selected"
+                          (change)="onRevisionSelect(rev, $event)"
+                        ></mat-checkbox>
+                        Revision {{ rev.revisionNumber || (i + 1) }}
+                      </td>
 
-                    <!-- Product -->
-                    <td class="small-col" id="small-colname">
-                      {{ rev.productName }}
-                    </td>
+                      <!-- Product -->
+                      <td class="small-col" id="small-colname">
+                        {{ rev.productName }}
+                      </td>
 
-                    <!-- Raw Materials (comma separated) -->
-                    <td class="wide-col">
-                      {{ getRawMaterialList(rev.rawMaterial) }}
-                    </td>
+                      <!-- Raw Materials (comma separated) -->
+                      <td class="wide-col">
+                        {{ getRawMaterialList(rev.rawMaterial) }}
+                      </td>
 
-                    <!-- Processes (comma separated) -->
-                    <td class="wide-col">
-                      {{ getProcessList(rev.processes) }}
-                    </td>
+                      <!-- Processes (comma separated) -->
+                      <td class="wide-col">
+                        {{ getProcessList(rev.processes) }}
+                      </td>
 
-                    <td class="small-col">
-                      <button
-                        mat-raised-button
-                        color="accent"
-                        (click)="downloadQuotation(c.customerName.customerName, c.partName, rev.revisionNumber)"
-                      >
-                        Download
-                      </button>
-                    </td>
-                  </tr>
+                      <td class="small-col">
+                        <button
+                          mat-raised-button
+                          color="accent"
+                          (click)="downloadQuotation(c.customerName.customerName, c.partName, rev.revisionNumber)"
+                        >
+                          Download
+                        </button>
+                      </td>
+                    </tr>
 
-                  <!-- Compare button -->
-                  <tr>
-                    <td colspan="6" class="text-center">
-                      <button
-                        mat-raised-button
-                        color="primary"
-                        (click)="openComparePopup()"
-                        [disabled]="!canCompare()"
-                      >
-                        Compare Selected
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
+                    <!-- Compare button -->
+                    <tr>
+                      <td colspan="6" class="text-center">
+                        <button
+                          mat-raised-button
+                          color="primary"
+                          (click)="openComparePopup()"
+                          [disabled]="!canCompare()"
+                        >
+                          Compare Selected
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
 
-    <mat-paginator
-      [length]="totalFiltered$ | async"
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10]"
-      (page)="onPageChange($event)">
-    </mat-paginator>
+      <mat-paginator
+        [length]="totalFiltered$ | async"
+        [pageSize]="10"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+        class="custom-paginator">
+      </mat-paginator>
+    </div>
   </ng-container>
 
   <ng-template #loading>

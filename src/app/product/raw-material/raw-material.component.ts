@@ -12,8 +12,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 import { ConfrimDialogComponent} from '../../shared/confrim-dialog/confrim-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { RawMaterialPaginatorIntl } from '../../shared/raw-material-paginator-intl.service';
 
 @Component({
   selector: 'app-raw-material',
@@ -24,7 +26,11 @@ import { MatDialog } from '@angular/material/dialog';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-     MatIconModule
+    MatIconModule,
+    MatPaginatorModule
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: RawMaterialPaginatorIntl }
   ],
   templateUrl: './raw-material.component.html',
   styleUrl: './raw-material.component.scss'
@@ -35,6 +41,13 @@ export class RawMaterialComponent implements OnInit {
     editingId: string | null = null;
 
   rawMaterials$!: Observable<RawMaterial[]>;
+  
+  // Pagination properties
+  paginatedRawMaterials: RawMaterial[] = [];
+  pageSize = 10;
+  pageSizeOptions = [10, 20, 50];
+  currentPage = 0;
+  totalItems = 0;
 
   constructor(private store: Store, private fb: FormBuilder, private dialog : MatDialog) {
   }
@@ -44,17 +57,34 @@ export class RawMaterialComponent implements OnInit {
     this.rawMaterials$ = this.store.select(selectAllRawMaterials);
     this.rawMaterials$.subscribe(rawMaterials => {
       console.log('Raw Materials from store:', rawMaterials);
+      this.totalItems = rawMaterials.length;
+      this.updatePaginatedData(rawMaterials);
     }); 
 
     this.store.dispatch(rawActions.loadRawMaterials());
-
-
 
     this.rawMaterialForm = this.fb.group({
       GradeName: ['', Validators.required],
       RatePerKg: ['', [Validators.required, Validators.min(0.01)]],
     });
     
+  }
+
+  // Update paginated data based on current page and page size
+  updatePaginatedData(allRawMaterials: RawMaterial[]): void {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedRawMaterials = allRawMaterials.slice(startIndex, endIndex);
+  }
+
+  // Handle page change event
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    
+    this.rawMaterials$.subscribe(rawMaterials => {
+      this.updatePaginatedData(rawMaterials);
+    });
   }
 
 

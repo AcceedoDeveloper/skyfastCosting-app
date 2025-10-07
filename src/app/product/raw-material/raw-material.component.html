@@ -9,29 +9,39 @@
   <!-- Show when data is loading -->
   <ng-container  *ngIf="rawMaterials$ | async as rawMaterials; else loading">
   
+    <div class="table-container">
+      <table  class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Grade Name</th>
+            <th>Rate Per Kg</th>
+            <th>action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  *ngFor="let rm of paginatedRawMaterials">
+            <td>{{ rm.GradeName }}</td>
+            <td>{{ rm.RatePerKg }}</td>
+            <td  >
+                <!-- Action buttons can be added here -->
+                <mat-icon class="icon" (click)="edit(rm)" >edit</mat-icon>
+                <mat-icon class="icon" (click)="delete(rm._id)">delete</mat-icon>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-     <table  class="table table-bordered">
-       <thead>
-         <tr>
-           <th>Grade Name</th>
-           <th>Rate Per Kg</th>
-           <th>action</th>
-         </tr>
-       </thead>
-       <tbody>
-         <tr  *ngFor="let rm of rawMaterials">
-           <td>{{ rm.GradeName }}</td>
-           <td>{{ rm.RatePerKg }}</td>
-             <td  >
-                 <!-- Action buttons can be added here -->
-                  <mat-icon class="icon" (click)="edit(rm)" >edit</mat-icon>
-                  <mat-icon class="icon" (click)="delete(rm._id)">delete</mat-icon>
-                  
-               
-             </td>
-         </tr>
-       </tbody>
-     </table>
+      <!-- Paginator -->
+      <mat-paginator 
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="currentPage"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+        class="custom-paginator">
+      </mat-paginator>
+    </div>
   
   </ng-container>
 

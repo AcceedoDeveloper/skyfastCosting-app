@@ -24,9 +24,10 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { CustomerResponse } from '../../model/pdf.model';
 import { ChangeDetectorRef } from '@angular/core';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 import { LoadingSpinnerComponent} from '../../shared/loading-spinner/loading-spinner.component'
 import { ToastrService } from 'ngx-toastr';
+import { CustomerDetailsPaginatorIntl } from '../../shared/customer-details-paginator-intl.service';
 
 
 
@@ -46,6 +47,9 @@ import { ToastrService } from 'ngx-toastr';
     MatCheckboxModule,
     MatPaginatorModule,
     LoadingSpinnerComponent
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomerDetailsPaginatorIntl }
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'

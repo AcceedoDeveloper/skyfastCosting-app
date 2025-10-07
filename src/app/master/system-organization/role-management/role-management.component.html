@@ -54,11 +54,11 @@
         <tr class="trh" *ngFor="let role of roles$ | async">
           <td>{{ role.role }}</td>
           <td class="actions">
-            <button mat-icon-button color="primary" (click)="editRole(role)">
-              <mat-icon class="icon" >edit</mat-icon>
+            <button mat-icon-button color="primary" (click)="editRole(role)" [disabled]="isAdminRole(role)">
+              <mat-icon class="icon">{{ isAdminRole(role) ? 'lock' : 'edit' }}</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="deleteRole(role._id)">
-              <mat-icon class="icon">delete</mat-icon>
+            <button mat-icon-button color="warn" (click)="deleteRole(role._id)" [disabled]="isAdminRole(role)">
+              <mat-icon class="icon">{{ isAdminRole(role) ? 'lock' : 'delete' }}</mat-icon>
             </button>
           </td>
         </tr>
