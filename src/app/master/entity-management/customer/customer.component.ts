@@ -35,7 +35,7 @@ export class CustomerComponent implements OnInit {
 
   customers: Customer[] = [];
   paginatedCustomers: Customer[] = [];
-  pageSize = 5;
+  pageSize = 10;
   pageIndex = 0;
 
   private dialog = inject(MatDialog);

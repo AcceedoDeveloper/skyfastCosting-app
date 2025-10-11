@@ -69,19 +69,20 @@
                   <span>No Processes</span>
                 </ng-template>
               </td>
-              <td>
-                <a href="javascript:void(0)" 
-                  style="color: #1976d2; cursor: pointer;"
-                  (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-                  view /
-                </a>
-                 <a href="javascript:void(0)" 
-                  style="color: #1976d2; cursor: pointer;"
-                  (click)="viewQuatation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-                  download Quotation
-                </a>
-              </td>
-              <td class="actions">
+                <td class="download-cell">
+                  <div class="combined-button">
+                    <div class="view-section" (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                      <span>View</span>
+                    </div>
+                    <div class="download-section" (click)="viewQuatation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                      <span>Download</span>
+                    </div>
+                  </div>
+                </td>
+
+
+              
+              <td >
                 <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
                 <mat-icon class="icon" (click)="onDelete(c._id)">delete</mat-icon>
                 <ng-container>

@@ -1,27 +1,28 @@
 <div class="process-container">
   <div class="header">
-   
-  
-  <h2 style="font-weight: bold;">Process List</h2>
+    <div class="header-item">
+      <h2 style="font-weight: bold;">Process List</h2>
+    </div>
 
+    <div class="header-item">
+      <div class="search-input">
+        <input type="text" placeholder="Search Process Name" [(ngModel)]="searchTerm" (input)="applyFilter()" />
+        <button type="button" class="clear-btn" *ngIf="searchTerm" (click)="searchTerm=''; applyFilter()">✕</button>
+        <mat-icon class="search-icon">search</mat-icon>
+      </div>
+    </div>
 
- <div class="search-container">
-  <div class="search-input">
-    <input type="text" placeholder="Search Process Name" [(ngModel)]="searchTerm" (input)="applyFilter()" />
-    <button type="button" class="clear-btn" *ngIf="searchTerm" (click)="searchTerm=''; applyFilter()">✕</button>
-    <mat-icon class="search-icon">search</mat-icon>
+    <div class="header-item">
+      <div class="file-upload-container">
+        <input class="file-upload-container-input" type="file" (change)="onFileSelected($event)" />
+        <button type="button" class="btn btn-secondary" (click)="onUpload()">Upload</button>
+      </div>
+    </div>
+
+    <div class="header-item">
+      <button mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">+ Add Process</button>
+    </div>
   </div>
-</div>
-
-
-<div class="file-upload-container">
-  <input class="file-upload-container-input" type="file" (change)="onFileSelected($event)" />
-  <button type="button" class="btn btn-secondary" (click)="onUpload()">Upload</button>
-</div>
-
-
-<button  mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">+ Add Process</button>
-</div>
 
 
  <ng-container *ngIf="allProcesses.length ; ">
