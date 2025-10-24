@@ -8,7 +8,7 @@ import { ConfigService} from '../shared/config.service';
   providedIn: 'root'
 })
 export class CompanyService {
-  private apiUrl = 'http://localhost:3005';
+  // private apiUrl = 'http://localhost:3005';
 
 constructor(private http: HttpClient, private configService: ConfigService ) {}
 

@@ -10,7 +10,7 @@ import { Observable, of } from "rxjs";
   providedIn: 'root'
 })
 export class EntityService {
-   private apiUrl = 'http://localhost:3005';
+  //  private apiUrl = 'http://localhost:3005';
  private cachedPermissions: Permission[] | null = null;
 
   constructor(private http : HttpClient, private config: ConfigService ) { }
