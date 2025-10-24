@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -24,13 +25,12 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { CustomerResponse } from '../../model/pdf.model';
 import { ChangeDetectorRef } from '@angular/core';
-import { MatPaginatorModule, PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { LoadingSpinnerComponent} from '../../shared/loading-spinner/loading-spinner.component'
 import { ToastrService } from 'ngx-toastr';
-import { CustomerDetailsPaginatorIntl } from '../../shared/customer-details-paginator-intl.service';
-
-
-
+// import { CustomPaginator} from './custom-paginator-intl';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { ConfigService} from '../../shared/config.service';
 
 
 @Component({
@@ -49,7 +49,7 @@ import { CustomerDetailsPaginatorIntl } from '../../shared/customer-details-pagi
     LoadingSpinnerComponent
   ],
   providers: [
-    { provide: MatPaginatorIntl, useClass: CustomerDetailsPaginatorIntl }
+    { provide: MatPaginatorIntl }
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
@@ -78,7 +78,8 @@ export class CustomerDetailsComponent implements OnInit {
 
   constructor(
     private store: Store, private fb: FormBuilder, 
-    private dialog: MatDialog, private productservices: ProductService, private tooser : ToastrService ) {}
+    private dialog: MatDialog, private productservices: ProductService, 
+    private tooser : ToastrService, private config : ConfigService ) {}
 
   ngOnInit(): void {
     this.customers$ = this.store.select(selectAllCustomers).pipe(
@@ -134,10 +135,16 @@ export class CustomerDetailsComponent implements OnInit {
   openAddProductDialog() {
     const dialogRef = this.dialog.open(AddCustomerDetailsComponent, {
       width: '590%',
-      height: '650px',
+      height: '680px',
       maxWidth: '75vw',
       disableClose:true, 
     });
+
+     dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.store.dispatch(customerActions.loadCustomers());
+    }
+  });
   }
 
   onDelete(_id: string | undefined) {
@@ -152,18 +159,20 @@ export class CustomerDetailsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === 'confirm') {
-        this.store.dispatch(customerActions.deleteCustomer({ id: _id }));
-      }
-    });
+    if (result === 'confirm') {
+      this.store.dispatch(customerActions.deleteCustomer({ id: _id }));
+
+      // Wait for delete success, then reload
+      this.store.dispatch(customerActions.loadCustomers());
+    }
+  });
   }
 
   onEdit(customer: CustomerDetails) {
     const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
-      width: '95vw',
-      maxWidth: '1400px',
-      minWidth: '800px',
+      width: '590%',
       height: '650px',
+      maxWidth: '75vw',
       data: customer,
       disableClose:true, 
     });
@@ -465,9 +474,10 @@ getDrawingImage(): string {
     return '';
   }
 
-  console.log('image path:', 'http://localhost:3005' + encodeURI(this.quotationData.results[0].drawingImage));
+  // console.log('image path:', 'http://localhost:3005' + encodeURI(this.quotationData.results[0].drawingImage));
+  const api  = this.config.getCostingUrl('');
   
-  return 'http://localhost:3005' + encodeURI(this.quotationData.results[0].drawingImage);
+  return api + encodeURI(this.quotationData.results[0].drawingImage);
   
 }
 
@@ -526,6 +536,38 @@ saveCurrency(){
 }
 
 
+getProcessCostByCurrency(process: any, currency: string = '') {
+  if (!currency) return process.cost;
+  const key = `ProcessCost${currency}`;
+  return process[key] ?? process.cost;
+}
+
+getSumOfProcessCostByCurrency(revision: any, currency: string = '') {
+  if (!currency) return revision.sumOfProcessCost;
+  const key = `sumOfProcessCost${currency}`;
+  return revision[key] ?? revision.sumOfProcessCost;
+}
+
+
+getRejectionCostByCurrency(revision: any, currency: string = '') {
+  if (!currency) return revision.RejectionCost;
+  const key = `RejectionCost${currency}`;
+  return revision[key] ?? revision.RejectionCost;
+}
+
+getTotalProcessCostByCurrency(revision: any, currency: string = '') {
+  if (!currency) return revision.TotalProcessCost;
+  const key = `TotalProcessCost${currency}`;
+  return revision[key] ?? revision.TotalProcessCost;
+}
+
+
+
+getTotalPriceByCurrency(revision: any, currency: string = '') {
+  if (!currency) return revision.TotalPrice;
+  const key = `TotalPrice${currency}`;
+  return revision[key] ?? revision.TotalPrice;
+}
 
 
 }

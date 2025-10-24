@@ -1,6 +1,6 @@
 {
   "baseUrl": "/",
-  "costingUrl": "http://localhost:3005/",
+  "costingUrl": "http://localhost:3006/",
   "backupUrl": "http://20.84.65.155:9011/",
   "urls": [
 

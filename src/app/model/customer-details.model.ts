@@ -26,6 +26,9 @@ export interface Revision {
   Rejection: number;
   InterestRate: number;
   InspectorCost: number;
+  Freight:string;
+  ModeOfTransport:string
+
   Packing: string;
   ToolAmbience: string;
   castingWeight: number;
@@ -69,6 +72,8 @@ export interface CustomerDetails {
   Packing?: string;
   InterestRate?: number;
   InspectorCost?: number;
+  Freight?:string;
+  ModeOfTransport?:string;
  CMMInspection: number,
     Insurance: number,
     SeaPacking: number,

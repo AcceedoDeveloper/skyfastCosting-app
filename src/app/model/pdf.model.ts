@@ -44,6 +44,8 @@ export interface Revision {
   Packing: string | null;
   InterestRate: number | null;
   InspectorCost: number | null;
+  Freight:string | null;
+  ModeOfTransport:string | null;
   ToolAmbience: string | null;
   packingRate?: number | null;
   packingPercentage?: number | null;

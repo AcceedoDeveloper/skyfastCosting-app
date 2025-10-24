@@ -471,6 +471,12 @@
         </tr>
       </table>
       
+
+
+
+
+
+      
       
       <table class="material-table">
           <tr>
@@ -565,10 +571,9 @@
                   <th>No. of Cores Hy.</th>
                   <th>Hourly Output</th>
                   <th >Process Cost/casting</th>
-                  <th *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD'">Process Cost (USD)</th>
+                  <th *ngIf="quotationData.results[0].revisions[0]?.currency !=null">Process Cost {{quotationData.results[0].revisions[0]?.currency}}</th>
 
-    <!-- Show EURO column only if currency is EURO -->
-    <th *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO'">Process Cost (EURO)</th>
+
               </tr>
           </thead>
           <tbody>
@@ -593,16 +598,10 @@
 </div>
 </span>
                   </td>
-<!-- Show only if currency = USD and ProcessCostUSD is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' && process.ProcessCostUSD != null">
-  {{ process.ProcessCostUSD  }}
-</td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' && process.ProcessCostEUR != null">
-  {{ process.ProcessCostEUR  }}
+                  <!-- get process cost by currency -->
+<td class="process-cost-wide">
+  {{ getProcessCostByCurrency(process, quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
 
@@ -627,17 +626,15 @@
 </div>
 </span>
                   </td>
-                 <!-- Show only if currency = USD and ProcessCostUSD is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].sumOfProcessCostUSD| number:'1.2-3' }}
+
+                  <!-- sum Process Cost -->
+
+<!-- Sum of Process Cost (Dynamic by Currency) -->
+<td class="process-cost-wide">
+  {{ getSumOfProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].sumOfProcessCostEUR| number:'1.2-3' }}
-</td>
+
 
               </tr>
               <tr>
@@ -662,16 +659,17 @@
 </div>
 </span>
                   </td>
-                  <td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].RejectionCostUSD| number:'1.2-3' }}
+
+
+
+<!-- Rejection Cost -->
+<td class="process-cost-wide">
+  {{ getRejectionCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].RejectionCostEUR | number:'1.2-3' }}
-</td>
+
+
+
               </tr>
               <tr>
                   <td></td>
@@ -694,15 +692,10 @@
 </div>
 </span>
                   </td>
-                            <td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].TotalProcessCostUSD| number:'1.2-3' }}
-</td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].TotalProcessCostEUR| number:'1.2-3' }}
+                  <!-- Total Process Cost -->
+<td class="process-cost-wide">
+  {{ getTotalProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
               </tr>
@@ -747,16 +740,14 @@
 </div>
 </span>
                   </td>
-                    <td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].TotalPriceUSD| number:'1.2-3' }}
+
+
+<!-- Total Price -->
+<td class="process-cost-wide">
+  {{ getTotalPriceByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].TotalPriceEUR| number:'1.2-3' }}
-</td>
+
               </tr>
    
               <!-- Other Terms and conditions separator inside the same table -->
@@ -770,9 +761,9 @@
                               <th>Packing & Forwarding</th>
                               <td>Yours</td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Paid</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -793,9 +784,9 @@
                               <td>  {{quotationData.results[0].revisions[0].CMMInspection}} 
 </td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Ex works</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -838,6 +829,26 @@
 
       
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
   </div>
 
@@ -1169,9 +1180,9 @@
                               <th>Packing & Forwarding</th>
                               <td>Yours</td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Paid</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -1192,9 +1203,9 @@
                               <td>  {{quotationData.results[0].revisions[0].CMMInspection}} 
 </td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Ex works</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -1373,10 +1384,9 @@
                   <th>No. of Cores Hy.</th>
                   <th>Hourly Output</th>
                   <th >Process Cost/casting</th>
-                  <th *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD'">Process Cost (USD)</th>
+                  <th *ngIf="quotationData.results[0].revisions[0]?.currency !=null">Process Cost {{quotationData.results[0].revisions[0]?.currency}}</th>
 
-    <!-- Show EURO column only if currency is EURO -->
-    <th *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO'">Process Cost (EURO)</th>
+   
               </tr>
           </thead>
           <tbody>
@@ -1390,17 +1400,13 @@
                   <td>-</td>
                   <td>{{ process.HourlyOutput }}</td>
                   <td  class="process-cost-wide">{{ process.cost | number:'1.2-3' }}</td>
-<!-- Show only if currency = USD and ProcessCostUSD is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' && process.ProcessCostUSD != null">
-  {{ process.ProcessCostUSD }}
+
+
+                  <!-- get process cost by currency -->
+<td class="process-cost-wide">
+  {{ getProcessCostByCurrency(process, quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' && process.ProcessCostEUR != null">
-  {{ process.ProcessCostEUR  }}
-</td>
 
 
              </tr>
@@ -1415,17 +1421,13 @@
                   <td></td>
                   
                   <td >{{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}</td>
-                 <!-- Show only if currency = USD and ProcessCostUSD is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].sumOfProcessCostUSD| number:'1.2-3' }}
+
+
+<!-- Sum of Process Cost (Dynamic by Currency) -->
+<td class="process-cost-wide">
+  {{ getSumOfProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].sumOfProcessCostEUR| number:'1.2-3' }}
-</td>
 
               </tr>
               <tr>
@@ -1438,16 +1440,14 @@
                   <td>-</td>
                   
                   <td>-</td>
+         
                   <td >{{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</td>
-                  <td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].RejectionCostUSD| number:'1.2-3' }}
-</td>
+          
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].RejectionCostEUR | number:'1.2-3' }}
+
+<!-- Rejection Cost -->
+<td class="process-cost-wide">
+  {{ getRejectionCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
               </tr>
               <tr>
@@ -1460,15 +1460,11 @@
     
                   <td colspan="2">Total Process cost/pc (L) :</td>
                   <td >{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                            <td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].TotalProcessCostUSD| number:'1.2-3' }}
-</td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].TotalProcessCostEUR| number:'1.2-3' }}
+
+                  <!-- Total Process Cost -->
+<td class="process-cost-wide">
+  {{ getTotalProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
               </tr>
@@ -1488,16 +1484,12 @@
                   <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 | number:'1.2-2' }}</td>
                   <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
                   <td >{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
-                    <td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'USD' ">
-  {{ quotationData.results[0].revisions[0].TotalPriceUSD| number:'1.2-3' }}
+         
+<!-- Total Price -->
+<td class="process-cost-wide">
+  {{ getTotalPriceByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
 </td>
 
-<!-- Show only if currency = EURO and ProcessCostEUR is not null -->
-<td class="process-cost-wide"
-    *ngIf="quotationData.results[0].revisions[0]?.currency === 'EURO' ">
-  {{ quotationData.results[0].revisions[0].TotalPriceEUR| number:'1.2-3' }}
-</td>
               </tr>
    
               <!-- Other Terms and conditions separator inside the same table -->
@@ -1511,9 +1503,9 @@
                               <th>Packing & Forwarding</th>
                               <td>Yours</td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Paid</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -1534,9 +1526,9 @@
                               <td>  {{quotationData.results[0].revisions[0].CMMInspection}} 
 </td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Ex works</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -1803,9 +1795,9 @@
                               <th>Packing & Forwarding</th>
                               <td>Yours</td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Paid</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -1826,9 +1818,9 @@
                               <td>  {{quotationData.results[0].revisions[0].CMMInspection}} 
 </td>
                               <th>Mode of Transport</th>
-                              <td>Road</td>
+                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
                               <th>Freight:</th>
-                              <td>Ex works</td>
+                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
                           </tr>
                           <tr>
                               <th>Insurance</th>
@@ -1879,4 +1871,5 @@
 
 </div>
 </div>
+
 
