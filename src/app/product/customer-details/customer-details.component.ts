@@ -64,7 +64,7 @@ export class CustomerDetailsComponent implements OnInit {
   selectedRevisions: any[] = [];
   showComparePopup: boolean = false;
   expandedCustomer: any = null;
-  quotationData!: CustomerResponse;
+  quotationData!: any;
   pdfview: boolean = false;
   domesticpdf: boolean = false;
   pdfwithouticon: boolean = false;
@@ -279,104 +279,7 @@ export class CustomerDetailsComponent implements OnInit {
     });
   }
 
-  // downloadPDF() {
-  //   const element = document.getElementById('pdfContent')!;
-  //   const options = {
-  //     margin: 10,
-  //     filename: 'angular-demo.pdf',
-  //     image: { type: 'jpeg', quality: 0.98 },
-  //     html2canvas: { scale: 2 },
-  //     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  //   };
-
-  //   html2pdf().from(element).set(options).save();
-  // }
-
-
-//   downloadPDF() {
-//   const element = document.getElementById('pdfContent')!;
-  
-//   const opt = {
-//     margin:       0,
-//     filename:     'quotation.pdf',
-//     image:        { type: 'jpeg', quality: 1 },
-//     html2canvas:  { scale: 2, useCORS: true },
-//     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-//     pagebreak:    { mode: ['avoid-all'] }  // prevent page breaks
-//   };
-
-//   // Force scale to single A4 by using html2canvas width/height vs jsPDF size
-//   html2pdf()
-//     .set(opt)
-//     .from(element)
-//     .toPdf()
-//     .get('pdf')
-//     .then(function (pdf) {
-//       const totalPages = pdf.internal.getNumberOfPages();
-
-//       // Get PDF dimensions
-//       const pdfWidth = pdf.internal.pageSize.getWidth();
-//       const pdfHeight = pdf.internal.pageSize.getHeight();
-
-//       // Scale content to fit 1 page
-//       pdf.setPage(1);
-//       pdf.internal.pageSize.width = pdfWidth;
-//       pdf.internal.pageSize.height = pdfHeight;
-
-//       // Content is automatically scaled by html2canvas
-//     })
-//     .save();
-// }
-
-// downloadPDF() {
-//   const element = document.getElementById('pdfContent')!;
-  
-//   html2canvas(element, { scale: 2, useCORS: true }).then((canvas: HTMLCanvasElement) => {
-//     const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
-//     const pdf = new jsPDF('p', 'mm', 'a4');
-//     const pdfWidth = pdf.internal.pageSize.getWidth();
-//     const pdfHeight = pdf.internal.pageSize.getHeight();
-
-//     const imgProps = {
-//       width: canvas.width,
-//       height: canvas.height
-//     };
-//     const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
-
-//     const imgWidth = imgProps.width * ratio;
-//     const imgHeight = imgProps.height * ratio;
-
-//     pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-//     pdf.save('quotation.pdf');
-//   });
-// }
-
-
-// downloadPDF() {
-//    this.isPdfLoading$.next(true); 
-//   const element = document.getElementById('pdfContent')!;
-
-//   html2canvas(element, {
-//     scale: 3,
-//     useCORS: true,
-//     backgroundColor: "#fff"
-//   }).then((canvas: HTMLCanvasElement) => {
-//     const imgData = canvas.toDataURL('image/png');
-
-//     const pdf = new jsPDF('p', 'mm', 'a4');
-//     const pdfWidth = pdf.internal.pageSize.getWidth();   // 210mm
-//     const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
-
-//     // Keep aspect ratio
-//     const imgWidth = pdfWidth;  
-//     const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-//     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-//     pdf.save('quotation.pdf');
-//   });
-// }
-
+ 
 
 downloadPDF() {
   this.pdfwithouticon = false;
