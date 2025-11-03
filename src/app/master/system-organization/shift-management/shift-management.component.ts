@@ -33,6 +33,7 @@ export class ShiftManagementComponent implements OnInit {
 
   shift$!: Observable<Shift[]>;
    private dialog = inject(MatDialog); 
+  totalHours: number = 0;
 
     constructor(private store : Store){}
 
@@ -41,6 +42,8 @@ export class ShiftManagementComponent implements OnInit {
       this.shift$ = this.store.select(selectAllShift);
   this.shift$.subscribe(roles => {
     console.log('Roles from store:', roles);
+    // compute total hours sum (derive from start/end when totalHours not present)
+    this.totalHours = (roles || []).reduce((acc: number, s: any) => acc + this.getShiftHours(s), 0);
   });
 
   this.store.dispatch(RoleActions.loadshift());
@@ -65,6 +68,29 @@ editShift(shift: Shift) {
     data: shift,   // ✅ pass shift to dialog
     disableClose:true,
   });
+}
+
+// Helpers to compute hours for a shift when not provided by API
+private parseTimeToMinutes(val: string): number | null {
+  if (!val) return null;
+  const m = String(val).match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+  if (!m) return null;
+  let h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  const ap = m[3]?.toUpperCase();
+  if (ap === 'AM' && h === 12) h = 0;
+  if (ap === 'PM' && h !== 12) h += 12;
+  return h * 60 + min;
+}
+
+getShiftHours(shift: any): number {
+  if (typeof shift?.totalHours === 'number') return shift.totalHours;
+  const start = this.parseTimeToMinutes(shift?.startTime);
+  const end = this.parseTimeToMinutes(shift?.endTime);
+  if (start == null || end == null) return 0;
+  let duration = end - start;
+  if (duration < 0) duration += 24 * 60; // overnight
+  return Math.round((duration / 60) * 100) / 100;
 }
 
 deleteShift(id: string) {

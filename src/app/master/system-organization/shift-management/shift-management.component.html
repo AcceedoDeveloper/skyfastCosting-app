@@ -20,6 +20,7 @@
           <th style="width: 20%;">Shift Name</th>
           <th style="width: 20%;">Start Time</th>
           <th style="width: 20%;">End Time</th>
+          <th style="width: 15%;">Hours</th>
           <th style="width: 15%;">Actions</th>
         </tr>
       </thead>
@@ -28,12 +29,20 @@
           <td>{{ shift.shiftName }}</td>
           <td>{{ shift.startTime }}</td>
           <td>{{ shift.endTime }}</td>
+          <td>{{ getShiftHours(shift) }}</td>
           <td class="actions">
             <mat-icon class="icon" (click)="editShift(shift)">edit</mat-icon>
             <mat-icon class="icon" (click)="deleteShift(shift._id)">delete</mat-icon>
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="text-align:right; font-weight:600;">Total Hours</td>
+          <td style="font-weight:700;">{{ totalHours }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </div>
