@@ -34,10 +34,20 @@
 
 
 
-    <mat-form-field appearance="outline" class="w-100">
-  <mat-label>Password</mat-label>
-  <input matInput type="password" formControlName="password" />
-</mat-form-field>
+    <ng-container *ngIf="!isEdit || changingPassword; else maskedPassword">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+    </ng-container>
+
+    <ng-template #maskedPassword>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Password</mat-label>
+        <!-- Show fixed four dots; click/tap to enable editing -->
+        <input matInput type="text" value="••••" readonly (click)="changingPassword = true" (focus)="changingPassword = true" tabindex="0" />
+      </mat-form-field>
+    </ng-template>
 
 
 

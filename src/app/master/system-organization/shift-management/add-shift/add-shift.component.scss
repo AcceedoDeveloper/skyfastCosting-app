@@ -219,3 +219,21 @@
   color: #ffffff !important;              /* number color */
   border-radius: 50% !important;
 }
+
+/* ================= SHIFT ERROR MESSAGE ================= */
+.error-message {
+  margin-top: 16px;
+  padding: 16px 20px;
+  background-color: #ffebee; /* light red */
+  border: 1px solid #ef9a9a; /* softer border */
+  border-left: 4px solid #d32f2f; /* accent bar */
+  border-radius: 8px;
+  display: block;
+}
+
+.error-text {
+  color: #d32f2f;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}

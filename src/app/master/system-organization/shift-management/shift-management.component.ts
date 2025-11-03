@@ -50,8 +50,8 @@ export class ShiftManagementComponent implements OnInit {
   openAddShift() {
   this.dialog.open(AddShiftComponent, {
        width: '410px',
-      height: '295px',
       maxWidth: '35vw',
+      maxHeight: '90vh',
         data: {}   ,
          disableClose:true,      
       });
@@ -60,8 +60,8 @@ export class ShiftManagementComponent implements OnInit {
 editShift(shift: Shift) {
   this.dialog.open(AddShiftComponent, {
      width: '410px',
-      height: '295px',
       maxWidth: '35vw',
+      maxHeight: '90vh',
     data: shift,   // ✅ pass shift to dialog
     disableClose:true,
   });

@@ -33,6 +33,7 @@ export class AddUserComponent implements OnInit {
    role$! : Observable<Role[]>;
   form!: FormGroup;
   isEdit = false;
+  changingPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -50,8 +51,20 @@ export class AddUserComponent implements OnInit {
       emailId: [this.data?.emailId || '', [Validators.required, Validators.email]],
       phoneNumber: [this.data?.phoneNumber || ''],
      role: [this.data?.role?.role || this.data?.role || '', Validators.required], 
-      password: [this.data?.password || '', Validators.required]
+      password: ['']
     });
+
+    // Require password only for Add; on Edit it's optional until user chooses to change
+    const passwordCtrl = this.form.get('password');
+    if (passwordCtrl) {
+      if (this.isEdit) {
+        passwordCtrl.clearValidators();
+        passwordCtrl.updateValueAndValidity();
+      } else {
+        passwordCtrl.addValidators(Validators.required);
+        passwordCtrl.updateValueAndValidity();
+      }
+    }
 
 
 
@@ -77,7 +90,7 @@ export class AddUserComponent implements OnInit {
         
         this.store.dispatch(MachineTypeActions.updateUser({
           id: this.data._id,
-          user: formValue
+          user: this.changingPassword ? formValue : { ...formValue, password: undefined }
         }));
       } else {
         console.log('data', formValue);

@@ -74,13 +74,18 @@
 
 </div>
 
+<!-- Day limit error -->
+<div *ngIf="dayLimitError" class="error-message">
+  <span class="error-text">⚠️ Total of all shifts cannot exceed 24 hours</span>
+  </div>
+
 
 
 
  <div class="actions">
-   <button class="btn btn-danger" type="button" (click)="onCancel()">Cancel</button>
-    <button class="submit-button"   type="submit" [disabled]="shiftForm.invalid">Save</button>
-  </div>
+  <button class="btn btn-danger" type="button" (click)="onCancel()">Cancel</button>
+   <button class="submit-button"   type="submit" [disabled]="shiftForm.invalid || dayLimitError">Save</button>
+ </div>
 </form>
 
 
