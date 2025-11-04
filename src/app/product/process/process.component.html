@@ -14,13 +14,31 @@
 
     <div class="header-item">
       <div class="file-upload-container">
-        <input class="file-upload-container-input" type="file" (change)="onFileSelected($event)" />
-        <button type="button" class="btn btn-secondary" (click)="onUpload()">Upload</button>
+        <label class="file-upload-label">
+          <input class="file-upload-container-input" type="file" accept=".xlsx,.xls" (change)="onFileSelected($event)" />
+          <span class="file-upload-text">
+            <mat-icon class="upload-icon">upload_file</mat-icon>
+            <span *ngIf="!selectedFile">Choose File</span>
+            <span *ngIf="selectedFile" class="file-name-text">{{ selectedFile.name }}</span>
+          </span>
+        </label>
+        <button type="button" class="btn btn-secondary upload-btn" (click)="onUpload()" [disabled]="!selectedFile || isUploading">
+          <mat-icon *ngIf="!isUploading && !uploadSuccess" class="btn-icon">cloud_upload</mat-icon>
+          <mat-icon *ngIf="isUploading" class="btn-icon spinning">hourglass_empty</mat-icon>
+          <mat-icon *ngIf="uploadSuccess" class="btn-icon success-icon">check_circle</mat-icon>
+          <span>{{ uploadSuccess ? 'Uploaded' : (isUploading ? 'Uploading...' : 'Upload') }}</span>
+        </button>
+        <div *ngIf="isUploading" class="upload-progress">
+          <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+        </div>
       </div>
     </div>
 
     <div class="header-item">
-      <button mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">+ Add Process</button>
+      <button mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">
+        <mat-icon class="btn-add-icon">add_task</mat-icon>
+        Add Process
+      </button>
     </div>
   </div>
 
@@ -30,22 +48,61 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th>Process Name</th>
-          <th>Tonnage / Jaw</th>
-          <th>Cost Per Hr</th>
-          <th>Machine Centre</th>
-          <th>Actions</th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">settings</mat-icon>
+              <span>Process Name</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">engineering</mat-icon>
+              <span>Tonnage / Jaw</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">attach_money</mat-icon>
+              <span>Cost Per Hr</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">precision_manufacturing</mat-icon>
+              <span>Machine Centre</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">tune</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let p of paginatedUsers">
-          <td>{{ p.processName }}</td>
+        <tr *ngFor="let p of paginatedUsers" class="table-row">
+          <td>
+         
+              <span>{{ p.processName }}</span>
+         
+          </td>
           <td>{{ p.TonnageJaw }}</td>
-          <td>{{ p.Hours }}</td>
-          <td>{{ p.machineCentre }}</td>
+          <td>
+            <span class="cost-value">₹{{ p.Hours }}</span>
+          </td>
+          <td>
+          
+              <span>{{ p.machineCentre }}</span>
+     
+          </td>
           <td class="actions">
-            <mat-icon class="icon" (click)="openEditDialog(p)">edit</mat-icon>
-            <mat-icon class="icon" (click)="onDelete(p._id)">delete</mat-icon>
+            <button mat-icon-button class="action-btn edit-btn" (click)="openEditDialog(p)" title="Edit">
+              <mat-icon class="icon">edit</mat-icon>
+            </button>
+            <button mat-icon-button class="action-btn delete-btn" (click)="onDelete(p._id)" title="Delete">
+              <mat-icon class="icon">delete</mat-icon>
+            </button>
           </td>
         </tr>
       </tbody>

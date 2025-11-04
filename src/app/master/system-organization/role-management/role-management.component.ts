@@ -4,6 +4,7 @@ import * as RoleActions from '../store/system.actions';
 import { selectAllRoles } from '../store/system.selectors';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,11 +24,33 @@ export class RoleManagementComponent implements OnInit {
   newRoleName: string = '';
   isEditMode: boolean = false;
   editingId: string | null = null;
+  inputFocused: boolean = false;
 
   constructor(private store: Store,private dialog : MatDialog ) {}
 
+  onInputFocus() {
+    this.inputFocused = true;
+  }
+
+  onInputBlur() {
+    this.inputFocused = false;
+  }
+
   ngOnInit() {
-    this.roles$ = this.store.select(selectAllRoles);
+    this.roles$ = this.store.select(selectAllRoles).pipe(
+      map(roles => {
+        // Sort roles so Admin is always first
+        const sortedRoles = [...roles].sort((a, b) => {
+          const aIsAdmin = a.role.toLowerCase() === 'admin';
+          const bIsAdmin = b.role.toLowerCase() === 'admin';
+          
+          if (aIsAdmin && !bIsAdmin) return -1;
+          if (!aIsAdmin && bIsAdmin) return 1;
+          return 0;
+        });
+        return sortedRoles;
+      })
+    );
     this.store.dispatch(RoleActions.loadRoles());
   }
 

@@ -34,62 +34,111 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>Customer</th>
-            <th>Part Name</th>
-            <th>Part No</th>
-            <th>Revision</th>
-            <th>Raw Materials</th>
-            <th>Processes</th>
-            <th>Download</th>
-            <th>Actions</th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">person</mat-icon>
+                <span>Customer</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">category</mat-icon>
+                <span>Part Name</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">sell</mat-icon>
+                <span>Part No</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">history</mat-icon>
+                <span>Revision</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">inventory_2</mat-icon>
+                <span>Raw Materials</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">settings</mat-icon>
+                <span>Processes</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">file_download</mat-icon>
+                <span>Download</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">tune</mat-icon>
+                <span>Actions</span>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngFor="let c of filteredCustomers$ | async">
-            <tr>
-              <td>{{ c.customerName.customerName }}</td>
-              <td>{{ c.partName }}</td>
-              <td>{{ getLatestRevision(c)?.productName }}</td>
+          <ng-container *ngFor="let c of filteredCustomers$ | async; let i = index">
+            <tr class="table-row">
               <td>
-                {{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}
+                <span class="customer-name">{{ c.customerName.customerName }}</span>
+              </td>
+              <td>
+                <span class="part-name">{{ c.partName }}</span>
+              </td>
+              <td>
+                <span class="part-number">{{ getLatestRevision(c)?.productName }}</span>
+              </td>
+              <td>
+                <span class="revision-number">{{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}</span>
               </td>
               <td> 
                 <ng-container *ngIf="getLatestRevision(c)">
-                  {{ getLatestRevision(c).noOfRawMaterials }}
+                  <span class="raw-materials-count">{{ getLatestRevision(c).noOfRawMaterials }}</span>
                 </ng-container>
                 <ng-template #noMaterial>
-                  <span>No Raw Materials</span>
+                  <span class="no-data-text">No Raw Materials</span>
                 </ng-template>
               </td>
               <td>
                 <ng-container *ngIf="getLatestRevision(c) ; else noProcess">
-                  {{getLatestRevision(c).noOfProcess}}
+                  <span class="processes-count">{{getLatestRevision(c).noOfProcess}}</span>
                 </ng-container>
                 <ng-template #noProcess>
-                  <span>No Processes</span>
+                  <span class="no-data-text">No Processes</span>
                 </ng-template>
               </td>
-                <td class="download-cell">
-                  <div class="combined-button">
-                    <div class="view-section" (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-                      <span>View</span>
-                    </div>
-                    <div class="download-section" (click)="viewQuatation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-                      <span>Download</span>
-                    </div>
+              <td class="download-cell">
+                <div class="combined-button">
+                  <div class="view-section" (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                    <mat-icon class="btn-icon">visibility</mat-icon>
+                    <span>View</span>
                   </div>
-                </td>
-
-
-              
-              <td >
-                <mat-icon class="icon" (click)="onEdit(c)">edit</mat-icon>
-                <mat-icon class="icon" (click)="onDelete(c._id)">delete</mat-icon>
-                <ng-container>
-                  <mat-icon class="icon" (click)="toggleCompare(c)">
-                    {{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}
-                  </mat-icon>
-                </ng-container>
+                  <div class="download-section" (click)="viewQuatation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                    <mat-icon class="btn-icon">download</mat-icon>
+                    <span>Download</span>
+                  </div>
+                </div>
+              </td>
+              <td class="actions">
+                <div class="actions-container">
+                  <button mat-icon-button class="action-btn edit-btn" (click)="onEdit(c)" title="Edit">
+                    <mat-icon class="icon">edit</mat-icon>
+                  </button>
+                  <button mat-icon-button class="action-btn delete-btn" (click)="onDelete(c._id)" title="Delete">
+                    <mat-icon class="icon">delete</mat-icon>
+                  </button>
+                  <button mat-icon-button class="action-btn expand-btn" (click)="toggleCompare(c)" title="Expand/Collapse">
+                    <mat-icon class="icon">{{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}</mat-icon>
+                  </button>
+                </div>
               </td>
             </tr>
 

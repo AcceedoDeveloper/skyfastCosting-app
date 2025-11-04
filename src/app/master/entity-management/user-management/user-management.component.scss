@@ -1,28 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
 .machine-type-container {
   margin: 20px auto;
   padding: 10px;
   border-radius: 10px;
-  // width: 1300px;
-  // background-color: #ff4081;
-  // background-color: #3f51b5;
-  // margin-left: -240px;
+  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 #h2 {
   font-size: 24px;
-  color: #333;
+  font-weight: 700;
+  color: #0e1635;
   margin: 0;
+  letter-spacing: -0.5px;
+  font-family: 'Inter', 'Poppins', sans-serif;
 }
 
 .table-container {
   width: 100%;
   max-width: 1300px;
-  margin: 15px auto;
-   border-radius: 10px 10px 10px 10px; 
-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); 
- 
-   overflow-x: auto;    
-  overflow-y: auto; 
+  margin: 20px auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+  background: white;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.table-container:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 mat-paginator {
@@ -32,7 +38,67 @@ mat-paginator {
   font-weight: 400;
   background: #fff;
   border-radius: 0 0 10px 10px;
-  margin-top: 8px;
+  margin-top: 0;
+}
+
+.custom-paginator {
+  margin: 0;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 20px 20px;
+  padding: 6px 6px;
+}
+
+/* Hide the default page size label */
+::ng-deep .custom-paginator .mat-paginator-page-size-label {
+  display: none !important;
+}
+
+/* Add custom text before the page size selector */
+::ng-deep .custom-paginator .mat-paginator-page-size {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .custom-paginator .mat-paginator-page-size::before {
+  content: "Users per page: ";
+  font-size: 14px;
+  font-weight: 600;
+  color: #0e1635;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+/* Style the page size selector */
+::ng-deep .custom-paginator .mat-select {
+  font-size: 14px;
+  color: #333;
+  min-width: 60px;
+}
+
+/* Style paginator buttons */
+::ng-deep .custom-paginator .mat-icon-button {
+  color: #0e1635;
+  width: 40px;
+  height: 40px;
+}
+
+::ng-deep .custom-paginator .mat-icon-button:hover {
+  background-color: rgba(14, 22, 53, 0.1);
+  border-radius: 50%;
+}
+
+::ng-deep .custom-paginator .mat-icon-button:disabled {
+  color: #ccc;
+}
+
+/* Style the range label */
+::ng-deep .custom-paginator .mat-paginator-range-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  margin: 0 16px;
 }
 
 
@@ -40,13 +106,18 @@ mat-paginator {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 24px;
+  margin-top: 32px;
+  gap: 20px;
 }
-
 
 .header h2 {
   margin: 0;
-  font-size: 1.25rem; 
-  color: #000000; 
+  font-size: 24px;
+  font-weight: 700;
+  color: #0e1635;
+  letter-spacing: -0.5px;
+  font-family: 'Inter', 'Poppins', sans-serif;
 }
 
 
@@ -56,33 +127,149 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 15px 15px 0 0;
+  border-radius: 0;
 }
-#theader{
-background-color: #0e2035;
 
+#theader {
+  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  position: relative;
 }
+
+#theader::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
 th {
-  text-align: left;
-  padding: 14px 20px; /* Adjusted padding to match td for better alignment */
-  color: #ffffff;
-  font-weight: 500;
   text-align: center;
+  padding: 12px 12px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.3px;
   white-space: nowrap;
- 
-  
+  position: relative;
+}
+
+/* Header cell with icons */
+.header-cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.header-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  opacity: 0.9;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.header-cell-content:hover .header-icon {
+  transform: scale(1.1);
+  opacity: 1;
 }
 
 td {
-  padding: 10px 10px;
-  border-bottom: 1px solid #ddd;
+  padding: 4px 15px;
+  border-bottom: 1px solid #e8e8e8;
   font-weight: 500;
   text-align: center;
   vertical-align: middle;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+/* Alternating row colors */
+.table-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.table-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Cell content styling */
+.cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-row:hover .user-avatar {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(25, 118, 210, 0.3);
+}
+
+.avatar-icon {
+  font-size: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  color: #ffffff;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #0e1635;
+}
+
+.cell-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: #6c757d;
+  opacity: 0.7;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.table-row:hover .cell-icon {
+  color: #1976d2;
+  opacity: 1;
+}
+
+.email-cell .cell-icon {
+  color: #1976d2;
+}
+
+.phone-cell .cell-icon {
+  color: #2e7d32;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  letter-spacing: 0.3px;
+  text-transform: capitalize;
 }
 
 td, th {
-  line-height: 1.2; /* or try 1.0 for tighter rows */
+  line-height: 1.5;
 }
 
 
@@ -90,36 +277,90 @@ td.actions {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  gap: 10px;
+  gap: 8px;
 }
 
-.actions mat-icon.icon {
-  font-size: 25px;
-  color: #000;
-  cursor: pointer;
+.table-row {
+  transition: all 0.2s ease;
+  animation: fadeInRow 0.4s ease-out;
+  animation-fill-mode: both;
 }
 
-.icon{
-  margin-right: 10px;
+.table-row:nth-child(1) { animation-delay: 0.05s; }
+.table-row:nth-child(2) { animation-delay: 0.1s; }
+.table-row:nth-child(3) { animation-delay: 0.15s; }
+.table-row:nth-child(4) { animation-delay: 0.2s; }
+.table-row:nth-child(5) { animation-delay: 0.25s; }
+.table-row:nth-child(n+6) { animation-delay: 0.3s; }
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.actions mat-icon.icon:hover {
-  color: #ff4081;
+
+.table-row:hover {
+  background-color: #f0f4f8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.trh:hover {
-  background-color: #f9f9f9;
-}
-
-
-
-mat-paginator {
+.actions {
   display: flex;
-  justify-content: end;
- 
-  background: #fff;
-  border-radius: 0 0 10px 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.action-btn .icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0;
+}
+
+.edit-btn {
+  color: #1976d2;
+}
+
+.edit-btn:hover {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  color: #d32f2f;
+}
+
+.delete-btn:hover {
+  background-color: #ffebee;
+  color: #c62828;
+  transform: scale(1.1);
+}
+
+.icon {
+  margin-right: 0;
+}
+
+
+
 
 .btn{
   background-color: #0e1635;
@@ -155,17 +396,29 @@ mat-paginator {
 #hbtn {
   background-color: #ffffff;  
   color: #0e1635;             
-  padding: 10px 22px;
-  border: 1px solid #e0e0e0;  
+  padding: 12px 24px;
+  border: 2px solid #e0e0e0;  
   border-radius: 30px;        
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 #hbtn:hover {
-  border-color: #c8b273;      
-  box-shadow: 0 3px 8px rgba(200,178,115,0.25);
+  border-color: #0e1635;      
+  box-shadow: 0 4px 12px rgba(14, 22, 53, 0.2);
+  transform: translateY(-2px);
+  background-color: #f8f9fa;
+}
+
+.btn-add-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
 }

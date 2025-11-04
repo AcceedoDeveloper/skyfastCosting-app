@@ -30,6 +30,7 @@ import { LoadingSpinnerComponent} from '../../shared/loading-spinner/loading-spi
 import { ToastrService } from 'ngx-toastr';
 // import { CustomPaginator} from './custom-paginator-intl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { CustomerDetailsPaginatorIntl } from '../../shared/customer-details-paginator-intl.service';
 import { ConfigService} from '../../shared/config.service';
 
 
@@ -49,7 +50,7 @@ import { ConfigService} from '../../shared/config.service';
     LoadingSpinnerComponent
   ],
   providers: [
-    { provide: MatPaginatorIntl }
+    { provide: MatPaginatorIntl, useClass: CustomerDetailsPaginatorIntl }
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'

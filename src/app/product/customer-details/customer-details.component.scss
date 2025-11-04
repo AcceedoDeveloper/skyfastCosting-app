@@ -1,38 +1,36 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
 .customer-container{
-      margin: 20px auto;
+  margin: 20px auto;
   padding: 10px;
   border-radius: 10px;
   width: 100%;
-  // background-color: #000;
-
 }
-
-
 
 .subheader{
   display: flex;
   flex-direction: column;
-  // background-color: #2563eb;
-
 }
 
 .header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // margin-top: 5px;
   gap: 20px;
-  // background: yellow;
 }
+
 /* Table Container */
 .table-container {
   margin-top: 20px;
   background: white;
   border-radius: 20px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.table-container:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .table-bordered {
@@ -44,18 +42,51 @@
 }
 
 thead {
-  background-color: #fff;
+  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  position: relative;
+}
+
+thead::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
 th {
-  text-align:center;
-  padding: 14px 20px;
-   background-color: #0e1635;
-  color: #fff;
-  // font-weight: bold;
-  // border-bottom: 2px solid #5b84ff;
+  text-align: center;
+  padding: 16px 10px;
+  background-color: transparent;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.3px;
   white-space: nowrap;
-    
+  position: relative;
+}
+
+/* Header cell with icons */
+.header-cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.header-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  opacity: 0.9;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.header-cell-content:hover .header-icon {
+  transform: scale(1.1);
+  opacity: 1;
 }
 
 .subtable{
@@ -70,26 +101,171 @@ th {
 }
 
 td {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e8e8e8;
   font-weight: 500;
   text-align: center;
   vertical-align: middle;
-  height: 50px;
+  padding: 16px 10px;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s ease;
+  font-family: 'Inter', 'Poppins', sans-serif;
+}
+
+/* Alternating row colors */
+.table-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.table-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.table-row {
+  transition: all 0.2s ease;
+  animation: fadeInRow 0.4s ease-out;
+  animation-fill-mode: both;
+}
+
+.table-row:nth-child(1) { animation-delay: 0.05s; }
+.table-row:nth-child(2) { animation-delay: 0.1s; }
+.table-row:nth-child(3) { animation-delay: 0.15s; }
+.table-row:nth-child(4) { animation-delay: 0.2s; }
+.table-row:nth-child(5) { animation-delay: 0.25s; }
+.table-row:nth-child(n+6) { animation-delay: 0.3s; }
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table-row:hover {
+  background-color: #f0f4f8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.customer-name {
+  font-weight: 600;
+  color: #0e1635;
+}
+
+.part-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.part-number {
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+  color: #333;
+}
+
+.revision-number {
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.raw-materials-count,
+.processes-count {
+  font-weight: 600;
+  color: #0e1635;
+  font-size: 15px;
+}
+
+.no-data-text {
+  color: #9e9e9e;
+  font-style: italic;
+  font-size: 13px;
 }
 
 td.actions {
-  border-left: 1px solid #ccc;
-  padding-left: 10px;
+  border-left: 1px solid #e0e0e0;
+  padding: 16px 10px;
   text-align: center;
 }
 
-
-td.actions {
+.actions-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  gap: 10px;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.action-btn .icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0;
+}
+
+.edit-btn {
+  color: #1976d2 !important;
+}
+
+.edit-btn .icon {
+  color: #1976d2 !important;
+}
+
+.edit-btn:hover {
+  background-color: #e3f2fd;
+  color: #1565c0 !important;
+  transform: scale(1.1);
+}
+
+.edit-btn:hover .icon {
+  color: #1565c0 !important;
+}
+
+.delete-btn {
+  color: #d32f2f !important;
+}
+
+.delete-btn .icon {
+  color: #d32f2f !important;
+}
+
+.delete-btn:hover {
+  background-color: #ffebee;
+  color: #c62828 !important;
+  transform: scale(1.1);
+}
+
+.delete-btn:hover .icon {
+  color: #c62828 !important;
+}
+
+.expand-btn {
+  color: #6c757d;
+}
+
+.expand-btn:hover {
+  background-color: #f5f5f5;
+  color: #0e1635;
+  transform: scale(1.1);
+}
+
+.icon {
+  cursor: pointer;
+  margin-right: 0;
+  color: inherit;
 }
 
 
@@ -1055,7 +1231,7 @@ vertical-align: middle;
 }
 
 ::ng-deep .custom-paginator .mat-paginator-page-size::before {
-  content: "Customers per page: ";
+  content: "Customer Details per page: ";
   font-size: 14px;
   font-weight: 600;
   color: #0e1635;
@@ -1156,52 +1332,114 @@ vertical-align: middle;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
-  height: 36px;
-  min-width: 140px;
-  color: #000;
-  background-color: #1565C0;
+  height: 38px;
+  min-width: 160px;
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
   margin: 6px;
+  border: none;
 }
 
 .combined-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(21, 101, 192, 0.3);
 }
 
 .view-section {
   flex: 1;
-  background: #ffffff;
-  color: #333333;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  color: #1976d2;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
+  padding: 0 12px;
   font-size: 13px;
-  font-weight: 500;
-  border: 1px solid #e0e0e0;
-  border-right: 1px solid #e0e0e0;
+  font-weight: 600;
+  border: 1px solid #e3f2fd;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
   cursor: pointer;
-  margin: 3px;
-  border-radius: 12px;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.view-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(25, 118, 210, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.view-section:hover::before {
+  left: 100%;
 }
 
 .view-section:hover {
-  background: #f5f5f5;
-  color: #2196F3;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1565c0;
+  transform: scale(1.02);
+}
+
+.view-section .btn-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  transition: transform 0.3s ease;
+}
+
+.view-section:hover .btn-icon {
+  transform: scale(1.1);
 }
 
 .download-section {
   flex: 1;
-  background-color: #1565C0;
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
+  padding: 0 12px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.download-section:hover::before {
+  left: 100%;
+}
+
+.download-section:hover {
+  background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+  transform: scale(1.02);
+}
+
+.download-section .btn-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  transition: transform 0.3s ease;
+}
+
+.download-section:hover .btn-icon {
+  transform: translateY(2px);
 }
 

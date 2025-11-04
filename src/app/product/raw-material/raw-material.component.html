@@ -1,9 +1,10 @@
 <div class="main">
  <div class="header">
- <h2 style="font-weight: bold;">Raw Materials</h2>
-<!-- <button (click)="addrawmaterial()" > Add raw Material</button> -->
-<button mat-raised-button color="primary"  id="hbtn" (click)="addrawmaterial()">Add raw Material</button>
-
+ <h2>Raw Materials</h2>
+<button mat-raised-button color="primary" id="hbtn" (click)="addrawmaterial()">
+  <mat-icon class="btn-add-icon">add_box</mat-icon>
+  <span>Add raw Material</span>
+</button>
  </div>
  
   <!-- Show when data is loading -->
@@ -13,19 +14,47 @@
       <table  class="table table-bordered">
         <thead>
           <tr>
-            <th>Grade Name</th>
-            <th>Rate Per Kg</th>
-            <th>action</th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">inventory_2</mat-icon>
+                <span>Grade Name</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">scale</mat-icon>
+                <span>Rate Per Kg</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">tune</mat-icon>
+                <span>Actions</span>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr  *ngFor="let rm of paginatedRawMaterials">
-            <td>{{ rm.GradeName }}</td>
-            <td>{{ rm.RatePerKg }}</td>
-            <td  >
-                <!-- Action buttons can be added here -->
-                <mat-icon class="icon" (click)="edit(rm)" >edit</mat-icon>
-                <mat-icon class="icon" (click)="delete(rm._id)">delete</mat-icon>
+          <tr *ngFor="let rm of paginatedRawMaterials" class="table-row">
+            <td>
+              <div class="cell-content">
+                <span>{{ rm.GradeName }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="cell-content">
+                <span class="rate-value">₹{{ rm.RatePerKg }}</span>
+              </div>
+            </td>
+            <td class="actions">
+              <div class="actions-container">
+                <button mat-icon-button class="action-btn edit-btn" (click)="edit(rm)" title="Edit">
+                  <mat-icon class="icon">edit</mat-icon>
+                </button>
+                <button mat-icon-button class="action-btn delete-btn" (click)="delete(rm._id)" title="Delete">
+                  <mat-icon class="icon">delete</mat-icon>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

@@ -46,6 +46,9 @@ import { ProcessPaginatorIntl } from '../../shared/process-paginator-intl.servic
 })
 export class ProcessComponent implements OnInit {
   selectedFile: File | null = null;
+  isUploading: boolean = false;
+  uploadSuccess: boolean = false;
+  uploadProgress: number = 0;
 
   process$!: Observable<Process[]>;
    paginatedUsers: Process[] = [];
@@ -187,6 +190,8 @@ onDelete(id: string) {
 }
  onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
+    this.uploadSuccess = false;
+    this.uploadProgress = 0;
   }
 
  onUpload(): void {
@@ -200,15 +205,43 @@ onDelete(id: string) {
       return;
     }
 
+    this.isUploading = true;
+    this.uploadSuccess = false;
+    this.uploadProgress = 0;
+
+    // Simulate progress for better UX
+    const progressInterval = setInterval(() => {
+      if (this.uploadProgress < 90) {
+        this.uploadProgress += 10;
+      }
+    }, 200);
+
     this.uploadService.uploadFile(this.selectedFile).subscribe({
       next: (res) => {
+        clearInterval(progressInterval);
+        this.uploadProgress = 100;
         console.log('Upload success:', res);
-        this.tooser.success('Process updated successfully!');
+        this.tooser.success('File uploaded successfully!');
         this.store.dispatch(processActions.loadProcess());
+        
+        // Show success state
+        this.isUploading = false;
+        this.uploadSuccess = true;
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+          this.uploadSuccess = false;
+          this.selectedFile = null;
+          this.uploadProgress = 0;
+        }, 3000);
       },
       error: (err) => {
+        clearInterval(progressInterval);
+        this.uploadProgress = 0;
+        this.isUploading = false;
+        this.uploadSuccess = false;
         console.error('Upload error:', err);
-        alert('Upload failed!');
+        this.tooser.error('Upload failed! Please try again.');
       }
     });
   }

@@ -3,22 +3,23 @@
 
 
   <div class="header">
-    <h2 style="font-weight: bold;" class="">Roles</h2>
+    <h2>Roles</h2>
   
     <div class="add-section">
-      <!-- <mat-form-field appearance="outline" class="role-input">
-        <mat-label>Role Name</mat-label>
-        <input matInput [(ngModel)]="newRoleName" autocomplete="off" />
-      </mat-form-field> -->
-  
-           <input
+      <div class="input-wrapper">
+        <mat-icon class="input-icon">badge</mat-icon>
+        <input
           type="text"
           placeholder="Enter role name"
           [(ngModel)]="newRoleName"
-          class="underline-input"
+          class="role-input"
           autocomplete="off"
+          (focus)="onInputFocus()"
+          (blur)="onInputBlur()"
+          [class.focused]="inputFocused"
         />
-  
+        <div class="input-underline" [class.active]="inputFocused || newRoleName.length > 0"></div>
+      </div>
   
       <button
         mat-raised-button
@@ -26,16 +27,15 @@
         (click)="isEditMode ? updateRole() : addRole()"
         [disabled]="newRoleName.trim().length === 0"
         class="circular-button primary-button"
-     
+        [class.pulse]="!isEditMode && newRoleName.trim().length > 0"
       >
-        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        <mat-icon class="btn-icon">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
       </button>
   
       <button
         *ngIf="isEditMode"
-       class="btn btn-danger"
+        class="btn btn-danger cancel-btn"
         (click)="cancelEdit()"
-       
       >
         Cancel
       </button>
@@ -46,20 +46,36 @@
     <table>
       <thead>
         <tr>
-          <th style="width: 60%;">Role</th>
-          <th style="width: 20%;">Actions</th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">admin_panel_settings</mat-icon>
+              <span>Role</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">tune</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr class="trh" *ngFor="let role of roles$ | async">
-          <td>{{ role.role }}</td>
+        <tr class="table-row" *ngFor="let role of roles$ | async; let i = index">
+          <td>
+            <div class="cell-content">
+              <span class="role-name">{{ role.role }}</span>
+            </div>
+          </td>
           <td class="actions">
-            <button mat-icon-button color="primary" (click)="editRole(role)" [disabled]="isAdminRole(role)">
-              <mat-icon class="icon">{{ isAdminRole(role) ? 'lock' : 'edit' }}</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="deleteRole(role._id)" [disabled]="isAdminRole(role)">
-              <mat-icon class="icon">{{ isAdminRole(role) ? 'lock' : 'delete' }}</mat-icon>
-            </button>
+            <div class="actions-container">
+              <button mat-icon-button class="action-btn edit-btn" (click)="editRole(role)" [disabled]="isAdminRole(role)" title="Edit">
+                <mat-icon class="icon">{{ isAdminRole(role) ? 'lock' : 'edit' }}</mat-icon>
+              </button>
+              <button mat-icon-button class="action-btn delete-btn" (click)="deleteRole(role._id)" [disabled]="isAdminRole(role)" title="Delete">
+                <mat-icon class="icon">{{ isAdminRole(role) ? 'lock' : 'delete' }}</mat-icon>
+              </button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="(roles$ | async)?.length === 0">

@@ -3,13 +3,11 @@
 <div class="main">
 
   <div class="headers">
-   
-      <h2 style="font-weight: bold;">Shift</h2>
-
-  
-
-    <button  mat-raised-button color="primary" id="hbtn" (click)="openAddShift()">Add Shift</button>
-
+    <h2>Shift</h2>
+    <button mat-raised-button color="primary" id="hbtn" (click)="openAddShift()">
+      <mat-icon class="btn-add-icon">schedule</mat-icon>
+      Add Shift
+    </button>
   </div>
   
   <!-- Shift Table -->
@@ -17,29 +15,81 @@
     <table>
       <thead>
         <tr>
-          <th style="width: 20%;">Shift Name</th>
-          <th style="width: 20%;">Start Time</th>
-          <th style="width: 20%;">End Time</th>
-          <th style="width: 15%;">Hours</th>
-          <th style="width: 15%;">Actions</th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">schedule</mat-icon>
+              <span>Shift Name</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">access_time</mat-icon>
+              <span>Start Time</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">access_time</mat-icon>
+              <span>End Time</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">timer</mat-icon>
+              <span>Hours</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">tune</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr class="trh" *ngFor="let shift of shift$ | async">
-          <td>{{ shift.shiftName }}</td>
-          <td>{{ shift.startTime }}</td>
-          <td>{{ shift.endTime }}</td>
-          <td>{{ getShiftHours(shift) }}</td>
+        <tr class="table-row" *ngFor="let shift of shift$ | async; let i = index">
+          <td>
+            <div class="cell-content">
+              <span class="shift-name">{{ shift.shiftName }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="cell-content">
+              <span class="time-value">{{ shift.startTime }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="cell-content">
+              <span class="time-value">{{ shift.endTime }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="cell-content">
+              <span class="hours-value">{{ getShiftHours(shift) }}</span>
+            </div>
+          </td>
           <td class="actions">
-            <mat-icon class="icon" (click)="editShift(shift)">edit</mat-icon>
-            <mat-icon class="icon" (click)="deleteShift(shift._id)">delete</mat-icon>
+            <div class="actions-container">
+              <button mat-icon-button class="action-btn edit-btn" (click)="editShift(shift)" title="Edit">
+                <mat-icon class="icon">edit</mat-icon>
+              </button>
+              <button mat-icon-button class="action-btn delete-btn" (click)="deleteShift(shift._id)" title="Delete">
+                <mat-icon class="icon">delete</mat-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
       <tfoot>
-        <tr>
-          <td colspan="3" style="text-align:right; font-weight:600;">Total Hours</td>
-          <td style="font-weight:700;">{{ totalHours }}</td>
+        <tr class="total-row">
+          <td colspan="3" class="total-label">
+            <div class="total-content">
+              <mat-icon class="total-icon">summarize</mat-icon>
+              <span>Total Hours</span>
+            </div>
+          </td>
+          <td class="total-value">{{ totalHours }}</td>
           <td></td>
         </tr>
       </tfoot>

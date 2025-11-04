@@ -105,6 +105,16 @@
 
 
       <div class="process-container" formArrayName="processes">
+      <!-- Empty State -->
+      <div *ngIf="processes.length === 0" class="empty-state-container">
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <mat-icon class="empty-icon">settings</mat-icon>
+          </div>
+          <h3 class="empty-state-title">No Processes Added</h3>
+          <p class="empty-state-message">Click the <span class="plus-button-reference">+</span> button to add a process</p>
+        </div>
+      </div>
       
         <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
 

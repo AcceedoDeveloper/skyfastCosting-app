@@ -54,13 +54,28 @@ private dialog = inject(MatDialog);
    
 
     this.user$.subscribe(data => {
-      this.users = data;
+      // Sort users so Admin users are always first
+      this.users = this.sortUsersWithAdminFirst(data);
       console.log('data', data);
       
       this.updatePaginatedUsers();
     });
 
     this.store.dispatch(MachineTypeActions.loadUsers());
+  }
+
+  sortUsersWithAdminFirst(users: User[]): User[] {
+    return [...users].sort((a, b) => {
+      const aRole = (a.role?.role || a.role || '').toString().toLowerCase();
+      const bRole = (b.role?.role || b.role || '').toString().toLowerCase();
+      
+      const aIsAdmin = aRole === 'admin';
+      const bIsAdmin = bRole === 'admin';
+      
+      if (aIsAdmin && !bIsAdmin) return -1;
+      if (!aIsAdmin && bIsAdmin) return 1;
+      return 0;
+    });
   }
 
   updatePaginatedUsers() {

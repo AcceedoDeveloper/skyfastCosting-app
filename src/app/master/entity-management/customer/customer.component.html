@@ -2,13 +2,11 @@
 <div class="main">
 
   <div class="header">
-    <div class="cust">
-      <h2 style="font-weight: bold;">Customer</h2>
-    </div>
-  
-    <div >
-      <button mat-raised-button color="primary" id="hbtn" (click)="openAddCustomer()">Add Customer</button>
-    </div>
+    <h2>Customer</h2>
+    <button mat-raised-button color="primary" id="hbtn" (click)="openAddCustomer()">
+      <mat-icon class="btn-add-icon">person_add</mat-icon>
+      Add Customer
+    </button>
   </div>
   
   <!-- Customer Table -->
@@ -16,38 +14,79 @@
     <table>
       <thead>
         <tr>
-          <th style="width: 18%;">Customer Name</th>
-          <th style="width: 22%;">Address</th>
-          <th style="width: 12%;">GST Number</th>
-          <th style="width: 12%;">Phone</th>
-          <th style="width: 20%;">Email</th>
-          <th style="width: 10%;">Transport</th>
-          <th style="width: 6%;">Actions</th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">person</mat-icon>
+              <span>Customer Name</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">location_on</mat-icon>
+              <span>Address</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">receipt</mat-icon>
+              <span>GST Number</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">phone</mat-icon>
+              <span>Phone</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">email</mat-icon>
+              <span>Email</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">local_shipping</mat-icon>
+              <span>Transport</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">tune</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr class="trh" *ngFor="let customer of paginatedCustomers">
-          <td>{{ customer.customerName }}</td>
-          <td id="address">{{ customer.address }}</td>
-          <td>{{ customer.gstNumber }}</td>
-          <td>{{ customer.phone }}</td>
-          <td>{{ customer.email }}</td>
-          <td>{{ customer.transport }}</td>
+        <tr class="table-row" *ngFor="let customer of paginatedCustomers; let i = index">
+          <td>
+            <span class="customer-name">{{ customer.customerName }}</span>
+          </td>
+          <td class="address-cell">
+            <span>{{ customer.address }}</span>
+          </td>
+          <td>
+            <span class="gst-number">{{ customer.gstNumber }}</span>
+          </td>
+          <td>
+            <span class="phone-value">{{ customer.phone }}</span>
+          </td>
+          <td>
+            <span class="email-value">{{ customer.email }}</span>
+          </td>
+          <td>
+            <span class="transport-value">{{ customer.transport }}</span>
+          </td>
           <td class="actions">
-            <mat-icon
-              aria-label="Edit customer"
-              class="icon"
-              (click)="openAddCustomer(customer)"
-            >
-              edit
-            </mat-icon>
-            <mat-icon
-              aria-label="Delete customer"
-              class="icon"
-              (click)="deleteCustomer(customer._id)"
-            >
-              delete
-            </mat-icon>
+            <div class="actions-container">
+              <button mat-icon-button class="action-btn edit-btn" (click)="openAddCustomer(customer)" title="Edit">
+                <mat-icon class="icon">edit</mat-icon>
+              </button>
+              <button mat-icon-button class="action-btn delete-btn" (click)="deleteCustomer(customer._id)" title="Delete">
+                <mat-icon class="icon">delete</mat-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>

@@ -1,44 +1,97 @@
 <div class="machine-type-container">
   <div class="header">
-    <!-- <h2>User List</h2> -->
-     <h2 style="font-weight: bold;" id="h2">User List</h2>
-    <button  mat-raised-button color="primary" id="hbtn" (click)="openAddUserPopup()">Add User</button>
+    <h2 id="h2">User List</h2>
+    <button mat-raised-button color="primary" id="hbtn" (click)="openAddUserPopup()">
+      <mat-icon class="btn-add-icon">person_add</mat-icon>
+      <span>Add User</span>
+    </button>
   </div>
 
   <div class="table-container">
-
-    <table >
+    <table>
       <thead id="theader">
         <tr>
-          <th>User Name</th>
-          <th>Full Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">person</mat-icon>
+              <span>User Name</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">badge</mat-icon>
+              <span>Full Name</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">email</mat-icon>
+              <span>Email</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">phone</mat-icon>
+              <span>Phone</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">admin_panel_settings</mat-icon>
+              <span>Role</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">tune</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr  class="trh" *ngFor="let user of paginatedUsers">
-          <td>{{ user.userName }}</td>
-          <td>{{ user.fullName }}</td>
-          <td>{{ user.emailId }}</td>
-          <td>{{ user.phoneNumber || '-' }}</td>
-          <td>{{ user.role?.role || user.role }}</td>
+        <tr class="table-row" *ngFor="let user of paginatedUsers; let i = index">
+          <td>
+            <div class="cell-content">
+              <span class="user-name">{{ user.userName }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="cell-content">
+              <span>{{ user.fullName }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="cell-content email-cell">
+              <span>{{ user.emailId }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="cell-content phone-cell">
+              <span>{{ user.phoneNumber || '-' }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="role-badge">{{ user.role?.role || user.role }}</span>
+          </td>
           <td class="actions">
-            <mat-icon class="icon" (click)="openEditUserPopup(user)">edit</mat-icon>
-            <mat-icon class="icon" (click)="deleteUser(user)">delete</mat-icon>
+            <button mat-icon-button class="action-btn edit-btn" (click)="openEditUserPopup(user)" title="Edit">
+              <mat-icon class="icon">edit</mat-icon>
+            </button>
+            <button mat-icon-button class="action-btn delete-btn" (click)="deleteUser(user)" title="Delete">
+              <mat-icon class="icon">delete</mat-icon>
+            </button>
           </td>
         </tr>
       </tbody>
-
     </table>
     <mat-paginator
       [length]="users.length"
       [pageSize]="pageSize"
       [pageSizeOptions]="[5, 10, 20]"
-      (page)="onPageChange($event)">
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="custom-paginator">
     </mat-paginator>
-  
   </div>
 </div>
