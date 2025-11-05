@@ -1200,12 +1200,99 @@ vertical-align: middle;
   transform: translateY(-50%); /* center it vertically */
   background: #fff;
   border: 1px solid #ccc;
-  padding: 8px;
-  width: 280px;
+  padding: 12px 16px;
+  width: 320px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   z-index: 10;
+  line-height: 1.6;
+  text-align: left;
+  font-size: 13px;
+  color: #333;
 }
 
+.info-popup.dim {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 14px 18px;
+  line-height: 1.7;
+  text-align: left;
+  font-size: 13px;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.info-popup.dim br {
+  display: block;
+  margin: 4px 0;
+  content: "";
+}
+
+.info-popup.dim strong {
+  display: block;
+  margin-top: 8px;
+  font-weight: 600;
+  color: #0e1635;
+  font-size: 14px;
+}
+
+.info-popup.dim > div {
+  text-align: left;
+}
+
+.info-popup.dim ng-container {
+  display: inline;
+}
+
+.info-popup.dim .info-content {
+  text-align: left;
+}
+
+.info-popup.dim h5 {
+  margin: 6px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.6;
+}
+
+.info-popup.dim .info-content h5 {
+  margin: 4px 0;
+}
+
+/* Info Popup Text Styling */
+.info-popup-text {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #333;
+  font-weight: 500;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.info-popup.dim .info-popup-text {
+  margin: 0 0 2px 0;
+  padding: 0;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #333;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.info-popup-text:first-child {
+  margin-top: 0;
+}
+
+.info-popup-text:last-child {
+  margin-bottom: 0;
+}
 
 /* Show on hover/focus */
 .info-container:hover .info-popup,
