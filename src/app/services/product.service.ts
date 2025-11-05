@@ -108,6 +108,11 @@ updateCustomer(id: string, customer: any): Observable<any> {
     return this.http.post(this.config.getCostingUrl("uploadProcessExcel"), formData);
   }
 
+  // 🔹 Download Process Excel
+  downloadProcessExcel(): Observable<Blob> {
+    return this.http.get(`${this.config.getCostingUrl("downloadProcessExcel")}`, { responseType: "blob" });
+  }
+
 
   getCurrencyRates(): Observable<any> {
     return this.http.get<any>(this.config.getCostingUrl('getCurrency'));

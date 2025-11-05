@@ -35,6 +35,21 @@
     </div>
 
     <div class="header-item">
+      <button 
+        type="button" 
+        class="download-btn" 
+        (click)="onDownload()" 
+        [disabled]="isDownloading"
+        [class.downloading]="isDownloading"
+        title="Download Process Excel">
+        <mat-icon class="download-icon" [class.spinning]="isDownloading">
+          {{ isDownloading ? 'hourglass_empty' : 'download' }}
+        </mat-icon>
+        <span class="download-text">{{ isDownloading ? 'Downloading...' : 'Download' }}</span>
+      </button>
+    </div>
+
+    <div class="header-item">
       <button mat-raised-button color="primary" id="hbtn" (click)="openAddDialog()">
         <mat-icon class="btn-add-icon">add_task</mat-icon>
         Add Process

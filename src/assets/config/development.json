@@ -94,6 +94,10 @@
 {
   "name": "uploadProcessExcel",
   "url": "uploadProcessExcel"
+},
+{
+  "name": "downloadProcessExcel",
+  "url": "downloadProcessExcel"
 }
 
 

@@ -49,6 +49,7 @@ export class ProcessComponent implements OnInit {
   isUploading: boolean = false;
   uploadSuccess: boolean = false;
   uploadProgress: number = 0;
+  isDownloading: boolean = false;
 
   process$!: Observable<Process[]>;
    paginatedUsers: Process[] = [];
@@ -220,6 +221,36 @@ onDelete(id: string) {
         this.uploadSuccess = false;
         console.error('Upload error:', err);
         this.tooser.error('Upload failed! Please try again.');
+      }
+    });
+  }
+
+  onDownload(): void {
+    if (this.isDownloading) {
+      return;
+    }
+
+    this.isDownloading = true;
+    
+    this.uploadService.downloadProcessExcel().subscribe({
+      next: (blob: Blob) => {
+        // Create a blob URL and trigger download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Process_List_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url); // cleanup
+        
+        this.tooser.success('File downloaded successfully!');
+        this.isDownloading = false;
+      },
+      error: (err) => {
+        console.error('Download error:', err);
+        this.tooser.error('Download failed! Please try again.');
+        this.isDownloading = false;
       }
     });
   }
