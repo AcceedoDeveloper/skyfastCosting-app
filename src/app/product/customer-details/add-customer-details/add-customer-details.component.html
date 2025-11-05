@@ -378,8 +378,8 @@
           <div *ngIf="processForm.get('Packing')?.value === 'international'" class="slide-card">
             <h3 class="card-title">International Packing</h3>
                <mat-radio-group class="radio-button" formControlName="TransportType">
-              <mat-radio-button class="costs" value="cost">Cost</mat-radio-button>
-              <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+              <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
+              <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
             </mat-radio-group>
 
             <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'cost'">
@@ -411,7 +411,7 @@
               <label class="trans" for="currency">Currency</label>
              <select class="lab" formControlName="currency">
   <option value="">Select Currency</option>
-  <option *ngFor="let currency of currencies" [value]="currency.code">
+  <option id="currency-option" *ngFor="let currency of currencies" [value]="currency.code">
     {{ currency.symbol }} {{ currency.code }} - {{ currency.name }} ({{ currency.country }})
   </option>
 </select>
@@ -422,8 +422,8 @@
           <div *ngIf="processForm.get('Packing')?.value === 'domestic'" class="slide-card">
             <h3 class="card-title">Domestic Packing</h3>
             <mat-radio-group class="radio-button" formControlName="TransportType">
-              <mat-radio-button class="costs" value="cost">Cost</mat-radio-button>
-              <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+              <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
+              <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
             </mat-radio-group>
 
             <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'cost'">

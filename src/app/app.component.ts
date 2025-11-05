@@ -145,6 +145,7 @@ export class AppComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
       this.showDropdown = false;
+      this.activeSubmenu = null;
       sessionStorage.setItem('lastRoute', event.urlAfterRedirects);
     });
 
@@ -234,12 +235,12 @@ export class AppComponent implements OnInit, OnDestroy {
       quotation: true,
       reports: true
     };
-    const lastRoute = sessionStorage.getItem('lastRoute') || '/dashboard/dashh';
+    const lastRoute = sessionStorage.getItem('lastRoute') || '/product/dashboard';
     this.generateSidebar({ screens: this.permissions, initialScreen: lastRoute } as Permission);
     if (!lastRoute.includes('/login')) {
       this.router.navigateByUrl(lastRoute);
     } else {
-      this.router.navigate(['/dashboard/dashh']);
+      this.router.navigate(['/product/dashboard']);
     }
   }
 
@@ -263,7 +264,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const screens = perm.screens;
     const sidebar: SidebarItem[] = [];
 
-    if (screens.dashboard) sidebar.push({ label: 'Dashboard', route: '/dashboard/dashh', icon: 'dashboard' });
+    if (screens.dashboard) sidebar.push({ label: 'Dashboard', route: '/product/dashboard', icon: 'dashboard' });
 
     if (screens.user?.parent || this.anyTrue(screens.user?.children)) {
       sidebar.push({
@@ -310,13 +311,25 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   openDropdown() { this.showDropdown = true; }
-  toggleSubmenu(menu: string) { this.activeSubmenu = this.activeSubmenu === menu ? null : menu; }
+  toggleSubmenu(menu: string) { 
+    // If clicking on a different menu item, close current and open new one
+    // If clicking on the same menu item, toggle it
+    this.activeSubmenu = this.activeSubmenu === menu ? null : menu; 
+  }
+
+  closeSubmenu() {
+    this.activeSubmenu = null;
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
     if (!target.closest('.profile-container')) this.showDropdown = false;
-    if (!target.closest('.nav-item-content') && !target.closest('.submenu')) this.activeSubmenu = null;
+    
+    // Close submenu if clicking outside sidebar items or submenu
+    if (!target.closest('.custom-sidenav')) {
+      this.activeSubmenu = null;
+    }
   }
 
   logout() {

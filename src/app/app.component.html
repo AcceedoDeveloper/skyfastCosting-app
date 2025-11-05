@@ -31,12 +31,12 @@
       <div class="sidenav-header"></div>
       <ul class="nav-list">
         <li *ngFor="let item of sidebarItems" [ngClass]="{'nav-item': true, 'has-submenu': item.submenu}">
-          <div class="nav-item-content" (click)="item.submenu ? toggleSubmenu(item.label) : null" [routerLink]="item.route" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: false}">
+          <div class="nav-item-content" (click)="item.submenu ? toggleSubmenu(item.label) : closeSubmenu()" [routerLink]="item.route" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: false}">
             <span class="material-icons nav-icon">{{ item.icon }}</span>
             <span class="nav-text">{{ item.label }}</span>
           </div>
           <ul class="submenu" *ngIf="item.submenu && activeSubmenu === item.label">
-            <li *ngFor="let subItem of item.submenu" [routerLink]="subItem.route" routerLinkActive="active-link">
+            <li *ngFor="let subItem of item.submenu" [routerLink]="subItem.route" routerLinkActive="active-link" (click)="closeSubmenu()">
               <span class="material-icons submenu-icon">{{ subItem.icon }}</span>&nbsp; {{ subItem.label }}
             </li>
           </ul>
@@ -48,6 +48,7 @@
       <router-outlet></router-outlet>
     </main>
   </div>
+  
 </div>
 
 <ng-template #loginPageLayout>
