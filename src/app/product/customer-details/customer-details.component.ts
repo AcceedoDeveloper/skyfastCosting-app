@@ -1,4 +1,10 @@
 
+
+
+
+
+
+
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -30,7 +36,6 @@ import { LoadingSpinnerComponent} from '../../shared/loading-spinner/loading-spi
 import { ToastrService } from 'ngx-toastr';
 // import { CustomPaginator} from './custom-paginator-intl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { CustomerDetailsPaginatorIntl } from '../../shared/customer-details-paginator-intl.service';
 import { ConfigService} from '../../shared/config.service';
 
 
@@ -50,7 +55,7 @@ import { ConfigService} from '../../shared/config.service';
     LoadingSpinnerComponent
   ],
   providers: [
-    { provide: MatPaginatorIntl, useClass: CustomerDetailsPaginatorIntl }
+    { provide: MatPaginatorIntl }
   ],
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
@@ -378,11 +383,23 @@ getDrawingImage(): string {
     return '';
   }
 
-  // console.log('image path:', 'http://localhost:3005' + encodeURI(this.quotationData.results[0].drawingImage));
-  const api  = this.config.getCostingUrl('');
+  const api = this.config.getCostingUrl('');
+  const imagePath = this.quotationData.results[0].drawingImage;
   
-  return api + encodeURI(this.quotationData.results[0].drawingImage);
+  // If already a full URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
   
+  // Normalize path - add /uploads/ if it's just a filename
+  let normalizedPath = imagePath;
+  if (!imagePath.startsWith('/')) {
+    normalizedPath = `/uploads/${imagePath}`;
+  } else if (!imagePath.startsWith('/uploads/')) {
+    normalizedPath = `/uploads${imagePath}`;
+  }
+  
+  return api + encodeURI(normalizedPath);
 }
 
 
@@ -475,3 +492,5 @@ getTotalPriceByCurrency(revision: any, currency: string = '') {
 
 
 }
+
+
