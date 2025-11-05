@@ -23,10 +23,7 @@
     <mat-icon class="search-icon">search</mat-icon>
   </div>
 </div>
-    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">
-      <mat-icon class="btn-add-icon">person_add</mat-icon>
-      Add Customer
-    </button>
+    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
   </div>
 </div>
 
@@ -496,7 +493,7 @@
             <div class="details-container">
  <table class="inner-details">
               <tr>
-                <td class="label">Customer Drawing No</td>
+                <td class="label">Drawing No</td>
                 <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
               </tr>
               <tr>
@@ -550,9 +547,9 @@
                             <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
- (Raw Material weight/pc * Raw Material price/kg +10% inventory cost)  
+ (Raw Material weight/pc * Raw Material price/kg )  
   <br />
-   {{ quotationData.results[0].revisions[0].castingWeight }} * {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} 
+   {{ quotationData.results[0].revisions[0].rawMaterialWeight }} * {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} 
   <br />
   <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
 </div>
@@ -592,7 +589,7 @@
                                     <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
-(Raw Material cost/pc - Scrap cost/pc)
+(Raw Material cost * ICC Interest Rate)
   <br />
    {{ quotationData.results[0].revisions[0].rawMaterialCost }} * {{ quotationData.results[0].revisions[0].InterestRate }}
   <br />  
@@ -644,7 +641,7 @@
 <div class="info-popup dim">
 (Machine Hour Rate/Hourly Output/No. of Cavities)
   <br />
-    {{ process.Hours }} / {{ process.HourlyOutput }} / {{ process.cavity }}
+    ( {{ process.Hours }} / {{ process.HourlyOutput }} ) / {{ process.cavity }}
   <br />  
   <strong>Result: {{ process.cost| number:'1.2-3' }}</strong>
 </div>
@@ -705,7 +702,7 @@
 <div class="info-popup dim">
   (Sum of all individual process costs * Rejection %)
   <br />
-    {{ quotationData.results[0].revisions[0].sumOfProcessCost }} * {{ quotationData.results[0].revisions[0].Rejection }} / 100
+    {{ quotationData.results[0].revisions[0].sumOfProcessCost }} * ( {{ quotationData.results[0].revisions[0].Rejection }} / 100 )
   <br />
   <strong>Result: {{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</strong>
 </div>
@@ -764,17 +761,26 @@
                 
                   <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</td>
                   <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                   <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost) 
-                     + (quotationData.results[0].revisions[0].TotalProcessCost)) * (quotationData.results[0].revisions[0].overHeadsPercent / 100)  | number:'1.2-2' }}
+                   <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}
                              <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
-  (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
-  <br />
-    ({{ quotationData.results[0].revisions[0].rawMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * {{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100
-  <br />
-  <strong>Result:  {{ ((quotationData.results[0].revisions[0].rawMaterialCost) 
-                     + (quotationData.results[0].revisions[0].TotalProcessCost)) * (quotationData.results[0].revisions[0].overHeadsPercent / 100)  | number:'1.2-2' }}</strong>
+  <!-- If ICC (InterestRate) exists -->
+  <div *ngIf="quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0">
+    ((Total Labour Cost (L)) * Over Heads)
+    <br />
+    ({{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+    <br />
+    <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
+  </div>
+  <!-- If ICC (InterestRate) doesn't exist -->
+  <div *ngIf="!quotationData.results[0].revisions[0].InterestRate || quotationData.results[0].revisions[0].InterestRate === 0">
+    (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
+    <br />
+    ({{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+    <br />
+    <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
+  </div>
 </div>
 </span>
                     </td>
@@ -782,14 +788,28 @@
                   <td >{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-2'}}
                      <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
+
+  
 <div class="info-popup dim">
-  (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization)
-  <br />
-    {{ quotationData.results[0].revisions[0].rawMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ ((quotationData.results[0].revisions[0].rawMaterialCost) 
-                     + (quotationData.results[0].revisions[0].TotalProcessCost)) * (quotationData.results[0].revisions[0].overHeadsPercent / 100)  | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }}
-  <br />
-  <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+  <!-- International Packing -->
+  <div *ngIf="quotationData.results[0].revisions[0].Packing === 'international'">
+    (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC))
+    <br />
+    {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
+    <br />
+    <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+  </div>
+  <!-- Domestic Packing -->
+  <div *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic'">
+    (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing)
+    <br />
+    {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
+    <br />
+    <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+  </div>
 </div>
+ 
+
 </span>
                   </td>
 
@@ -1007,9 +1027,9 @@
                    <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
- (Raw Material weight/pc * Raw Material price/kg +10% inventory cost)  
+ (Raw Material weight/pc * Raw Material price/kg )  
   <br />
-   {{ quotationData.results[0].revisions[0].castingWeight }} * {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} 
+  {{ quotationData.results[0].revisions[0].rawMaterialWeight }} * {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} 
   <br />
   <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
 </div>
@@ -1050,7 +1070,7 @@
                     <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
-(Raw Material cost/pc - Scrap cost/pc)
+(Raw Material cost/pc * ICC Interest Rate)
   <br />
    {{ quotationData.results[0].revisions[0].rawMaterialCost }} - 0
   <br />  
@@ -1102,7 +1122,7 @@
 <div class="info-popup dim">
 (Machine Hour Rate/Hourly Output/No. of Cavities)
   <br />
-    {{ process.Hours }} / {{ process.HourlyOutput }} / {{ process.cavity }}
+    ( {{ process.Hours }} / {{ process.HourlyOutput }} ) / {{ process.cavity }}
   <br />  
   <strong>Result: {{ process.cost| number:'1.2-3' }}</strong>
 </div>
@@ -1149,7 +1169,7 @@
 <div class="info-popup dim">
   (Sum of all individual process costs * Rejection %)
   <br />
-    {{ quotationData.results[0].revisions[0].sumOfProcessCost }} * {{ quotationData.results[0].revisions[0].Rejection }} / 100
+    {{ quotationData.results[0].revisions[0].sumOfProcessCost }} * ( {{ quotationData.results[0].revisions[0].Rejection }} / 100 )
   <br />
   <strong>Result: {{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</strong>
 </div>
@@ -1191,31 +1211,50 @@
                 
                   <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3'}}</td>
                   <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                  <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost) 
-                     + (quotationData.results[0].revisions[0].TotalProcessCost)) * (quotationData.results[0].revisions[0].overHeadsPercent / 100)  | number:'1.2-2' }}
-                             <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
+                  <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}
+                    <span class="info-container" tabindex="0">
+<mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
-  (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
-  <br />
-    ({{ quotationData.results[0].revisions[0].rawMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * {{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100
-  <br />
-  <strong>Result:  {{ ((quotationData.results[0].revisions[0].rawMaterialCost) 
-                     + (quotationData.results[0].revisions[0].TotalProcessCost)) * (quotationData.results[0].revisions[0].overHeadsPercent / 100)  | number:'1.2-2' }}</strong>
+<!-- If ICC (InterestRate) exists -->
+<div *ngIf="quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0">
+((Total Labour Cost (L)) * Over Heads)
+<br />
+({{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+<br />
+<strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
+</div>
+<!-- If ICC (InterestRate) doesn't exist -->
+<div *ngIf="!quotationData.results[0].revisions[0].InterestRate || quotationData.results[0].revisions[0].InterestRate === 0">
+(Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
+<br />
+({{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+<br />
+<strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
+</div>
 </div>
 </span>
-                    </td>
+           </td>
                   <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
                   <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}
                         <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
-  (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization)
-  <br />
-    {{ quotationData.results[0].revisions[0].rawMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ ((quotationData.results[0].revisions[0].rawMaterialCost) 
-                     + (quotationData.results[0].revisions[0].TotalProcessCost)) * (quotationData.results[0].revisions[0].overHeadsPercent / 100)  | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }}
-  <br />
-  <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+  <!-- International Packing -->
+  <div *ngIf="quotationData.results[0].revisions[0].Packing === 'international'">
+    (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC))
+    <br />
+    {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
+    <br />
+    <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+  </div>
+  <!-- Domestic Packing -->
+  <div *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic'">
+    (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing)
+    <br />
+    {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
+    <br />
+    <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+  </div>
 </div>
 </span>
                   </td>
@@ -1352,7 +1391,7 @@
             <div class="details-container">
  <table class="inner-details">
               <tr>
-                <td class="label">Customer Drawing No</td>
+                <td class="label">Drawing No</td>
                 <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
               </tr>
               <tr>
@@ -1533,7 +1572,7 @@
                 
                   <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3'}}</td>
                   <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                  <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 | number:'1.2-2' }}</td>
+                  <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost   | number:'1.2-2' }}</td>
                   <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
                   <td >{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
          
@@ -1684,7 +1723,7 @@
             <div class="details-container">
  <table class="inner-details">
               <tr>
-                <td class="label">Customer Drawing No</td>
+                <td class="label">Drawing No</td>
                 <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
               </tr>
               <tr>
@@ -1831,7 +1870,7 @@
                 
                   <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3'}}</td>
                   <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                  <td colspan="2">{{ ((quotationData.results[0].revisions[0].rawMaterialCost)  + (quotationData.results[0].revisions[0].TotalProcessCost)) * 0.15 | number:'1.2-2' }}</td>
+                  <td colspan="2">{{  quotationData.results[0].revisions[0].overHeadsCost   | number:'1.2-2' }} </td>
                   <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
                   <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
               </tr>
