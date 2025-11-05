@@ -104,7 +104,7 @@
   <div class="actions">
    
     <button class="btn btn-danger" type="button" (click)="close()">Cancel</button>
-    <button mat-flat-button color="primary" type="submit">Save</button>
+    <button class="submit-button" type="submit" [disabled]="rawMaterialForm.invalid">Save</button>
   </div>
 </form>
 

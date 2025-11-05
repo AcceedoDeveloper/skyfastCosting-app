@@ -145,7 +145,8 @@ td {
 }
 
 td.actions {
-  border-left: 1px solid #e0e0e0;
+  border-left: none;
+  border-right: none;
   padding: 4px 15px;
   align-items: center;
   margin-right: 80px;
@@ -257,13 +258,12 @@ tr:hover {
 
 .popup {
   position: fixed;
-inset: 0;
-//   background: rgba(255, 0, 0, 0.6); /* dark overlay */
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32); /* slight shadow overlay */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
-  backdrop-filter: blur(0.5px);
 }
 
 /* Popup Content */
@@ -353,10 +353,10 @@ inset: 0;
 
 /* Actions (buttons at the bottom) */
 .actions {
-  // display: flex;
+  display: flex;
   justify-content: flex-end;
-  gap: 12px;
 
+  margin-top: 20px;
 }
 
 
@@ -365,12 +365,47 @@ inset: 0;
   font-weight: 500;
 }
 
+/* Cancel button */
+.btn-danger {
+  background-color: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #b71c1c;
+}
+
 /* Save button */
-.actions button[mat-flat-button] {
-  font-weight: 600;
-  border-radius: 8px;
-  padding: 6px 18px;
+.actions button[mat-flat-button],
+.submit-button {
   background-color: #0e1635;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+.actions button[mat-flat-button]:hover,
+.submit-button:hover {
+  background-color: #0e1635;
+}
+
+.submit-button:disabled {
+  background-color: #c1cbf5;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 #hbtn {
