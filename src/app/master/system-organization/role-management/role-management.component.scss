@@ -292,7 +292,7 @@ td {
 }
 
 td:first-child {
-  text-align: left;
+  text-align: center;
 }
 
 td:last-child {
@@ -312,7 +312,7 @@ td:last-child {
 .cell-content {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 12px;
 }
 
