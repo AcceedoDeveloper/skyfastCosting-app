@@ -83,13 +83,16 @@
       </tbody>
       <tfoot>
         <tr class="total-row">
-          <td colspan="3" class="total-label">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="total-hours-cell">
             <div class="total-content">
               <mat-icon class="total-icon">summarize</mat-icon>
-              <span>Total Hours</span>
+              <span class="total-label-text">Total Hours</span>
+              <span class="total-value">{{ totalHours }}</span>
             </div>
           </td>
-          <td class="total-value">{{ totalHours }}</td>
           <td></td>
         </tr>
       </tfoot>

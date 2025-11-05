@@ -352,11 +352,20 @@ vertical-align: middle;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #hbtn:hover {
   border-color: #c8b273;      
   box-shadow: 0 3px 8px rgba(200,178,115,0.25);
+}
+
+.btn-add-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 
 #closebtn{
