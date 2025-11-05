@@ -847,7 +847,7 @@ mat-radio-group {
 /* === INPUTS & SELECTS === */
 .lab {
   flex: 1;
-  padding: 8px 12px;
+  padding: 2px 12px;
   font-size: 13px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
@@ -1271,4 +1271,24 @@ display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+}
+
+.lab option {
+  padding: 0px 4px;
+  line-height: 1;
+  font-size: 10px;
+  height: 10px;
+  min-height: 10px !important;
+  max-height: 10px !important;
+  margin: 0;
+}
+
+#currency-option {
+  padding: 0px 4px;
+  line-height: 1;
+  font-size: 10px;
+  height: 10px;
+  min-height: 10px !important;
+  max-height: 10px !important;
+  margin: 0;
 } 

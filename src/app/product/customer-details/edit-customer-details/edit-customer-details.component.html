@@ -314,8 +314,8 @@ edit
 <div *ngIf="customerForm.get('Packing')?.value === 'international'" class="slide-card">
   <h3 class="card-title">International Packing</h3>
    <mat-radio-group class="radio-button" formControlName="TransportType">
-    <mat-radio-button class="costs" value="cost">Cost</mat-radio-button>
-    <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+    <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
+    <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
   </mat-radio-group>
   <div class="field-row" *ngIf="customerForm.get('TransportType')?.value === 'cost'">
     <label class="label1" for="transport-cost">Transport Cost (₹)</label>
@@ -356,8 +356,8 @@ edit
 <div *ngIf="customerForm.get('Packing')?.value === 'domestic'" class="slide-card">
   <h3 class="card-title">Domestic Packing</h3>
   <mat-radio-group class="radio-button" formControlName="TransportType">
-    <mat-radio-button class="costs" value="cost">Cost</mat-radio-button>
-    <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+    <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
+    <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
   </mat-radio-group>
   <div class="field-row" *ngIf="customerForm.get('TransportType')?.value === 'cost'">
     <label class="label1" for="transport-cost">Transport Cost (₹)</label>
