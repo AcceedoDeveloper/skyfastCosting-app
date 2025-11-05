@@ -234,12 +234,12 @@ export class AppComponent implements OnInit, OnDestroy {
       quotation: true,
       reports: true
     };
-    const lastRoute = sessionStorage.getItem('lastRoute') || '/dashboard/dashh';
+    const lastRoute = sessionStorage.getItem('lastRoute') || '/product/dashboard';
     this.generateSidebar({ screens: this.permissions, initialScreen: lastRoute } as Permission);
     if (!lastRoute.includes('/login')) {
       this.router.navigateByUrl(lastRoute);
     } else {
-      this.router.navigate(['/dashboard/dashh']);
+      this.router.navigate(['/product/dashboard']);
     }
   }
 
@@ -263,7 +263,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const screens = perm.screens;
     const sidebar: SidebarItem[] = [];
 
-    if (screens.dashboard) sidebar.push({ label: 'Dashboard', route: '/dashboard/dashh', icon: 'dashboard' });
+    if (screens.dashboard) sidebar.push({ label: 'Dashboard', route: '/product/dashboard', icon: 'dashboard' });
 
     if (screens.user?.parent || this.anyTrue(screens.user?.children)) {
       sidebar.push({

@@ -30,7 +30,6 @@ import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { selectLastAddedCustomer } from '../../store/product.selectors';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 
 
 @Component({
@@ -48,7 +47,6 @@ import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading
     MatStepperModule,
     MatRadioModule,
     MatProgressSpinnerModule,
-    LoadingSpinnerComponent,
   ],
   templateUrl: './add-customer-details.component.html',
   styleUrl: './add-customer-details.component.scss'

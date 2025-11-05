@@ -1,0 +1,212 @@
+<div class="dashboard-container">
+  <!-- Top Section: Quotation Summary Cards -->
+  <div class="quotation-summary">
+    <div class="summary-card">
+      <div class="card-label">Total Quotations</div>
+      <div class="card-value">{{ totalQuotations }}</div>
+    </div>
+    <div class="summary-card approved">
+      <div class="card-label">Approved Quotations</div>
+      <div class="card-value green">{{ approvedQuotations }}</div>
+    </div>
+    <div class="summary-card pending">
+      <div class="card-label">Pending Quotations</div>
+      <div class="card-value orange">{{ pendingQuotations }}</div>
+    </div>
+    <div class="summary-card rejected">
+      <div class="card-label">Rejected Quotations</div>
+      <div class="card-value red">{{ rejectedQuotations }}</div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Left Section: Total Quotations Table -->
+    <div class="table-section">
+      <div class="section-header">
+        <h2 class="section-title">Total Quotations</h2>
+        <div class="date-picker-container">
+          <input type="date" [(ngModel)]="selectedDate" class="date-picker" />
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="quotations-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Email</th>
+              <th>Part Name</th>
+              <th>Status</th>
+              <th>Sent At</th>
+              <th>Actual Cost</th>
+              <th>Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let quotation of paginatedQuotations">
+              <td>{{ quotation.customer }}</td>
+              <td>{{ quotation.email }}</td>
+              <td>{{ quotation.partName }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="quotation.status.toLowerCase()">
+                  {{ quotation.status }}
+                </span>
+              </td>
+              <td>{{ quotation.sentAt }}</td>
+              <td>{{ quotation.actualCost | number }}</td>
+              <td class="difference">
+                <mat-icon class="arrow-up">arrow_upward</mat-icon>
+                {{ quotation.difference | number }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <mat-paginator
+          [length]="quotations.length"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons
+          class="custom-paginator">
+        </mat-paginator>
+      </div>
+    </div>
+
+    <!-- Right Section: Today Activity & Cost Estimation -->
+    <div class="sidebar-section">
+      <!-- Today Activity -->
+      <div class="activity-card">
+        <h3 class="card-title">Today Activity</h3>
+        <div class="activity-list">
+          <div class="activity-item" *ngFor="let activity of todayActivities">
+            <div class="activity-avatar" [style.background-color]="activity.avatarColor">
+              {{ activity.initials }}
+            </div>
+            <div class="activity-content">
+              <div class="activity-text">{{ activity.description }}</div>
+              <div class="activity-time">{{ activity.date }} | {{ activity.time }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cost Estimation -->
+      <div class="cost-estimation-card">
+        <h3 class="card-title">Cost Estimation</h3>
+        <div class="currency-table">
+          <div class="currency-row" *ngFor="let currency of currencyRates">
+            <div class="currency-name">
+              {{ currency.name }}
+              <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+            </div>
+            <div class="currency-value">{{ currency.value }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Section: Analytics Cards -->
+  <div class="analytics-section">
+    <!-- Recent Updates -->
+    <div class="analytics-card">
+      <h3 class="card-title">Recent Updates</h3>
+      <div class="updates-list">
+        <div class="update-item" *ngFor="let update of recentUpdates">
+          <span class="update-dot" [style.background-color]="update.dotColor"></span>
+          <span class="update-role">{{ update.role }}</span>
+          <span class="update-category">{{ update.category }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Process -->
+    <div class="analytics-card">
+      <div class="card-header">
+        <h3 class="card-title">Process</h3>
+        <a href="#" class="view-details">
+          View Details
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+      <div class="chart-container">
+        <div class="donut-chart process-chart">
+          <div class="chart-label">Most Used one</div>
+        </div>
+      </div>
+      <div class="process-metrics">
+        <div class="metric-item">
+          <span class="metric-dot blue"></span>
+          <span>Tonnage / Jaw • 180T</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-dot purple"></span>
+          <span>Cost Per Hr • ₹1280</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-dot grey"></span>
+          <span>Machine Centre • 1002</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Most used raw material -->
+    <div class="analytics-card">
+      <h3 class="card-title">Most used raw material</h3>
+      <div class="chart-container">
+        <div class="donut-chart material-chart">
+          <div class="chart-segments">
+            <div class="segment segment-1"></div>
+            <div class="segment segment-2"></div>
+            <div class="segment segment-3"></div>
+          </div>
+        </div>
+      </div>
+      <div class="material-legend">
+        <div class="legend-item">
+          <span class="legend-dot light-blue"></span>
+          <span>A1 $45</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot grey"></span>
+          <span>A2 $55</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot dark-blue"></span>
+          <span>A3 $65</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sales by Countries -->
+    <div class="analytics-card">
+      <div class="card-header">
+        <h3 class="card-title">Sales by Countries</h3>
+        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+      </div>
+      <div class="sales-content">
+        <div class="countries-list">
+          <div class="country-item" *ngFor="let country of salesByCountries">
+            <span>{{ country.name }}</span>
+            <span class="country-percentage">{{ country.percentage }}</span>
+          </div>
+        </div>
+        <div class="map-container">
+          <div class="map-outline">UK Map</div>
+        </div>
+      </div>
+      <div class="sales-pagination">
+        <mat-paginator
+          [length]="salesByCountries.length"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10]"
+          (page)="onSalesPageChange($event)"
+          class="custom-paginator">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
