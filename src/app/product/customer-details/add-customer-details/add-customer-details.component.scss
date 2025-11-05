@@ -274,98 +274,6 @@
       margin-bottom: 2px;
     }
 
-/* === EMPTY STATE STYLING === */
-.empty-state-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-  padding: 40px 20px;
-  margin: 20px 0;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  max-width: 480px;
-  padding: 48px 32px;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.empty-state-icon {
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 50%;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.empty-state-icon:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.empty-icon {
-  font-size: 64px !important;
-  width: 64px !important;
-  height: 64px !important;
-  color: #6c757d;
-  opacity: 0.7;
-}
-
-.empty-state-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #2d3748;
-  margin: 0 0 12px 0;
-  letter-spacing: -0.3px;
-  font-family: 'Inter', 'Poppins', sans-serif;
-}
-
-.empty-state-message {
-  font-size: 15px;
-  color: #64748b;
-  margin: 0;
-  line-height: 1.6;
-  font-weight: 400;
-  font-family: 'Inter', 'Poppins', sans-serif;
-}
-
-.plus-button-reference {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background-color: #007BFF;
-  color: #ffffff;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 4px;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
-  vertical-align: middle;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 
     .addbtn.mat-mini-fab {
       width: 32px; 
@@ -939,7 +847,7 @@ mat-radio-group {
 /* === INPUTS & SELECTS === */
 .lab {
   flex: 1;
-  padding: 8px 12px;
+  padding: 2px 12px;
   font-size: 13px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
@@ -1349,3 +1257,38 @@ button.btn.btn-primary[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+
+#step-actionfinal{
+display: flex;
+  justify-content: space-between;
+  align-items: center;
+ 
+}
+
+.step-actionsss{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.lab option {
+  padding: 0px 4px;
+  line-height: 1;
+  font-size: 10px;
+  height: 10px;
+  min-height: 10px !important;
+  max-height: 10px !important;
+  margin: 0;
+}
+
+#currency-option {
+  padding: 0px 4px;
+  line-height: 1;
+  font-size: 10px;
+  height: 10px;
+  min-height: 10px !important;
+  max-height: 10px !important;
+  margin: 0;
+} 

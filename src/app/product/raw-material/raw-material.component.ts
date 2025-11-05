@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
+import { Actions, ofType } from '@ngrx/effects';
 import * as rawActions from '../store/product.actions';
 import { selectAllRawMaterials } from '../store/product.selectors';
 import { RawMaterial } from '../../model/product.model';
@@ -35,10 +37,13 @@ import { RawMaterialPaginatorIntl } from '../../shared/raw-material-paginator-in
   templateUrl: './raw-material.component.html',
   styleUrl: './raw-material.component.scss'
 })
-export class RawMaterialComponent implements OnInit {
+export class RawMaterialComponent implements OnInit, OnDestroy {
   popup : boolean = false;
    rawMaterialForm!: FormGroup;
     editingId: string | null = null;
+  errorMessage: string | null = null;
+  private destroy$ = new Subject<void>();
+  private isSaving = false;
 
   rawMaterials$!: Observable<RawMaterial[]>;
   
@@ -49,7 +54,7 @@ export class RawMaterialComponent implements OnInit {
   currentPage = 0;
   totalItems = 0;
 
-  constructor(private store: Store, private fb: FormBuilder, private dialog : MatDialog) {
+  constructor(private store: Store, private fb: FormBuilder, private dialog : MatDialog, private actions$: Actions) {
   }
 
   ngOnInit(): void {
@@ -67,7 +72,51 @@ export class RawMaterialComponent implements OnInit {
       GradeName: ['', Validators.required],
       RatePerKg: ['', [Validators.required, Validators.min(0.01)]],
     });
+
+    // Listen to success actions
+    this.actions$.pipe(
+      ofType(rawActions.addRawMaterialSuccess, rawActions.updateRawMaterialSuccess),
+      takeUntil(this.destroy$),
+      filter(() => this.isSaving)
+    ).subscribe(() => {
+      this.isSaving = false;
+      this.errorMessage = null;
+      this.close();
+      this.rawMaterialForm.reset();
+    });
+
+    // Listen to failure actions
+    this.actions$.pipe(
+      ofType(rawActions.apiFailure),
+      takeUntil(this.destroy$),
+      filter(() => this.isSaving)
+    ).subscribe((action) => {
+      this.isSaving = false;
+      // Extract error message from backend response
+      const error = action.error;
+      let message = 'An error occurred. Please try again.';
+      
+      // Try different error message formats from backend
+      if (error?.error?.message) {
+        message = error.error.message;
+      } else if (error?.error?.error) {
+        message = error.error.error;
+      } else if (error?.message) {
+        message = error.message;
+      } else if (typeof error === 'string') {
+        message = error;
+      } else if (error?.error && typeof error.error === 'string') {
+        message = error.error;
+      }
+      
+      this.errorMessage = message;
+    });
     
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // Update paginated data based on current page and page size
@@ -90,6 +139,8 @@ export class RawMaterialComponent implements OnInit {
 
   onSubmit() {
     if (this.rawMaterialForm.valid) {
+      this.errorMessage = null;
+      this.isSaving = true;
       const data = this.rawMaterialForm.value;
 
       if (this.editingId) {
@@ -99,20 +150,20 @@ export class RawMaterialComponent implements OnInit {
         // Add mode
         this.store.dispatch(rawActions.addRawMaterial({ rawMaterial: data }));
       }
-
-      this.close();
-      this.rawMaterialForm.reset();
+      // Don't close popup here - wait for success/failure action
     }
   }
 
  // ✅ open Add popup
   addrawmaterial() {
     this.editingId = null;
+    this.errorMessage = null;
     this.rawMaterialForm.reset();
     this.popup = true;
   }
    edit(rawMaterial: RawMaterial) {
     this.editingId = rawMaterial._id;
+    this.errorMessage = null;
     this.rawMaterialForm.patchValue({
       GradeName: rawMaterial.GradeName,
       RatePerKg: rawMaterial.RatePerKg

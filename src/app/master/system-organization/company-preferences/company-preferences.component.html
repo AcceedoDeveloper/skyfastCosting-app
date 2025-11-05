@@ -1,8 +1,7 @@
 
 <div class="main-wrapper">
-
-
-  <div class="section" *ngIf="company$ | async as companies">
+  <div class="sections-container">
+    <div class="section" *ngIf="company$ | async as companies">
     
 
     <h2 class="section-title">COMPANY PREFERENCES</h2>
@@ -79,8 +78,7 @@
     </div>
   </div>
 
-
-  <div class="seconddiv" *ngIf="hosting$ | async as hostingList">
+    <div class="seconddiv" *ngIf="hosting$ | async as hostingList">
     
   
     <!-- <h2 class="section-title">HOSTING MAIL / COST ESTIMATION</h2> -->
@@ -162,72 +160,6 @@
       </div>
 
     </div>
-
-
-      <div class="carddiv">
-<h2 class="section-title"> COST ESTIMATION</h2>
-        <div class="card-container">
-
-
-          <div class="card">
-
-            <div >
-             <strong>Cost Estimation ( USD / EUR)   </strong> 
-          
-          
-            </div>
-            
-            <div   class="currency-container">
-          <div *ngFor="let item of currencyData">
-          
-             <div class="kv-list" >
-
-              <div class="cardlastdiv">
-
-                <div>
-                  <div class="row">
-                    <div class="label">EURO</div><div class="colon">:</div>
-                    <div class="value">  <input type="number"  class="value" [(ngModel)]="item.EURO" [disabled]="!isEditing" /></div>
-                  </div>
-                  <div class="row">
-                    <div class="label">USD</div><div class="colon">:</div>
-                    <div class="value">    <input type="number"  class="value" [(ngModel)]="item.USD" [disabled]="!isEditing" />
-          </div>
-                  </div>
-  
-                </div>
-                 
-                   
-                    <div class="actions1">
-                      <button class="btn primary" *ngIf="!isEditing"  (click)="enableEdit()">Edit</button>
-                       <button class="btn primary" *ngIf="isEditing"  (click)="saveCurrency()">Update</button>
-              <button class="btn" *ngIf="isEditing"  (click)="cancelEdit()">Cancel</button>
-            
-            
-                    </div>
-                    
-              </div>
-
-          
-                
-                </div>
-           
-          </div>
-          
-          
-          
-          
-          
-            </div>
-          </div>
-           
-
-
-     </div>
-      </div>
-
-   
   </div>
-
-
+  </div>
 </div>

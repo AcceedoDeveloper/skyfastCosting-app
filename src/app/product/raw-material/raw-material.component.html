@@ -85,8 +85,11 @@
 <div class="popup" *ngIf=" popup" >
 
   <div class="popup-content">
-    <h2 mat-dialog-title>Add Raw Material</h2>
+    <h2 mat-dialog-title>{{ editingId ? 'Edit Raw Material' : 'Add Raw Material' }}</h2>
     
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
 
 <form [formGroup]="rawMaterialForm" (ngSubmit)=" onSubmit()" class="form-container">
   <mat-form-field appearance="outline" class="full-width">
@@ -104,7 +107,7 @@
   <div class="actions">
    
     <button class="btn btn-danger" type="button" (click)="close()">Cancel</button>
-    <button mat-flat-button color="primary" type="submit">Save</button>
+    <button class="submit-button" type="submit" [disabled]="rawMaterialForm.invalid">Save</button>
   </div>
 </form>
 

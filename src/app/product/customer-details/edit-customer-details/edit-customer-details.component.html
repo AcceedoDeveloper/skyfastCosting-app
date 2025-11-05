@@ -1,3 +1,6 @@
+edit
+
+
 <form [formGroup]="customerForm" class="dialog-form">
   <mat-horizontal-stepper linear #stepper>
     
@@ -105,16 +108,6 @@
 
 
       <div class="process-container" formArrayName="processes">
-      <!-- Empty State -->
-      <div *ngIf="processes.length === 0" class="empty-state-container">
-        <div class="empty-state">
-          <div class="empty-state-icon">
-            <mat-icon class="empty-icon">settings</mat-icon>
-          </div>
-          <h3 class="empty-state-title">No Processes Added</h3>
-          <p class="empty-state-message">Click the <span class="plus-button-reference">+</span> button to add a process</p>
-        </div>
-      </div>
       
         <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
 
@@ -271,7 +264,7 @@
                       <!-- Minimal Image Preview / Clickable Thumbnail -->
                       <img
                         *ngIf="previewUrl || data?.drawingImage"
-                        [src]="previewUrl || data?.drawingImage"
+                        [src]="previewUrl || getImageUrl(data?.drawingImage)"
                         alt="Preview"
                        class="profile-dp"
                         (click)="togglePopup(); $event.stopPropagation()"
@@ -294,7 +287,7 @@
                       <div class="popup-content" (click)="$event.stopPropagation()">
                         <button class="close-btn" (click)="togglePopup()">✖</button>
                         <img
-                          [src]="previewUrl || data?.drawingImage"
+                          [src]="previewUrl || getImageUrl(data?.drawingImage)"
                           alt="Preview"
                           class="popup-image"
                         />
@@ -321,8 +314,8 @@
 <div *ngIf="customerForm.get('Packing')?.value === 'international'" class="slide-card">
   <h3 class="card-title">International Packing</h3>
    <mat-radio-group class="radio-button" formControlName="TransportType">
-    <mat-radio-button class="costs" value="cost">Cost</mat-radio-button>
-    <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+    <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
+    <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
   </mat-radio-group>
   <div class="field-row" *ngIf="customerForm.get('TransportType')?.value === 'cost'">
     <label class="label1" for="transport-cost">Transport Cost (₹)</label>
@@ -363,8 +356,8 @@
 <div *ngIf="customerForm.get('Packing')?.value === 'domestic'" class="slide-card">
   <h3 class="card-title">Domestic Packing</h3>
   <mat-radio-group class="radio-button" formControlName="TransportType">
-    <mat-radio-button class="costs" value="cost">Cost</mat-radio-button>
-    <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button>
+    <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
+    <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
   </mat-radio-group>
   <div class="field-row" *ngIf="customerForm.get('TransportType')?.value === 'cost'">
     <label class="label1" for="transport-cost">Transport Cost (₹)</label>
@@ -396,3 +389,5 @@
 
 <!-- Loading spinner overlay -->
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+

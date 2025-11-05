@@ -145,6 +145,7 @@ export class AppComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
       this.showDropdown = false;
+      this.activeSubmenu = null;
       sessionStorage.setItem('lastRoute', event.urlAfterRedirects);
     });
 
@@ -310,13 +311,25 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   openDropdown() { this.showDropdown = true; }
-  toggleSubmenu(menu: string) { this.activeSubmenu = this.activeSubmenu === menu ? null : menu; }
+  toggleSubmenu(menu: string) { 
+    // If clicking on a different menu item, close current and open new one
+    // If clicking on the same menu item, toggle it
+    this.activeSubmenu = this.activeSubmenu === menu ? null : menu; 
+  }
+
+  closeSubmenu() {
+    this.activeSubmenu = null;
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
     if (!target.closest('.profile-container')) this.showDropdown = false;
-    if (!target.closest('.nav-item-content') && !target.closest('.submenu')) this.activeSubmenu = null;
+    
+    // Close submenu if clicking outside sidebar items or submenu
+    if (!target.closest('.custom-sidenav')) {
+      this.activeSubmenu = null;
+    }
   }
 
   logout() {

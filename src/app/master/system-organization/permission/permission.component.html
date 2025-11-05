@@ -3,71 +3,95 @@
   <div class="header">
     <h2>Permission</h2>
     <button mat-raised-button color="primary" id="hbtn" (click)="toggleForm()">
-      <mat-icon>add</mat-icon> Add Permission
+      <mat-icon class="btn-add-icon">security</mat-icon>
+      Add Permission
     </button>
   </div>
 
   <!-- Table -->
-  <div class="table-container max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg" *ngIf="permissionsList.length">
-    <table class="w-full border-collapse">
-      <thead id="theader" class="bg-gray-800 text-white">
+  <div class="table-container" *ngIf="permissionsList.length">
+    <table>
+      <thead id="theader">
         <tr>
-          <th class="p-4 text-left font-semibold">Name</th>
-          <th class="p-4 text-left font-semibold">Permission Info</th>
-          <th class="p-4 text-left font-semibold">Action</th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">badge</mat-icon>
+              <span>Name</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">shield</mat-icon>
+              <span>Permission Info</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
+              <mat-icon class="header-icon">tune</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
         </tr>
       </thead>
 
       <tbody>
-        <tr *ngFor="let p of permissionsList" class="border-b hover:bg-gray-50">
-          <td class="p-4">{{ roleMap[p.role] || p.role }}</td>
+        <tr *ngFor="let p of permissionsList; let i = index" class="table-row">
+          <td>
+            <span class="role-name">{{ roleMap[p.role] || p.role }}</span>
+          </td>
 
-          <td class="p-4">
-            <div class="flex flex-col space-y-2">
+          <td>
+            <div class="permission-info-container">
               <!-- Dashboard -->
-              <div *ngIf="p.screens.dashboard">
+              <div *ngIf="p.screens.dashboard" class="permission-item">
                 <strong>Dashboard</strong>
               </div>
 
               <!-- User Management -->
-              <div *ngIf="p.screens.user.parent">
+              <div *ngIf="p.screens.user.parent" class="permission-item">
                 <strong>User</strong>
-                <span *ngIf="p.screens.user.children">
+                <span *ngIf="p.screens.user.children" class="permission-children">
                   ({{ getEnabledChildNames(p.screens.user.children) || 'None' }})
                 </span>
               </div>
 
               <!-- Company Management -->
-              <div *ngIf="p.screens.company.parent">
+              <div *ngIf="p.screens.company.parent" class="permission-item">
                 <strong>Company</strong>
-                <span *ngIf="p.screens.company.children">
+                <span *ngIf="p.screens.company.children" class="permission-children">
                   ({{ getEnabledChildNames(p.screens.company.children) || 'None' }})
                 </span>
               </div>
 
               <!-- Material & Process Management -->
-              <div *ngIf="p.screens.material.parent">
+              <div *ngIf="p.screens.material.parent" class="permission-item">
                 <strong>Material</strong>
-                <span *ngIf="p.screens.material.children">
+                <span *ngIf="p.screens.material.children" class="permission-children">
                   ({{ getEnabledChildNames(p.screens.material.children) || 'None' }})
                 </span>
               </div>
 
               <!-- Quotation -->
-              <div *ngIf="p.screens.quotation">
+              <div *ngIf="p.screens.quotation" class="permission-item">
                 <strong>Quotation</strong>
               </div>
 
               <!-- Reports -->
-              <div *ngIf="p.screens.reports">
+              <div *ngIf="p.screens.reports" class="permission-item">
                 <strong>Reports</strong>
               </div>
             </div>
           </td>
 
-          <td class="p-4 actions flex space-x-2">
-            <mat-icon class="icon text-blue-500 hover:text-blue-700 cursor-pointer" (click)="editPermission(p)">edit</mat-icon>
-            <mat-icon class="icon text-red-500 hover:text-red-700 cursor-pointer" (click)="deletePermissionById(p._id!)">delete</mat-icon>
+          <td class="actions">
+            <div class="actions-container">
+              <button mat-icon-button class="action-btn edit-btn" (click)="editPermission(p)" title="Edit">
+                <mat-icon class="icon">edit</mat-icon>
+              </button>
+              <button mat-icon-button class="action-btn delete-btn" (click)="deletePermissionById(p._id!)" title="Delete">
+                <mat-icon class="icon">delete</mat-icon>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -81,85 +105,125 @@
       <button class="close-btn" (click)="showForm = false">&times;</button>
 
       <!-- Select Role -->
-      <form>
-        <label for="role">Select Role</label>
-        <select id="role" [(ngModel)]="selectedRole" name="role" (ngModelChange)="onRoleChange()">
-          <option *ngFor="let role of roles$ | async" [ngValue]="role._id">
-            {{ role.role }}
-          </option>
-        </select>
+      <form class="role-select-form">
+        <label for="role" class="role-label">
+          <mat-icon class="label-icon">badge</mat-icon>
+          Select Role
+        </label>
+        <div class="select-wrapper">
+          <mat-icon class="select-icon">arrow_drop_down</mat-icon>
+          <select id="role" [(ngModel)]="selectedRole" name="role" (ngModelChange)="onRoleChange()" class="role-select">
+            <option value="">Choose a role...</option>
+            <option *ngFor="let role of roles$ | async" [ngValue]="role._id">
+              {{ role.role }}
+            </option>
+          </select>
+        </div>
       </form>
 
       <!-- Permissions Checkboxes -->
       <ul class="nav-list">
         <!-- Dashboard -->
-        <li class="nav-item">
+        <li class="nav-item permission-card">
           <div class="nav-item-content">
-            <input type="checkbox" id="dashboard" [(ngModel)]="permissions.dashboard" name="dashboard" />
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="dashboard" [(ngModel)]="permissions.dashboard" name="dashboard" class="custom-checkbox" />
+              <label for="dashboard" class="checkbox-label"></label>
+            </div>
+            <mat-icon class="category-icon dashboard-icon">dashboard</mat-icon>
             <label for="dashboard" class="nav-text">Dashboard</label>
           </div>
         </li>
 
         <!-- User Management -->
-        <li class="nav-item has-submenu">
+        <li class="nav-item has-submenu permission-card">
           <div class="nav-item-content">
-            <input type="checkbox" id="userParent" [(ngModel)]="permissions.user.parent" name="userParent"
-              (change)="toggleGroup('user')" />
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="userParent" [(ngModel)]="permissions.user.parent" name="userParent"
+                (change)="toggleGroup('user')" class="custom-checkbox" />
+              <label for="userParent" class="checkbox-label"></label>
+            </div>
+            <mat-icon class="category-icon user-icon">people</mat-icon>
             <label for="userParent" class="nav-text">User Management</label>
           </div>
           <ul class="submenu">
-            <li *ngFor="let item of userSubItems">
-              <input type="checkbox" [id]="'user-' + item.key" [(ngModel)]="permissions.user.children[item.key]"
-                [name]="'user-' + item.key" (change)="checkParent('user')" />
-              <label [for]="'user-' + item.key">{{ item.label }}</label>
+            <li *ngFor="let item of userSubItems" class="submenu-item">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" [id]="'user-' + item.key" [(ngModel)]="permissions.user.children[item.key]"
+                  [name]="'user-' + item.key" (change)="checkParent('user')" class="custom-checkbox" />
+                <label [for]="'user-' + item.key" class="checkbox-label"></label>
+              </div>
+              <label [for]="'user-' + item.key" class="submenu-label">{{ item.label }}</label>
             </li>
           </ul>
         </li>
 
         <!-- Company Management -->
-        <li class="nav-item has-submenu">
+        <li class="nav-item has-submenu permission-card">
           <div class="nav-item-content">
-            <input type="checkbox" id="companyParent" [(ngModel)]="permissions.company.parent" name="companyParent"
-              (change)="toggleGroup('company')" />
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="companyParent" [(ngModel)]="permissions.company.parent" name="companyParent"
+                (change)="toggleGroup('company')" class="custom-checkbox" />
+              <label for="companyParent" class="checkbox-label"></label>
+            </div>
+            <mat-icon class="category-icon company-icon">business</mat-icon>
             <label for="companyParent" class="nav-text">Company Management</label>
           </div>
           <ul class="submenu">
-            <li *ngFor="let item of companySubItems">
-              <input type="checkbox" [id]="'company-' + item.key" [(ngModel)]="permissions.company.children[item.key]"
-                [name]="'company-' + item.key" (change)="checkParent('company')" />
-              <label [for]="'company-' + item.key">{{ item.label }}</label>
+            <li *ngFor="let item of companySubItems" class="submenu-item">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" [id]="'company-' + item.key" [(ngModel)]="permissions.company.children[item.key]"
+                  [name]="'company-' + item.key" (change)="checkParent('company')" class="custom-checkbox" />
+                <label [for]="'company-' + item.key" class="checkbox-label"></label>
+              </div>
+              <label [for]="'company-' + item.key" class="submenu-label">{{ item.label }}</label>
             </li>
           </ul>
         </li>
 
         <!-- Material & Process Management -->
-        <li class="nav-item has-submenu">
+        <li class="nav-item has-submenu permission-card">
           <div class="nav-item-content">
-            <input type="checkbox" id="materialParent" [(ngModel)]="permissions.material.parent" name="materialParent"
-              (change)="toggleGroup('material')" />
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="materialParent" [(ngModel)]="permissions.material.parent" name="materialParent"
+                (change)="toggleGroup('material')" class="custom-checkbox" />
+              <label for="materialParent" class="checkbox-label"></label>
+            </div>
+            <mat-icon class="category-icon material-icon">settings</mat-icon>
             <label for="materialParent" class="nav-text">Material & Process Management</label>
           </div>
           <ul class="submenu">
-            <li *ngFor="let item of materialSubItems">
-              <input type="checkbox" [id]="'material-' + item.key" [(ngModel)]="permissions.material.children[item.key]"
-                [name]="'material-' + item.key" (change)="checkParent('material')" />
-              <label [for]="'material-' + item.key">{{ item.label }}</label>
+            <li *ngFor="let item of materialSubItems" class="submenu-item">
+              <div class="checkbox-wrapper">
+                <input type="checkbox" [id]="'material-' + item.key" [(ngModel)]="permissions.material.children[item.key]"
+                  [name]="'material-' + item.key" (change)="checkParent('material')" class="custom-checkbox" />
+                <label [for]="'material-' + item.key" class="checkbox-label"></label>
+              </div>
+              <label [for]="'material-' + item.key" class="submenu-label">{{ item.label }}</label>
             </li>
           </ul>
         </li>
 
         <!-- Quotation -->
-        <li class="nav-item">
+        <li class="nav-item permission-card">
           <div class="nav-item-content">
-            <input type="checkbox" id="quotation" [(ngModel)]="permissions.quotation" name="quotation" />
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="quotation" [(ngModel)]="permissions.quotation" name="quotation" class="custom-checkbox" />
+              <label for="quotation" class="checkbox-label"></label>
+            </div>
+            <mat-icon class="category-icon quotation-icon">receipt</mat-icon>
             <label for="quotation" class="nav-text">Quotation Generator</label>
           </div>
         </li>
 
         <!-- Reports -->
-        <li class="nav-item">
+        <li class="nav-item permission-card">
           <div class="nav-item-content">
-            <input type="checkbox" id="reports" [(ngModel)]="permissions.reports" name="reports" />
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="reports" [(ngModel)]="permissions.reports" name="reports" class="custom-checkbox" />
+              <label for="reports" class="checkbox-label"></label>
+            </div>
+            <mat-icon class="category-icon reports-icon">bar_chart</mat-icon>
             <label for="reports" class="nav-text">Reports</label>
           </div>
         </li>

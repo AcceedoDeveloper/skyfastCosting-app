@@ -90,7 +90,7 @@ thead::after {
 }
 
 th {
-  text-align: left;
+  text-align: center;
   padding: 16px 20px;
   color: #ffffff;
   font-weight: 600;
@@ -103,6 +103,7 @@ th {
 .header-cell-content {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -127,6 +128,7 @@ td {
   font-size: 14px;
   color: #333;
   transition: background-color 0.2s ease;
+  text-align: center;
 }
 
 /* Alternating row colors */
@@ -142,6 +144,7 @@ td {
 .cell-content {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -348,17 +351,15 @@ td.actions {
   border-top: 2px solid #e0e0e0;
 }
 
-.total-label {
-  text-align: right !important;
+.total-hours-cell {
   padding: 20px 20px !important;
-  font-weight: 600;
-  margin-left: 140px;
+  text-align: center;
 }
 
 .total-content {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -370,12 +371,16 @@ td.actions {
   opacity: 0.8;
 }
 
+.total-label-text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0e1635;
+}
+
 .total-value {
   font-weight: 700 !important;
   font-size: 18px !important;
   color: #0e1635;
-  padding: 20px 20px !important;
-  text-align: center;
 }
 
 

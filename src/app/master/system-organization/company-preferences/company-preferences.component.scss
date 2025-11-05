@@ -1,5 +1,12 @@
 .main-wrapper{
   margin: 30px auto;
+  width: 100%;
+}
+
+.sections-container {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
 }
 
 
@@ -25,27 +32,34 @@
 }
 
 
+.section {
+  flex: 1;
+  min-width: 0;
+  max-width: 48%;
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+}
+
 .section:first-child .card {
-  flex: 1.5; 
-  min-width: 800px; 
-  margin-bottom: 70px;
-
+  margin-bottom: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.section:last-child .card {
-  flex: 0; 
-  min-width: 50px;
-}
 
 
 .card {
   background: #ffffff;
-  padding: 28px 32px;
+  padding: 12px 26px;
   border-radius: 12px;
  box-shadow: 10px 10px 20px #babecc,
--10px 10px 20px #ffffff;
+ -10px 10px 20px #ffffff;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .card:hover {
@@ -69,6 +83,12 @@
   opacity: 1;
 }
 
+
+.kv-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 .kv-list .row {
   display: grid;
@@ -183,10 +203,13 @@
 
 
 .seconddiv {
+  flex: 1;
+  min-width: 0;
+  max-width: 48%;
   display: flex;
+  flex-direction: column;
   gap: 20px;
-  height: 100%;
-  // background: yellow;
+  min-height: 600px;
 }
 
 
@@ -195,14 +218,19 @@
   display: flex;
   flex-direction: column;  
   justify-content: stretch;
-  min-height: 400px;       
- 
-  padding: 15px;
- 
+  // padding: 15px;
+  height: 100%;
 }
 
 
 .card-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-container .card {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -216,7 +244,7 @@
 }
 
 .actions1 {
-   margin-top: 220px; 
+  margin-top: auto;
   display: flex;
   gap: 16px;
   justify-content: flex-end;
@@ -254,9 +282,17 @@
 
 
 @media (max-width: 900px) {
-  .main-wrapper {
+  .sections-container {
     flex-direction: column;
     gap: 24px;
+  }
+
+  .section {
+    max-width: 100%;
+  }
+
+  .seconddiv {
+    max-width: 100%;
   }
 
   .kv-list .row {
@@ -281,21 +317,6 @@
     padding: 8px 16px;
     font-size: 14px;
   }
-}
-.card-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%; /* make container span full width */
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  flex: 1;            /* each card takes equal available space */
-  min-width: 0;       /* prevents overflow */
-  box-sizing: border-box;
-  // height: 100%;
 }
 
 
