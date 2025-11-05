@@ -73,8 +73,11 @@
 }
 
 .container {
-  // margin: 20px auto;
-  padding: 0 15px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 /* ===== PROFILE BUTTON ===== */
@@ -143,6 +146,9 @@
 .sidenav-container {
   display: flex;
   min-height: calc(100vh - 64px);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .custom-sidenav {
@@ -266,13 +272,10 @@
 
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: 0;
   background: #fafafa;
   overflow-y: auto;
-}
-
-.main-content {
-  padding: 16px;
+  width: 100%;
+  min-width: 0;
   height: calc(100vh - 64px);
-  overflow: auto;
 }
