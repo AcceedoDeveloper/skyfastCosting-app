@@ -160,6 +160,24 @@ td {
   color: #333;
   transition: background-color 0.2s ease;
   text-align: center;
+  background-color: transparent;
+}
+
+/* Alternating row colors */
+tbody tr.table-row:nth-child(even) {
+  background-color: #e9ecef;
+}
+
+tbody tr.table-row:nth-child(even) td {
+  background-color: #e9ecef;
+}
+
+tbody tr.table-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+tbody tr.table-row:nth-child(odd) td {
+  background-color: #ffffff;
 }
 
 /* Cell content with icons */
@@ -225,10 +243,14 @@ td.actions {
   }
 }
 
-tr:hover {
-  background-color: #f5f7fa;
+.table-row:hover {
+  background-color: #f0f4f8 !important;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table-row:hover td {
+  background-color: #f0f4f8 !important;
 }
 
 .header {
