@@ -124,9 +124,12 @@ updatePaginatedUsers() {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.store.dispatch(processActions.addProcess({ process: result }));
+      if (result === true) {
+        // Dialog closed successfully - reload processes
+        this.store.dispatch(processActions.loadProcess());
       }
+      // If result is false or null, dialog was cancelled or error occurred
+      // Error handling is done in AddProcessComponent
     });
   }
 
@@ -139,37 +142,12 @@ updatePaginatedUsers() {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('update data', result);
-         const payload = {
-      processName: result.processName,
-      machineCentre: result.machineCentre,
-      TonnageJaw: result.TonnageJaw,
-      Hours: result.Hours
-    };
-
-
-    console.log('data', payload);
-
-
-    this.uploadService.updateProcess(result._id, payload).subscribe({
-        next: (updated) => {
-          console.log('Process updated successfully', updated);
-          this.tooser.success('Process updated successfully!');
-          this.store.dispatch(processActions.loadProcess());
-        },
-        error: (err) => {
-          console.error('Error updating process', err);
-          this.tooser.error('Failed to update process.');
-
-        }
-      });
-    
-        
-        // this.store.dispatch(
-        //   processActions.updateProcess({ id: process._id, process: payload })
-        // );
+      if (result === true) {
+        // Dialog closed successfully - reload processes
+        this.store.dispatch(processActions.loadProcess());
       }
+      // If result is false or null, dialog was cancelled or error occurred
+      // Error handling is done in AddProcessComponent
     });
   }
 

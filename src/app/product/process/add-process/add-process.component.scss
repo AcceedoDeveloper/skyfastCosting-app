@@ -1,12 +1,21 @@
 /* Dialog container */
-.mat-dialog-container {
+::ng-deep .mat-dialog-container {
       
   border-radius: 12px !important;
   padding: 24px !important;
   background: #ffffff;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   max-height: 90vh;   /* ensures it never overflows screen */
-  overflow-y: auto;   /* scroll if needed */
+  overflow-y: visible !important;   /* allow dynamic expansion */
+  overflow-x: hidden !important;
+  transition: height 0.3s ease;
+}
+
+/* Dialog content - allow dynamic expansion */
+::ng-deep .mat-dialog-content {
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+  max-height: none !important;
 }
 .first, .sec, .third {
   display: flex;
@@ -121,4 +130,29 @@
   background: #ffffff;
   border-radius: 4px;
   border: 1px solid #dee2e6;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  border-left: 4px solid #d32f2f;
+  border-radius: 8px;
+  margin: 0 20px 16px 20px;
+  font-weight: 500;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

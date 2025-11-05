@@ -1,5 +1,9 @@
 <h2 mat-dialog-title>{{ isEditMode ? 'Edit Process' : 'Add Process' }}</h2>
 
+<div *ngIf="errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>
+
 <form [formGroup]="processForm" (ngSubmit)="onSave()" class="form-container">
 
   <div class="first">

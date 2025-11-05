@@ -274,11 +274,11 @@ tr:hover {
  
   width: 30%;           
 
-  min-height: 30%;
-  max-height: 50%;
+  min-height: auto;
+  max-height: 90vh;
   height: auto;
-  overflow-y: auto;
-
+  overflow-y: visible;
+  overflow-x: hidden;
 
   background: #ffffff;
   padding: 24px;
@@ -288,6 +288,7 @@ tr:hover {
   margin: 40px auto;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   animation: popIn 0.3s ease;
+  transition: height 0.3s ease;
 }
 
 
@@ -536,5 +537,30 @@ tr:hover {
 ::ng-deep .custom-paginator .mat-paginator-page-size {
   display: flex !important;
   align-items: center !important;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  border-left: 4px solid #d32f2f;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
