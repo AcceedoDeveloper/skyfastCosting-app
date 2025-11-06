@@ -32,7 +32,7 @@ export class AuthEffects {
         sessionStorage.setItem('token', authResponse.accessToken);
         sessionStorage.setItem('user', JSON.stringify(authResponse.user));
         this.store.dispatch(fromAuth.setUser({ user: authResponse.user }));
-        this.router.navigate(['/system'], { replaceUrl: true });
+        this.router.navigate(['/product/dashboard'], { replaceUrl: true });
       })
     ),
     { dispatch: false }
