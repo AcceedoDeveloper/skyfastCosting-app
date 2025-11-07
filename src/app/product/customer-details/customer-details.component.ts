@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -83,9 +76,13 @@ export class CustomerDetailsComponent implements OnInit {
   private page$ = new BehaviorSubject<{ index: number; size: number }>({ index: 0, size: 10 });
 
   constructor(
-    private store: Store, private fb: FormBuilder, 
-    private dialog: MatDialog, private productservices: ProductService, 
-    private tooser : ToastrService, private config : ConfigService ) {}
+    private store: Store, 
+    private fb: FormBuilder, 
+    private dialog: MatDialog, 
+    private productservices: ProductService, 
+    private tooser : ToastrService, 
+    private config : ConfigService,
+    private cdr: ChangeDetectorRef ) {}
 
   ngOnInit(): void {
     this.customers$ = this.store.select(selectAllCustomers).pipe(
@@ -350,26 +347,92 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
 
 
 viewQuatation(customerName: string, partName: string, revision: number): void {
+  this.isPdfLoading$.next(true); // Show loading spinner
+
   this.productservices.quotationData(customerName, partName, revision).subscribe({
-    next: (res) => {
+    next: async (res) => {
       this.quotationData = res;
       console.log('Quotation Data:', this.quotationData);
-      if( this.quotationData.results[0].revisions[0].currency != null){
-            this.pdfwithouticon = true;
-      }
-      else{
+
+      // Check which PDF layout to use
+      const hasCurrency = this.quotationData.results[0]?.revisions[0]?.currency != null;
+
+      // Show the correct template (make sure it's visible!)
+      if (hasCurrency) {
+        this.domesticpdfwithouticon = false;
+        this.pdfwithouticon = true; // make it visible
+      } else {
         this.domesticpdfwithouticon = true;
+        this.pdfwithouticon = false;
       }
-  
       
+
+      // Ensure Angular updates the DOM
+      this.cdr.detectChanges();
+
+      // ✅ Wait until Angular fully renders the HTML
+// ✅ Wait until Angular fully renders the HTML
+await new Promise((resolve) => setTimeout(resolve, 1500));
+
+const element = document.getElementById('pdfContent');
+console.log('Element visible?', element?.offsetHeight, element?.offsetWidth);
+
+      if (!element) {
+        this.isPdfLoading$.next(false);
+        this.tooser.error('PDF content not found');
+        return;
+      }
+
+      try {
+        // ✅ Capture only visible content
+        const canvas = await html2canvas(element, {
+          scale: 3,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
+
+        // ✅ Create blob and open in new tab
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = window.URL.createObjectURL(pdfBlob);
+        const newWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
+
+        if (newWindow) {
+          this.tooser.success('PDF opened in new tab!');
+        } else {
+          this.tooser.error('Please allow popups to view the PDF');
+        }
+
+        // Release memory after a minute
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
+
+        // ✅ Cleanup UI after generating PDF
+        this.pdfwithouticon = false;
+        this.domesticpdfwithouticon = false;
+        this.isPdfLoading$.next(false);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        this.isPdfLoading$.next(false);
+        this.tooser.error('Failed to generate PDF');
+      }
     },
+
     error: (err) => {
       console.error('Error fetching quotation:', err);
+      this.isPdfLoading$.next(false);
+      this.tooser.error('Failed to load quotation data');
     }
   });
-
-
 }
+
 
 closeda(){
   this.pdfview = false;
@@ -492,5 +555,6 @@ getTotalPriceByCurrency(revision: any, currency: string = '') {
 
 
 }
+
 
 
