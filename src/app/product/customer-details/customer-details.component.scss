@@ -1547,3 +1547,10 @@ vertical-align: middle;
   transform: translateY(2px);
 }
 
+.hidden-capture {
+  position: absolute !important;
+  left: -9999px !important;
+  top: 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

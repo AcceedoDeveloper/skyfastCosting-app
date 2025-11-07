@@ -22,13 +22,14 @@ export interface RawMaterial {
 
 
 export interface Revision {
+  _id?: string;
   revisionNumber: number;
+  revisionName?: string;
   Rejection: number;
   InterestRate: number;
   InspectorCost: number;
   Freight:string;
   ModeOfTransport:string
-
   Packing: string;
   ToolAmbience: string;
   castingWeight: number;
@@ -43,13 +44,14 @@ export interface Revision {
   noOfRawMaterial?: number;
   packingPercentage?: number;
   packingRate?: number;
-   overHeadsPercent: number;
-     DieLifeTime?: number;
-      CMMInspection: number,
-    Insurance: number,
-    SeaPacking: number,
-    Payment90DaysICC: number,
-    currency: string
+  overHeadsPercent: number;
+  DieLifeTime?: number;
+  CMMInspection: number;
+  Insurance: number;
+  SeaPacking: number;
+  Payment90DaysICC: number;
+  currency: string;
+  Status?: string;
 }
 
 
@@ -87,4 +89,18 @@ export interface CustomerDetails {
  
   
 
+}
+
+
+export interface Quotation {
+  customer: string;
+  email: string;
+  partName: string;
+  status: string;
+  sentAt: string;
+  sentAtDate?: Date; // Store original date for easier filtering
+  actualCost: number;
+  difference: number;
+  revisionNumber?: number;
+  revisionName?: string;
 }

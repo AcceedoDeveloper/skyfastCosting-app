@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -83,9 +76,13 @@ export class CustomerDetailsComponent implements OnInit {
   private page$ = new BehaviorSubject<{ index: number; size: number }>({ index: 0, size: 10 });
 
   constructor(
-    private store: Store, private fb: FormBuilder, 
-    private dialog: MatDialog, private productservices: ProductService, 
-    private tooser : ToastrService, private config : ConfigService ) {}
+    private store: Store, 
+    private fb: FormBuilder, 
+    private dialog: MatDialog, 
+    private productservices: ProductService, 
+    private tooser : ToastrService, 
+    private config : ConfigService,
+    private cdr: ChangeDetectorRef ) {}
 
   ngOnInit(): void {
     this.customers$ = this.store.select(selectAllCustomers).pipe(
@@ -346,30 +343,102 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
 
 }
 
-
-
-
-viewQuatation(customerName: string, partName: string, revision: number): void {
-  this.productservices.quotationData(customerName, partName, revision).subscribe({
+saveQuotationPDF(customerName: string, partName: string, revision: number){
+  console.log('Saving quotation PDF for:', customerName, partName, revision);
+  this.productservices.saveQuotationPDF(customerName, partName, revision).subscribe({
     next: (res) => {
-      this.quotationData = res;
-      console.log('Quotation Data:', this.quotationData);
-      if( this.quotationData.results[0].revisions[0].currency != null){
-            this.pdfwithouticon = true;
-      }
-      else{
-        this.domesticpdfwithouticon = true;
-      }
-  
-      
+      console.log('Quotation PDF saved successfully:', res);
     },
     error: (err) => {
-      console.error('Error fetching quotation:', err);
+      console.error('Error saving quotation PDF:', err);
     }
   });
-
-
 }
+
+viewQuatation(customerName: string, partName: string, revision: number): void {
+  this.isPdfLoading$.next(true); // Show loading spinner
+
+  this.productservices.quotationData(customerName, partName, revision).subscribe({
+    next: async (res) => {
+      this.quotationData = res;
+      console.log('Quotation Data:', this.quotationData);
+      
+
+      // Check which PDF layout to use
+      const hasCurrency = this.quotationData.results[0]?.revisions[0]?.currency != null;
+
+      if (hasCurrency) {
+        this.domesticpdfwithouticon = false;
+        this.pdfwithouticon = true;
+      } else {
+        this.domesticpdfwithouticon = true;
+        this.pdfwithouticon = false;
+      }
+
+      this.cdr.detectChanges();
+
+      // Wait for DOM render
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const element = document.getElementById('pdfContent');
+      if (!element) {
+        this.isPdfLoading$.next(false);
+        this.tooser.error('PDF content not found');
+        return;
+      }
+
+      try {
+        // Convert to canvas
+        const canvas = await html2canvas(element, {
+          scale: 3,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
+
+        // Convert to blob & open new tab
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = window.URL.createObjectURL(pdfBlob);
+        const newWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
+
+        if (newWindow) {
+          this.tooser.success('PDF opened in new tab!');
+          
+          // ✅ Wait for a few seconds after opening the tab, then save to backend
+          setTimeout(() => {
+            this.saveQuotationPDF(customerName, partName, revision);
+          }, 3000); // waits 3 seconds before calling backend save
+        } else {
+          this.tooser.error('Please allow popups to view the PDF');
+        }
+
+        // Cleanup
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
+        this.pdfwithouticon = false;
+        this.domesticpdfwithouticon = false;
+        this.isPdfLoading$.next(false);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        this.isPdfLoading$.next(false);
+        this.tooser.error('Failed to generate PDF');
+      }
+    },
+
+    error: (err) => {
+      console.error('Error fetching quotation:', err);
+      this.isPdfLoading$.next(false);
+      this.tooser.error('Failed to load quotation data');
+    }
+  });
+}
+
+
 
 closeda(){
   this.pdfview = false;
@@ -492,5 +561,6 @@ getTotalPriceByCurrency(revision: any, currency: string = '') {
 
 
 }
+
 
 

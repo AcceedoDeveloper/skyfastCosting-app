@@ -1404,7 +1404,7 @@
 
 
 <!--git -- PDF  -->
-<div  class="compare-popup"  *ngIf="pdfwithouticon" >
+<div  class="compare-popup"  [class.hidden-capture]="!pdfwithouticon" >
 <div  class="compare-popup-content">
 
 <div  class="button-das" style="margin-left: 85%;" >
@@ -1736,7 +1736,7 @@
 
 
  <!--git  domestic PDF  -->
-<div  class="compare-popup"  *ngIf="domesticpdfwithouticon" >
+<div  class="compare-popup" [class.hidden-capture]="!domesticpdfwithouticon" >
 <div  class="compare-popup-content">
 
 <div  class="button-das" style="margin-left: 85%;" >

@@ -24,9 +24,35 @@
     <!-- Left Section: Total Quotations Table -->
     <div class="table-section">
       <div class="section-header">
-        <h2 class="section-title">Total Quotations</h2>
-        <div class="date-picker-container">
-          <input type="date" [(ngModel)]="selectedDate" class="date-picker" />
+        <div class="filters-container">
+          <div class="filter-dropdowns">
+            <mat-form-field appearance="outline" class="filter-field">
+              <mat-label>Filter By</mat-label>
+              <mat-select [(ngModel)]="selectedFilterType" (selectionChange)="onFilterTypeChange()">
+                <mat-option value="">All</mat-option>
+                <mat-option *ngFor="let option of filterTypeOptions" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="filter-field" *ngIf="selectedFilterType">
+              <mat-label>{{ getSelectedFilterLabel() }}</mat-label>
+              <mat-select [(ngModel)]="selectedFilterValue" (selectionChange)="onFilterValueChange()" [disabled]="!selectedFilterType">
+                <mat-option value="">All</mat-option>
+                <mat-option *ngFor="let value of currentFilterValues" [value]="value">
+                  {{ value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+              <mat-icon (click)="clearFilters()" >clear</mat-icon>
+       
+          </div>
+          <div class="date-picker-container">
+            <input type="date" [(ngModel)]="selectedDate" (ngModelChange)="onDateChange()" class="date-picker" />
+          </div>
+        
         </div>
       </div>
 
@@ -40,31 +66,38 @@
               <th>Status</th>
               <th>Sent At</th>
               <th>Actual Cost</th>
-              <th>Difference</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let quotation of paginatedQuotations">
-              <td>{{ quotation.customer }}</td>
-              <td>{{ quotation.email }}</td>
-              <td>{{ quotation.partName }}</td>
-              <td>
-                <span class="status-badge" [ngClass]="quotation.status.toLowerCase()">
-                  {{ quotation.status }}
-                </span>
-              </td>
-              <td>{{ quotation.sentAt }}</td>
-              <td>{{ quotation.actualCost | number }}</td>
-              <td class="difference">
-                <mat-icon class="arrow-up">arrow_upward</mat-icon>
-                {{ quotation.difference | number }}
-              </td>
-            </tr>
+            <ng-container *ngIf="paginatedQuotations.length > 0; else noData">
+              <tr *ngFor="let quotation of paginatedQuotations">
+                <td>{{ quotation.customer }}</td>
+                <td>{{ quotation.email }}</td>
+                <td>{{ quotation.partName }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="quotation.status.toLowerCase()">
+                    {{ quotation.status }}
+                  </span>
+                </td>
+                <td>{{ quotation.sentAt }}</td>
+                <td>{{ quotation.actualCost | number }}</td>
+              </tr>
+            </ng-container>
+            <ng-template #noData>
+              <tr class="no-data-row">
+                <td colspan="6" class="no-data-cell">
+                  <div class="no-data-message">
+                    <mat-icon class="no-data-icon">inbox</mat-icon>
+                    <p class="no-data-text">No data available for the selected filters</p>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
           </tbody>
         </table>
 
         <mat-paginator
-          [length]="quotations.length"
+          [length]="filteredQuotations.length"
           [pageSize]="pageSize"
           [pageSizeOptions]="[5, 10, 20]"
           (page)="onPageChange($event)"
@@ -93,7 +126,7 @@
       </div>
 
       <!-- Cost Estimation -->
-      <div class="cost-estimation-card">
+      <!-- <div class="cost-estimation-card">
         <h3 class="card-title">Cost Estimation</h3>
         <div class="currency-table">
           <div class="currency-row" *ngFor="let currency of currencyRates">
@@ -104,7 +137,7 @@
             <div class="currency-value">{{ currency.value }}</div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 
