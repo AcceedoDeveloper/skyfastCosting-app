@@ -362,6 +362,7 @@ viewQuatation(customerName: string, partName: string, revision: number): void {
     next: async (res) => {
       this.quotationData = res;
       console.log('Quotation Data:', this.quotationData);
+      
 
       // Check which PDF layout to use
       const hasCurrency = this.quotationData.results[0]?.revisions[0]?.currency != null;

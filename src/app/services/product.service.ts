@@ -124,8 +124,10 @@ updateCustomer(id: string, customer: any): Observable<any> {
 
 
   saveQuotationPDF(customerName: string, partName: string, revision: number): Observable<any> {
-    return this.http.post<any>(this.config.getCostingUrl('saveQuotationPDF'), { customerName, partName, revision });
+    const url = `${this.config.getCostingUrl('saveQuotationPDF')}?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
+    return this.http.post<any>(url, {}); // empty body
   }
+  
 
 
 }
