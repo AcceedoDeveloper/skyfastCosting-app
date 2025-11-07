@@ -304,8 +304,8 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     }
 
-    if (screens.quotation) sidebar.push({ label: 'Quotation Generator', route: '/product/quatation', icon: 'receipt_long' });
-    if (screens.reports) sidebar.push({ label: 'Reports', route: '/dashboard/report', icon: 'bar_chart' });
+    if (screens.quotation) sidebar.push({ label: 'Quotation Generator', route: '/product/quotation', icon: 'receipt_long' });
+    if (screens.reports) sidebar.push({ label: 'Report', route: '/product/report', icon: 'bar_chart' });
 
     this.sidebarItems = sidebar;
   }
