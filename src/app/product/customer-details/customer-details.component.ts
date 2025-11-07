@@ -343,8 +343,17 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
 
 }
 
-
-
+saveQuotationPDF(customerName: string, partName: string, revision: number){
+  console.log('Saving quotation PDF for:', customerName, partName, revision);
+  this.productservices.saveQuotationPDF(customerName, partName, revision).subscribe({
+    next: (res) => {
+      console.log('Quotation PDF saved successfully:', res);
+    },
+    error: (err) => {
+      console.error('Error saving quotation PDF:', err);
+    }
+  });
+}
 
 viewQuatation(customerName: string, partName: string, revision: number): void {
   this.isPdfLoading$.next(true); // Show loading spinner
@@ -357,26 +366,20 @@ viewQuatation(customerName: string, partName: string, revision: number): void {
       // Check which PDF layout to use
       const hasCurrency = this.quotationData.results[0]?.revisions[0]?.currency != null;
 
-      // Show the correct template (make sure it's visible!)
       if (hasCurrency) {
         this.domesticpdfwithouticon = false;
-        this.pdfwithouticon = true; // make it visible
+        this.pdfwithouticon = true;
       } else {
         this.domesticpdfwithouticon = true;
         this.pdfwithouticon = false;
       }
-      
 
-      // Ensure Angular updates the DOM
       this.cdr.detectChanges();
 
-      // ✅ Wait until Angular fully renders the HTML
-// ✅ Wait until Angular fully renders the HTML
-await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Wait for DOM render
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-const element = document.getElementById('pdfContent');
-console.log('Element visible?', element?.offsetHeight, element?.offsetWidth);
-
+      const element = document.getElementById('pdfContent');
       if (!element) {
         this.isPdfLoading$.next(false);
         this.tooser.error('PDF content not found');
@@ -384,7 +387,7 @@ console.log('Element visible?', element?.offsetHeight, element?.offsetWidth);
       }
 
       try {
-        // ✅ Capture only visible content
+        // Convert to canvas
         const canvas = await html2canvas(element, {
           scale: 3,
           useCORS: true,
@@ -394,27 +397,28 @@ console.log('Element visible?', element?.offsetHeight, element?.offsetWidth);
 
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
-
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
 
-        // ✅ Create blob and open in new tab
+        // Convert to blob & open new tab
         const pdfBlob = pdf.output('blob');
         const blobUrl = window.URL.createObjectURL(pdfBlob);
         const newWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
 
         if (newWindow) {
           this.tooser.success('PDF opened in new tab!');
+          
+          // ✅ Wait for a few seconds after opening the tab, then save to backend
+          setTimeout(() => {
+            this.saveQuotationPDF(customerName, partName, revision);
+          }, 3000); // waits 3 seconds before calling backend save
         } else {
           this.tooser.error('Please allow popups to view the PDF');
         }
 
-        // Release memory after a minute
+        // Cleanup
         setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
-
-        // ✅ Cleanup UI after generating PDF
         this.pdfwithouticon = false;
         this.domesticpdfwithouticon = false;
         this.isPdfLoading$.next(false);
@@ -432,6 +436,7 @@ console.log('Element visible?', element?.offsetHeight, element?.offsetWidth);
     }
   });
 }
+
 
 
 closeda(){
