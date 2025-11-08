@@ -128,6 +128,22 @@ updateCustomer(id: string, customer: any): Observable<any> {
     return this.http.post<any>(url, {}); // empty body
   }
   
+  uploadQuotationPDF(customerName: string, partName: string, revision: number, file: Blob): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, `${customerName}-${partName}-rev${revision}.pdf`);
+    formData.append('customerName', customerName);
+    formData.append('partName', partName);
+    formData.append('revision', revision.toString());
+    console.log('data sent');
+  
+    const url = this.config.getCostingUrl('uploadQuotationPDF');
+    return this.http.post<any>(url, formData);
+  }
 
+  getDashboardData(): Observable<any> {
+    const url = this.config.getCostingUrl('getDashboardData');
+    return this.http.get<any>(url);
+  }
+  
 
 }

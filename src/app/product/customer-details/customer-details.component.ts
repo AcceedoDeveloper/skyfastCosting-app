@@ -343,6 +343,8 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
 
 }
 
+
+
 saveQuotationPDF(customerName: string, partName: string, revision: number){
   console.log('Saving quotation PDF for:', customerName, partName, revision);
   this.productservices.saveQuotationPDF(customerName, partName, revision).subscribe({

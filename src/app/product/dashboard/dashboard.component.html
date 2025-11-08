@@ -146,11 +146,16 @@
     <!-- Recent Updates -->
     <div class="analytics-card">
       <h3 class="card-title">Recent Updates</h3>
-      <div class="updates-list">
+      <div class="updates-list" *ngIf="recentUpdates.length > 0">
         <div class="update-item" *ngFor="let update of recentUpdates">
           <span class="update-dot" [style.background-color]="update.dotColor"></span>
           <span class="update-role">{{ update.role }}</span>
           <span class="update-category">{{ update.category }}</span>
+        </div>
+      </div>
+      <div class="updates-list" *ngIf="recentUpdates.length === 0">
+        <div class="update-item">
+          <span>No customer revisions available</span>
         </div>
       </div>
     </div>
@@ -159,28 +164,40 @@
     <div class="analytics-card">
       <div class="card-header">
         <h3 class="card-title">Process</h3>
-        <a href="#" class="view-details">
+        <a href="#" class="view-details" (click)="openProcessDetailsDialog(); $event.preventDefault()">
           View Details
           <mat-icon>arrow_forward</mat-icon>
         </a>
       </div>
       <div class="chart-container">
-        <div class="donut-chart process-chart">
-          <div class="chart-label">Most Used one</div>
-        </div>
+        <ng-container *ngIf="mostUsedProcess">
+          <div class="donut-chart process-chart" [style.background]="processChartStyle">
+            <div class="chart-label">{{ mostUsedProcess.processName }}</div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!mostUsedProcess">
+          <div class="donut-chart process-chart">
+            <div class="chart-label">No Data</div>
+          </div>
+        </ng-container>
       </div>
-      <div class="process-metrics">
+      <div class="process-metrics" *ngIf="mostUsedProcess">
         <div class="metric-item">
           <span class="metric-dot blue"></span>
-          <span>Tonnage / Jaw • 180T</span>
+          <span>Tonnage / Jaw • {{ mostUsedProcess.tonnageJaw }}</span>
         </div>
         <div class="metric-item">
           <span class="metric-dot purple"></span>
-          <span>Cost Per Hr • ₹1280</span>
+          <span>Hours • {{ mostUsedProcess.hours }}</span>
         </div>
         <div class="metric-item">
           <span class="metric-dot grey"></span>
-          <span>Machine Centre • 1002</span>
+          <span>Machine Centre • {{ mostUsedProcess.machineCentre }}</span>
+        </div>
+      </div>
+      <div class="process-metrics" *ngIf="!mostUsedProcess">
+        <div class="metric-item">
+          <span>No process data available</span>
         </div>
       </div>
     </div>
@@ -189,26 +206,25 @@
     <div class="analytics-card">
       <h3 class="card-title">Most used raw material</h3>
       <div class="chart-container">
-        <div class="donut-chart material-chart">
-          <div class="chart-segments">
-            <div class="segment segment-1"></div>
-            <div class="segment segment-2"></div>
-            <div class="segment segment-3"></div>
+        <ng-container *ngIf="rawMaterials.length > 0">
+          <div class="donut-chart material-chart" [style.background]="rawMaterialChartStyle">
           </div>
+        </ng-container>
+        <ng-container *ngIf="rawMaterials.length === 0">
+          <div class="donut-chart material-chart">
+            <div class="chart-label">No Data</div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="material-legend" *ngIf="rawMaterials.length > 0">
+        <div class="legend-item" *ngFor="let material of rawMaterials">
+          <span class="legend-dot" [style.background-color]="material.color"></span>
+          <span>{{ material.gradeName }} ${{ material.ratePerKg | number:'1.2-2' }}</span>
         </div>
       </div>
-      <div class="material-legend">
+      <div class="material-legend" *ngIf="rawMaterials.length === 0">
         <div class="legend-item">
-          <span class="legend-dot light-blue"></span>
-          <span>A1 $45</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-dot grey"></span>
-          <span>A2 $55</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-dot dark-blue"></span>
-          <span>A3 $65</span>
+          <span>No raw materials data available</span>
         </div>
       </div>
     </div>
@@ -217,23 +233,30 @@
     <div class="analytics-card">
       <div class="card-header">
         <h3 class="card-title">Sales by Countries</h3>
-        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+        <mat-form-field appearance="outline" class="sales-filter-field">
+          <mat-label>View By</mat-label>
+          <mat-select [(ngModel)]="selectedSalesType" (selectionChange)="onSalesTypeChange()">
+            <mat-option value="currencies">Currencies</mat-option>
+            <mat-option value="customers">Customers</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="sales-content">
         <div class="countries-list">
-          <div class="country-item" *ngFor="let country of salesByCountries">
-            <span>{{ country.name }}</span>
-            <span class="country-percentage">{{ country.percentage }}</span>
+          <div class="country-item" *ngFor="let item of paginatedSales">
+            <span>{{ item.name }}</span>
+            <span class="country-percentage">{{ item.percentage }}</span>
+          </div>
+          <div class="country-item" *ngIf="paginatedSales.length === 0">
+            <span>No data available</span>
           </div>
         </div>
-        <div class="map-container">
-          <div class="map-outline">UK Map</div>
-        </div>
+
       </div>
       <div class="sales-pagination">
         <mat-paginator
-          [length]="salesByCountries.length"
-          [pageSize]="5"
+          [length]="currentSalesData.length"
+          [pageSize]="salesPageSize"
           [pageSizeOptions]="[5, 10]"
           (page)="onSalesPageChange($event)"
           class="custom-paginator">

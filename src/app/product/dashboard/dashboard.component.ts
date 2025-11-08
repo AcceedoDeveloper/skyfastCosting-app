@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,12 +7,16 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 import { DashboardPaginatorIntl } from '../../shared/dashboard-paginator-intl.service';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectAllCustomers } from '../store/product.selectors';
 import { loadCustomers } from '../store/product.actions';
 import { CustomerDetails, Quotation } from '../../model/customer-details.model';
+import { ProductService } from '../../services/product.service';
+import { ProcessDetailsDialogComponent } from './process-details-dialog.component';
 
 
 
@@ -30,9 +34,61 @@ interface Update {
   dotColor: string;
 }
 
+interface CustomerRevision {
+  name: string;
+  partName: string;
+  revisionCount: number;
+}
+
 interface Country {
   name: string;
   percentage: string;
+}
+
+interface Currency {
+  name: string;
+  count: number;
+}
+
+interface Customer {
+  name: string;
+  count: number;
+}
+
+interface RawMaterial {
+  GradeName: string;
+  RatePerKg: number;
+  count: number;
+  _id: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface RawMaterialDisplay {
+  gradeName: string;
+  ratePerKg: number;
+  count: number;
+  percentage: number;
+  color: string;
+}
+
+interface Process {
+  processName: string;
+  TonnageJaw: string;
+  Hours: number;
+  machineCentre: number;
+  count: number;
+  _id: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface ProcessDisplay {
+  processName: string;
+  tonnageJaw: string;
+  hours: number;
+  machineCentre: number;
+  count: number;
 }
 
 @Component({
@@ -44,7 +100,9 @@ interface Country {
     MatPaginatorModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule,
+    MatTableModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: DashboardPaginatorIntl }
@@ -138,24 +196,39 @@ export class DashboardComponent implements OnInit {
   ];
 
   // Recent Updates
-  recentUpdates: Update[] = [
-    { role: 'Admin', category: 'raw material', dotColor: '#10b981' },
-    { role: 'Manager', category: 'Process', dotColor: '#86efac' },
-    { role: 'Officer', category: 'Customer', dotColor: '#065f46' },
-    { role: 'Admin', category: 'Role', dotColor: '#86efac' },
-    { role: 'Manager', category: 'Department', dotColor: '#10b981' },
-  ];
+  recentUpdates: Update[] = [];
+  
+  // Color palette for customer revisions
+  private readonly revisionColors = ['#10b981', '#86efac', '#065f46', '#3b82f6', '#8b5cf6', '#60a5fa'];
 
-  // Sales by Countries
-  salesByCountries: Country[] = [
-    { name: 'Australia', percentage: '20%' },
-    { name: 'Canada', percentage: '20%' },
-    { name: 'France', percentage: '20%' },
-    { name: 'Indonesia', percentage: '20%' },
-    { name: 'Italy', percentage: '20%' },
-  ];
+  // Sales by Countries (using currencies data)
+  salesByCountries: Country[] = [];
+  salesByCustomers: Country[] = [];
+  
+  // Pagination for sales
+  salesPageIndex = 0;
+  salesPageSize = 5;
+  paginatedSales: Country[] = [];
+  
+  // Dropdown selection for sales section
+  selectedSalesType: string = 'currencies'; // 'currencies' or 'customers'
+  currentSalesData: Country[] = [];
 
-  constructor(private store: Store) {}
+  // Raw Materials
+  rawMaterials: RawMaterialDisplay[] = [];
+  rawMaterialChartStyle: string = '';
+  
+  // Color palette for raw materials chart
+  private readonly rawMaterialColors = ['#60a5fa', '#9ca3af', '#1e40af', '#3b82f6', '#8b5cf6', '#10b981'];
+
+  // Process
+  mostUsedProcess: ProcessDisplay | null = null;
+  processChartStyle: string = '';
+  allProcesses: Process[] = [];
+
+  private dialog = inject(MatDialog);
+  
+  constructor(private store: Store, private productService: ProductService) {}
 
   ngOnInit(): void {
     // Load customers from store
@@ -187,6 +260,26 @@ export class DashboardComponent implements OnInit {
       // Update paginated quotations
       this.updatePaginatedQuotations();
     });
+
+    this.productService.getDashboardData().subscribe(data => {
+      console.log('Dashboard data:', data);
+      if (data && data.rawMaterials) {
+        this.processRawMaterials(data.rawMaterials);
+      }
+      if (data && data.processes) {
+        this.processProcesses(data.processes);
+      }
+      if (data && data.customerRevisions) {
+        this.processCustomerRevisions(data.customerRevisions);
+      }
+      if (data && data.currencies) {
+        this.processCurrencies(data.currencies);
+      }
+      if (data && data.customers) {
+        this.processCustomers(data.customers);
+      }
+    });
+    
   }
 
   extractFilterOptions(): void {
@@ -362,6 +455,224 @@ export class DashboardComponent implements OnInit {
   }
 
   onSalesPageChange(event: PageEvent): void {
-    // Handle sales pagination if needed
+    this.salesPageIndex = event.pageIndex;
+    this.salesPageSize = event.pageSize;
+    this.updatePaginatedSales();
+  }
+
+  processRawMaterials(rawMaterials: RawMaterial[]): void {
+    if (!rawMaterials || rawMaterials.length === 0) {
+      this.rawMaterials = [];
+      this.rawMaterialChartStyle = '';
+      return;
+    }
+
+    // Sort by count (descending) and take top 3 for display
+    const sortedMaterials = [...rawMaterials]
+      .sort((a, b) => (b.count || 0) - (a.count || 0))
+      .slice(0, 3);
+
+    if (sortedMaterials.length === 0) {
+      this.rawMaterials = [];
+      this.rawMaterialChartStyle = '';
+      return;
+    }
+
+    // Calculate total count of top 3 materials for normalization
+    const top3TotalCount = sortedMaterials.reduce((sum, rm) => sum + (rm.count || 0), 0);
+    
+    if (top3TotalCount === 0) {
+      this.rawMaterials = [];
+      this.rawMaterialChartStyle = '';
+      return;
+    }
+
+    // Process materials for display - normalize percentages to top 3 total
+    this.rawMaterials = sortedMaterials.map((rm, index) => {
+      const percentage = top3TotalCount > 0 ? ((rm.count || 0) / top3TotalCount) * 100 : 0;
+      return {
+        gradeName: rm.GradeName || 'N/A',
+        ratePerKg: rm.RatePerKg || 0,
+        count: rm.count || 0,
+        percentage: percentage,
+        color: this.rawMaterialColors[index % this.rawMaterialColors.length]
+      };
+    });
+
+    // Generate conic-gradient for chart
+    this.generateChartStyle();
+  }
+
+  generateChartStyle(): void {
+    if (this.rawMaterials.length === 0) {
+      this.rawMaterialChartStyle = '';
+      return;
+    }
+
+    let currentAngle = 0;
+    const gradientParts: string[] = [];
+    
+    // Percentages are already normalized to 100% for top 3 materials
+    this.rawMaterials.forEach((rm) => {
+      const angle = (rm.percentage / 100) * 360;
+      const startAngle = currentAngle;
+      const endAngle = currentAngle + angle;
+      
+      gradientParts.push(`${rm.color} ${startAngle}deg ${endAngle}deg`);
+      currentAngle = endAngle;
+    });
+
+    // Fill remaining with grey if percentages don't add up to exactly 100% (due to rounding)
+    if (currentAngle < 360) {
+      gradientParts.push(`#e0e0e0 ${currentAngle}deg 360deg`);
+    }
+
+    this.rawMaterialChartStyle = `conic-gradient(${gradientParts.join(', ')})`;
+  }
+
+  processProcesses(processes: Process[]): void {
+    // Store all processes for the dialog
+    this.allProcesses = processes || [];
+
+    if (!processes || processes.length === 0) {
+      this.mostUsedProcess = null;
+      this.processChartStyle = '';
+      return;
+    }
+
+    // Find the process with the highest count
+    const sortedProcesses = [...processes].sort((a, b) => (b.count || 0) - (a.count || 0));
+    const topProcess = sortedProcesses[0];
+
+    if (!topProcess || topProcess.count === 0) {
+      this.mostUsedProcess = null;
+      this.processChartStyle = '';
+      return;
+    }
+
+    // Calculate total count for percentage calculation
+    const totalCount = processes.reduce((sum, p) => sum + (p.count || 0), 0);
+    const percentage = totalCount > 0 ? ((topProcess.count || 0) / totalCount) * 100 : 0;
+    const angle = (percentage / 100) * 360;
+
+    // Store the most used process
+    this.mostUsedProcess = {
+      processName: topProcess.processName || 'N/A',
+      tonnageJaw: topProcess.TonnageJaw || 'N/A',
+      hours: topProcess.Hours || 0,
+      machineCentre: topProcess.machineCentre || 0,
+      count: topProcess.count || 0
+    };
+
+    // Generate dynamic chart style based on percentage
+    this.processChartStyle = `conic-gradient(#86efac 0deg ${angle}deg, #e0e0e0 ${angle}deg 360deg)`;
+  }
+
+  openProcessDetailsDialog(): void {
+    this.dialog.open(ProcessDetailsDialogComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      data: { processes: this.allProcesses },
+      disableClose: false
+    });
+  }
+
+  processCustomerRevisions(customerRevisions: CustomerRevision[]): void {
+    if (!customerRevisions || customerRevisions.length === 0) {
+      this.recentUpdates = [];
+      return;
+    }
+
+    // Sort by revisionCount (descending) and take top 5 for display
+    const sortedRevisions = [...customerRevisions]
+      .sort((a, b) => (b.revisionCount || 0) - (a.revisionCount || 0))
+      .slice(0, 5);
+
+    // Transform customer revisions to update format
+    this.recentUpdates = sortedRevisions.map((revision, index) => {
+      return {
+        role: revision.name || 'N/A',
+        category: `${revision.partName} (${revision.revisionCount} revisions)`,
+        dotColor: this.revisionColors[index % this.revisionColors.length]
+      };
+    });
+  }
+
+  processCurrencies(currencies: Currency[]): void {
+    if (!currencies || currencies.length === 0) {
+      this.salesByCountries = [];
+      this.updateCurrentSalesData();
+      return;
+    }
+
+    // Calculate total count for percentage calculation
+    const totalCount = currencies.reduce((sum, curr) => sum + (curr.count || 0), 0);
+
+    if (totalCount === 0) {
+      this.salesByCountries = [];
+      this.updateCurrentSalesData();
+      return;
+    }
+
+    // Transform currencies to Country format with percentages
+    this.salesByCountries = currencies.map(curr => {
+      const percentage = totalCount > 0 ? ((curr.count || 0) / totalCount) * 100 : 0;
+      return {
+        name: curr.name || 'N/A',
+        percentage: `${percentage.toFixed(1)}%`
+      };
+    });
+
+    // Update current sales data based on selection
+    this.updateCurrentSalesData();
+  }
+
+  processCustomers(customers: Customer[]): void {
+    if (!customers || customers.length === 0) {
+      this.salesByCustomers = [];
+      this.updateCurrentSalesData();
+      return;
+    }
+
+    // Calculate total count for percentage calculation
+    const totalCount = customers.reduce((sum, cust) => sum + (cust.count || 0), 0);
+
+    if (totalCount === 0) {
+      this.salesByCustomers = [];
+      this.updateCurrentSalesData();
+      return;
+    }
+
+    // Transform customers to Country format with percentages
+    this.salesByCustomers = customers.map(cust => {
+      const percentage = totalCount > 0 ? ((cust.count || 0) / totalCount) * 100 : 0;
+      return {
+        name: cust.name || 'N/A',
+        percentage: `${percentage.toFixed(1)}%`
+      };
+    });
+
+    // Update current sales data based on selection
+    this.updateCurrentSalesData();
+  }
+
+  onSalesTypeChange(): void {
+    this.salesPageIndex = 0; // Reset to first page
+    this.updateCurrentSalesData();
+  }
+
+  updateCurrentSalesData(): void {
+    if (this.selectedSalesType === 'customers') {
+      this.currentSalesData = this.salesByCustomers || [];
+    } else {
+      this.currentSalesData = this.salesByCountries || [];
+    }
+    this.updatePaginatedSales();
+  }
+
+  updatePaginatedSales(): void {
+    const startIndex = this.salesPageIndex * this.salesPageSize;
+    const endIndex = startIndex + this.salesPageSize;
+    this.paginatedSales = this.currentSalesData.slice(startIndex, endIndex);
   }
 }
