@@ -28,10 +28,10 @@ interface Activity {
   time: string;
 }
 
-interface Update {
-  role: string;
-  category: string;
-  dotColor: string;
+interface customerRevisions {
+  name: string;
+  partName: string;
+  revisionCount: number;
 }
 
 interface CustomerRevision {
@@ -151,7 +151,7 @@ export class DashboardComponent implements OnInit {
     return option ? option.label : 'Select';
   }
 
-  // Update current filter values based on selected type
+  // customerRevisions current filter values based on selected type
   updateCurrentFilterValues(): void {
     if (!this.selectedFilterType) {
       this.currentFilterValues = [];
@@ -196,7 +196,13 @@ export class DashboardComponent implements OnInit {
   ];
 
   // Recent Updates
-  recentUpdates: Update[] = [];
+  recentUpdates: customerRevisions[] = [];
+  allRecentUpdates: customerRevisions[] = []; // Store all revisions for pagination
+  
+  // Pagination for revisions
+  revisionsPageIndex = 0;
+  revisionsPageSize = 5;
+  paginatedRevisions: customerRevisions[] = [];
   
   // Color palette for customer revisions
   private readonly revisionColors = ['#10b981', '#86efac', '#065f46', '#3b82f6', '#8b5cf6', '#60a5fa'];
@@ -248,7 +254,7 @@ export class DashboardComponent implements OnInit {
       // Extract unique values for filter dropdowns
       this.extractFilterOptions();
       
-      // Update current filter values if a type is already selected
+      // customerRevisions current filter values if a type is already selected
       this.updateCurrentFilterValues();
       
       // Apply all filters
@@ -257,7 +263,7 @@ export class DashboardComponent implements OnInit {
       // Calculate status counts
       this.calculateStatusCounts();
       
-      // Update paginated quotations
+      // customerRevisions paginated quotations
       this.updatePaginatedQuotations();
     });
 
@@ -327,7 +333,7 @@ export class DashboardComponent implements OnInit {
   onFilterTypeChange(): void {
     // Reset the value dropdown when filter type changes
     this.selectedFilterValue = '';
-    // Update the available values for the second dropdown
+    // customerRevisions the available values for the second dropdown
     this.updateCurrentFilterValues();
     this.onFilterChange();
   }
@@ -579,23 +585,26 @@ export class DashboardComponent implements OnInit {
 
   processCustomerRevisions(customerRevisions: CustomerRevision[]): void {
     if (!customerRevisions || customerRevisions.length === 0) {
-      this.recentUpdates = [];
+      this.allRecentUpdates = [];
+      this.updatePaginatedRevisions();
       return;
     }
 
-    // Sort by revisionCount (descending) and take top 5 for display
+    // Sort by revisionCount (descending) - keep all for pagination
     const sortedRevisions = [...customerRevisions]
-      .sort((a, b) => (b.revisionCount || 0) - (a.revisionCount || 0))
-      .slice(0, 5);
+      .sort((a, b) => (b.revisionCount || 0) - (a.revisionCount || 0));
 
-    // Transform customer revisions to update format
-    this.recentUpdates = sortedRevisions.map((revision, index) => {
+    // Transform customer revisions to customerRevisions format
+    this.allRecentUpdates = sortedRevisions.map((revision, index) => {
       return {
-        role: revision.name || 'N/A',
-        category: `${revision.partName} (${revision.revisionCount} revisions)`,
-        dotColor: this.revisionColors[index % this.revisionColors.length]
+        name: revision.name || 'N/A',
+        partName: revision.partName || 'N/A',
+        revisionCount: revision.revisionCount || 0
       };
     });
+
+    // Update paginated revisions
+    this.updatePaginatedRevisions();
   }
 
   processCurrencies(currencies: Currency[]): void {
@@ -623,7 +632,7 @@ export class DashboardComponent implements OnInit {
       };
     });
 
-    // Update current sales data based on selection
+    // customerRevisions current sales data based on selection
     this.updateCurrentSalesData();
   }
 
@@ -652,7 +661,7 @@ export class DashboardComponent implements OnInit {
       };
     });
 
-    // Update current sales data based on selection
+    // customerRevisions current sales data based on selection
     this.updateCurrentSalesData();
   }
 
@@ -674,5 +683,17 @@ export class DashboardComponent implements OnInit {
     const startIndex = this.salesPageIndex * this.salesPageSize;
     const endIndex = startIndex + this.salesPageSize;
     this.paginatedSales = this.currentSalesData.slice(startIndex, endIndex);
+  }
+
+  onRevisionsPageChange(event: PageEvent): void {
+    this.revisionsPageIndex = event.pageIndex;
+    this.revisionsPageSize = event.pageSize;
+    this.updatePaginatedRevisions();
+  }
+
+  updatePaginatedRevisions(): void {
+    const startIndex = this.revisionsPageIndex * this.revisionsPageSize;
+    const endIndex = startIndex + this.revisionsPageSize;
+    this.paginatedRevisions = this.allRecentUpdates.slice(startIndex, endIndex);
   }
 }

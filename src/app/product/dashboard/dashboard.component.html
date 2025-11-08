@@ -145,27 +145,58 @@
   <div class="analytics-section">
     <!-- Recent Updates -->
     <div class="analytics-card">
-      <h3 class="card-title">Recent Updates</h3>
-      <div class="updates-list" *ngIf="recentUpdates.length > 0">
-        <div class="update-item" *ngFor="let update of recentUpdates">
-          <span class="update-dot" [style.background-color]="update.dotColor"></span>
-          <span class="update-role">{{ update.role }}</span>
-          <span class="update-category">{{ update.category }}</span>
+      <h3 class="card-title">Most Revised Customer Parts</h3>
+
+
+
+
+      <div class="revision-content">
+        <div class="revision-table-container" *ngIf="paginatedRevisions.length > 0">
+          <table class="revision-table">
+            <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Revisions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let update of paginatedRevisions">
+                <td>{{ update.name }}</td>
+                <td class="revision-count">{{ update.revisionCount }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="revision-table-container" *ngIf="paginatedRevisions.length === 0">
+          <p class="no-data">No customer revisions available</p>
         </div>
       </div>
-      <div class="updates-list" *ngIf="recentUpdates.length === 0">
-        <div class="update-item">
-          <span>No customer revisions available</span>
-        </div>
+
+      <div class="revisions-pagination">
+        <mat-paginator
+          [length]="allRecentUpdates.length"
+          [pageSize]="revisionsPageSize"
+          [pageSizeOptions]="[]"
+          (page)="onRevisionsPageChange($event)"
+          class="custom-paginator">
+        </mat-paginator>
       </div>
+      
+
+
+
+
+
+
     </div>
 
     <!-- Process -->
     <div class="analytics-card">
       <div class="card-header">
-        <h3 class="card-title">Process</h3>
-        <a href="#" class="view-details" (click)="openProcessDetailsDialog(); $event.preventDefault()">
-          View Details
+        <h3 class="card-title"> Most Used Process</h3>
+        <a class="view-details" (click)="openProcessDetailsDialog(); $event.preventDefault()">
+          View All 
           <mat-icon>arrow_forward</mat-icon>
         </a>
       </div>
@@ -232,7 +263,7 @@
     <!-- Sales by Countries -->
     <div class="analytics-card">
       <div class="card-header">
-        <h3 class="card-title">Sales by Countries</h3>
+        <h3 class="card-title">Sales by</h3>
         <mat-form-field appearance="outline" class="sales-filter-field">
           <mat-label>View By</mat-label>
           <mat-select [(ngModel)]="selectedSalesType" (selectionChange)="onSalesTypeChange()">
@@ -257,7 +288,7 @@
         <mat-paginator
           [length]="currentSalesData.length"
           [pageSize]="salesPageSize"
-          [pageSizeOptions]="[5, 10]"
+          [pageSizeOptions]="[]"
           (page)="onSalesPageChange($event)"
           class="custom-paginator">
         </mat-paginator>

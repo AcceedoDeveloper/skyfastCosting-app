@@ -3,7 +3,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Injectable()
 export class DashboardPaginatorIntl extends MatPaginatorIntl {
-  override itemsPerPageLabel = 'Customers per page:';
+  override itemsPerPageLabel = '';
   override nextPageLabel = 'Next page';
   override previousPageLabel = 'Previous page';
   override firstPageLabel = 'First page';

@@ -1,6 +1,6 @@
 .dashboard-container {
   padding: 24px 0;
-  background-color: #f5f5f5;
+  background-color: #e9e8e8;
   min-height: 100vh;
   width: 100%;
   max-width: 100vw;
@@ -75,8 +75,12 @@
 .table-section {
   background: white;
   border-radius: 12px;
-  padding: 24px;
+  padding-top: 24px;
+  /* padding: 5px; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  /* padding-bottom: 5px; */
+  /* padding-left: 15px; */
+  /* padding-right: 15px;*/
 }
 
 .section-header {
@@ -99,6 +103,7 @@
     width: 100%;
     align-items: center;
     justify-content: space-between;
+    padding: 0 15px;
   }
 
   .date-picker-container {
@@ -406,6 +411,9 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  min-height: 300px; // Ensure minimum height for consistent card sizes
 }
 
 .card-header {
@@ -422,6 +430,10 @@
     color: #0e1635;
     text-decoration: none;
     font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    bottom: 7px;   
 
     mat-icon {
       font-size: 16px;
@@ -465,28 +477,61 @@
   gap: 12px;
 }
 
-.update-item {
+.revision-content {
+  flex: 1; // Take up available space to push pagination to bottom
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-
-  .update-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .update-role {
-    font-weight: 600;
-    color: #333;
-  }
-
-  .update-category {
-    color: #666;
-  }
+  flex-direction: column;
 }
+
+.revision-table-container {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  background: #fff;
+
+}
+
+.table-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  margin-bottom: 12px;
+}
+
+.revision-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.revision-table th,
+.revision-table td {
+  padding: 5px 10px;
+}
+
+.revision-table th {
+  color: #333;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.revision-count{
+  text-align: center;
+  font-weight: 600;
+  color: #0e1635;
+  font-size: 1rem;
+}
+
+.revision-table tr:hover {
+  background-color: #f9fafc;
+}
+
+.no-data {
+  text-align: center;
+  font-size: 1rem;
+  color: #777;
+  padding: 15px;
+}
+
 
 // Process Chart
 .chart-container {
@@ -608,6 +653,7 @@
   display: flex;
   gap: 16px;
   margin-bottom: 16px;
+  flex: 1; // Take up available space to push pagination to bottom
 }
 
 .countries-list {
@@ -633,24 +679,43 @@
 .map-container {
   width: 100px;
   height: 100px;
-  border: 2px solid #3b82f6;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   color: #3b82f6;
-  background-color: #eff6ff;
 }
 
 .sales-pagination {
-  margin-top: 16px;
+  margin-top: auto; // Push to bottom of card
+  padding-top: 16px;
+
+  // Hide all page size related elements
+  ::ng-deep .mat-paginator-page-size,
+  ::ng-deep .mat-paginator-page-size-label,
+  ::ng-deep .mat-paginator-page-size-select,
+  ::ng-deep .mat-paginator-page-size-options {
+    display: none !important;
+  }
+}
+
+.revisions-pagination {
+  margin-top: auto; // Push to bottom of card
+  padding-top: 16px;
+
+  // Hide all page size related elements
+  ::ng-deep .mat-paginator-page-size,
+  ::ng-deep .mat-paginator-page-size-label,
+  ::ng-deep .mat-paginator-page-size-select,
+  ::ng-deep .mat-paginator-page-size-options {
+    display: none !important;
+  }
 }
 
 // ==================== PAGINATION ====================
 .custom-paginator {
   margin-top: auto; // Push paginator to bottom
-  background: #f8f9fa;
   border-top: 1px solid #e0e0e0;
   border-radius: 0 0 12px 12px;
   padding: 6px 6px;
@@ -660,13 +725,26 @@
   display: none !important;
 }
 
-::ng-deep .custom-paginator .mat-paginator-page-size::before {
-  content: "Customers per page: ";
-  font-size: 14px;
-  font-weight: 600;
-  color: #0e1635;
-  margin-right: 8px;
-  display: inline-block;
+::ng-deep .custom-paginator .mat-paginator-page-size {
+  display: none !important;
+}
+
+// Additional rules to hide page size elements in sales pagination
+::ng-deep .sales-pagination .mat-paginator-page-size,
+::ng-deep .sales-pagination .mat-paginator-page-size-label,
+::ng-deep .sales-pagination .mat-paginator-page-size-select,
+::ng-deep .sales-pagination .mat-paginator-page-size-options,
+::ng-deep .sales-pagination .mat-paginator-container > div:first-child {
+  display: none !important;
+}
+
+// Hide any text that contains "per page" or page size numbers
+::ng-deep .sales-pagination .mat-paginator-container {
+  .mat-paginator-page-size-label,
+  .mat-paginator-page-size-select,
+  .mat-paginator-page-size {
+    display: none !important;
+  }
 }
 
 ::ng-deep .custom-paginator .mat-icon-button {
