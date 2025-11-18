@@ -144,6 +144,40 @@ updateCustomer(id: string, customer: any): Observable<any> {
     const url = this.config.getCostingUrl('getDashboardData');
     return this.http.get<any>(url);
   }
+
+  downloadQuotationPDF(params: { customerName: string, partName: string, revision: number }) {
+    const url = this.config.getCostingUrl('downloadQuotation');
+    return this.http.get<{ fileName: string }>(url, { params });
+  }
+  
+  getQuotationData(customerName: string, partName: string, revision: number) {
+    const url = this.config.getCostingUrl('get-report');
+  
+    const params = {
+      customerName,
+      partName,
+      revision: revision.toString()
+    };
+    console.log(params);
+    
+  
+    return this.http.get<any>(url, { params });
+  }
+
+
+  printQuotation(CustomerName: string, partName: string, revision: number) {
+    const url = this.config.getCostingUrl('printQuotation');
+    const params = {
+      CustomerName,
+      partName,
+      Revision: revision.toString()
+    };
+    console.log(params);
+
+    return this.http.get<any>(url, { params });
+  }
+  
+  
   
 
 }

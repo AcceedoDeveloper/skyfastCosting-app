@@ -110,6 +110,14 @@
 {
   "name": "getDashboardData",
   "url": "getCustomerDetailsStatistics"
+},
+{
+  "name": "get-report",
+  "url": "get-report/"
+},
+{
+  "name": "printQuotation",
+  "url": "printQuotation"
 }
 
 

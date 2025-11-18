@@ -9,6 +9,13 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/login/login.component').then(m => m.LoginComponent)
   },
   {
+    path: 'quotation',
+    // No auth guard - accessible for server-side PDF generation
+    // This route is public and should be accessible without authentication
+    loadComponent: () => import('./product/customer-details/pdf-view/pdf-view.component').then(m => m.PdfViewComponent),
+    canActivate: [] // Explicitly set empty array to ensure no guards are applied
+  },
+  {
     path: 'todos',
     canActivate: [authGuard],
     loadComponent: () => import('./post-login/postlogin/postlogin.component').then(m => m.PostloginComponent)
@@ -30,6 +37,7 @@ export const routes: Routes = [
   },
   ...postLoginRoutes,
   { path: '', redirectTo: '/system', pathMatch: 'full' },
+  // Wildcard route - redirect to system, but quotation route should match before this
   { path: '**', redirectTo: '/system' }
 ];
 

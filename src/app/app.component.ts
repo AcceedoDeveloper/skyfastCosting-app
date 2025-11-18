@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
-import { Router, RouterOutlet, RouterModule, NavigationEnd } from '@angular/router';
+import { Router, RouterOutlet, RouterModule, NavigationEnd, NavigationStart } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, filter, takeUntil, combineLatest, of } from 'rxjs';
 import * as AuthActions from './auth/store/auth.action';
@@ -41,7 +41,7 @@ interface Permissions {
 })
 export class AppComponent implements OnInit, OnDestroy {
   private store = inject(Store);
-  private router = inject(Router);
+  router = inject(Router); // Make public for template access
 
     title: string = 'Quality_Management';
 
@@ -58,6 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   loading: boolean = true;
   error: string | null = null;
+  currentUrl: string = '';
 
   constructor() {
     this.isLoggedIn$ = this.store.select(AuthSelectors.selectIsLoggedIn);
@@ -66,6 +67,35 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Set initial URL first - handle both hash and non-hash routing
+    // Get URL from window.location.hash first (most reliable for hash routing)
+    let hashPath = window.location.hash;
+    if (hashPath && hashPath.startsWith('#')) {
+      hashPath = hashPath.substring(1); // Remove the #
+    }
+    const pathFromHash = hashPath.split('?')[0]; // Get path without query params
+    
+    // Fallback to router.url if hash is not available
+    const routerPath = this.router.url.split('?')[0].replace('#', '');
+    
+    // Use hash path if available, otherwise use router path
+    this.currentUrl = pathFromHash || routerPath || '/';
+    
+    console.log('Initial URL check:', { 
+      hash: window.location.hash, 
+      pathFromHash, 
+      routerUrl: this.router.url,
+      routerPath,
+      currentUrl: this.currentUrl 
+    });
+    
+    // Check if current route is a public route (login or quotation)
+    const isPublicRoute = this.currentUrl === '/login' || 
+                         this.currentUrl.startsWith('/quotation') ||
+                         pathFromHash === '/quotation' ||
+                         pathFromHash?.startsWith('/quotation');
+    console.log('Is public route:', isPublicRoute, 'for URL:', this.currentUrl);
+    
     // Initial state check from sessionStorage
     const token = sessionStorage.getItem('token');
     let user: User | null = null;
@@ -76,7 +106,13 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     } catch (e) {
       console.error('Failed to parse user from sessionStorage at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), e);
-      this.handleUnauthenticatedState();
+      // Only redirect if not on a public route
+      if (!isPublicRoute) {
+        this.handleUnauthenticatedState();
+      } else {
+        // Set loading to false so UI can show
+        this.loading = false;
+      }
       return;
     }
 
@@ -84,8 +120,18 @@ export class AppComponent implements OnInit, OnDestroy {
     if (token && user) {
       this.store.dispatch(AuthActions.setUser({ user }));
     } else {
-      this.store.dispatch(AuthActions.logoutUser()); // Ensure unauthenticated state
-      this.handleUnauthenticatedState();
+      // Don't dispatch logoutUser if on public route - it will redirect
+      // Instead, just ensure unauthenticated state without redirecting
+      if (!isPublicRoute) {
+        this.store.dispatch(AuthActions.logoutUser()); // This will redirect to login
+        this.handleUnauthenticatedState();
+      } else {
+        // On public route - just clear state but don't dispatch logoutUser (which redirects)
+        // Set loading to false so UI can show for public routes
+        this.loading = false;
+        // Ensure store state is cleared but don't trigger logout effect
+        this.store.dispatch(AuthActions.logoutUser()); // This will be handled by effect to not redirect
+      }
     }
 
     // Wait for store to stabilize
@@ -94,31 +140,58 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([isLoggedIn, user]) => {
           console.log('AppComponent: isLoggedIn=', isLoggedIn, 'user=', user, 'at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }));
-          this.loading = false;
+          this.loading = false; // Always set loading to false to show UI
           if (isLoggedIn && user) {
             this.userName = user.userName || '';
             this.userRole = user.role?.role || '';
+            // Load permissions but don't block UI
             this.store.dispatch(RoleActions.loadPermissions());
             this.loadPermissions(user.role?._id || '');
+            // Only navigate if not already on a valid route
+            const routerUrl = this.router.url.replace('#', '').split('?')[0];
             const lastRoute = sessionStorage.getItem('lastRoute') || '/system';
-            if (lastRoute && !lastRoute.includes('/login')) {
-              this.router.navigateByUrl(lastRoute);
-            } else {
-              this.router.navigate(['/system']);
+            // Don't navigate if already on a valid route (including quotation)
+            if (routerUrl === '/' || routerUrl === '' || routerUrl === '/login') {
+              if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation')) {
+                this.router.navigateByUrl(lastRoute);
+              } else {
+                this.router.navigate(['/system']);
+              }
             }
           } else {
             this.permissions = this.getEmptyPermissions();
             this.sidebarItems = [];
-            if (this.router.url !== '/login') {
+            // Update currentUrl from router - check both hash and router.url
+            let routerUrl = this.router.url.replace('#', '').split('?')[0];
+            // Also check window.location.hash as fallback
+            if (!routerUrl || routerUrl === '/' || routerUrl === '') {
+              const hashPath = window.location.hash;
+              if (hashPath && hashPath.startsWith('#')) {
+                routerUrl = hashPath.substring(1).split('?')[0];
+              }
+            }
+            this.currentUrl = routerUrl;
+            // Don't redirect if user is on login or quotation route (public routes)
+            const isPublicRoute = routerUrl === '/login' || routerUrl.startsWith('/quotation');
+            if (!isPublicRoute) {
+              console.log('Redirecting to login, current route:', routerUrl);
               this.router.navigate(['/login']);
+            } else {
+              console.log('Skipping redirect, on public route:', routerUrl);
+              // Ensure loading is false for public routes
+              this.loading = false;
             }
           }
         },
         error: (err) => {
           console.error('Error in combineLatest subscription at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), err);
-          this.loading = false;
+          this.loading = false; // Always set loading to false even on error
           this.error = 'An error occurred. Redirecting to login...';
-          this.handleUnauthenticatedState();
+          // Only redirect if not on public route
+          const routerUrl = this.router.url.replace('#', '').split('?')[0];
+          if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+            this.handleUnauthenticatedState();
+          }
         }
       });
 
@@ -134,9 +207,34 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error in permissions$ subscription at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), err);
+        // Don't block UI on permission loading error - just log it
         this.loading = false;
-        this.error = 'Failed to load permissions. Redirecting to login...';
-        this.handleUnauthenticatedState();
+        // Only show error if not on public route
+        const routerUrl = this.router.url.replace('#', '').split('?')[0];
+        if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+          this.error = 'Failed to load permissions. Please refresh the page.';
+          // Don't redirect - let user continue using the app
+        }
+      }
+    });
+
+    // Listen to navigation start to catch early route changes
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationStart),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationStart) => {
+      // Handle both hash and non-hash routing
+      let url = event.url;
+      if (url.startsWith('#')) {
+        url = url.substring(1);
+      }
+      url = url.split('?')[0];
+      this.currentUrl = url;
+      console.log('Navigation start - currentUrl:', this.currentUrl, 'from event.url:', event.url);
+      
+      // If navigating to quotation route and not logged in, ensure loading is false
+      if (this.currentUrl.startsWith('/quotation')) {
+        this.loading = false;
       }
     });
 
@@ -146,17 +244,26 @@ export class AppComponent implements OnInit, OnDestroy {
     ).subscribe((event: NavigationEnd) => {
       this.showDropdown = false;
       this.activeSubmenu = null;
+      // Handle both hash and non-hash routing
+      const url = event.urlAfterRedirects.replace('#', '').split('?')[0];
+      this.currentUrl = url;
+      console.log('Navigation end - currentUrl:', this.currentUrl);
       sessionStorage.setItem('lastRoute', event.urlAfterRedirects);
     });
 
     this.store.select(RoleSelectors.selectPermissionError).pipe(takeUntil(this.destroy$)).subscribe(error => {
       if (error) {
         console.error('Permission loading failed at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), error);
-        this.loading = false;
-        this.error = 'Permission loading failed. Redirecting to login...';
+        this.loading = false; // Always allow UI to show
+        // Don't block UI - just set empty permissions and continue
         this.permissions = this.getEmptyPermissions();
         this.sidebarItems = [];
-        this.handleUnauthenticatedState();
+        // Only redirect if not on public route
+        const routerUrl = this.router.url.replace('#', '').split('?')[0];
+        if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+          this.error = 'Permission loading failed. Please refresh the page.';
+          // Don't redirect - let user continue
+        }
       }
     });
   }
@@ -181,8 +288,15 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.permissions = this.getEmptyPermissions();
     this.sidebarItems = [];
-    if (this.router.url !== '/login') {
+    // Update currentUrl from router
+    const routerUrl = this.router.url.replace('#', '').split('?')[0];
+    this.currentUrl = routerUrl;
+    // Don't redirect if user is on login or quotation route (public routes)
+    if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+      console.log('handleUnauthenticatedState - Redirecting to login, current route:', routerUrl);
       this.router.navigate(['/login']);
+    } else {
+      console.log('handleUnauthenticatedState - Skipping redirect, on public route:', routerUrl);
     }
   }
 
@@ -205,15 +319,20 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.permissionsCache.has(roleId)) {
       this.applyPermissions(this.permissionsCache.get(roleId)!);
     } else {
+      // Subscribe to permissions but don't block UI - permissions will load asynchronously
       this.permissions$.pipe(takeUntil(this.destroy$)).subscribe(permissions => {
-        const perm = permissions.find(p => p.role === roleId);
-        if (perm) {
-          this.permissionsCache.set(roleId, perm);
-          this.applyPermissions(perm);
-        } else {
-          this.permissions = this.getEmptyPermissions();
-          this.sidebarItems = [];
+        if (permissions && permissions.length > 0) {
+          const perm = permissions.find(p => p.role === roleId);
+          if (perm) {
+            this.permissionsCache.set(roleId, perm);
+            this.applyPermissions(perm);
+          } else {
+            // If no permission found, set empty but don't block UI
+            this.permissions = this.getEmptyPermissions();
+            this.sidebarItems = [];
+          }
         }
+        // If permissions array is empty, wait for them to load - don't block UI
       });
     }
   }

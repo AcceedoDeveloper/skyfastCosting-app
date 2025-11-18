@@ -30,7 +30,7 @@ import { ToastrService } from 'ngx-toastr';
 // import { CustomPaginator} from './custom-paginator-intl';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { ConfigService} from '../../shared/config.service';
-
+import { PdfViewComponent } from './pdf-view/pdf-view.component';
 
 @Component({
   selector: 'app-customer-details',
@@ -70,6 +70,9 @@ export class CustomerDetailsComponent implements OnInit {
   domesticpdfwithouticon: boolean = false;
   currencyData: any[] = [];
   isPdfLoading$ = new BehaviorSubject<boolean>(false);
+  printQuotationUrl: string = '';
+
+
 
   isEditing: boolean = false;
   private search$ = new BehaviorSubject<string>('');
@@ -125,6 +128,7 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.store.dispatch(customerActions.loadCustomers());
     this.getCurrencyData();
+    this.printQuotationUrl = this.config.getCostingUrl('');
   }
 
   applyFilter(): void {
@@ -357,85 +361,39 @@ saveQuotationPDF(customerName: string, partName: string, revision: number){
   });
 }
 
+showQuotationPdf = false;
+
+
+
+
 viewQuatation(customerName: string, partName: string, revision: number): void {
-  this.isPdfLoading$.next(true); // Show loading spinner
+  // Open dialog with quotation data
+  const dialogRef = this.dialog.open(PdfViewComponent, {
+    width: '90%',
+    maxWidth: '1200px',
+    height: '90vh',
+    data: { customerName, partName, revision },
+    disableClose: false
+  });
 
-  this.productservices.quotationData(customerName, partName, revision).subscribe({
-    next: async (res) => {
-      this.quotationData = res;
-      console.log('Quotation Data:', this.quotationData);
-      
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('Dialog closed');
+  });
+}
 
-      // Check which PDF layout to use
-      const hasCurrency = this.quotationData.results[0]?.revisions[0]?.currency != null;
-
-      if (hasCurrency) {
-        this.domesticpdfwithouticon = false;
-        this.pdfwithouticon = true;
-      } else {
-        this.domesticpdfwithouticon = true;
-        this.pdfwithouticon = false;
-      }
-
-      this.cdr.detectChanges();
-
-      // Wait for DOM render
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      const element = document.getElementById('pdfContent');
-      if (!element) {
-        this.isPdfLoading$.next(false);
-        this.tooser.error('PDF content not found');
-        return;
-      }
-
-      try {
-        // Convert to canvas
-        const canvas = await html2canvas(element, {
-          scale: 3,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-          logging: false,
-        });
-
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
-
-        // Convert to blob & open new tab
-        const pdfBlob = pdf.output('blob');
-        const blobUrl = window.URL.createObjectURL(pdfBlob);
-        const newWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
-
-        if (newWindow) {
-          this.tooser.success('PDF opened in new tab!');
-          
-          // ✅ Wait for a few seconds after opening the tab, then save to backend
-          setTimeout(() => {
-            this.saveQuotationPDF(customerName, partName, revision);
-          }, 3000); // waits 3 seconds before calling backend save
-        } else {
-          this.tooser.error('Please allow popups to view the PDF');
-        }
-
-        // Cleanup
-        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
-        this.pdfwithouticon = false;
-        this.domesticpdfwithouticon = false;
-        this.isPdfLoading$.next(false);
-      } catch (error) {
-        console.error('Error generating PDF:', error);
-        this.isPdfLoading$.next(false);
-        this.tooser.error('Failed to generate PDF');
-      }
-    },
-
-    error: (err) => {
-      console.error('Error fetching quotation:', err);
+printQuotation(customerName: string, partName: string, revision: number): void {
+  this.isPdfLoading$.next(true);
+  this.productservices.printQuotation(customerName, partName, revision).subscribe({
+    next: (res) => {
+      console.log('Quotation printed successfully:', res);
       this.isPdfLoading$.next(false);
-      this.tooser.error('Failed to load quotation data');
+      this.tooser.success('Quotation printed successfully');
+      const url = this.printQuotationUrl + 'get-report/' + res.fileName;
+      console.log(url);
+      window.open(url, '_blank');
+    },
+    error: (err) => {
+      console.error('Error printing quotation:', err);
     }
   });
 }

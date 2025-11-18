@@ -43,7 +43,22 @@ export class AuthEffects {
       ofType(fromAuth.logoutUser),
       tap(() => {
         sessionStorage.clear();
-        this.router.navigate(['/login'], { replaceUrl: true });
+        // Check if we're on a public route before redirecting
+        // Check window.location.hash first (for hash routing)
+        let hashPath = window.location.hash;
+        if (hashPath && hashPath.startsWith('#')) {
+          hashPath = hashPath.substring(1);
+        }
+        const pathFromHash = hashPath.split('?')[0];
+        const routerPath = this.router.url.replace('#', '').split('?')[0];
+        const currentUrl = pathFromHash || routerPath;
+        
+        const isPublicRoute = currentUrl === '/login' || currentUrl.startsWith('/quotation');
+        
+        // Only redirect to login if not on a public route
+        if (!isPublicRoute) {
+          this.router.navigate(['/login'], { replaceUrl: true });
+        }
       })
     ),
     { dispatch: false }

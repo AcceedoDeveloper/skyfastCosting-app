@@ -1,6 +1,6 @@
-<div *ngIf="isLoggedIn$ | async; else loginPageLayout">
-  <!-- Navbar -->
-  <nav class="navbar">
+<div *ngIf="(isLoggedIn$ | async) || currentUrl?.startsWith('/quotation') || currentUrl === '/login'; else loginPageLayout">
+  <!-- Navbar - only show when logged in -->
+  <nav class="navbar" *ngIf="isLoggedIn$ | async">
     <div class="navbar-brand">
       <a routerLink="/" class="navbar-item brand-text">Cost Management</a>
     </div>
@@ -27,7 +27,7 @@
 
   <!-- Sidebar + Main -->
   <div class="sidenav-container">
-    <aside class="custom-sidenav">
+    <aside class="custom-sidenav" *ngIf="isLoggedIn$ | async">
       <div class="sidenav-header"></div>
       <ul class="nav-list">
         <li *ngFor="let item of sidebarItems" [ngClass]="{'nav-item': true, 'has-submenu': item.submenu}">
@@ -44,7 +44,7 @@
       </ul>
     </aside>
 
-    <main class="container">
+    <main class="container" [ngClass]="{'full-width': !(isLoggedIn$ | async)}">
       <router-outlet></router-outlet>
     </main>
   </div>

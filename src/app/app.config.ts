@@ -5,7 +5,7 @@ import {
   APP_INITIALIZER,
    importProvidersFrom 
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 
 import { routes } from './app.routes';
 import { ActionReducer, provideState, provideStore } from '@ngrx/store';
@@ -59,7 +59,7 @@ export function initializeApp(configService: ConfigService) {
 export const appConfig: ApplicationConfig = {
  providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withHashLocation()), // Enable hash routing for #/quotation URLs
     provideHttpClient(),
      provideStore(appReducers, { metaReducers }),
    
