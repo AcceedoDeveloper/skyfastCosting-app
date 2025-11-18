@@ -70,6 +70,7 @@ export class CustomerDetailsComponent implements OnInit {
   domesticpdfwithouticon: boolean = false;
   currencyData: any[] = [];
   isPdfLoading$ = new BehaviorSubject<boolean>(false);
+  isQuotationLoading = false; // Loading state for quotation popup
   printQuotationUrl: string = '';
 
 
@@ -326,25 +327,37 @@ downloadPDF() {
 
 
 downloadQuotations(customerName: string, partName: string, revision: number): void {
+  // Show popup immediately with loading state
+  this.pdfview = true;
+  this.domesticpdf = false;
+  this.pdfwithouticon = false;
+  this.domesticpdfwithouticon = false;
+  this.quotationData = null; // Clear previous data
+  this.isQuotationLoading = true; // Show loading spinner
+  
+  // Fetch data asynchronously
   this.productservices.quotationData(customerName, partName, revision).subscribe({
     next: (res) => {
       this.quotationData = res;
+      this.isQuotationLoading = false; // Hide loading spinner
       console.log('Quotation Data:', this.quotationData);
-      if( this.quotationData.results[0].revisions[0].currency != null){
-            this.pdfview= true;
-      }
-      else{
+      if (this.quotationData?.results?.[0]?.revisions?.[0]?.currency != null) {
+        this.pdfview = true;
+        this.domesticpdf = false;
+      } else {
         this.domesticpdf = true;
+        this.pdfview = false;
       }
-  
-      
     },
     error: (err) => {
       console.error('Error fetching quotation:', err);
+      this.isQuotationLoading = false; // Hide loading spinner
+      // Close popup on error
+      this.pdfview = false;
+      this.domesticpdf = false;
+      this.tooser.error('Failed to load quotation data');
     }
   });
-
-
 }
 
 
@@ -405,6 +418,8 @@ closeda(){
   this.domesticpdf = false;
   this.pdfwithouticon = false;
   this.domesticpdfwithouticon = false;
+  this.isQuotationLoading = false; // Reset loading state
+  this.quotationData = null; // Clear data
 }
 
 getDrawingImage(): string {

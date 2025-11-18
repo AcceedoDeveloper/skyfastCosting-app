@@ -459,9 +459,13 @@
 </button>
 </div>
 
+<!-- Loading Spinner -->
+<div *ngIf="isQuotationLoading" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+  <app-loading-spinner></app-loading-spinner>
+</div>
 
       
-  <div id="pdfContent">
+  <div id="pdfContent" *ngIf="!isQuotationLoading">
 
     <div class="quotation" *ngIf="quotationData" >
       <!-- Top header band: left spacer/logo, centered title, right meta table -->
