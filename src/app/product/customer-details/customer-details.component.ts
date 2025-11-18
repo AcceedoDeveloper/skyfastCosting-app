@@ -341,13 +341,10 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
       this.quotationData = res;
       this.isQuotationLoading = false; // Hide loading spinner
       console.log('Quotation Data:', this.quotationData);
-      if (this.quotationData?.results?.[0]?.revisions?.[0]?.currency != null) {
-        this.pdfview = true;
-        this.domesticpdf = false;
-      } else {
-        this.domesticpdf = true;
-        this.pdfview = false;
-      }
+      
+      const hasCurrency = this.quotationData?.results?.[0]?.revisions?.[0]?.currency != null;
+      this.pdfwithouticon = hasCurrency;
+      this.domesticpdf = !hasCurrency;
     },
     error: (err) => {
       console.error('Error fetching quotation:', err);
@@ -355,6 +352,8 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
       // Close popup on error
       this.pdfview = false;
       this.domesticpdf = false;
+      this.pdfwithouticon = false;
+      this.domesticpdfwithouticon = false;
       this.tooser.error('Failed to load quotation data');
     }
   });
