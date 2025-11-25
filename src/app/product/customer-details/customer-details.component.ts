@@ -60,6 +60,17 @@ export class CustomerDetailsComponent implements OnInit {
   filteredCustomers$!: Observable<CustomerDetails[]>;
   totalFiltered$!: Observable<number>;
   searchTerm: string = '';
+  searchFilterType: 'none' | 'customerName' | 'drawingNo' | 'partNo' = 'none';
+  selectedSearchValue: string = '';
+  searchFilterOptions: string[] = [];
+  dateFilterType: 'none' | 'date' | 'week' | 'month' | 'year' = 'none';
+  filters: { singleDate: string; week: string; month: string; year: string } = {
+    singleDate: '',
+    week: '',
+    month: '',
+    year: ''
+  };
+  statusOptions: string[] = ['Pending', 'Approved', 'Rejected', 'Email Sent'];
   selectedRevisions: any[] = [];
   showComparePopup: boolean = false;
   expandedCustomer: any = null;
@@ -72,11 +83,15 @@ export class CustomerDetailsComponent implements OnInit {
   isPdfLoading$ = new BehaviorSubject<boolean>(false);
   isQuotationLoading = false; // Loading state for quotation popup
   printQuotationUrl: string = '';
+  statusUpdatingMap: Record<string, boolean> = {};
+  private customersCache: CustomerDetails[] = [];
 
 
 
   isEditing: boolean = false;
   private search$ = new BehaviorSubject<string>('');
+  private searchFilter$ = new BehaviorSubject<{ type: string; value: string }>({ type: 'none', value: '' });
+  private dateFilter$ = new BehaviorSubject<{ type: string; value: string }>({ type: 'none', value: '' });
   private page$ = new BehaviorSubject<{ index: number; size: number }>({ index: 0, size: 10 });
 
   constructor(
@@ -102,27 +117,23 @@ export class CustomerDetailsComponent implements OnInit {
       )
     );
 
-    this.totalFiltered$ = combineLatest([this.customers$, this.search$]).pipe(
-      map(([customers, search]) => {
-        return customers.filter(c =>
-          c.customerName.customerName.toLowerCase().includes(search.toLowerCase()) ||
-          c.partName.toLowerCase().includes(search.toLowerCase())
-        ).length;
+    this.totalFiltered$ = combineLatest([this.customers$, this.search$, this.searchFilter$, this.dateFilter$]).pipe(
+      map(([customers, search, searchFilter, dateFilter]) => {
+        return this.applyAdvancedFilters(customers, search, searchFilter, dateFilter).length;
       })
     );
 
-    this.filteredCustomers$ = combineLatest([this.customers$, this.search$, this.page$]).pipe(
-      map(([customers, search, page]) => {
-        const filtered = customers.filter(c =>
-          c.customerName.customerName.toLowerCase().includes(search.toLowerCase()) ||
-          c.partName.toLowerCase().includes(search.toLowerCase())
-        );
+    this.filteredCustomers$ = combineLatest([this.customers$, this.search$, this.searchFilter$, this.dateFilter$, this.page$]).pipe(
+      map(([customers, search, searchFilter, dateFilter, page]) => {
+        const filtered = this.applyAdvancedFilters(customers, search, searchFilter, dateFilter);
         const start = page.index * page.size;
         return filtered.slice(start, start + page.size);
       })
     );
 
     this.customers$.subscribe(customers => {
+      this.customersCache = customers;
+      this.updateSearchFilterOptions();
       console.log('Customers from store:', customers);
       console.table(customers);
     });
@@ -203,10 +214,108 @@ export class CustomerDetailsComponent implements OnInit {
     this.selectedRevisions = this.expandedCustomer.revisions.filter((r: any) => r.selected);
   }
 
+  getSearchFilterLabel(): string {
+    switch (this.searchFilterType) {
+      case 'customerName':
+        return 'Customer Name';
+      case 'drawingNo':
+        return 'Drawing No';
+      case 'partNo':
+        return 'Part No';
+      default:
+        return 'Select';
+    }
+  }
+
+  onSearchFilterTypeChange(): void {
+    this.selectedSearchValue = '';
+    this.updateSearchFilterOptions();
+    this.emitSearchFilter();
+  }
+
+  onSearchValueChange(): void {
+    this.emitSearchFilter();
+  }
+
+  onDateFilterTypeChange(): void {
+    this.filters = { singleDate: '', week: '', month: '', year: '' };
+    if (this.dateFilterType === 'none') {
+      this.dateFilter$.next({ type: 'none', value: '' });
+    }
+  }
+
+  onDateChange(): void {
+    const value = this.filters.singleDate;
+    this.dateFilter$.next(value ? { type: 'date', value } : { type: 'none', value: '' });
+  }
+
+  onWeekChange(): void {
+    const value = this.filters.week;
+    this.dateFilter$.next(value ? { type: 'week', value } : { type: 'none', value: '' });
+  }
+
+  onMonthChange(): void {
+    const value = this.filters.month;
+    this.dateFilter$.next(value ? { type: 'month', value } : { type: 'none', value: '' });
+  }
+
+  onYearChange(): void {
+    const value = this.filters.year ? this.filters.year.toString() : '';
+    if (value && value.length === 4) {
+      this.dateFilter$.next({ type: 'year', value });
+    } else if (!value) {
+      this.dateFilter$.next({ type: 'none', value: '' });
+    }
+  }
+
+  onStatusChange(customer: CustomerDetails, newStatus: string): void {
+    const revisions = customer.revisions || [];
+    if (!customer._id || revisions.length === 0) {
+      return;
+    }
+
+    const latestRevisionIndex = revisions.length - 1;
+    const updatedRevisions = revisions.map((rev, index) =>
+      index === latestRevisionIndex ? { ...rev, Status: newStatus } : rev
+    );
+
+    const payload = {
+      ...customer,
+      revisions: updatedRevisions
+    };
+
+    this.statusUpdatingMap[customer._id] = true;
+
+    // this.productservices.updateCustomer(customer._id, payload).subscribe({
+    //   next: () => {
+    //     this.statusUpdatingMap[customer._id] = false;
+    //     this.store.dispatch(customerActions.loadCustomers());
+    //   },
+    //   error: () => {
+    //     this.statusUpdatingMap[customer._id] = false;
+    //   }
+    // });
+  }
+
   getLatestRevision(c: any) {
     return c?.revisions && c.revisions.length > 0
       ? c.revisions[c.revisions.length - 1]
       : null;
+  }
+
+  getDisplayId(customer: CustomerDetails): string {
+    const dateSource = customer.updatedAt || customer.createdAt;
+    if (!dateSource) {
+      return 'N/A';
+    }
+    const date = new Date(dateSource);
+    if (isNaN(date.getTime())) {
+      return 'N/A';
+    }
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}${month}${year}`;
   }
 
   getLatestrevisionNumber(c: any) {
@@ -268,6 +377,145 @@ export class CustomerDetailsComponent implements OnInit {
       return 'No Processes';
     }
     return processes.map(p => p.processName).join(', ');
+  }
+
+  private updateSearchFilterOptions(): void {
+    if (this.searchFilterType === 'none') {
+      this.searchFilterOptions = [];
+      return;
+    }
+
+    const values = new Set<string>();
+    this.customersCache.forEach(customer => {
+      let value = '';
+      switch (this.searchFilterType) {
+        case 'customerName':
+          value = customer.customerName?.customerName || '';
+          break;
+        case 'drawingNo':
+          value = customer.drawingNo ? String(customer.drawingNo) : '';
+          break;
+        case 'partNo':
+          value = this.getLatestRevision(customer)?.productName || '';
+          break;
+      }
+      if (value) {
+        values.add(value);
+      }
+    });
+    this.searchFilterOptions = Array.from(values).sort((a, b) => a.localeCompare(b));
+  }
+
+  private emitSearchFilter(): void {
+    if (this.searchFilterType === 'none' || !this.selectedSearchValue) {
+      this.searchFilter$.next({ type: 'none', value: '' });
+    } else {
+      this.searchFilter$.next({ type: this.searchFilterType, value: this.selectedSearchValue });
+    }
+  }
+
+  private applyAdvancedFilters(
+    customers: CustomerDetails[],
+    search: string,
+    searchFilter: { type: string; value: string },
+    dateFilter: { type: string; value: string }
+  ): CustomerDetails[] {
+    let filtered = [...customers];
+    const term = search.trim().toLowerCase();
+
+    if (term) {
+      filtered = filtered.filter(c =>
+        c.customerName.customerName.toLowerCase().includes(term) ||
+        c.partName.toLowerCase().includes(term)
+      );
+    }
+
+    if (searchFilter.type !== 'none' && searchFilter.value) {
+      filtered = filtered.filter(c => {
+        switch (searchFilter.type) {
+          case 'customerName':
+            return (c.customerName?.customerName || '').toLowerCase() === searchFilter.value.toLowerCase();
+          case 'drawingNo':
+            return String(c.drawingNo || '').toLowerCase() === searchFilter.value.toLowerCase();
+          case 'partNo':
+            return (this.getLatestRevision(c)?.productName || '').toLowerCase() === searchFilter.value.toLowerCase();
+          default:
+            return true;
+        }
+      });
+    }
+
+    if (dateFilter.type !== 'none' && dateFilter.value) {
+      filtered = filtered.filter(c => this.matchesDateFilter(c, dateFilter));
+    }
+
+    return filtered;
+  }
+
+  private matchesDateFilter(customer: CustomerDetails, dateFilter: { type: string; value: string }): boolean {
+    const dateSource = customer.updatedAt || customer.createdAt;
+    if (!dateSource) return false;
+    const customerDate = new Date(dateSource);
+    if (isNaN(customerDate.getTime())) return false;
+
+    const range = this.getDateRange(dateFilter);
+    if (!range) return true;
+    return customerDate >= range.start && customerDate < range.end;
+  }
+
+  private getDateRange(dateFilter: { type: string; value: string }): { start: Date; end: Date } | null {
+    const value = dateFilter.value;
+    switch (dateFilter.type) {
+      case 'date': {
+        if (!value) return null;
+        const start = new Date(value);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(start);
+        end.setDate(end.getDate() + 1);
+        return { start, end };
+      }
+      case 'week': {
+        if (!value) return null;
+        const [yearStr, weekStr] = value.split('-W');
+        const year = Number(yearStr);
+        const week = Number(weekStr);
+        if (!year || !week) return null;
+        const start = this.getStartOfISOWeek(year, week);
+        const end = new Date(start);
+        end.setDate(end.getDate() + 7);
+        return { start, end };
+      }
+      case 'month': {
+        if (!value) return null;
+        const [yearStr, monthStr] = value.split('-');
+        const year = Number(yearStr);
+        const month = Number(monthStr);
+        if (!year || month == null) return null;
+        const start = new Date(year, month - 1, 1);
+        const end = new Date(year, month, 1);
+        return { start, end };
+      }
+      case 'year': {
+        if (!value) return null;
+        const year = Number(value);
+        if (!year) return null;
+        const start = new Date(year, 0, 1);
+        const end = new Date(year + 1, 0, 1);
+        return { start, end };
+      }
+      default:
+        return null;
+    }
+  }
+
+  private getStartOfISOWeek(year: number, week: number): Date {
+    const simple = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+    const dayOfWeek = simple.getUTCDay();
+    const isoWeekStart = new Date(simple);
+    const diff = dayOfWeek <= 4 ? dayOfWeek - 1 : dayOfWeek - 8;
+    isoWeekStart.setUTCDate(simple.getUTCDate() - diff);
+    isoWeekStart.setUTCHours(0, 0, 0, 0);
+    return isoWeekStart;
   }
 
   downloadQuotation(customerName: string, partName: string, revision: number) {

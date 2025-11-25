@@ -13,18 +13,100 @@
 <div class="subheader">
 
   <h2>Customer Details</h2>
-  <div class="header">
   
-
-     <div class="search-container">
-  <div class="search-input">
-    <input type="text" placeholder="Search" [(ngModel)]="searchTerm" (input)="applyFilter()" />
-    <button type="button" class="clear-btn" *ngIf="searchTerm" (click)="searchTerm=''; applyFilter()">✕</button>
-    <mat-icon class="search-icon">search</mat-icon>
-  </div>
 </div>
-    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
+
+<div class="filter-cards">
+
+
+  <div class="filter-card">
+    <div class="filter-field select-field" [class.active]="searchFilterType !== 'none'">
+      <label class="filter-label">Filter By:</label>
+      <select class="native-select" [(ngModel)]="searchFilterType" (change)="onSearchFilterTypeChange()">
+        <option value="none">None</option>
+        <option value="customerName">Customer Name</option>
+        <option value="drawingNo">Drawing No</option>
+        <option value="partNo">Part No</option>
+      </select>
+    </div>
+
+    <div class="filter-field select-field" *ngIf="searchFilterType !== 'none'">
+      <label class="filter-label">{{ getSearchFilterLabel() }}:</label>
+      <select class="native-select" [(ngModel)]="selectedSearchValue" (change)="onSearchValueChange()">
+        <option *ngFor="let option of searchFilterOptions" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
   </div>
+
+  <div class="filter-card">
+    <div class="filter-field select-field" [class.active]="dateFilterType !== 'none'">
+      <label class="filter-label">Date Filter By:</label>
+      <select class="native-select" [(ngModel)]="dateFilterType" (change)="onDateFilterTypeChange()">
+        <option value="none">None</option>
+        <option value="date">Date</option>
+        <option value="week">Week</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+      </select>
+    </div>
+
+    <div class="filter-fields" *ngIf="dateFilterType !== 'none'">
+      <div class="filter-field" *ngIf="dateFilterType === 'date'">
+        <input
+          type="date"
+          id="singleDate"
+          class="native-input"
+          [(ngModel)]="filters.singleDate"
+          (change)="onDateChange()"
+        />
+      </div>
+
+      <div class="filter-field" *ngIf="dateFilterType === 'week'">
+        <input
+          type="week"
+          id="weekFilter"
+          class="native-input"
+          [(ngModel)]="filters.week"
+          (change)="onWeekChange()"
+        />
+        <label for="weekFilter" class="input-label">Week:</label>
+      </div>
+
+      <div class="filter-field" *ngIf="dateFilterType === 'month'">
+        <input
+          type="month"
+          id="monthFilter"
+          class="native-input"
+          [(ngModel)]="filters.month"
+          (change)="onMonthChange()"
+        />
+        <label for="monthFilter" class="input-label">Month:</label>
+      </div>
+
+      <div class="filter-field" *ngIf="dateFilterType === 'year'">
+        <input
+          type="number"
+          id="yearFilter"
+          class="native-input"
+          [class.has-value]="filters.year"
+          [(ngModel)]="filters.year"
+          placeholder="YYYY"
+          min="2000"
+          max="2100"
+          (change)="onYearChange()"
+        />
+        <label for="yearFilter" class="input-label">Year:</label>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
+
+  </div>
+
 </div>
 
 
@@ -38,6 +120,12 @@
               <div class="header-cell-content">
                 <mat-icon class="header-icon">person</mat-icon>
                 <span>Customer</span>
+              </div>
+            </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">confirmation_number</mat-icon>
+                <span>ID</span>
               </div>
             </th>
             <th>
@@ -58,6 +146,7 @@
                 <span>Revision</span>
               </div>
             </th>
+         
             <th>
               <div class="header-cell-content">
                 <mat-icon class="header-icon">inventory_2</mat-icon>
@@ -82,6 +171,12 @@
                 <span>Actions</span>
               </div>
             </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">verified</mat-icon>
+                <span>Status</span>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -89,6 +184,9 @@
             <tr class="table-row">
               <td>
                 <span class="customer-name">{{ c.customerName.customerName }}</span>
+              </td>
+              <td>
+                <span class="customer-id-pill">{{ getDisplayId(c) }}</span>
               </td>
               <td>
                 <span class="part-name">{{ c.partName }}</span>
@@ -138,6 +236,22 @@
                   <button mat-icon-button class="action-btn expand-btn" (click)="toggleCompare(c)" title="Expand/Collapse">
                     <mat-icon class="icon">{{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}</mat-icon>
                   </button>
+                </div>
+              </td>
+              <td>
+                <div class="status-select">
+                  <select
+                    [disabled]="statusUpdatingMap[c._id || '']"
+                    [ngModel]="getLatestRevision(c)?.Status || 'Pending'"
+                    (ngModelChange)="onStatusChange(c, $event)"
+                  >
+                    <option *ngFor="let status of statusOptions" [value]="status">
+                      {{ status }}
+                    </option>
+                  </select>
+                  <mat-icon class="updating-icon" *ngIf="statusUpdatingMap[c._id || '']">
+                    autorenew
+                  </mat-icon>
                 </div>
               </td>
             </tr>
