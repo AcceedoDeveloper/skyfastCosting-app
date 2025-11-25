@@ -2,14 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatPaginatorIntl } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
-import { DashboardPaginatorIntl } from '../../shared/dashboard-paginator-intl.service';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectAllCustomers } from '../store/product.selectors';
@@ -91,22 +84,29 @@ interface ProcessDisplay {
   count: number;
 }
 
+interface SummaryMetric {
+  label: string;
+  value: number;
+  percent: number;
+  accent: 'total' | 'approved' | 'pending' | 'rejected';
+  helper: string;
+}
+
+interface CostMetric {
+  label: string;
+  value: string;
+  trend: 'up' | 'down' | 'neutral';
+}
+
 @Component({
   selector: 'app-dashboard',
   imports: [
     CommonModule,
     FormsModule,
     MatIconModule,
-    MatPaginatorModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatTableModule
+    MatDialogModule
   ],
-  providers: [
-    { provide: MatPaginatorIntl, useClass: DashboardPaginatorIntl }
-  ],
+  providers: [],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -118,6 +118,17 @@ export class DashboardComponent implements OnInit {
   approvedQuotations = 0;
   pendingQuotations = 0;
   rejectedQuotations = 0;
+  summaryMetrics: SummaryMetric[] = [
+    { label: 'Quotations', value: 0, percent: 0, accent: 'total', helper: 'Total submissions' },
+    { label: 'Approved', value: 0, percent: 0, accent: 'approved', helper: 'Green-lighted quotes' },
+    { label: 'Pending', value: 0, percent: 0, accent: 'pending', helper: 'Awaiting response' },
+    { label: 'Rejected', value: 0, percent: 0, accent: 'rejected', helper: 'Need follow-up' }
+  ];
+  overallCostMetrics: CostMetric[] = [
+    { label: 'Profit', value: '0%', trend: 'neutral' },
+    { label: 'Losses', value: '0%', trend: 'neutral' },
+    { label: 'Net Difference', value: '0%', trend: 'neutral' }
+  ];
 
   // Date picker
   selectedDate: string = new Date().toISOString().split('T')[0]; // Today's date by default
@@ -180,14 +191,38 @@ export class DashboardComponent implements OnInit {
   pageSize = 5;
   pageIndex = 0;
 
+  get currentPage(): number {
+    return this.totalPages === 0 ? 0 : this.pageIndex + 1;
+  }
+
+  get totalPages(): number {
+    if (!this.filteredQuotations.length || !this.pageSize) {
+      return 0;
+    }
+    return Math.ceil(this.filteredQuotations.length / this.pageSize);
+  }
+
+  get paginationStart(): number {
+    if (!this.filteredQuotations.length) {
+      return 0;
+    }
+    return this.pageIndex * this.pageSize + 1;
+  }
+
+  get paginationEnd(): number {
+    if (!this.filteredQuotations.length) {
+      return 0;
+    }
+    return Math.min((this.pageIndex + 1) * this.pageSize, this.filteredQuotations.length);
+  }
+
   // Today Activity
   todayActivities: Activity[] = [
     { initials: 'EK', avatarColor: '#3b82f6', description: 'Indo shell payment', date: '04 April, 2021', time: '04:00 PM' },
     { initials: 'JH', avatarColor: '#8b5cf6', description: 'Uniqueshell delivery', date: '04 April, 2021', time: '03:30 PM' },
     { initials: 'AF', avatarColor: '#1e40af', description: 'Skyfast waiting for response', date: '04 April, 2021', time: '03:00 PM' },
-    { initials: 'RP', avatarColor: '#60a5fa', description: 'Acceedo approved', date: '04 April, 2021', time: '02:30 PM' },
-    { initials: 'SM', avatarColor: '#3b82f6', description: 'New quotation created', date: '04 April, 2021', time: '02:00 PM' },
-  ];
+    { initials: 'RP', avatarColor: '#60a5fa', description: 'Acceedo approved', date: '04 April, 2021', time: '02:30 PM' }
+    ];
 
   // Cost Estimation
   currencyRates = [
@@ -215,6 +250,55 @@ export class DashboardComponent implements OnInit {
   salesPageIndex = 0;
   salesPageSize = 5;
   paginatedSales: Country[] = [];
+  get revisionsCurrentPage(): number {
+    return this.revisionsTotalPages === 0 ? 0 : this.revisionsPageIndex + 1;
+  }
+
+  get revisionsTotalPages(): number {
+    if (!this.allRecentUpdates.length || !this.revisionsPageSize) {
+      return 0;
+    }
+    return Math.ceil(this.allRecentUpdates.length / this.revisionsPageSize);
+  }
+
+  get revisionsPaginationStart(): number {
+    if (!this.allRecentUpdates.length) {
+      return 0;
+    }
+    return this.revisionsPageIndex * this.revisionsPageSize + 1;
+  }
+
+  get revisionsPaginationEnd(): number {
+    if (!this.allRecentUpdates.length) {
+      return 0;
+    }
+    return Math.min((this.revisionsPageIndex + 1) * this.revisionsPageSize, this.allRecentUpdates.length);
+  }
+
+  get salesCurrentPage(): number {
+    return this.salesTotalPages === 0 ? 0 : this.salesPageIndex + 1;
+  }
+
+  get salesTotalPages(): number {
+    if (!this.currentSalesData.length || !this.salesPageSize) {
+      return 0;
+    }
+    return Math.ceil(this.currentSalesData.length / this.salesPageSize);
+  }
+
+  get salesPaginationStart(): number {
+    if (!this.currentSalesData.length) {
+      return 0;
+    }
+    return this.salesPageIndex * this.salesPageSize + 1;
+  }
+
+  get salesPaginationEnd(): number {
+    if (!this.currentSalesData.length) {
+      return 0;
+    }
+    return Math.min((this.salesPageIndex + 1) * this.salesPageSize, this.currentSalesData.length);
+  }
   
   // Dropdown selection for sales section
   selectedSalesType: string = 'currencies'; // 'currencies' or 'customers'
@@ -231,6 +315,7 @@ export class DashboardComponent implements OnInit {
   mostUsedProcess: ProcessDisplay | null = null;
   processChartStyle: string = '';
   allProcesses: Process[] = [];
+  selectedInsightChart: 'process' | 'rawMaterial' = 'process';
 
   private dialog = inject(MatDialog);
   
@@ -446,6 +531,7 @@ export class DashboardComponent implements OnInit {
     this.approvedQuotations = this.filteredQuotations.filter(q => q.status.toLowerCase() === 'approved').length;
     this.pendingQuotations = this.filteredQuotations.filter(q => q.status.toLowerCase() === 'pending').length;
     this.rejectedQuotations = this.filteredQuotations.filter(q => q.status.toLowerCase() === 'rejected').length;
+    this.updateSummaryMetrics();
   }
 
   updatePaginatedQuotations(): void {
@@ -454,16 +540,18 @@ export class DashboardComponent implements OnInit {
     this.paginatedQuotations = this.filteredQuotations.slice(startIndex, endIndex);
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.updatePaginatedQuotations();
+  previousPage(): void {
+    if (this.pageIndex > 0) {
+      this.pageIndex--;
+      this.updatePaginatedQuotations();
+    }
   }
 
-  onSalesPageChange(event: PageEvent): void {
-    this.salesPageIndex = event.pageIndex;
-    this.salesPageSize = event.pageSize;
-    this.updatePaginatedSales();
+  nextPage(): void {
+    if (this.pageIndex < this.totalPages - 1) {
+      this.pageIndex++;
+      this.updatePaginatedQuotations();
+    }
   }
 
   processRawMaterials(rawMaterials: RawMaterial[]): void {
@@ -685,15 +773,78 @@ export class DashboardComponent implements OnInit {
     this.paginatedSales = this.currentSalesData.slice(startIndex, endIndex);
   }
 
-  onRevisionsPageChange(event: PageEvent): void {
-    this.revisionsPageIndex = event.pageIndex;
-    this.revisionsPageSize = event.pageSize;
-    this.updatePaginatedRevisions();
-  }
-
   updatePaginatedRevisions(): void {
     const startIndex = this.revisionsPageIndex * this.revisionsPageSize;
     const endIndex = startIndex + this.revisionsPageSize;
     this.paginatedRevisions = this.allRecentUpdates.slice(startIndex, endIndex);
+  }
+
+  revisionsPreviousPage(): void {
+    if (this.revisionsPageIndex > 0) {
+      this.revisionsPageIndex--;
+      this.updatePaginatedRevisions();
+    }
+  }
+
+  revisionsNextPage(): void {
+    if (this.revisionsPageIndex < this.revisionsTotalPages - 1) {
+      this.revisionsPageIndex++;
+      this.updatePaginatedRevisions();
+    }
+  }
+
+  salesPreviousPage(): void {
+    if (this.salesPageIndex > 0) {
+      this.salesPageIndex--;
+      this.updatePaginatedSales();
+    }
+  }
+
+  salesNextPage(): void {
+    if (this.salesPageIndex < this.salesTotalPages - 1) {
+      this.salesPageIndex++;
+      this.updatePaginatedSales();
+    }
+  }
+
+  private calculatePercentage(count: number): number {
+    if (!this.totalQuotations) {
+      return 0;
+    }
+    return Math.round((count / this.totalQuotations) * 100);
+  }
+
+  private updateSummaryMetrics(): void {
+    const totalPercentage = this.totalQuotations > 0 ? 100 : 0;
+    this.summaryMetrics = [
+      {
+        label: 'Quotations',
+        value: this.totalQuotations,
+        percent: totalPercentage,
+        accent: 'total',
+        helper: 'Total submissions'
+      },
+      {
+        label: 'Approved',
+        value: this.approvedQuotations,
+        percent: this.calculatePercentage(this.approvedQuotations),
+        accent: 'approved',
+        helper: 'Green-lighted quotes'
+      },
+      {
+        label: 'Pending',
+        value: this.pendingQuotations,
+        percent: this.calculatePercentage(this.pendingQuotations),
+        accent: 'pending',
+        helper: 'Awaiting response'
+      },
+      {
+        label: 'Rejected',
+        value: this.rejectedQuotations,
+        percent: this.calculatePercentage(this.rejectedQuotations),
+        accent: 'rejected',
+        helper: 'Need follow-up'
+      }
+    ];
   }
 }

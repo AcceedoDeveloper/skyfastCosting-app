@@ -1,161 +1,253 @@
 <div class="dashboard-container">
   <!-- Top Section: Quotation Summary Cards -->
   <div class="quotation-summary">
-    <div class="summary-card">
-      <div class="card-label">Total Quotations</div>
-      <div class="card-value">{{ totalQuotations }}</div>
-    </div>
-    <div class="summary-card approved">
-      <div class="card-label">Approved Quotations</div>
-      <div class="card-value green">{{ approvedQuotations }}</div>
-    </div>
-    <div class="summary-card pending">
-      <div class="card-label">Pending Quotations</div>
-      <div class="card-value orange">{{ pendingQuotations }}</div>
-    </div>
-    <div class="summary-card rejected">
-      <div class="card-label">Rejected Quotations</div>
-      <div class="card-value red">{{ rejectedQuotations }}</div>
-    </div>
-  </div>
+   
 
-  <!-- Main Content Area -->
-  <div class="dashboard-main">
-    <!-- Left Section: Total Quotations Table -->
-    <div class="table-section">
-      <div class="section-header">
-        <div class="filters-container">
-          <div class="filter-dropdowns">
-            <mat-form-field appearance="outline" class="filter-field">
-              <mat-label>Filter By</mat-label>
-              <mat-select [(ngModel)]="selectedFilterType" (selectionChange)="onFilterTypeChange()">
-                <mat-option value="">All</mat-option>
-                <mat-option *ngFor="let option of filterTypeOptions" [value]="option.value">
-                  {{ option.label }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="filter-field" *ngIf="selectedFilterType">
-              <mat-label>{{ getSelectedFilterLabel() }}</mat-label>
-              <mat-select [(ngModel)]="selectedFilterValue" (selectionChange)="onFilterValueChange()" [disabled]="!selectedFilterType">
-                <mat-option value="">All</mat-option>
-                <mat-option *ngFor="let value of currentFilterValues" [value]="value">
-                  {{ value }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            
-              <mat-icon (click)="clearFilters()" >clear</mat-icon>
+      <div class="table-section">
        
-          </div>
-          <div class="date-picker-container">
-            <input type="date" [(ngModel)]="selectedDate" (ngModelChange)="onDateChange()" class="date-picker" />
-          </div>
-        
-        </div>
-      </div>
+  
+        <div class="table-toolbar">
+          <div class="filters-container">
+            <div class="filter-dropdowns">
+              <div class="filter-control">
+                <select
+                  id="filter-type"
+                  class="filter-select"
+                  [(ngModel)]="selectedFilterType"
+                  (change)="onFilterTypeChange()">
+                  <option value="">All</option>
+                  <option *ngFor="let option of filterTypeOptions" [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+              
+              <div class="filter-control" *ngIf="selectedFilterType">
+                <select
+                  id="filter-value"
+                  class="filter-select"
+                  [(ngModel)]="selectedFilterValue"
+                  (change)="onFilterValueChange()"
+                  [disabled]="!selectedFilterType">
+                  <option value="">All</option>
+                  <option *ngFor="let value of currentFilterValues" [value]="value">
+                    {{ value }}
+                  </option>
+                </select>
+              </div>
 
-      <div class="table-container">
-        <table class="quotations-table">
-          <thead>
-            <tr>
-              <th>Customer</th>
-              <th>Email</th>
-              <th>Part Name</th>
-              <th>Status</th>
-              <th>Sent At</th>
-              <th>Actual Cost</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ng-container *ngIf="paginatedQuotations.length > 0; else noData">
-              <tr *ngFor="let quotation of paginatedQuotations">
-                <td>{{ quotation.customer }}</td>
-                <td>{{ quotation.email }}</td>
-                <td>{{ quotation.partName }}</td>
-                <td>
-                  <span class="status-badge" [ngClass]="quotation.status.toLowerCase()">
-                    {{ quotation.status }}
-                  </span>
-                </td>
-                <td>{{ quotation.sentAt }}</td>
-                <td>{{ quotation.actualCost | number }}</td>
+              <button type="button" class="reset-btn" (click)="clearFilters()">
+                <mat-icon>filter_alt_off</mat-icon>
+                Reset
+              </button>
+            </div>
+            <div class="date-picker-container">
+              <input
+                id="date-filter"
+                type="date"
+                [(ngModel)]="selectedDate"
+                (ngModelChange)="onDateChange()"
+                class="date-picker" />
+            </div>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="quotations-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Email</th>
+                <th>Part Name</th>
+                <th>Status</th>
+                <th>Sent At</th>
+                <th>Actual Cost</th>
               </tr>
-            </ng-container>
-            <ng-template #noData>
-              <tr class="no-data-row">
-                <td colspan="6" class="no-data-cell">
-                  <div class="no-data-message">
-                    <mat-icon class="no-data-icon">inbox</mat-icon>
-                    <p class="no-data-text">No data available for the selected filters</p>
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-          </tbody>
-        </table>
-
-        <mat-paginator
-          [length]="filteredQuotations.length"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="[5, 10, 20]"
-          (page)="onPageChange($event)"
-          showFirstLastButtons
-          class="custom-paginator">
-        </mat-paginator>
-      </div>
-    </div>
-
-    <!-- Right Section: Today Activity & Cost Estimation -->
-    <div class="sidebar-section">
-      <!-- Today Activity -->
-      <div class="activity-card">
-        <h3 class="card-title">Today Activity</h3>
-        <div class="activity-list">
-          <div class="activity-item" *ngFor="let activity of todayActivities">
-            <div class="activity-avatar" [style.background-color]="activity.avatarColor">
-              {{ activity.initials }}
+            </thead>
+            <tbody>
+              <ng-container *ngIf="paginatedQuotations.length > 0; else noData">
+                <tr *ngFor="let quotation of paginatedQuotations">
+                  <td>{{ quotation.customer }}</td>
+                  <td>{{ quotation.email }}</td>
+                  <td>{{ quotation.partName }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="quotation.status.toLowerCase()">
+                      {{ quotation.status }}
+                    </span>
+                  </td>
+                  <td>{{ quotation.sentAt }}</td>
+                  <td>{{ quotation.actualCost | number }}</td>
+                
+                </tr>
+              </ng-container>
+              <ng-template #noData>
+                <tr class="no-data-row">
+                  <td colspan="7" class="no-data-cell">
+                    <div class="no-data-message">
+                      <mat-icon class="no-data-icon">inbox</mat-icon>
+                      <p class="no-data-text">No data available for the selected filters</p>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </table>
+  
+        <div class="pagination-info" *ngIf="filteredQuotations.length > 0; else noPagination">
+          <span>
+            Showing {{ paginationStart }} - {{ paginationEnd }} of {{ filteredQuotations.length }}
+          </span>
+          <div class="pagination-controls">
+            <button type="button" (click)="previousPage()" [disabled]="pageIndex === 0" title="Previous page">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+            <button type="button" (click)="nextPage()" [disabled]="pageIndex >= totalPages - 1" title="Next page">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+        <ng-template #noPagination>
+          <div class="pagination-info">
+            <span>Showing 0 - 0 of 0</span>
+            <div class="pagination-controls">
+              <button type="button" disabled>
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <span class="page-info">0 / 0</span>
+              <button type="button" disabled>
+                <mat-icon>chevron_right</mat-icon>
+              </button>
             </div>
-            <div class="activity-content">
-              <div class="activity-text">{{ activity.description }}</div>
-              <div class="activity-time">{{ activity.date }} | {{ activity.time }}</div>
+          </div>
+        </ng-template>
+        </div>
+      </div>
+  
+
+      <div class="summary-panel">
+        <div class="summary-panel-header">
+          <div class="summary-heading">
+            <p class="eyebrow">Overall Quotation Data</p>
+          </div>
+      
+        </div>
+        <div class="summary-metric-grid">
+          <div class="summary-metric-card" *ngFor="let metric of summaryMetrics" [ngClass]="metric.accent">
+            <div class="metric-top">
+              <div>
+                <span class="metric-label">{{ metric.label }}</span>
+                <span class="metric-value">{{ metric.value }}</span>
+              </div>
+              <span class="metric-percent-pill">{{ metric.percent }}%</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-track">
+                <div class="progress-fill" [style.width]="metric.percent + '%'"></div>
+              </div>
+              <p class="metric-helper">{{ metric.helper }}</p>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Cost Estimation -->
-      <!-- <div class="cost-estimation-card">
-        <h3 class="card-title">Cost Estimation</h3>
-        <div class="currency-table">
-          <div class="currency-row" *ngFor="let currency of currencyRates">
-            <div class="currency-name">
-              {{ currency.name }}
-              <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
-            </div>
-            <div class="currency-value">{{ currency.value }}</div>
-          </div>
-        </div>
-      </div> -->
-    </div>
+  
   </div>
+
+
 
   <!-- Bottom Section: Analytics Cards -->
   <div class="analytics-section">
+
+
+    <!-- Process / Raw Material Insight -->
+    <div class="analytics-card dual-chart-card">
+      <div class="card-header">
+        <div class="card-title-wrapper">
+          <mat-icon class="title-icon">stacked_line_chart</mat-icon>
+          <h3 class="card-title">
+            {{ selectedInsightChart === 'process' ? 'Process Insights' : 'Raw Material Insights' }}
+          </h3>
+        </div>
+        <div class="chart-switcher">
+          <select id="chart-switch" [(ngModel)]="selectedInsightChart">
+            <option value="process">Process</option>
+            <option value="rawMaterial">Raw Material</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container" [ngSwitch]="selectedInsightChart">
+        <!-- Process View -->
+        <ng-container *ngSwitchCase="'process'">
+          <div class="chart-inner">
+            <ng-container *ngIf="mostUsedProcess; else noProcessData">
+              <div class="donut-chart process-chart" [style.background]="processChartStyle">
+                <div class="chart-label">{{ mostUsedProcess.processName }}</div>
+              </div>
+              <div class="process-metrics">
+                <div class="metric-item">
+                  <span class="metric-dot blue"></span>
+                  <span>Tonnage / Jaw • {{ mostUsedProcess.tonnageJaw }}</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-dot purple"></span>
+                  <span>Hours • {{ mostUsedProcess.hours }}</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-dot grey"></span>
+                  <span>Machine Centre • {{ mostUsedProcess.machineCentre }}</span>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noProcessData>
+              <div class="donut-chart process-chart">
+                <div class="chart-label">No Data</div>
+              </div>
+              <div class="process-metrics">
+                <div class="metric-item">
+                  <span>No process data available</span>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+
+        <!-- Raw Material View -->
+        <ng-container *ngSwitchCase="'rawMaterial'">
+          <div class="chart-inner">
+            <ng-container *ngIf="rawMaterials.length > 0; else noMaterialData">
+              <div class="donut-chart material-chart" [style.background]="rawMaterialChartStyle"></div>
+              <div class="material-legend">
+                <div class="legend-item" *ngFor="let material of rawMaterials">
+                  <span class="legend-dot" [style.background-color]="material.color"></span>
+                  <span>{{ material.gradeName }} ${{ material.ratePerKg | number:'1.2-2' }}</span>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noMaterialData>
+              <div class="donut-chart material-chart">
+                <div class="chart-label">No Data</div>
+              </div>
+              <div class="material-legend">
+                <div class="legend-item">
+                  <span>No raw materials data available</span>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+      </div>
+
+    </div>
+
     <!-- Recent Updates -->
-    <div class="analytics-card">
-      <h3 class="card-title">Most Revised Customer Parts</h3>
-
-
-
+    <div class="analytics-card revisions-card">
+   
 
       <div class="revision-content">
         <div class="revision-table-container" *ngIf="paginatedRevisions.length > 0">
           <table class="revision-table">
             <thead>
               <tr>
-                <th>Customer Name</th>
+                <th>Most Revised Customers</th>
                 <th>Revisions</th>
               </tr>
             </thead>
@@ -173,14 +265,19 @@
         </div>
       </div>
 
-      <div class="revisions-pagination">
-        <mat-paginator
-          [length]="allRecentUpdates.length"
-          [pageSize]="revisionsPageSize"
-          [pageSizeOptions]="[]"
-          (page)="onRevisionsPageChange($event)"
-          class="custom-paginator">
-        </mat-paginator>
+      <div class="pagination-info">
+        <span>
+          Showing {{ revisionsPaginationStart }} - {{ revisionsPaginationEnd }} of {{ allRecentUpdates.length }}
+        </span>
+        <div class="pagination-controls">
+          <button type="button" (click)="revisionsPreviousPage()" [disabled]="revisionsPageIndex === 0" title="Previous page">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <span class="page-info">{{ revisionsCurrentPage }} / {{ revisionsTotalPages }}</span>
+          <button type="button" (click)="revisionsNextPage()" [disabled]="revisionsPageIndex >= revisionsTotalPages - 1" title="Next page">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
       </div>
       
 
@@ -191,86 +288,20 @@
 
     </div>
 
-    <!-- Process -->
-    <div class="analytics-card">
-      <div class="card-header">
-        <h3 class="card-title"> Most Used Process</h3>
-        <a class="view-details" (click)="openProcessDetailsDialog(); $event.preventDefault()">
-          View All 
-          <mat-icon>arrow_forward</mat-icon>
-        </a>
-      </div>
-      <div class="chart-container">
-        <ng-container *ngIf="mostUsedProcess">
-          <div class="donut-chart process-chart" [style.background]="processChartStyle">
-            <div class="chart-label">{{ mostUsedProcess.processName }}</div>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="!mostUsedProcess">
-          <div class="donut-chart process-chart">
-            <div class="chart-label">No Data</div>
-          </div>
-        </ng-container>
-      </div>
-      <div class="process-metrics" *ngIf="mostUsedProcess">
-        <div class="metric-item">
-          <span class="metric-dot blue"></span>
-          <span>Tonnage / Jaw • {{ mostUsedProcess.tonnageJaw }}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-dot purple"></span>
-          <span>Hours • {{ mostUsedProcess.hours }}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-dot grey"></span>
-          <span>Machine Centre • {{ mostUsedProcess.machineCentre }}</span>
-        </div>
-      </div>
-      <div class="process-metrics" *ngIf="!mostUsedProcess">
-        <div class="metric-item">
-          <span>No process data available</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Most used raw material -->
-    <div class="analytics-card">
-      <h3 class="card-title">Most used raw material</h3>
-      <div class="chart-container">
-        <ng-container *ngIf="rawMaterials.length > 0">
-          <div class="donut-chart material-chart" [style.background]="rawMaterialChartStyle">
-          </div>
-        </ng-container>
-        <ng-container *ngIf="rawMaterials.length === 0">
-          <div class="donut-chart material-chart">
-            <div class="chart-label">No Data</div>
-          </div>
-        </ng-container>
-      </div>
-      <div class="material-legend" *ngIf="rawMaterials.length > 0">
-        <div class="legend-item" *ngFor="let material of rawMaterials">
-          <span class="legend-dot" [style.background-color]="material.color"></span>
-          <span>{{ material.gradeName }} ${{ material.ratePerKg | number:'1.2-2' }}</span>
-        </div>
-      </div>
-      <div class="material-legend" *ngIf="rawMaterials.length === 0">
-        <div class="legend-item">
-          <span>No raw materials data available</span>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- Sales by Countries -->
-    <div class="analytics-card">
+    <div class="analytics-card sales-card">
       <div class="card-header">
-        <h3 class="card-title">Sales by</h3>
-        <mat-form-field appearance="outline" class="sales-filter-field">
-          <mat-label>View By</mat-label>
-          <mat-select [(ngModel)]="selectedSalesType" (selectionChange)="onSalesTypeChange()">
-            <mat-option value="currencies">Currencies</mat-option>
-            <mat-option value="customers">Customers</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="card-title-wrapper">
+          <mat-icon class="title-icon">trending_up</mat-icon>
+          <h3 class="card-title">Quotation by</h3>
+        </div>
+        <div class="sales-chart-switcher">
+          <select [(ngModel)]="selectedSalesType" (change)="onSalesTypeChange()">
+            <option value="currencies">Currencies</option>
+            <option value="customers">Customers</option>
+          </select>
+        </div>
       </div>
       <div class="sales-content">
         <div class="countries-list">
@@ -284,14 +315,19 @@
         </div>
 
       </div>
-      <div class="sales-pagination">
-        <mat-paginator
-          [length]="currentSalesData.length"
-          [pageSize]="salesPageSize"
-          [pageSizeOptions]="[]"
-          (page)="onSalesPageChange($event)"
-          class="custom-paginator">
-        </mat-paginator>
+      <div class="pagination-info">
+        <span>
+          Showing {{ salesPaginationStart }} - {{ salesPaginationEnd }} of {{ currentSalesData.length }}
+        </span>
+        <div class="pagination-controls">
+          <button type="button" (click)="salesPreviousPage()" [disabled]="salesPageIndex === 0" title="Previous page">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <span class="page-info">{{ salesCurrentPage }} / {{ salesTotalPages }}</span>
+          <button type="button" (click)="salesNextPage()" [disabled]="salesPageIndex >= salesTotalPages - 1" title="Next page">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
   </div>

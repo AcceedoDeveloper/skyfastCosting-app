@@ -5,6 +5,7 @@ import {DepartmentCreationComponent } from './department-creation/department-cre
 import {HostingMailSettingsComponent} from './hosting-mail-settings/hosting-mail-settings.component';
 import { PermissionComponent} from './permission/permission.component';
 import { ShiftManagementComponent} from './shift-management/shift-management.component';
+import { EmailTemplateComponent} from './email-template/email-template.component';
 import { authGuard } from '../../services/auth.guard';
 
 export const systemRoutes: Routes = [
@@ -36,5 +37,9 @@ export const systemRoutes: Routes = [
     {
         path: 'shifts',
         component: ShiftManagementComponent
+    },
+    {
+        path: 'email-templates',
+        component: EmailTemplateComponent
     }
 ];

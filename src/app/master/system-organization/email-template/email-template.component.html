@@ -1,0 +1,141 @@
+<div class="main-wrapper">
+  <div class="sections-container">
+    <!-- Templates List Section -->
+    <div class="section">
+      <h2 class="section-title">EMAIL TEMPLATES</h2>
+      
+      <div class="card">
+        <div class="templates-list">
+          <div class="template-item" *ngFor="let template of emailTemplates">
+            <div class="template-header">
+              <div class="template-name">{{ template.templateName }}</div>
+              <div class="template-type-badge">{{ template.templateType }}</div>
+            </div>
+            <div class="template-preview">
+              <div class="preview-row">
+                <span class="preview-label">Subject:</span>
+                <span class="preview-value">{{ template.subject }}</span>
+              </div>
+              <div class="preview-row">
+                <span class="preview-label">Body:</span>
+                <span class="preview-value body-preview">{{ template.body | slice:0:100 }}{{ template.body.length > 100 ? '...' : '' }}</span>
+              </div>
+            </div>
+            <div class="template-actions">
+              <button class="btn-icon" (click)="previewTemplate(template)" title="Preview">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button class="btn-icon" (click)="editTemplate(template)" title="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="btn-icon delete" (click)="deleteTemplate(template.id!)" title="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="add-template-section" *ngIf="!isEditing">
+            <button class="btn primary add-btn" (click)="addNewTemplate()">
+              <mat-icon>add</mat-icon>
+              Add New Template
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit/Create Form Section -->
+    <div class="section">
+      <h2 class="section-title">{{ editingTemplateId ? 'EDIT TEMPLATE' : 'CREATE TEMPLATE' }}</h2>
+      
+      <div class="card">
+        <form class="template-form" 
+              [formGroup]="emailTemplateForm" 
+              (ngSubmit)="saveTemplate()"
+              *ngIf="isEditing">
+          
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Template Name</label>
+              <input class="form-input" 
+                     type="text" 
+                     formControlName="templateName" 
+                     placeholder="Enter template name" />
+              <div class="error-message" 
+                   *ngIf="emailTemplateForm.get('templateName')?.invalid && emailTemplateForm.get('templateName')?.touched">
+                Template name is required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Template Type</label>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-select formControlName="templateType">
+                  <mat-option *ngFor="let type of templateTypes" [value]="type">
+                    {{ type }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="error-message" 
+                   *ngIf="emailTemplateForm.get('templateType')?.invalid && emailTemplateForm.get('templateType')?.touched">
+                Template type is required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Subject</label>
+              <input class="form-input" 
+                     type="text" 
+                     formControlName="subject" 
+                     placeholder="Enter email subject" />
+              <div class="error-message" 
+                   *ngIf="emailTemplateForm.get('subject')?.invalid && emailTemplateForm.get('subject')?.touched">
+                Subject is required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Email Body</label>
+              <textarea class="form-textarea" 
+                        formControlName="body" 
+                        rows="12"
+                        [attr.placeholder]="bodyPlaceholder"></textarea>
+              <div class="error-message" 
+                   *ngIf="emailTemplateForm.get('body')?.invalid && emailTemplateForm.get('body')?.touched">
+                Email body is required
+              </div>
+              <div class="hint-text">
+                <small [textContent]="bodyHint"></small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn primary" 
+                    type="submit" 
+                    [disabled]="emailTemplateForm.invalid">
+              {{ editingTemplateId ? 'Update' : 'Create' }} Template
+            </button>
+            <button class="btn" 
+                    type="button" 
+                    (click)="cancelEdit()">
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <div class="empty-state" *ngIf="!isEditing">
+          <mat-icon class="empty-icon">email</mat-icon>
+          <p class="empty-text">Select a template to edit or create a new one</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
