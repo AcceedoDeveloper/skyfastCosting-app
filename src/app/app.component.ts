@@ -17,7 +17,7 @@ interface SidebarItem {
   submenu?: SidebarItem[];
 }
 
-interface UserChildren { user: boolean; role: boolean; shift: boolean; customer: boolean; }
+interface UserChildren { user: boolean; role: boolean; shift: boolean; customer: boolean; version: boolean; }
 interface CompanyChildren { companyPreferences: boolean; permission: boolean; }
 interface MaterialChildren { rawMaterial: boolean; process: boolean; }
 
@@ -276,7 +276,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private getEmptyPermissions(): Permissions {
     return {
       dashboard: false,
-      user: { parent: false, children: { user: false, role: false, shift: false, customer: false } },
+      user: { parent: false, children: { user: false, role: false, shift: false, customer: false, version: false } },
       company: { parent: false, children: { companyPreferences: false, permission: false } },
       material: { parent: false, children: { rawMaterial: false, process: false } },
       quotation: false,
@@ -348,7 +348,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private setFullAdminPermissions() {
     this.permissions = {
       dashboard: true,
-      user: { parent: true, children: { user: true, role: true, shift: true, customer: true } },
+      user: { parent: true, children: { user: true, role: true, shift: true, customer: true, version: true } },
       company: { parent: true, children: { companyPreferences: true, permission: true } },
       material: { parent: true, children: { rawMaterial: true, process: true } },
       quotation: true,
@@ -394,7 +394,8 @@ export class AppComponent implements OnInit, OnDestroy {
           screens.user.children.user ? { label: 'User', route: '/entity', icon: 'person' } : null,
           screens.user.children.role ? { label: 'Role', route: '/system/roles', icon: 'security' } : null,
           screens.user.children.shift ? { label: 'Shift', route: '/system/shifts', icon: 'people' } : null,
-          screens.user.children.customer ? { label: 'Customer', route: '/entity/customers', icon: 'business' } : null
+          screens.user.children.customer ? { label: 'Customer', route: '/entity/customers', icon: 'business' } : null,
+          screens.user.children.version ? { label: 'Version', route: '/system/user-management-update', icon: 'update' } : null
         ].filter(Boolean) as SidebarItem[]
       });
     }

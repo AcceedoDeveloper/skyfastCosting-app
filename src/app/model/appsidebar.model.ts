@@ -5,7 +5,7 @@ export interface SidebarItem {
   submenu?: SidebarItem[];
 }
 
-export interface UserChildren { user: boolean; role: boolean; shift: boolean; customer: boolean; }
+export interface UserChildren { user: boolean; role: boolean; shift: boolean; customer: boolean; version: boolean; }
 export interface CompanyChildren { companyPreferences: boolean; permission: boolean; }
 export interface MaterialChildren { rawMaterial: boolean; process: boolean; }
 

@@ -27,6 +27,7 @@ export interface UserChildren {
   role: boolean;
   shift: boolean;
   customer: boolean;
+  version: boolean;
 }
 
 export interface CompanyChildren {
