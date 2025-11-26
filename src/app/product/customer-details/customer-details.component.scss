@@ -15,7 +15,9 @@
   flex-wrap: nowrap;
   align-items: flex-start;
   flex: 1;
-  margin: 20px 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
 .button-container {
@@ -102,6 +104,38 @@
   background-clip: text;
 }
 
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select-label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(63, 91, 101, 0.7);
+  pointer-events: none;
+  z-index: 2;
+  transition: all 0.2s ease;
+  background: #ffffff;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.select-label.active,
+.select-field.active .select-label,
+.native-select:focus ~ .select-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: #5073fb;
+  font-weight: 700;
+  background: #ffffff;
+}
+
 .native-select {
   appearance: none;
   border: 1.5px solid rgba(14, 22, 53, 0.2);
@@ -115,6 +149,16 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(14, 22, 53, 0.05);
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.select-label.active ~ .native-select,
+.select-field.active .native-select,
+.native-select:focus {
+  padding-top: 1.1rem;
+  padding-bottom: 0.4rem;
 }
 
 .native-select:hover {
@@ -169,6 +213,7 @@
   margin: 0;
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(14, 22, 53, 0.05);
+  height: 48px;
 }
 
 .native-input:focus-visible {
@@ -220,7 +265,6 @@
 .native-input[type="week"]:valid,
 .native-input[type="month"]:valid,
 .native-input[type="number"].has-value {
-  margin-top: 20px;
   padding-top: 1rem;
   padding-bottom: 0.25rem;
 }

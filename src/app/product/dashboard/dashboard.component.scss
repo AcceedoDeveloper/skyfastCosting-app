@@ -476,11 +476,17 @@
 }
 
 .table-container {
+  flex: 1;
   overflow-x: hidden;
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
   min-height: 200px; // tighter table footprint
+
+  .pagination-info {
+    margin-top: auto;
+    border-radius: 0 0 16px 16px;
+  }
 }
 
 .pagination-info {
@@ -836,7 +842,6 @@
 .dual-chart-card {
   .card-header {
     align-items: flex-start;
-    background: linear-gradient(135deg, #3F5B65 0%, #1f2a55 100%);
     padding: 14px 18px;
     border-radius: 10px 10px 0px 0px;
     color: #f8fafc;
@@ -916,6 +921,8 @@
     th {
       color: #f8fafc;
       border-bottom-color: rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, #3F5B65 0%, #2f4851 100%);
+
     }
   }
 }
@@ -935,8 +942,11 @@
     padding: 6px 28px 6px 10px;
     font-size: 13px;
     font-weight: 600;
-    color: #f8fafc;
-    background: rgba(15, 23, 52, 0.7) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23f8fafc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+    color: #000000;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233f5b65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
     background-size: 10px 6px;
     cursor: pointer;
     appearance: none;
@@ -1033,7 +1043,7 @@
 }
 
 .revision-content {
-  flex: 1; // Take up available space to push pagination to bottom
+  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1063,11 +1073,11 @@
 }
 
 .revision-table thead {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #2f4851 100%);
   
   th {
     padding: 20px 14px;
-    color: #3F5B65;
+    color: #f8fafc;
     font-weight: 600;
     font-size: 11px;
     text-transform: uppercase;
@@ -1082,6 +1092,24 @@
     &:last-child {
       text-align: center;
       padding-right: 16px;
+    }
+  }
+}
+
+.sales-card {
+  .card-header {
+    background: linear-gradient(135deg, #3F5B65 0%, #2f4851 100%);
+
+    .card-title-wrapper {
+      .title-icon,
+      .card-title {
+        color: #f8fafc;
+      }
+    }
+
+    select {
+      color: #1f2937;
+      background: #f8fafc url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%233F5B65' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
     }
   }
 }
@@ -1287,10 +1315,10 @@
 
 // Sales by Countries
 .sales-content {
+  flex: 1;
   display: flex;
   gap: 12px;
   margin-bottom: 12px;
-  flex: 1; // Take up available space to push pagination to bottom
 }
 
 .countries-list {

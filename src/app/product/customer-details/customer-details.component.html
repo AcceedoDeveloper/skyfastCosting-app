@@ -10,46 +10,52 @@
 
   <div class="customer-container">
 
-<div class="subheader">
 
-  <h2>Customer Details</h2>
-  
-</div>
 
 <div class="filter-cards">
 
 
   <div class="filter-card">
     <div class="filter-field select-field" [class.active]="searchFilterType !== 'none'">
-      <label class="filter-label">Filter By:</label>
-      <select class="native-select" [(ngModel)]="searchFilterType" (change)="onSearchFilterTypeChange()">
-        <option value="none">None</option>
-        <option value="customerName">Customer Name</option>
-        <option value="drawingNo">Drawing No</option>
-        <option value="partNo">Part No</option>
-      </select>
+      <div class="select-wrapper">
+        <label class="select-label" [class.active]="searchFilterType !== 'none'">Filter By:</label>
+        <select class="native-select" [(ngModel)]="searchFilterType" (change)="onSearchFilterTypeChange()">
+          <option value="none" disabled hidden>Filter By:</option>
+          <option value="all">All</option>
+          <option value="customerName">Customer Name</option>
+          <option value="drawingNo">Drawing No</option>
+          <option value="partNo">Part No</option>
+        </select>
+      </div>
     </div>
 
     <div class="filter-field select-field" *ngIf="searchFilterType !== 'none'">
-      <label class="filter-label">{{ getSearchFilterLabel() }}:</label>
-      <select class="native-select" [(ngModel)]="selectedSearchValue" (change)="onSearchValueChange()">
-        <option *ngFor="let option of searchFilterOptions" [value]="option">
-          {{ option }}
-        </option>
-      </select>
+      <div class="select-wrapper">
+        <label class="select-label" [class.active]="selectedSearchValue">{{ getSearchFilterLabel() }}:</label>
+        <select class="native-select" [(ngModel)]="selectedSearchValue" (change)="onSearchValueChange()">
+          <option value="" disabled hidden>{{ getSearchFilterLabel() }}:</option>
+          <option value="all">All</option>
+          <option *ngFor="let option of searchFilterOptions" [value]="option">
+            {{ option }}
+          </option>
+        </select>
+      </div>
     </div>
   </div>
 
   <div class="filter-card">
     <div class="filter-field select-field" [class.active]="dateFilterType !== 'none'">
-      <label class="filter-label">Date Filter By:</label>
-      <select class="native-select" [(ngModel)]="dateFilterType" (change)="onDateFilterTypeChange()">
-        <option value="none">None</option>
-        <option value="date">Date</option>
-        <option value="week">Week</option>
-        <option value="month">Month</option>
-        <option value="year">Year</option>
-      </select>
+      <div class="select-wrapper">
+        <label class="select-label" [class.active]="dateFilterType !== 'none'">Date Filter By:</label>
+        <select class="native-select" [(ngModel)]="dateFilterType" (change)="onDateFilterTypeChange()">
+          <option value="none" disabled hidden>Date Filter By:</option>
+          <option value="all">All</option>
+          <option value="date">Date</option>
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+          <option value="year">Year</option>
+        </select>
+      </div>
     </div>
 
     <div class="filter-fields" *ngIf="dateFilterType !== 'none'">

@@ -60,10 +60,10 @@ export class CustomerDetailsComponent implements OnInit {
   filteredCustomers$!: Observable<CustomerDetails[]>;
   totalFiltered$!: Observable<number>;
   searchTerm: string = '';
-  searchFilterType: 'none' | 'customerName' | 'drawingNo' | 'partNo' = 'none';
+  searchFilterType: 'none' | 'all' | 'customerName' | 'drawingNo' | 'partNo' = 'none';
   selectedSearchValue: string = '';
   searchFilterOptions: string[] = [];
-  dateFilterType: 'none' | 'date' | 'week' | 'month' | 'year' = 'none';
+  dateFilterType: 'none' | 'all' | 'date' | 'week' | 'month' | 'year' = 'none';
   filters: { singleDate: string; week: string; month: string; year: string } = {
     singleDate: '',
     week: '',
@@ -228,18 +228,27 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   onSearchFilterTypeChange(): void {
-    this.selectedSearchValue = '';
+    if (this.searchFilterType === 'all') {
+      this.searchFilterType = 'none';
+      this.selectedSearchValue = '';
+    } else {
+      this.selectedSearchValue = '';
+    }
     this.updateSearchFilterOptions();
     this.emitSearchFilter();
   }
 
   onSearchValueChange(): void {
+    if (this.selectedSearchValue === 'all') {
+      this.selectedSearchValue = '';
+    }
     this.emitSearchFilter();
   }
 
   onDateFilterTypeChange(): void {
     this.filters = { singleDate: '', week: '', month: '', year: '' };
-    if (this.dateFilterType === 'none') {
+    if (this.dateFilterType === 'none' || this.dateFilterType === 'all') {
+      this.dateFilterType = 'none';
       this.dateFilter$.next({ type: 'none', value: '' });
     }
   }
