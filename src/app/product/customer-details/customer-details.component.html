@@ -102,9 +102,8 @@
     </div>
   </div>
 
-  <div>
+  <div class="button-container">
     <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Add Customer</button>
-
   </div>
 
 </div>
@@ -118,16 +117,17 @@
           <tr>
             <th>
               <div class="header-cell-content">
-                <mat-icon class="header-icon">person</mat-icon>
-                <span>Customer</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
                 <mat-icon class="header-icon">confirmation_number</mat-icon>
                 <span>ID</span>
               </div>
             </th>
+            <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">person</mat-icon>
+                <span>Customer</span>
+              </div>
+            </th>
+          
             <th>
               <div class="header-cell-content">
                 <mat-icon class="header-icon">category</mat-icon>
@@ -183,11 +183,12 @@
           <ng-container *ngFor="let c of filteredCustomers$ | async; let i = index">
             <tr class="table-row">
               <td>
-                <span class="customer-name">{{ c.customerName.customerName }}</span>
-              </td>
-              <td>
                 <span class="customer-id-pill">{{ getDisplayId(c) }}</span>
               </td>
+              <td>
+                <span class="customer-name">{{ c.customerName.customerName }}</span>
+              </td>
+           
               <td>
                 <span class="part-name">{{ c.partName }}</span>
               </td>

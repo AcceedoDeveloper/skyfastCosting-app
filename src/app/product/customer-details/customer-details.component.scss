@@ -18,6 +18,13 @@
   margin: 20px 0;
 }
 
+.button-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
 .filter-card {
   flex: 0 1 auto;
   width: fit-content;
