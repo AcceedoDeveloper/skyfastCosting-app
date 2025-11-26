@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RawMaterial, Process } from '../model/product.model';
-import { CustomerDetails } from '../model/customer-details.model';
+import { CustomerDetails, PaginatedCustomerResponse, CustomerFilters } from '../model/customer-details.model';
 import { ConfigService} from '../shared/config.service';
 
 
@@ -55,6 +55,38 @@ export class ProductService {
   // 🔹 Customer Details
   getCustomers(): Observable<CustomerDetails[]> {
     return this.http.get<CustomerDetails[]>(this.config.getCostingUrl('getCustomerDetails'));
+  }
+
+  // 🔹 Get Customers with Server-Side Pagination and Filters
+  getCustomersPaginated(filters: CustomerFilters): Observable<PaginatedCustomerResponse> {
+    let params = new HttpParams();
+    
+    if (filters.StartDate) {
+      params = params.set('StartDate', filters.StartDate);
+    }
+    if (filters.EndDate) {
+      params = params.set('EndDate', filters.EndDate);
+    }
+    if (filters.customerName) {
+      params = params.set('customerName', filters.customerName);
+    }
+    if (filters.partName) {
+      params = params.set('partName', filters.partName);
+    }
+    if (filters.drawingNo) {
+      params = params.set('drawingNo', filters.drawingNo);
+    }
+    if (filters.page) {
+      params = params.set('page', filters.page.toString());
+    }
+    if (filters.limit) {
+      params = params.set('limit', filters.limit.toString());
+    }
+
+    return this.http.get<PaginatedCustomerResponse>(
+      this.config.getCostingUrl('getCustomerDetails'),
+      { params }
+    );
   }
 
 createCustomerDetails(customerDetails: FormData): Observable<CustomerDetails> {

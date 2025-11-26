@@ -104,3 +104,32 @@ export interface Quotation {
   revisionNumber?: number;
   revisionName?: string;
 }
+
+export interface PaginatedCustomerResponse {
+  metadata: {
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+  filtersApplied: {
+    StartDate: string | null;
+    EndDate: string | null;
+    customerName: string | null;
+    partName: string | null;
+    drawingNo: string | null;
+  };
+  data: CustomerDetails[];
+}
+
+export interface CustomerFilters {
+  StartDate?: string;
+  EndDate?: string;
+  customerName?: string;
+  partName?: string;
+  drawingNo?: string;
+  page?: number;
+  limit?: number;
+}

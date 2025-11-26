@@ -2,42 +2,52 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, map, take, takeUntil, Subject } from 'rxjs';
+import { Observable, map, take, takeUntil, Subject, BehaviorSubject, switchMap } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { selectAllCustomers } from '../store/product.selectors';
-import { CustomerDetails } from '../../model/customer-details.model';
+import { CustomerDetails, CustomerFilters, PaginatedCustomerResponse } from '../../model/customer-details.model';
 import * as customerActions from '../store/product.actions';
+import { ProductService } from '../../services/product.service';
 import html2pdf from 'html2pdf.js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-report',
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatPaginatorModule],
   templateUrl: './report.component.html',
   styleUrl: './report.component.scss'
 })
 export class ReportComponent implements OnInit, OnDestroy {
-  customers$!: Observable<CustomerDetails[]>;
+  filteredCustomers$!: Observable<CustomerDetails[]>;
+  paginatedResponse$!: Observable<PaginatedCustomerResponse>;
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 0;
+  isLoading = false;
+  
   customerNames: string[] = [];
   partNames: string[] = [];
+  private customersCache: CustomerDetails[] = [];
   
   selectedFilterType: string = '';
   selectedMachine: boolean = false;
-  selectedDateFilterType: string = 'custom';
+  selectedDateFilterType: string = 'month'; // Set default to month
   selectedDatePreset: string = '';
   
   filters = {
     customerName: '',
     partName: '',
-    singleDate: new Date().toISOString().split('T')[0], // Set to today's date by default
+    singleDate: '',
     week: '',
-    month: '',
+    month: '', // Will be set in ngOnInit
     year: ''
   };
   
   filteredData: CustomerDetails[] = [];
   private destroy$ = new Subject<void>();
+  private filters$ = new BehaviorSubject<CustomerFilters>({ page: 1, limit: 10 });
   
   // Popup properties
   showProcessesPopup: boolean = false;
@@ -61,7 +71,10 @@ export class ReportComponent implements OnInit, OnDestroy {
 
   @ViewChild('pdfContent') pdfContent!: ElementRef;
 
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private productService: ProductService
+  ) {}
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -69,48 +82,53 @@ export class ReportComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Load customers from store
-    this.store.dispatch(customerActions.loadCustomers());
-    
-    // Subscribe to customers data
-    this.customers$ = this.store.select(selectAllCustomers).pipe(
-      map(customers =>
-        customers.map(c => ({
-          ...c,
-          revisions: c.revisions?.map(r => ({
-            ...r,
-            rawMaterial: r.rawMaterial ?? [],
-            processes: r.processes ?? []
-          })) ?? []
-        }))
-      )
+    // Server-side pagination with filters
+    this.paginatedResponse$ = this.filters$.pipe(
+      switchMap(filters => {
+        this.isLoading = true;
+        return this.productService.getCustomersPaginated(filters).pipe(
+          map(response => {
+            this.isLoading = false;
+            this.totalItems = response.metadata.totalItems;
+            this.currentPage = response.metadata.currentPage - 1; // Convert to 0-based index
+            this.pageSize = response.metadata.pageSize;
+            return response;
+          })
+        );
+      })
     );
 
-    // Extract unique customer names and part names
-    this.customers$.pipe(
+    this.filteredCustomers$ = this.paginatedResponse$.pipe(
+      map(response => response.data || [])
+    );
+
+    // Subscribe to filtered customers for display
+    this.filteredCustomers$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(customers => {
-      // Extract unique customer names
-      const uniqueCustomerNames = new Set<string>();
-      customers.forEach(customer => {
-        if (customer.customerName?.customerName) {
-          uniqueCustomerNames.add(customer.customerName.customerName);
-        }
-      });
-      this.customerNames = Array.from(uniqueCustomerNames).sort();
-
-      // Extract unique part names
-      const uniquePartNames = new Set<string>();
-      customers.forEach(customer => {
-        if (customer.partName) {
-          uniquePartNames.add(customer.partName);
-        }
-      });
-      this.partNames = Array.from(uniquePartNames).sort();
-
-      // Initialize filtered data with all customers
       this.filteredData = customers;
     });
+
+    // Load all customers for filter options (without pagination)
+    this.productService.getCustomersPaginated({ page: 1, limit: 1000 }).subscribe({
+      next: (response) => {
+        const customers = response?.data || [];
+        if (Array.isArray(customers) && customers.length > 0) {
+          this.customersCache = customers;
+          this.populateFilterOptions();
+        }
+      },
+      error: (err) => {
+        console.error('Error loading customers for filters:', err);
+        this.customersCache = [];
+      }
+    });
+
+    // Set default month filter to current month
+    this.filters.month = this.getCurrentMonth();
+    
+    // Load initial data with default month filter
+    this.loadCustomers();
   }
 
   onDateFilterTypeChange(): void {
@@ -141,6 +159,9 @@ export class ReportComponent implements OnInit, OnDestroy {
         this.filters.year = String(today.getFullYear());
         break;
     }
+    
+    // Apply filters when date filter type changes
+    this.applyFilters();
   }
 
   onDatePresetChange(): void {
@@ -164,6 +185,9 @@ export class ReportComponent implements OnInit, OnDestroy {
         this.filters.year = String(today.getFullYear());
         break;
     }
+    
+    // Apply filters when preset changes
+    this.applyFilters();
   }
 
   getCurrentWeekString(date: Date): string {
@@ -201,79 +225,105 @@ export class ReportComponent implements OnInit, OnDestroy {
   }
 
   applyFilters(): void {
-    this.customers$.pipe(take(1)).subscribe(customers => {
-      let filtered = [...customers];
+    this.currentPage = 0; // Reset to first page when filters change
+    this.loadCustomers();
+  }
 
-      // Filter by customer name
-      if (this.filters.customerName) {
-        filtered = filtered.filter(customer =>
-          customer.customerName?.customerName === this.filters.customerName
-        );
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadCustomers();
+  }
+
+  private loadCustomers(): void {
+    const filters: CustomerFilters = {
+      page: this.currentPage + 1, // Convert to 1-based index
+      limit: this.pageSize
+    };
+
+    // Add date filters
+    if (this.selectedDateFilterType === 'custom' && this.filters.singleDate) {
+      filters.StartDate = this.filters.singleDate;
+      filters.EndDate = this.filters.singleDate;
+    } else if (this.selectedDateFilterType === 'week' && this.filters.week) {
+      const [year, week] = this.filters.week.split('-W');
+      const startDate = this.getStartOfISOWeek(Number(year), Number(week));
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 7);
+      filters.StartDate = startDate.toISOString().split('T')[0];
+      filters.EndDate = endDate.toISOString().split('T')[0];
+    } else if (this.selectedDateFilterType === 'month' && this.filters.month) {
+      const [year, month] = this.filters.month.split('-');
+      const startDate = new Date(Number(year), Number(month) - 1, 1);
+      const endDate = new Date(Number(year), Number(month), 1);
+      filters.StartDate = startDate.toISOString().split('T')[0];
+      filters.EndDate = endDate.toISOString().split('T')[0];
+    } else if (this.selectedDateFilterType === 'year' && this.filters.year) {
+      const year = Number(this.filters.year);
+      filters.StartDate = `${year}-01-01`;
+      filters.EndDate = `${year}-12-31`;
+    }
+
+    // Add search filters
+    if (this.filters.customerName) {
+      filters.customerName = this.filters.customerName;
+    }
+    if (this.filters.partName) {
+      filters.partName = this.filters.partName;
+    }
+
+    this.filters$.next(filters);
+  }
+
+  private populateFilterOptions(): void {
+    if (!this.customersCache || !Array.isArray(this.customersCache) || this.customersCache.length === 0) {
+      return;
+    }
+
+    // Extract unique customer names
+    const uniqueCustomerNames = new Set<string>();
+    this.customersCache.forEach(customer => {
+      if (customer.customerName?.customerName) {
+        uniqueCustomerNames.add(customer.customerName.customerName);
       }
-
-      // Filter by part name
-      if (this.filters.partName) {
-        filtered = filtered.filter(customer =>
-          customer.partName === this.filters.partName
-        );
-      }
-
-      // Filter by date
-      if (this.selectedDateFilterType === 'custom' && this.filters.singleDate) {
-        filtered = filtered.filter(customer => {
-          if (!customer.createdAt) return false;
-          const customerDate = new Date(customer.createdAt).toISOString().split('T')[0];
-          return customerDate === this.filters.singleDate;
-        });
-      }
-
-      if (this.selectedDateFilterType === 'week' && this.filters.week) {
-        filtered = filtered.filter(customer => {
-          if (!customer.createdAt) return false;
-          const customerDate = new Date(customer.createdAt);
-          const weekString = this.getCurrentWeekString(customerDate);
-          return weekString === this.filters.week;
-        });
-      }
-
-      if (this.selectedDateFilterType === 'month' && this.filters.month) {
-        filtered = filtered.filter(customer => {
-          if (!customer.createdAt) return false;
-          const customerDate = new Date(customer.createdAt);
-          const monthString = `${customerDate.getFullYear()}-${String(customerDate.getMonth() + 1).padStart(2, '0')}`;
-          return monthString === this.filters.month;
-        });
-      }
-
-      if (this.selectedDateFilterType === 'year' && this.filters.year) {
-        filtered = filtered.filter(customer => {
-          if (!customer.createdAt) return false;
-          const customerYear = new Date(customer.createdAt).getFullYear();
-          return customerYear === parseInt(this.filters.year);
-        });
-      }
-
-      this.filteredData = filtered;
     });
+    this.customerNames = Array.from(uniqueCustomerNames).sort();
+
+    // Extract unique part names
+    const uniquePartNames = new Set<string>();
+    this.customersCache.forEach(customer => {
+      if (customer.partName) {
+        uniquePartNames.add(customer.partName);
+      }
+    });
+    this.partNames = Array.from(uniquePartNames).sort();
+  }
+
+  private getStartOfISOWeek(year: number, week: number): Date {
+    const simple = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+    const dayOfWeek = simple.getUTCDay();
+    const isoWeekStart = new Date(simple);
+    const diff = dayOfWeek <= 4 ? dayOfWeek - 1 : dayOfWeek - 8;
+    isoWeekStart.setUTCDate(simple.getUTCDate() - diff);
+    isoWeekStart.setUTCHours(0, 0, 0, 0);
+    return isoWeekStart;
   }
 
   clearFilters(): void {
     this.selectedFilterType = '';
-    this.selectedDateFilterType = '';
+    this.selectedDateFilterType = 'month'; // Reset to default month filter
     this.selectedDatePreset = '';
     this.filters = {
       customerName: '',
       partName: '',
-      singleDate: '', // Clear custom date as well
+      singleDate: '',
       week: '',
-      month: '',
+      month: this.getCurrentMonth(), // Reset to current month
       year: ''
     };
     
-    // Reset to show all customers
-    this.customers$.pipe(take(1)).subscribe(customers => {
-      this.filteredData = customers;
-    });
+    this.currentPage = 0;
+    this.loadCustomers();
   }
 
   // Helper methods for displaying data
@@ -624,5 +674,11 @@ export class ReportComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getCurrentMonth(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  }
 
 }

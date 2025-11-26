@@ -6,6 +6,7 @@ import {HostingMailSettingsComponent} from './hosting-mail-settings/hosting-mail
 import { PermissionComponent} from './permission/permission.component';
 import { ShiftManagementComponent} from './shift-management/shift-management.component';
 import { EmailTemplateComponent} from './email-template/email-template.component';
+import { UserManagementUpdateComponent } from './user-management-update/user-management-update.component';
 import { authGuard } from '../../services/auth.guard';
 
 export const systemRoutes: Routes = [
@@ -41,5 +42,9 @@ export const systemRoutes: Routes = [
     {
         path: 'email-templates',
         component: EmailTemplateComponent
+    },
+    {
+        path: 'user-management-update',
+        component: UserManagementUpdateComponent
     }
 ];

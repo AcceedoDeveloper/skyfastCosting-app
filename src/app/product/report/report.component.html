@@ -23,7 +23,8 @@
               <label for="customerFilter">Customer Name:</label>
               <select 
                 id="customerFilter" 
-                [(ngModel)]="filters.customerName">
+                [(ngModel)]="filters.customerName"
+                (change)="applyFilters()">
                 <option value="">All Customers</option>
                 <option *ngFor="let customer of customerNames" [value]="customer">
                   {{ customer }}
@@ -35,7 +36,8 @@
               <label for="partFilter">Part Name:</label>
               <select 
                 id="partFilter" 
-                [(ngModel)]="filters.partName">
+                [(ngModel)]="filters.partName"
+                (change)="applyFilters()">
                 <option value="">All Parts</option>
                 <option *ngFor="let part of partNames" [value]="part">
                   {{ part }}
@@ -88,7 +90,8 @@
               <input 
                 type="date" 
                 id="singleDate" 
-                [(ngModel)]="filters.singleDate">
+                [(ngModel)]="filters.singleDate"
+                (change)="applyFilters()">
             </div>
       
             <div class="filter-group" *ngIf="selectedDateFilterType === 'week'">
@@ -96,7 +99,8 @@
               <input 
                 type="week" 
                 id="weekFilter" 
-                [(ngModel)]="filters.week">
+                [(ngModel)]="filters.week"
+                (change)="applyFilters()">
             </div>
       
             <div class="filter-group" *ngIf="selectedDateFilterType === 'month'">
@@ -104,7 +108,8 @@
               <input 
                 type="month" 
                 id="monthFilter" 
-                [(ngModel)]="filters.month">
+                [(ngModel)]="filters.month"
+                (change)="applyFilters()">
             </div>
       
             <div class="filter-group" *ngIf="selectedDateFilterType === 'year'">
@@ -115,7 +120,8 @@
                 [(ngModel)]="filters.year"
                 placeholder="YYYY"
                 min="2000"
-                max="2100">
+                max="2100"
+                (change)="applyFilters()">
             </div>
       
           
@@ -139,8 +145,11 @@
 
 
       <!-- Report Table -->
-      <div class="table-container" *ngIf="filteredData.length > 0">
-        <table class="table table-bordered">
+      <div class="table-container" *ngIf="filteredData.length > 0 || isLoading">
+        <div *ngIf="isLoading" style="text-align: center; padding: 40px;">
+          <p>Loading report data...</p>
+        </div>
+        <table class="table table-bordered" *ngIf="!isLoading">
           <thead>
             <tr>
               <th>
@@ -321,10 +330,21 @@
             </ng-container>
           </tbody>
         </table>
+        
+        <!-- Pagination -->
+        <mat-paginator
+          *ngIf="!isLoading && filteredData.length > 0"
+          [length]="totalItems"
+          [pageSize]="pageSize"
+          [pageIndex]="currentPage"
+          [pageSizeOptions]="[10, 20, 50]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
       </div>
 
       <!-- No Data Message -->
-      <div class="no-data-container" *ngIf="filteredData.length === 0">
+      <div class="no-data-container" *ngIf="!isLoading && filteredData.length === 0">
         <mat-icon class="no-data-icon">info</mat-icon>
         <p class="no-data-text">No customer data found. Please adjust your filters or apply filters to see results.</p>
       </div>

@@ -11,7 +11,7 @@
   background: white;
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
-  padding: 24px 28px;
+  padding: 16px 20px;
   transition: box-shadow 0.3s ease;
 }
 
@@ -21,11 +21,11 @@
 
 .filters-title {
   font-family: 'Inter', 'Poppins', sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: #3F5B65;
-  margin: 0 0 24px 0;
-  padding-bottom: 12px;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
   border-bottom: 2px solid #e8e8e8;
   letter-spacing: 0.3px;
 }
@@ -34,8 +34,8 @@
 .filters-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 16px;
   align-items: flex-end;
 }
 
@@ -49,10 +49,10 @@
 
 .filter-group label {
   font-family: 'Inter', 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   letter-spacing: 0.2px;
 }
 
@@ -67,10 +67,10 @@
 .filter-group input[type="month"],
 .filter-group input[type="number"] {
   width: 100%;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border: 1.5px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-family: 'Inter', 'Poppins', sans-serif;
   color: #333;
   background-color: #ffffff;
@@ -119,8 +119,8 @@
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  margin-top: 24px;
-  padding-top: 20px;
+  margin-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid #e8e8e8;
 }
 
@@ -131,11 +131,11 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 10px 20px;
   border: none;
   border-radius: 8px;
   font-family: 'Inter', 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;

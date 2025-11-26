@@ -1,0 +1,109 @@
+<div class="user-management-update">
+  <aside class="side-panel">
+    <div class="panel-heading">
+      <div class="icon-chip">
+        <mat-icon>settings</mat-icon>
+      </div>
+      <div>
+        <h2>Update</h2>
+      </div>
+    </div>
+
+    <nav class="panel-nav" aria-label="Quick navigation">
+      <div
+        class="nav-chip"
+        *ngFor="let link of quickLinks"
+        [attr.data-anchor]="link.anchor"
+        role="button"
+        tabindex="0"
+        (click)="scrollTo(link.anchor)"
+        (keydown)="handleNavKey($event, link.anchor)">
+        <span>{{ link.label }}</span>
+        <mat-icon>chevron_right</mat-icon>
+      </div>
+    </nav>
+  </aside>
+
+  <section class="content">
+    <header class="content-header">
+      <div>
+        <p class miniature class="eyebrow">Release comparison</p>
+        <h1>Older vs New User Version</h1>
+      </div>
+        <button mat-raised-button color="primary">
+          <mat-icon>tune</mat-icon>
+          Configure
+        </button>
+    </header>
+
+    <div class="versions-scroll">
+      <div class="versions-grid">
+        <article
+          class="version-card"
+          *ngFor="let comparison of versionComparisons"
+          [attr.id]="comparison.id">
+          <h3>{{ comparison.title }}</h3>
+
+
+          <div class="version-comparison">
+            <section class="version older">
+              <div class="version-label">
+                <mat-icon>history</mat-icon>
+                Older Version
+              </div>
+              <div
+                class="version-image"
+                [ngClass]="{ 'has-image': comparison.old.image, clickable: comparison.old.image }"
+                [style.background-image]="getBackgroundImage(comparison.old.image)"
+                [attr.tabindex]="comparison.old.image ? 0 : -1"
+                (click)="openLightbox(comparison.old.image, comparison.old.caption)"
+                (keydown)="handleImageKey($event, comparison.old.image, comparison.old.caption)">
+                <ng-container *ngIf="!comparison.old.image">
+                  <mat-icon>image</mat-icon>
+                  <span>No image</span>
+                </ng-container>
+              </div>
+             
+            </section>
+
+            <section class="version newer">
+              <div class="version-label">
+                <mat-icon>bolt</mat-icon>
+                New Version
+              </div>
+              <div
+                class="version-image"
+                [ngClass]="{ 'has-image': comparison.newer.image, clickable: comparison.newer.image }"
+                [style.background-image]="getBackgroundImage(comparison.newer.image)"
+                [attr.tabindex]="comparison.newer.image ? 0 : -1"
+                (click)="openLightbox(comparison.newer.image, comparison.newer.caption)"
+                (keydown)="handleImageKey($event, comparison.newer.image, comparison.newer.caption)">
+                <ng-container *ngIf="!comparison.newer.image">
+                  <mat-icon>image</mat-icon>
+                  <span>Drop image</span>
+                </ng-container>
+              </div>
+          
+            </section>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div
+    class="image-lightbox"
+    *ngIf="lightboxImage"
+    role="dialog"
+    aria-modal="true"
+    (click)="closeLightbox()">
+    <div class="lightbox-content" (click)="$event.stopPropagation()">
+      <button mat-icon-button class="close-btn" (click)="closeLightbox()" aria-label="Close preview">
+        <mat-icon>close</mat-icon>
+      </button>
+      <img [src]="lightboxImage.url" [alt]="lightboxImage.title" />
+      <p>{{ lightboxImage.title }}</p>
+    </div>
+  </div>
+</div>
+

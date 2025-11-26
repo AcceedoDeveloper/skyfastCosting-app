@@ -24,12 +24,12 @@
           <option value="all">All</option>
           <option value="customerName">Customer Name</option>
           <option value="drawingNo">Drawing No</option>
-          <option value="partNo">Part No</option>
+          <option value="partName">Part Name</option>
         </select>
       </div>
     </div>
 
-    <div class="filter-field select-field" *ngIf="searchFilterType !== 'none'">
+    <div class="filter-field select-field" [hidden]="searchFilterType === 'none'">
       <div class="select-wrapper">
         <label class="select-label" [class.active]="selectedSearchValue">{{ getSearchFilterLabel() }}:</label>
         <select class="native-select" [(ngModel)]="selectedSearchValue" (change)="onSearchValueChange()">
@@ -116,8 +116,9 @@
 
 
 
-  <ng-container *ngIf="customers$ | async as customers; else loading">
+  <ng-container *ngIf="filteredCustomers$ | async as customers; else loading">
     <div class="table-container">
+      <div class="table-scroll">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -333,10 +334,12 @@
           </ng-container>
         </tbody>
       </table>
+      </div>
 
       <mat-paginator
-        [length]="totalFiltered$ | async"
-        [pageSize]="10"
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage"
         [pageSizeOptions]="[10, 20, 50]"
         (page)="onPageChange($event)"
         showFirstLastButtons
@@ -346,7 +349,10 @@
   </ng-container>
 
   <ng-template #loading>
-    <p>Loading customer data...</p>
+    <div style="text-align: center; padding: 40px;">
+      <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+      <p *ngIf="!isLoading">Loading customer data...</p>
+    </div>
   </ng-template>
 </div>
 

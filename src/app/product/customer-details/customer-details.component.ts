@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map, switchMap, startWith } from 'rxjs';
 import * as customerActions from '../store/product.actions';
 import { selectAllCustomers } from '../store/product.selectors';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
-import { CustomerDetails } from '../../model/customer-details.model';
+import { CustomerDetails, CustomerFilters } from '../../model/customer-details.model';
 import { MatIconModule } from '@angular/material/icon';
 import { AddCustomerDetailsComponent } from './add-customer-details/add-customer-details.component';
 import { ConfrimDialogComponent } from '../../shared/confrim-dialog/confrim-dialog.component';
@@ -59,15 +59,20 @@ export class CustomerDetailsComponent implements OnInit {
   customers$!: Observable<CustomerDetails[]>;
   filteredCustomers$!: Observable<CustomerDetails[]>;
   totalFiltered$!: Observable<number>;
+  paginatedResponse$!: Observable<any>;
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 0;
+  
   searchTerm: string = '';
-  searchFilterType: 'none' | 'all' | 'customerName' | 'drawingNo' | 'partNo' = 'none';
+  searchFilterType: 'none' | 'all' | 'customerName' | 'drawingNo' | 'partName' = 'none';
   selectedSearchValue: string = '';
   searchFilterOptions: string[] = [];
-  dateFilterType: 'none' | 'all' | 'date' | 'week' | 'month' | 'year' = 'none';
+  dateFilterType: 'none' | 'all' | 'date' | 'week' | 'month' | 'year' = 'month';
   filters: { singleDate: string; week: string; month: string; year: string } = {
     singleDate: '',
     week: '',
-    month: '',
+    month: '', // Will be set in ngOnInit
     year: ''
   };
   statusOptions: string[] = ['Pending', 'Approved', 'Rejected', 'Email Sent'];
@@ -84,15 +89,11 @@ export class CustomerDetailsComponent implements OnInit {
   isQuotationLoading = false; // Loading state for quotation popup
   printQuotationUrl: string = '';
   statusUpdatingMap: Record<string, boolean> = {};
+  isLoading = false;
   private customersCache: CustomerDetails[] = [];
 
-
-
   isEditing: boolean = false;
-  private search$ = new BehaviorSubject<string>('');
-  private searchFilter$ = new BehaviorSubject<{ type: string; value: string }>({ type: 'none', value: '' });
-  private dateFilter$ = new BehaviorSubject<{ type: string; value: string }>({ type: 'none', value: '' });
-  private page$ = new BehaviorSubject<{ index: number; size: number }>({ index: 0, size: 10 });
+  private filters$ = new BehaviorSubject<CustomerFilters>({ page: 1, limit: 10 });
 
   constructor(
     private store: Store, 
@@ -104,51 +105,160 @@ export class CustomerDetailsComponent implements OnInit {
     private cdr: ChangeDetectorRef ) {}
 
   ngOnInit(): void {
+    // Server-side pagination with filters
+    this.paginatedResponse$ = this.filters$.pipe(
+      switchMap(filters => {
+        this.isLoading = true;
+        return this.productservices.getCustomersPaginated(filters).pipe(
+          map(response => {
+            this.isLoading = false;
+            this.totalItems = response.metadata.totalItems;
+            this.currentPage = response.metadata.currentPage - 1; // Convert to 0-based index
+            this.pageSize = response.metadata.pageSize;
+            return response;
+          })
+        );
+      })
+    );
+
+    this.filteredCustomers$ = this.paginatedResponse$.pipe(
+      map(response => response.data || [])
+    );
+
+    this.totalFiltered$ = this.paginatedResponse$.pipe(
+      map(response => response.metadata.totalItems)
+    );
+
+    // Keep store subscription for search filter options
     this.customers$ = this.store.select(selectAllCustomers).pipe(
-      map(customers =>
-        customers.map(c => ({
+      map(customers => {
+        // Ensure customers is an array before mapping
+        if (!customers || !Array.isArray(customers)) {
+          return [];
+        }
+        return customers.map(c => ({
           ...c,
           revisions: c.revisions?.map(r => ({
             ...r,
             rawMaterial: r.rawMaterial ?? [],
             processes: r.processes ?? []
           })) ?? []
-        }))
-      )
-    );
-
-    this.totalFiltered$ = combineLatest([this.customers$, this.search$, this.searchFilter$, this.dateFilter$]).pipe(
-      map(([customers, search, searchFilter, dateFilter]) => {
-        return this.applyAdvancedFilters(customers, search, searchFilter, dateFilter).length;
+        }));
       })
     );
 
-    this.filteredCustomers$ = combineLatest([this.customers$, this.search$, this.searchFilter$, this.dateFilter$, this.page$]).pipe(
-      map(([customers, search, searchFilter, dateFilter, page]) => {
-        const filtered = this.applyAdvancedFilters(customers, search, searchFilter, dateFilter);
-        const start = page.index * page.size;
-        return filtered.slice(start, start + page.size);
-      })
-    );
-
-    this.customers$.subscribe(customers => {
-      this.customersCache = customers;
-      this.updateSearchFilterOptions();
-      console.log('Customers from store:', customers);
-      console.table(customers);
+    // Load all customers for filter options FIRST (without pagination)
+    // This ensures we have data available when user selects a filter type
+    // Fetch with a large limit to get all customers for filter options
+    this.productservices.getCustomersPaginated({ page: 1, limit: 1000 }).subscribe({
+      next: (response) => {
+        // Extract data array from paginated response
+        const customers = response?.data || [];
+        if (Array.isArray(customers) && customers.length > 0) {
+          console.log('Customers loaded for filters:', customers.length);
+          console.log('Sample customer structure:', customers[0]);
+          this.customersCache = customers;
+          // If filter type is already selected, populate options immediately
+          if (this.searchFilterType !== 'none' && this.searchFilterType !== 'all') {
+            this.populateFilterOptions();
+            this.cdr.detectChanges();
+          }
+        } else {
+          console.warn('No customers found in response');
+          this.customersCache = [];
+        }
+      },
+      error: (err) => {
+        console.error('Error loading customers for filters:', err);
+        this.customersCache = [];
+      }
     });
 
+    // Also subscribe to store for updates
+    this.customers$.subscribe(customers => {
+      // Ensure customers is an array
+      if (!customers || !Array.isArray(customers)) {
+        return;
+      }
+      // Only update cache if it's empty or if store has more recent data
+      if (!this.customersCache || this.customersCache.length === 0) {
+        this.customersCache = customers;
+        // Update filter options if filter type is selected
+        if (this.searchFilterType !== 'none' && this.searchFilterType !== 'all') {
+          this.populateFilterOptions();
+          this.cdr.detectChanges();
+        }
+      }
+    });
+
+    // Load all customers for filter options (without pagination)
     this.store.dispatch(customerActions.loadCustomers());
+    
+    // Set default month filter to current month
+    this.filters.month = this.getCurrentMonth();
+    
     this.getCurrencyData();
     this.printQuotationUrl = this.config.getCostingUrl('');
+    
+    // Load initial paginated data (will use default month filter)
+    this.loadCustomers();
   }
 
   applyFilter(): void {
-    this.search$.next(this.searchTerm);
+    this.loadCustomers();
   }
 
   onPageChange(event: PageEvent): void {
-    this.page$.next({ index: event.pageIndex, size: event.pageSize });
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadCustomers();
+  }
+
+  private loadCustomers(): void {
+    const filters: CustomerFilters = {
+      page: this.currentPage + 1, // Convert to 1-based index
+      limit: this.pageSize
+    };
+
+    // Add date filters
+    if (this.dateFilterType === 'date' && this.filters.singleDate) {
+      filters.StartDate = this.filters.singleDate;
+      filters.EndDate = this.filters.singleDate;
+    } else if (this.dateFilterType === 'week' && this.filters.week) {
+      const [year, week] = this.filters.week.split('-W');
+      const startDate = this.getStartOfISOWeek(Number(year), Number(week));
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 7);
+      filters.StartDate = startDate.toISOString().split('T')[0];
+      filters.EndDate = endDate.toISOString().split('T')[0];
+    } else if (this.dateFilterType === 'month' && this.filters.month) {
+      const [year, month] = this.filters.month.split('-');
+      const startDate = new Date(Number(year), Number(month) - 1, 1);
+      const endDate = new Date(Number(year), Number(month), 1);
+      filters.StartDate = startDate.toISOString().split('T')[0];
+      filters.EndDate = endDate.toISOString().split('T')[0];
+    } else if (this.dateFilterType === 'year' && this.filters.year) {
+      const year = Number(this.filters.year);
+      filters.StartDate = `${year}-01-01`;
+      filters.EndDate = `${year}-12-31`;
+    }
+
+    // Add search filters
+    if (this.searchFilterType !== 'none' && this.selectedSearchValue && this.selectedSearchValue !== 'all') {
+      switch (this.searchFilterType) {
+        case 'customerName':
+          filters.customerName = this.selectedSearchValue;
+          break;
+        case 'partName':
+          filters.partName = this.selectedSearchValue;
+          break;
+        case 'drawingNo':
+          filters.drawingNo = this.selectedSearchValue;
+          break;
+      }
+    }
+
+    this.filters$.next(filters);
   }
 
   openAddProductDialog() {
@@ -220,60 +330,92 @@ export class CustomerDetailsComponent implements OnInit {
         return 'Customer Name';
       case 'drawingNo':
         return 'Drawing No';
-      case 'partNo':
-        return 'Part No';
+      case 'partName':
+        return 'Part Name';
       default:
         return 'Select';
     }
   }
 
   onSearchFilterTypeChange(): void {
-    if (this.searchFilterType === 'all') {
-      this.searchFilterType = 'none';
-      this.selectedSearchValue = '';
-    } else {
-      this.selectedSearchValue = '';
+    this.selectedSearchValue = '';
+  
+    if (this.searchFilterType === 'none' || this.searchFilterType === 'all') {
+      this.searchFilterOptions = [];
+      return;
     }
-    this.updateSearchFilterOptions();
-    this.emitSearchFilter();
+  
+    // 💡 If customer cache is READY → populate immediately
+    if (this.customersCache && Array.isArray(this.customersCache) && this.customersCache.length > 0) {
+      this.populateFilterOptions();
+      this.cdr.detectChanges();
+      return;
+    }
+  
+    // 💡 If cache NOT READY → fetch data first
+    this.productservices.getCustomersPaginated({ page: 1, limit: 1000 }).subscribe({
+      next: (response) => {
+        // Extract data array from paginated response
+        const customers = response?.data || [];
+        if (Array.isArray(customers) && customers.length > 0) {
+          this.customersCache = customers;
+          this.populateFilterOptions();
+        } else {
+          console.warn('No customers found in response');
+          this.customersCache = [];
+          this.searchFilterOptions = [];
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching customers:', err);
+        this.customersCache = [];
+        this.searchFilterOptions = [];
+        this.cdr.detectChanges();
+      }
+    });
   }
+  
 
   onSearchValueChange(): void {
     if (this.selectedSearchValue === 'all') {
       this.selectedSearchValue = '';
     }
-    this.emitSearchFilter();
+    this.currentPage = 0; // Reset to first page
+    this.loadCustomers();
   }
 
   onDateFilterTypeChange(): void {
     this.filters = { singleDate: '', week: '', month: '', year: '' };
     if (this.dateFilterType === 'none' || this.dateFilterType === 'all') {
       this.dateFilterType = 'none';
-      this.dateFilter$.next({ type: 'none', value: '' });
     }
+    this.currentPage = 0; // Reset to first page
+    this.loadCustomers();
   }
 
   onDateChange(): void {
-    const value = this.filters.singleDate;
-    this.dateFilter$.next(value ? { type: 'date', value } : { type: 'none', value: '' });
+    this.currentPage = 0; // Reset to first page
+    this.loadCustomers();
   }
 
   onWeekChange(): void {
-    const value = this.filters.week;
-    this.dateFilter$.next(value ? { type: 'week', value } : { type: 'none', value: '' });
+    this.currentPage = 0; // Reset to first page
+    this.loadCustomers();
   }
 
   onMonthChange(): void {
-    const value = this.filters.month;
-    this.dateFilter$.next(value ? { type: 'month', value } : { type: 'none', value: '' });
+    this.currentPage = 0; // Reset to first page
+    this.loadCustomers();
   }
 
   onYearChange(): void {
-    const value = this.filters.year ? this.filters.year.toString() : '';
-    if (value && value.length === 4) {
-      this.dateFilter$.next({ type: 'year', value });
-    } else if (!value) {
-      this.dateFilter$.next({ type: 'none', value: '' });
+    if (this.filters.year && this.filters.year.toString().length === 4) {
+      this.currentPage = 0; // Reset to first page
+      this.loadCustomers();
+    } else if (!this.filters.year) {
+      this.currentPage = 0;
+      this.loadCustomers();
     }
   }
 
@@ -449,39 +591,118 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   private updateSearchFilterOptions(): void {
-    if (this.searchFilterType === 'none') {
+    if (this.searchFilterType === 'none' || this.searchFilterType === 'all') {
       this.searchFilterOptions = [];
       return;
     }
 
+    // If cache is empty or not an array, fetch all customers for filter options
+    if (!this.customersCache || !Array.isArray(this.customersCache) || this.customersCache.length === 0) {
+      console.log('Cache is empty, fetching customers for filter options...');
+      // Fetch all customers for filter options
+      this.productservices.getCustomersPaginated({ page: 1, limit: 1000 }).subscribe({
+        next: (response) => {
+          // Extract data array from paginated response
+          const customers = response?.data || [];
+          if (Array.isArray(customers) && customers.length > 0) {
+            console.log('Customers fetched for filters:', customers.length);
+            this.customersCache = customers;
+            this.populateFilterOptions();
+          } else {
+            console.warn('No customers found in response');
+            this.customersCache = [];
+            this.searchFilterOptions = [];
+          }
+          // Trigger change detection to update the dropdown
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error fetching customers for filter options:', err);
+          this.customersCache = [];
+          this.searchFilterOptions = [];
+          this.cdr.detectChanges();
+        }
+      });
+      return;
+    }
+
+    // Cache has data, populate options immediately
+    console.log('Cache has data, populating options immediately. Cache size:', this.customersCache.length);
+    this.populateFilterOptions();
+    // Trigger change detection to ensure dropdown updates
+    this.cdr.detectChanges();
+  }
+
+  private populateFilterOptions(): void {
+    // Check if customersCache exists and is an array
+    if (!this.customersCache || !Array.isArray(this.customersCache) || this.customersCache.length === 0) {
+      console.log('Cannot populate options: cache is empty or not an array', {
+        cache: this.customersCache,
+        isArray: Array.isArray(this.customersCache),
+        length: this.customersCache?.length
+      });
+      this.searchFilterOptions = [];
+      this.cdr.detectChanges();
+      return;
+    }
+
+    console.log('Populating filter options for type:', this.searchFilterType, 'from', this.customersCache.length, 'customers');
+
     const values = new Set<string>();
-    this.customersCache.forEach(customer => {
+    let sampleCustomer = null;
+    
+    this.customersCache.forEach((customer, index) => {
+      if (index === 0) {
+        sampleCustomer = customer;
+      }
+      
       let value = '';
       switch (this.searchFilterType) {
         case 'customerName':
-          value = customer.customerName?.customerName || '';
+          // Handle both possible structures
+          if (customer.customerName) {
+            value = typeof customer.customerName === 'string' 
+              ? customer.customerName 
+              : customer.customerName.customerName || '';
+          }
           break;
         case 'drawingNo':
           value = customer.drawingNo ? String(customer.drawingNo) : '';
           break;
-        case 'partNo':
-          value = this.getLatestRevision(customer)?.productName || '';
+        case 'partName':
+          value = customer.partName || '';
           break;
       }
-      if (value) {
-        values.add(value);
+      if (value && value.trim() !== '') {
+        values.add(value.trim());
       }
     });
-    this.searchFilterOptions = Array.from(values).sort((a, b) => a.localeCompare(b));
+    
+    // Log sample customer structure for debugging
+    if (sampleCustomer) {
+      const sample = sampleCustomer as CustomerDetails;
+      console.log('Sample customer structure:', {
+        customerName: sample.customerName,
+        customerNameType: typeof sample.customerName,
+        hasCustomerName: !!sample.customerName
+      });
+    }
+    
+    // Create a new array reference to ensure Angular detects the change
+    const sortedOptions = Array.from(values).sort((a, b) => a.localeCompare(b));
+    this.searchFilterOptions = sortedOptions; // Direct assignment should work
+    
+    // Log for debugging
+    console.log('Filter options populated:', {
+      filterType: this.searchFilterType,
+      optionsCount: this.searchFilterOptions.length,
+      options: this.searchFilterOptions.slice(0, 10) // Show first 10 for debugging
+    });
+    
+    // Force change detection
+    this.cdr.detectChanges();
   }
 
-  private emitSearchFilter(): void {
-    if (this.searchFilterType === 'none' || !this.selectedSearchValue) {
-      this.searchFilter$.next({ type: 'none', value: '' });
-    } else {
-      this.searchFilter$.next({ type: this.searchFilterType, value: this.selectedSearchValue });
-    }
-  }
 
   private applyAdvancedFilters(
     customers: CustomerDetails[],
@@ -506,8 +727,8 @@ export class CustomerDetailsComponent implements OnInit {
             return (c.customerName?.customerName || '').toLowerCase() === searchFilter.value.toLowerCase();
           case 'drawingNo':
             return String(c.drawingNo || '').toLowerCase() === searchFilter.value.toLowerCase();
-          case 'partNo':
-            return (this.getLatestRevision(c)?.productName || '').toLowerCase() === searchFilter.value.toLowerCase();
+          case 'partName':
+            return (c.partName || '').toLowerCase() === searchFilter.value.toLowerCase();
           default:
             return true;
         }
@@ -844,12 +1065,18 @@ getTotalProcessCostByCurrency(revision: any, currency: string = '') {
 
 
 
-getTotalPriceByCurrency(revision: any, currency: string = '') {
-  if (!currency) return revision.TotalPrice;
-  const key = `TotalPrice${currency}`;
-  return revision[key] ?? revision.TotalPrice;
-}
+  getTotalPriceByCurrency(revision: any, currency: string = '') {
+    if (!currency) return revision.TotalPrice;
+    const key = `TotalPrice${currency}`;
+    return revision[key] ?? revision.TotalPrice;
+  }
 
+  private getCurrentMonth(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  }
 
 }
 
