@@ -270,31 +270,91 @@ export class CustomerDetailsComponent implements OnInit {
 
   onStatusChange(customer: CustomerDetails, newStatus: string): void {
     const revisions = customer.revisions || [];
-    if (!customer._id || revisions.length === 0) {
+    const customerId = customer._id;
+    
+    if (!customerId || revisions.length === 0) {
+      console.warn('⚠️ Status change skipped: Missing customer ID or revisions', {
+        customerId: customerId,
+        hasRevisions: revisions.length > 0
+      });
       return;
     }
 
     const latestRevisionIndex = revisions.length - 1;
-    const updatedRevisions = revisions.map((rev, index) =>
-      index === latestRevisionIndex ? { ...rev, Status: newStatus } : rev
-    );
+    const latestRevision = revisions[latestRevisionIndex];
+    const oldStatus = latestRevision?.Status || 'Pending';
 
+    // Log the status change
+    console.log('🔄 Status Change Detected:', {
+      customerId: customerId,
+      customerName: customer.customerName?.customerName,
+      partName: customer.partName,
+      revisionNumber: latestRevision?.revisionNumber,
+      oldStatus: oldStatus,
+      newStatus: newStatus,
+      timestamp: new Date().toISOString(),
+      changed: oldStatus !== newStatus
+    });
+
+    // Log if status actually changed
+    if (oldStatus !== newStatus) {
+      console.log('✅ Status Updated:', {
+        from: oldStatus,
+        to: newStatus,
+        customer: `${customer.customerName?.customerName} - ${customer.partName}`
+      });
+    } else {
+      console.log('ℹ️ Status unchanged (same value selected)');
+      return; // Don't make API call if status hasn't changed
+    }
+
+    // Prepare payload
     const payload = {
-      ...customer,
-      revisions: updatedRevisions
+      revisionNumber: latestRevisionIndex + 1,
+      Status: newStatus
     };
 
-    this.statusUpdatingMap[customer._id] = true;
+    console.log('📦 Update Payload:', {
+      customerId: customerId,
+      payload: payload
+    });
 
-    // this.productservices.updateCustomer(customer._id, payload).subscribe({
-    //   next: () => {
-    //     this.statusUpdatingMap[customer._id] = false;
-    //     this.store.dispatch(customerActions.loadCustomers());
-    //   },
-    //   error: () => {
-    //     this.statusUpdatingMap[customer._id] = false;
-    //   }
-    // });
+    // Set loading state BEFORE API call
+    this.statusUpdatingMap[customerId] = true;
+    console.log('⏳ Status update in progress for customer:', customerId);
+
+    // Make API call to update status
+    this.productservices.updateCustomer(customerId, payload).subscribe({
+      next: (res) => {
+        console.log('✅ Status updated successfully:', {
+          customerId: customerId,
+          newStatus: newStatus,
+          response: res
+        });
+        
+        // Reset loading state
+        this.statusUpdatingMap[customerId] = false;
+        
+        // Reload customers to reflect the change
+        this.store.dispatch(customerActions.loadCustomers());
+        
+        // Show success message
+        this.tooser.success(`Status updated to ${newStatus} successfully!`);
+      },
+      error: (err) => {
+        console.error('❌ Status update failed:', {
+          customerId: customerId,
+          error: err,
+          attemptedStatus: newStatus
+        });
+        
+        // Reset loading state on error
+        this.statusUpdatingMap[customerId] = false;
+        
+        // Show error message
+        this.tooser.error('Failed to update status. Please try again.');
+      }
+    });
   }
 
   getLatestRevision(c: any) {
