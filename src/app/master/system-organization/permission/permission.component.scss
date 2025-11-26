@@ -20,7 +20,7 @@
 .header h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #0e1635;
+  color: #3F5B65;
   margin: 0;
   letter-spacing: -0.5px;
   font-family: 'Inter', 'Poppins', sans-serif;
@@ -28,7 +28,7 @@
 
 /* Add Permission Button - Modern Elevated Style */
 #hbtn {
-  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #1a2b4a 100%);
   color: #ffffff;
   padding: 12px 28px;
   border: none;
@@ -64,7 +64,7 @@
 #hbtn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(14, 22, 53, 0.4);
-  background: linear-gradient(135deg, #1a2b4a 0%, #0e1635 100%);
+  background: linear-gradient(135deg, #1a2b4a 0%, #3F5B65 100%);
 }
 
 .btn-add-icon {
@@ -95,7 +95,7 @@ table {
 }
 
 thead {
-  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #1a2b4a 100%);
   position: relative;
 }
 
@@ -200,7 +200,7 @@ td {
 
 .role-name {
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   font-size: 15px;
 }
 
@@ -225,13 +225,13 @@ td {
   transform: translateY(-50%);
   width: 4px;
   height: 4px;
-  background: #0e1635;
+  background: #3F5B65;
   border-radius: 50%;
 }
 
 .permission-item strong {
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   font-size: 14px;
 }
 
@@ -379,7 +379,7 @@ td.actions {
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
-  color: #0e1635;
+  color: #3F5B65;
   margin-bottom: 2rem;
   border-bottom: 2px solid #e8e8e8;
   padding-bottom: 1rem;
@@ -396,7 +396,7 @@ td.actions {
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   margin-bottom: 0.75rem;
   font-size: 0.95rem;
   font-family: 'Inter', 'Poppins', sans-serif;
@@ -406,7 +406,7 @@ td.actions {
   font-size: 20px !important;
   width: 20px !important;
   height: 20px !important;
-  color: #0e1635;
+  color: #3F5B65;
 }
 
 .select-wrapper {
@@ -442,12 +442,12 @@ td.actions {
 }
 
 .role-select:hover {
-  border-color: #0e1635;
+  border-color: #3F5B65;
   box-shadow: 0 2px 8px rgba(14, 22, 53, 0.1);
 }
 
 .role-select:focus {
-  border-color: #0e1635;
+  border-color: #3F5B65;
   outline: none;
   box-shadow: 0 0 0 4px rgba(14, 22, 53, 0.1);
 }
@@ -502,7 +502,7 @@ td.actions {
 .permission-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
-  border-color: #0e1635;
+  border-color: #3F5B65;
 }
 
 .nav-item-content {
@@ -559,8 +559,8 @@ td.actions {
 }
 
 .custom-checkbox:checked ~ .checkbox-label {
-  background: #0e1635;
-  border-color: #0e1635;
+  background: #3F5B65;
+  border-color: #3F5B65;
 }
 
 .custom-checkbox:checked ~ .checkbox-label::after {
@@ -572,7 +572,7 @@ td.actions {
 }
 
 .checkbox-label:hover {
-  border-color: #0e1635;
+  border-color: #3F5B65;
   transform: scale(1.05);
 }
 
@@ -581,7 +581,7 @@ td.actions {
   font-size: 24px !important;
   width: 24px !important;
   height: 24px !important;
-  color: #0e1635;
+  color: #3F5B65;
   opacity: 0.8;
   transition: all 0.3s ease;
   flex-shrink: 0;
@@ -618,7 +618,7 @@ td.actions {
 
 .nav-text {
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   font-size: 1rem;
   cursor: pointer;
   flex: 1;
@@ -665,7 +665,7 @@ td.actions {
 }
 
 .submenu-item:hover {
-  color: #0e1635;
+  color: #3F5B65;
   padding-left: 4px;
 }
 
@@ -678,7 +678,7 @@ td.actions {
 }
 
 .submenu-item:hover .submenu-label {
-  color: #0e1635;
+  color: #3F5B65;
   font-weight: 600;
 }
 
@@ -691,7 +691,7 @@ td.actions {
 }
 
 .form-actions button {
-  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #1a2b4a 100%);
   color: #ffffff;
   padding: 12px 32px;
   border: none;
@@ -708,7 +708,7 @@ td.actions {
 .form-actions button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(14, 22, 53, 0.4);
-  background: linear-gradient(135deg, #1a2b4a 0%, #0e1635 100%);
+  background: linear-gradient(135deg, #1a2b4a 0%, #3F5B65 100%);
 }
 
 .div1 {

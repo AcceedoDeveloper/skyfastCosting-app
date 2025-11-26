@@ -51,7 +51,7 @@
 .header h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #0e1635;
+  color: #3F5B65;
   margin: 0;
   letter-spacing: -0.5px;
   font-family: 'Inter', 'Poppins', sans-serif;
@@ -59,7 +59,7 @@
 
 
 .header .btn button {
-  background-color: #0e1635;
+  background-color: #3F5B65;
   color: white;
   padding: 8px 16px;
   border: none;
@@ -91,7 +91,7 @@ table {
 }
 
 thead {
-  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #1a2b4a 100%);
   position: relative;
 }
 
@@ -187,7 +187,7 @@ td {
 
 .customer-name {
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
 }
 
 td.address-cell {
@@ -315,7 +315,7 @@ td.actions {
 
 #hbtn {
   background-color: #ffffff;
-  color: #0e1635;
+  color: #3F5B65;
   padding: 10px 24px;
   border: 1px solid #e0e0e0;
   border-radius: 30px;
@@ -331,8 +331,8 @@ td.actions {
 }
 
 #hbtn:hover {
-  border-color: #0e1635;
-  background-color: #0e1635;
+  border-color: #3F5B65;
+  background-color: #3F5B65;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(14, 22, 53, 0.25);
   transform: translateY(-2px);

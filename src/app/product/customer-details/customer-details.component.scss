@@ -53,7 +53,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, #0e1635 0%, #5073fb 50%, #0e1635 100%);
+  background: linear-gradient(180deg, #3F5B65 0%, #5073fb 50%, #3F5B65 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -92,11 +92,11 @@
 .filter-label {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #0e1635;
+  color: #3F5B65;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 4px;
-  background: linear-gradient(135deg, #0e1635 0%, #5073fb 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #5073fb 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -111,7 +111,7 @@
   background-size: 10px 6px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #0e1635;
+  color: #3F5B65;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(14, 22, 53, 0.05);
@@ -161,7 +161,7 @@
   border: 1.5px solid rgba(14, 22, 53, 0.2);
   border-radius: 8px;
   background: #ffffff;
-  color: #0e1635;
+  color: #3F5B65;
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -263,7 +263,7 @@
 }
 
 thead {
-  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #2f4851 100%);
   position: relative;
 }
 
@@ -384,7 +384,7 @@ tbody tr.table-row:nth-child(odd) td {
 
 .customer-name {
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   font-size: 11px;
 }
 
@@ -410,7 +410,7 @@ tbody tr.table-row:nth-child(odd) td {
 .raw-materials-count,
 .processes-count {
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   font-size: 11px;
 }
 
@@ -447,13 +447,13 @@ tbody tr.table-row:nth-child(odd) td {
 
   select:focus {
     outline: none;
-    border-color: #0e1635;
+    border-color: #3F5B65;
     box-shadow: 0 0 0 2px rgba(14, 22, 53, 0.12);
   }
 
   .updating-icon {
     font-size: 14px;
-    color: #0e1635;
+    color: #3F5B65;
     animation: spin 1s linear infinite;
   }
 }
@@ -546,7 +546,7 @@ td.actions {
 
 .expand-btn:hover {
   background-color: #f5f5f5;
-  color: #0e1635;
+  color: #3F5B65;
   transform: scale(1.1);
 }
 
@@ -631,7 +631,7 @@ vertical-align: middle;
 
 #hbtn {
   background-color: #ffffff;  
-  color: #0e1635;             
+  color: #3F5B65;             
   padding: 10px 22px;
   border: 1px solid #e0e0e0;  
   border-radius: 30px;        
@@ -1030,7 +1030,7 @@ vertical-align: middle;
   
   .quotationheader h3 {
     font-size: 24px;
-    color: #0e1635;
+    color: #3F5B65;
     font-weight: bold;
   }
   
@@ -1203,7 +1203,7 @@ vertical-align: middle;
 .search-input input {
   width: 100%;
   padding: 7px 10px ;
-  border: 1.5px solid #0e1635; 
+  border: 1.5px solid #3F5B65; 
   border-radius: 7px;
   font-size: 14px;
   outline: none;
@@ -1514,7 +1514,7 @@ vertical-align: middle;
   display: block;
   margin-top: 8px;
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   font-size: 14px;
 }
 
@@ -1618,7 +1618,7 @@ vertical-align: middle;
   content: "Customer Details per page: ";
   font-size: 14px;
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   margin-right: 8px;
   display: inline-block;
 }
@@ -1637,7 +1637,7 @@ vertical-align: middle;
 
 /* Style paginator buttons */
 ::ng-deep .custom-paginator .mat-icon-button {
-  color: #0e1635;
+  color: #3F5B65;
   width: 40px;
   height: 40px;
 }

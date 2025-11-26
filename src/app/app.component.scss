@@ -7,7 +7,7 @@
 
 /* ===== TOP NAVBAR ===== */
 .navbar {
-  background-color: #0e1635;
+  background-color: #3F5B65;
   padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
@@ -18,7 +18,7 @@
 .navbar-brand .navbar-item.brand-text {
   font-size: 2rem;
   font-weight: bold;
-  color: white;
+  color: rgb(255, 255, 255);
   text-decoration: none;
 }
 
@@ -89,7 +89,7 @@
 .profile-btn {
   background-color: white;
   border: none;
-  color: #0e1635;
+  color: #3F5B65;
   border-radius: 50%;
   width: 42px;
   height: 42px;
@@ -189,23 +189,23 @@
 }
 
 .nav-item-content:hover {
-  color: #0e1635;
+  color: #3F5B65;
 }
 
 .material-icons.nav-icon {
   margin-top: 5px;
   margin-bottom: 2px;
   font-size: 30px;
-  color: #0e1635;
+  color: #3F5B65;
 }
 
 .material-icons:hover {
-  color: #0e1635;
+  color: #3F5B65;
 }
 
 .material-icons.submenu-icon {
   font-size: 20px;
-  color: #0e1635;
+  color: #3F5B65;
 }
 
 .nav-text {
@@ -213,12 +213,12 @@
   margin-top: 2px;
   margin-bottom: 5px;
   line-height: 12px;
-  color: #0e1635;
+  color: #3F5B65;
   display: block;
 }
 
 .nav-text:hover {
-  color: #0e1635;
+  color: #3F5B65;
 }
 
 .arrow-icon {

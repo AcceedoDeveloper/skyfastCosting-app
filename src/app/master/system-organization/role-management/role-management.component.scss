@@ -107,10 +107,10 @@ mat-form-field {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%) !important;
+  background: linear-gradient(135deg, #3F5B65 0%, #2f4851 100%) !important;
   color: white !important;
   border: none;
-  box-shadow: 0 4px 12px rgba(14, 22, 53, 0.3);
+  box-shadow: 0 4px 12px rgba(63, 91, 101, 0.3);
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
@@ -143,7 +143,7 @@ mat-form-field {
 
 .circular-button:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 16px rgba(14, 22, 53, 0.4);
+  box-shadow: 0 6px 16px rgba(63, 91, 101, 0.4);
 }
 
 .circular-button:active {
@@ -163,10 +163,10 @@ mat-form-field {
 
 @keyframes pulse {
   0%, 100% {
-    box-shadow: 0 4px 12px rgba(14, 22, 53, 0.3);
+    box-shadow: 0 4px 12px rgba(63, 91, 101, 0.3);
   }
   50% {
-    box-shadow: 0 4px 16px rgba(14, 22, 53, 0.5);
+    box-shadow: 0 4px 16px rgba(63, 91, 101, 0.5);
   }
 }
 
@@ -235,7 +235,7 @@ table {
 }
 
 thead {
-  background: linear-gradient(135deg, #0e1635 0%, #1a2b4a 100%);
+  background: linear-gradient(135deg, #3F5B65 0%, #2f4851 100%);
   position: relative;
 }
 
@@ -246,7 +246,7 @@ thead::after {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(135deg, #3F5B65 0%, #2f4851 100%);
 }
 
 th {

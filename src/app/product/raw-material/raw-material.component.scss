@@ -20,7 +20,7 @@
   margin: 0;
   font-size: 24px;
   font-weight: 700;
-  color: #0e1635;
+  color: #3F5B65;
   letter-spacing: -0.5px;
   font-family: 'Inter', 'Poppins', sans-serif;
 }
@@ -66,7 +66,7 @@ thead {
 th {
   text-align: center;
   padding: 16px 20px;
-  background-color: #0e1635;
+  background-color: #3F5B65;
   color: #ffffff;
   white-space: nowrap;
   font-weight: 600;
@@ -125,7 +125,7 @@ td {
 }
 
 .table-row:hover .cell-icon {
-  color: #0e1635;
+  color: #3F5B65;
   opacity: 1;
 }
 
@@ -236,7 +236,7 @@ tr:hover {
 }
 
 .submit-button {
-  background-color: #0e1635;
+  background-color: #3F5B65;
   color: #ffffff;
   margin-left: 20px;
   border: none;
@@ -328,7 +328,7 @@ tr:hover {
 }
 
 .cost-display-box:hover {
-  border-color: #0e1635;
+  border-color: #3F5B65;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -344,7 +344,7 @@ tr:hover {
 .cost-value {
   font-size: 18px;
   font-weight: 700;
-  color: #0e1635;
+  color: #3F5B65;
   text-align: center;
   padding: 8px;
   background: #ffffff;
@@ -386,7 +386,7 @@ tr:hover {
 /* Save button */
 .actions button[mat-flat-button],
 .submit-button {
-  background-color: #0e1635;
+  background-color: #3F5B65;
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -400,7 +400,7 @@ tr:hover {
 
 .actions button[mat-flat-button]:hover,
 .submit-button:hover {
-  background-color: #0e1635;
+  background-color: #3F5B65;
 }
 
 .submit-button:disabled {
@@ -411,7 +411,7 @@ tr:hover {
 
 #hbtn {
   background-color: #ffffff;  
-  color: #0e1635;             
+  color: #3F5B65;             
   padding: 12px 24px;
   border: 2px solid #e0e0e0;  
   border-radius: 30px;        
@@ -427,7 +427,7 @@ tr:hover {
 }
 
 #hbtn:hover {
-  border-color: #0e1635;      
+  border-color: #3F5B65;      
   box-shadow: 0 4px 12px rgba(14, 22, 53, 0.2);
   transform: translateY(-2px);
   background-color: #f8f9fa;
@@ -476,7 +476,7 @@ tr:hover {
   content: "Raw Materials per page: ";
   font-size: 14px;
   font-weight: 600;
-  color: #0e1635;
+  color: #3F5B65;
   margin-right: 8px;
   display: inline-block;
 }
@@ -495,7 +495,7 @@ tr:hover {
 
 /* Style paginator buttons */
 ::ng-deep .custom-paginator .mat-icon-button {
-  color: #0e1635;
+  color: #3F5B65;
   width: 40px;
   height: 40px;
 }
