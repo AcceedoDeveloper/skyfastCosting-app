@@ -9,6 +9,7 @@ export interface User {
   updatedAt: string;
   token: string;
   role: Role;
+  initialScreen?: string; // Optional - comes from permissions, not user data
 }
 
 export interface AuthResponse {

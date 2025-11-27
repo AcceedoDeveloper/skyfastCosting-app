@@ -121,13 +121,30 @@
         </div>
       </form>
 
+      <!-- Select Initial Screen -->
+      <form class="role-select-form" *ngIf="selectedRole && availableInitialScreens.length > 0">
+        <label for="initialScreen" class="role-label">
+          <mat-icon class="label-icon">home</mat-icon>
+          Initial Screen (After Login)
+        </label>
+        <div class="select-wrapper">
+          <mat-icon class="select-icon">arrow_drop_down</mat-icon>
+          <select id="initialScreen" [(ngModel)]="initialScreen" name="initialScreen" class="role-select">
+            <option value="">Choose initial screen...</option>
+            <option *ngFor="let screen of availableInitialScreens" [ngValue]="screen.value">
+              {{ screen.label }}
+            </option>
+          </select>
+        </div>
+      </form>
+
       <!-- Permissions Checkboxes -->
       <ul class="nav-list">
         <!-- Dashboard -->
         <li class="nav-item permission-card">
           <div class="nav-item-content">
             <div class="checkbox-wrapper">
-              <input type="checkbox" id="dashboard" [(ngModel)]="permissions.dashboard" name="dashboard" class="custom-checkbox" />
+              <input type="checkbox" id="dashboard" [(ngModel)]="permissions.dashboard" name="dashboard" (change)="updateAvailableInitialScreens()" class="custom-checkbox" />
               <label for="dashboard" class="checkbox-label"></label>
             </div>
             <mat-icon class="category-icon dashboard-icon">dashboard</mat-icon>
@@ -150,7 +167,7 @@
             <li *ngFor="let item of userSubItems" class="submenu-item">
               <div class="checkbox-wrapper">
                 <input type="checkbox" [id]="'user-' + item.key" [(ngModel)]="permissions.user.children[item.key]"
-                  [name]="'user-' + item.key" (change)="checkParent('user')" class="custom-checkbox" />
+                  [name]="'user-' + item.key" (change)="checkParent('user'); updateAvailableInitialScreens()" class="custom-checkbox" />
                 <label [for]="'user-' + item.key" class="checkbox-label"></label>
               </div>
               <label [for]="'user-' + item.key" class="submenu-label">{{ item.label }}</label>
@@ -173,7 +190,7 @@
             <li *ngFor="let item of companySubItems" class="submenu-item">
               <div class="checkbox-wrapper">
                 <input type="checkbox" [id]="'company-' + item.key" [(ngModel)]="permissions.company.children[item.key]"
-                  [name]="'company-' + item.key" (change)="checkParent('company')" class="custom-checkbox" />
+                  [name]="'company-' + item.key" (change)="checkParent('company'); updateAvailableInitialScreens()" class="custom-checkbox" />
                 <label [for]="'company-' + item.key" class="checkbox-label"></label>
               </div>
               <label [for]="'company-' + item.key" class="submenu-label">{{ item.label }}</label>
@@ -196,7 +213,7 @@
             <li *ngFor="let item of materialSubItems" class="submenu-item">
               <div class="checkbox-wrapper">
                 <input type="checkbox" [id]="'material-' + item.key" [(ngModel)]="permissions.material.children[item.key]"
-                  [name]="'material-' + item.key" (change)="checkParent('material')" class="custom-checkbox" />
+                  [name]="'material-' + item.key" (change)="checkParent('material'); updateAvailableInitialScreens()" class="custom-checkbox" />
                 <label [for]="'material-' + item.key" class="checkbox-label"></label>
               </div>
               <label [for]="'material-' + item.key" class="submenu-label">{{ item.label }}</label>
@@ -208,7 +225,7 @@
         <li class="nav-item permission-card">
           <div class="nav-item-content">
             <div class="checkbox-wrapper">
-              <input type="checkbox" id="quotation" [(ngModel)]="permissions.quotation" name="quotation" class="custom-checkbox" />
+              <input type="checkbox" id="quotation" [(ngModel)]="permissions.quotation" name="quotation" (change)="updateAvailableInitialScreens()" class="custom-checkbox" />
               <label for="quotation" class="checkbox-label"></label>
             </div>
             <mat-icon class="category-icon quotation-icon">receipt</mat-icon>
@@ -220,7 +237,7 @@
         <li class="nav-item permission-card">
           <div class="nav-item-content">
             <div class="checkbox-wrapper">
-              <input type="checkbox" id="reports" [(ngModel)]="permissions.reports" name="reports" class="custom-checkbox" />
+              <input type="checkbox" id="reports" [(ngModel)]="permissions.reports" name="reports" (change)="updateAvailableInitialScreens()" class="custom-checkbox" />
               <label for="reports" class="checkbox-label"></label>
             </div>
             <mat-icon class="category-icon reports-icon">bar_chart</mat-icon>

@@ -29,10 +29,15 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(fromAuth.loginSuccess),
       tap(({ authResponse }) => {
+        const user = authResponse.user;
         sessionStorage.setItem('token', authResponse.accessToken);
         sessionStorage.setItem('user', JSON.stringify(authResponse.user));
+        // Use initialScreen from user object, fallback to dashboard
+        const initialScreen = user.initialScreen || '/product/dashboard';
+        sessionStorage.setItem('lastRoute', initialScreen);
         this.store.dispatch(fromAuth.setUser({ user: authResponse.user }));
-        this.router.navigate(['/product/dashboard'], { replaceUrl: true });
+        // Navigate to the initialScreen from user object
+        this.router.navigate([initialScreen], { replaceUrl: true });
       })
     ),
     { dispatch: false }
@@ -103,10 +108,15 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(fromAuth.verifyOtpSuccess),
       tap(({ authResponse }) => {
+        const user = authResponse.user;
         sessionStorage.setItem('token', authResponse.accessToken);
         sessionStorage.setItem('user', JSON.stringify(authResponse.user));
+        // Use initialScreen from user object, fallback to dashboard
+        const initialScreen = user.initialScreen || '/product/dashboard';
+        sessionStorage.setItem('lastRoute', initialScreen);
         this.store.dispatch(fromAuth.setUser({ user: authResponse.user })); // Added for consistency
-        this.router.navigate(['/system'], { replaceUrl: true });
+        // Navigate to the initialScreen from user object
+        this.router.navigate([initialScreen], { replaceUrl: true });
       })
     ),
     { dispatch: false }

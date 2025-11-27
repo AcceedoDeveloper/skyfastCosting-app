@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
 import { Router, RouterOutlet, RouterModule, NavigationEnd, NavigationStart } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, filter, takeUntil, combineLatest, of } from 'rxjs';
+import { Observable, Subject, filter, takeUntil, combineLatest, of, take } from 'rxjs';
 import * as AuthActions from './auth/store/auth.action';
 import * as AuthSelectors from './auth/store/auth.selector';
 import * as RoleActions from '../app/master/system-organization/store/system.actions';
 import * as RoleSelectors from '../app/master/system-organization/store/system.selectors';
 import { User } from './model/auth.model';
 import { Permission } from './model/permission.model';
+import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 
 interface SidebarItem {
   label: string;
@@ -35,7 +36,7 @@ interface Permissions {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterOutlet],
+  imports: [CommonModule, RouterModule, RouterOutlet, LoadingSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -59,6 +60,7 @@ export class AppComponent implements OnInit, OnDestroy {
   loading: boolean = true;
   error: string | null = null;
   currentUrl: string = '';
+  isLoggedIn: boolean = false;
 
   constructor() {
     this.isLoggedIn$ = this.store.select(AuthSelectors.selectIsLoggedIn);
@@ -118,6 +120,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Set initial state based on session
     if (token && user) {
+      // If on login page with valid token, keep loading true until navigation completes
+      if (this.currentUrl === '/login') {
+        this.loading = true;
+      }
       this.store.dispatch(AuthActions.setUser({ user }));
     } else {
       // Don't dispatch logoutUser if on public route - it will redirect
@@ -140,7 +146,6 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([isLoggedIn, user]) => {
           console.log('AppComponent: isLoggedIn=', isLoggedIn, 'user=', user, 'at', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }));
-          this.loading = false; // Always set loading to false to show UI
           if (isLoggedIn && user) {
             this.userName = user.userName || '';
             this.userRole = user.role?.role || '';
@@ -149,14 +154,60 @@ export class AppComponent implements OnInit, OnDestroy {
             this.loadPermissions(user.role?._id || '');
             // Only navigate if not already on a valid route
             const routerUrl = this.router.url.replace('#', '').split('?')[0];
-            const lastRoute = sessionStorage.getItem('lastRoute') || '/system';
+            // Get initialScreen from user object first, then fallback to lastRoute
+            const userInitialScreen = user.initialScreen;
+            const lastRoute = sessionStorage.getItem('lastRoute') || userInitialScreen;
             // Don't navigate if already on a valid route (including quotation)
+            // On initial login (coming from /login), use initialScreen from user or lastRoute
             if (routerUrl === '/' || routerUrl === '' || routerUrl === '/login') {
-              if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation')) {
-                this.router.navigateByUrl(lastRoute);
+              // Keep loading true during navigation from login
+              this.loading = true;
+              // Don't set isLoggedIn to true until navigation completes for initial login
+              // This prevents navbar/sidebar from flashing
+              const isInitialLogin = routerUrl === '/login';
+              if (isInitialLogin) {
+                // Delay setting isLoggedIn until after navigation
+                this.isLoggedIn = false;
               } else {
-                this.router.navigate(['/system']);
+                this.isLoggedIn = isLoggedIn || false;
               }
+              
+              // Determine the route to navigate to
+              const targetRoute = userInitialScreen || lastRoute || '/product/dashboard';
+              if (isInitialLogin && targetRoute && !targetRoute.includes('/login') && !targetRoute.startsWith('/quotation')) {
+                // On initial login, navigate to initialScreen or lastRoute
+                this.router.navigate([targetRoute], { replaceUrl: true }).then(() => {
+                  // Now set isLoggedIn to true after navigation completes
+                  this.isLoggedIn = true;
+                  // Set loading to false after navigation completes
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 100);
+                });
+              } else if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation')) {
+                this.router.navigateByUrl(lastRoute).then(() => {
+                  if (isInitialLogin) {
+                    this.isLoggedIn = true;
+                  }
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 100);
+                });
+              } else {
+                // Fallback to dashboard instead of /system
+                this.router.navigate(['/product/dashboard'], { replaceUrl: true }).then(() => {
+                  if (isInitialLogin) {
+                    this.isLoggedIn = true;
+                  }
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 100);
+                });
+              }
+            } else {
+              // Already on a valid route, set isLoggedIn and loading immediately
+              this.isLoggedIn = isLoggedIn || false;
+              this.loading = false;
             }
           } else {
             this.permissions = this.getEmptyPermissions();
@@ -229,8 +280,14 @@ export class AppComponent implements OnInit, OnDestroy {
         url = url.substring(1);
       }
       url = url.split('?')[0];
+      const previousUrl = this.currentUrl;
       this.currentUrl = url;
       console.log('Navigation start - currentUrl:', this.currentUrl, 'from event.url:', event.url);
+      
+      // If navigating away from login page, keep loading true until navigation completes
+      if (previousUrl === '/login' && url !== '/login') {
+        this.loading = true;
+      }
       
       // If navigating to quotation route and not logged in, ensure loading is false
       if (this.currentUrl.startsWith('/quotation')) {
@@ -249,6 +306,16 @@ export class AppComponent implements OnInit, OnDestroy {
       this.currentUrl = url;
       console.log('Navigation end - currentUrl:', this.currentUrl);
       sessionStorage.setItem('lastRoute', event.urlAfterRedirects);
+      
+      // If navigating away from login page and user is logged in, set loading to false
+      if (url !== '/login' && !url.startsWith('/quotation')) {
+        const isLoggedIn = sessionStorage.getItem('token') && sessionStorage.getItem('user');
+        if (isLoggedIn) {
+          setTimeout(() => {
+            this.loading = false;
+          }, 50);
+        }
+      }
     });
 
     this.store.select(RoleSelectors.selectPermissionError).pipe(takeUntil(this.destroy$)).subscribe(error => {
@@ -317,15 +384,28 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     if (this.permissionsCache.has(roleId)) {
-      this.applyPermissions(this.permissionsCache.get(roleId)!);
+      const perm = this.permissionsCache.get(roleId)!;
+      // Update permission's initialScreen from user object if available
+      this.user$.pipe(take(1), takeUntil(this.destroy$)).subscribe(user => {
+        if (user?.initialScreen && perm.initialScreen !== user.initialScreen) {
+          perm.initialScreen = user.initialScreen;
+        }
+        this.applyPermissions(perm);
+      });
     } else {
       // Subscribe to permissions but don't block UI - permissions will load asynchronously
       this.permissions$.pipe(takeUntil(this.destroy$)).subscribe(permissions => {
         if (permissions && permissions.length > 0) {
           const perm = permissions.find(p => p.role === roleId);
           if (perm) {
-            this.permissionsCache.set(roleId, perm);
-            this.applyPermissions(perm);
+            // Update permission's initialScreen from user object if available
+            this.user$.pipe(take(1), takeUntil(this.destroy$)).subscribe(user => {
+              if (user?.initialScreen && perm.initialScreen !== user.initialScreen) {
+                perm.initialScreen = user.initialScreen;
+              }
+              this.permissionsCache.set(roleId, perm);
+              this.applyPermissions(perm);
+            });
           } else {
             // If no permission found, set empty but don't block UI
             this.permissions = this.getEmptyPermissions();
@@ -354,23 +434,71 @@ export class AppComponent implements OnInit, OnDestroy {
       quotation: true,
       reports: true
     };
-    const lastRoute = sessionStorage.getItem('lastRoute') || '/product/dashboard';
-    this.generateSidebar({ screens: this.permissions, initialScreen: lastRoute } as Permission);
-    if (!lastRoute.includes('/login')) {
-      this.router.navigateByUrl(lastRoute);
+    const lastRoute = sessionStorage.getItem('lastRoute');
+    const currentUrl = this.router.url.replace('#', '').split('?')[0];
+    const perm: Permission = { screens: this.permissions, initialScreen: '/product/dashboard', role: '' };
+    
+    // Only navigate if we're on a route that needs redirect (like /system or /login)
+    if (currentUrl === '/system' || currentUrl === '/' || currentUrl === '' || currentUrl === '/login' || currentUrl === '/product/dashboard') {
+      // During initial login, delay sidebar generation until after navigation
+      if (currentUrl === '/login' && this.loading) {
+        // Don't generate sidebar yet - wait for navigation
+        const targetRoute = lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system' 
+          ? lastRoute 
+          : '/product/dashboard';
+        this.router.navigate([targetRoute], { replaceUrl: true }).then(() => {
+          // Generate sidebar after navigation completes
+          this.generateSidebar(perm);
+        });
+      } else {
+        // Generate sidebar immediately for non-login routes
+        this.generateSidebar(perm);
+        if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system') {
+          this.router.navigateByUrl(lastRoute);
+        } else {
+          this.router.navigate(['/product/dashboard'], { replaceUrl: true });
+        }
+      }
     } else {
-      this.router.navigate(['/product/dashboard']);
+      // Already on a valid route - generate sidebar immediately
+      this.generateSidebar(perm);
     }
   }
 
   private applyPermissions(perm: Permission) {
     this.permissions = perm.screens;
-    this.generateSidebar(perm);
-    const lastRoute = sessionStorage.getItem('lastRoute') || perm.initialScreen;
-    if (lastRoute && !lastRoute.includes('/login')) {
-      this.router.navigateByUrl(lastRoute);
-    } else if (perm.initialScreen) {
-      this.router.navigate([perm.initialScreen]);
+    const lastRoute = sessionStorage.getItem('lastRoute');
+    const currentUrl = this.router.url.replace('#', '').split('?')[0];
+    
+    // Only navigate if we're on a route that needs redirect (like /system or /login)
+    // Don't override if already on a valid route like /product/dashboard
+    if (currentUrl === '/system' || currentUrl === '/' || currentUrl === '' || currentUrl === '/login') {
+      // During initial login, delay sidebar generation until after navigation
+      // This prevents the flash of navbar/sidebar with login form
+      if (currentUrl === '/login' && this.loading) {
+        // Don't generate sidebar yet - wait for navigation
+        const targetRoute = lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system'
+          ? lastRoute
+          : (perm.initialScreen || '/product/dashboard');
+        this.router.navigate([targetRoute], { replaceUrl: true }).then(() => {
+          // Generate sidebar after navigation completes
+          this.generateSidebar(perm);
+        });
+      } else {
+        // Generate sidebar immediately for non-login routes
+        this.generateSidebar(perm);
+        if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system') {
+          this.router.navigateByUrl(lastRoute);
+        } else if (perm.initialScreen) {
+          this.router.navigate([perm.initialScreen]);
+        } else {
+          // Fallback to dashboard instead of /system
+          this.router.navigate(['/product/dashboard'], { replaceUrl: true });
+        }
+      }
+    } else {
+      // Already on a valid route - generate sidebar immediately
+      this.generateSidebar(perm);
     }
   }
 
@@ -457,5 +585,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showDropdown = false;
     sessionStorage.removeItem('lastRoute');
     this.router.navigate(['/login']);
+  }
+
+  get shouldShowMainLayout(): boolean {
+    // Don't show layout if loading or on login/quotation routes
+    // This prevents the flash during initial login navigation
+    return !this.loading && this.isLoggedIn && this.currentUrl !== '/login' && !this.currentUrl?.startsWith('/quotation');
+  }
+
+  get shouldShowNavbar(): boolean {
+    // Don't show navbar if loading or on login/quotation routes
+    // This prevents the flash during initial login navigation
+    return !this.loading && this.isLoggedIn && this.currentUrl !== '/login' && !this.currentUrl?.startsWith('/quotation');
   }
 }

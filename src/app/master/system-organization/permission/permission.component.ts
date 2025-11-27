@@ -76,6 +76,9 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
   // ---------- Permission State ----------
   permissions: Permissions = this.getEmptyPermissions();
+  
+  // ---------- Initial Screen Options ----------
+  availableInitialScreens: Array<{ value: string; label: string }> = [];
 
   userSubItems: SubItem<keyof UserChildren>[] = [
     { key: 'user', label: 'User' },
@@ -130,7 +133,12 @@ export class PermissionComponent implements OnInit, OnDestroy {
   toggleForm() {
     this.showForm = !this.showForm;
     console.log(`Form toggled -> ${this.showForm ? 'OPEN' : 'CLOSED'}`);
-    if (!this.showForm) this.resetPermissions();
+    if (!this.showForm) {
+      this.resetPermissions();
+    } else {
+      // Update available screens when opening form
+      this.updateAvailableInitialScreens();
+    }
   }
 
   onRoleChange() {
@@ -150,6 +158,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       } else {
         this.existingPermissionId = null;
         this.permissions = this.getEmptyPermissions();
+        this.updateAvailableInitialScreens();
         console.log('No existing permission found, using empty permissions');
       }
     });
@@ -172,12 +181,14 @@ export class PermissionComponent implements OnInit, OnDestroy {
     Object.keys(children).forEach(key => {
       (children as any)[key] = this.permissions[group].parent;
     });
+    this.updateAvailableInitialScreens();
     console.log(`Children updated for ${group}:`, children);
   }
 
   checkParent<K extends keyof Omit<Permissions, 'dashboard' | 'quotation' | 'reports'>>(group: K) {
     const children = this.permissions[group].children as UserChildren | CompanyChildren | MaterialChildren;
     this.permissions[group].parent = Object.values(children).some(Boolean); // Changed from 'every' to 'some'
+    this.updateAvailableInitialScreens();
     console.log(`Checked parent status for ${group}:`, this.permissions[group].parent);
   }
 
@@ -187,9 +198,14 @@ export class PermissionComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (!this.initialScreen) {
+      alert('Please select an initial screen!');
+      return;
+    }
+
     const payload: Permission = {
       role: this.selectedRole,
-      initialScreen: this.initialScreen || 'dashboard',
+      initialScreen: this.initialScreen,
       screens: this.permissions
     };
 
@@ -234,7 +250,13 @@ export class PermissionComponent implements OnInit, OnDestroy {
 
   loadPermissions(savedData: Permission) {
     this.selectedRole = savedData.role;
-    this.initialScreen = savedData.initialScreen || 'dashboard';
+    
+    // Convert old format 'dashboard' to route path '/product/dashboard'
+    let initialScreenValue = savedData.initialScreen || '/product/dashboard';
+    if (initialScreenValue === 'dashboard') {
+      initialScreenValue = '/product/dashboard';
+    }
+    this.initialScreen = initialScreenValue;
 
     this.permissions = {
       dashboard: !!savedData.screens.dashboard,
@@ -249,6 +271,15 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.checkParent('user');
     this.checkParent('company');
     this.checkParent('material');
+    
+    // Update available screens after loading permissions
+    this.updateAvailableInitialScreens();
+    
+    // Ensure initialScreen is valid after updating available screens
+    if (this.initialScreen && !this.availableInitialScreens.find(s => s.value === this.initialScreen)) {
+      // If current initialScreen is not available, set to first available or null
+      this.initialScreen = this.availableInitialScreens.length > 0 ? this.availableInitialScreens[0].value : null;
+    }
 
     console.log('📥 Permissions loaded into form:', this.permissions);
   }
@@ -259,6 +290,71 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.initialScreen = null;
     this.selectedRole = null;
     this.existingPermissionId = null;
+    this.availableInitialScreens = [];
+  }
+  
+  updateAvailableInitialScreens() {
+    const screens: Array<{ value: string; label: string }> = [];
+    
+    // Dashboard
+    if (this.permissions.dashboard) {
+      screens.push({ value: '/product/dashboard', label: 'Dashboard' });
+    }
+    
+    // User Management screens
+    if (this.permissions.user?.children?.user) {
+      screens.push({ value: '/entity', label: 'User' });
+    }
+    if (this.permissions.user?.children?.role) {
+      screens.push({ value: '/system/roles', label: 'Role' });
+    }
+    if (this.permissions.user?.children?.shift) {
+      screens.push({ value: '/system/shifts', label: 'Shift' });
+    }
+    if (this.permissions.user?.children?.customer) {
+      screens.push({ value: '/entity/customers', label: 'Customer' });
+    }
+    if (this.permissions.user?.children?.version) {
+      screens.push({ value: '/system/user-management-update', label: 'Version' });
+    }
+    
+    // Company Management screens
+    if (this.permissions.company?.children?.companyPreferences) {
+      screens.push({ value: '/system/companypreferences', label: 'Company Preferences' });
+    }
+    if (this.permissions.company?.children?.permission) {
+      screens.push({ value: '/system/permissions', label: 'Permission' });
+    }
+    
+    // Material & Process Management screens
+    if (this.permissions.material?.children?.rawMaterial) {
+      screens.push({ value: '/product/raw-materials', label: 'Raw Material' });
+    }
+    if (this.permissions.material?.children?.process) {
+      screens.push({ value: '/product', label: 'Process' });
+    }
+    
+    // Quotation
+    if (this.permissions.quotation) {
+      screens.push({ value: '/product/quotation', label: 'Quotation Generator' });
+    }
+    
+    // Reports
+    if (this.permissions.reports) {
+      screens.push({ value: '/product/report', label: 'Reports' });
+    }
+    
+    this.availableInitialScreens = screens;
+    
+    // If current initialScreen is not in available screens, reset it
+    if (this.initialScreen && !screens.find(s => s.value === this.initialScreen)) {
+      this.initialScreen = screens.length > 0 ? screens[0].value : null;
+    }
+    
+    // If no initial screen is set and we have available screens, set the first one
+    if (!this.initialScreen && screens.length > 0) {
+      this.initialScreen = screens[0].value;
+    }
   }
 
   editPermission(p: Permission) {

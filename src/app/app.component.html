@@ -1,6 +1,6 @@
-<div *ngIf="(isLoggedIn$ | async) || currentUrl?.startsWith('/quotation') || currentUrl === '/login'; else loginPageLayout">
-  <!-- Navbar - only show when logged in -->
-  <nav class="navbar" *ngIf="isLoggedIn$ | async">
+<div *ngIf="shouldShowMainLayout; else loginPageLayout">
+  <!-- Navbar - only show when logged in and not on login/quotation routes -->
+  <nav class="navbar" *ngIf="shouldShowNavbar">
     <div class="navbar-brand">
       <a routerLink="/" class="navbar-item brand-text">Cost Management</a>
     </div>
@@ -27,7 +27,7 @@
 
   <!-- Sidebar + Main -->
   <div class="sidenav-container">
-    <aside class="custom-sidenav" *ngIf="isLoggedIn$ | async">
+    <aside class="custom-sidenav" *ngIf="shouldShowNavbar">
       <div class="sidenav-header"></div>
       <ul class="nav-list">
         <li *ngFor="let item of sidebarItems" [ngClass]="{'nav-item': true, 'has-submenu': item.submenu}">
@@ -44,7 +44,7 @@
       </ul>
     </aside>
 
-    <main class="container" [ngClass]="{'full-width': !(isLoggedIn$ | async)}">
+    <main class="container" [ngClass]="{'full-width': !(isLoggedIn$ | async) || currentUrl === '/login'}">
       <router-outlet></router-outlet>
     </main>
   </div>
@@ -56,3 +56,6 @@
     <router-outlet></router-outlet>
   </main>
 </ng-template>
+
+<!-- Loading Spinner -->
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
