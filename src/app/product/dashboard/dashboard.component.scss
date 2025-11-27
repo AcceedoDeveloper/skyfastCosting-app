@@ -142,6 +142,10 @@
   font-weight: 700;
   color: #3F5B65;
   line-height: 1.1;
+  position: relative;
+  top: 5px;
+  margin-left: 5px;
+
 }
 
 .metric-percent-pill {
@@ -447,18 +451,48 @@
 }
 
 .date-picker-container {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  .date-picker-nav {
+    width: 36px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #1f2937;
+
+    mat-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    &:hover {
+      border-color: #3F5B65;
+      color: #3F5B65;
+      box-shadow: 0 4px 10px rgba(63, 91, 101, 0.1);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(63, 91, 101, 0.2);
+    }
+  }
+
   .date-picker {
-    padding: 5px 7px;
+    padding: 10px 14px;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    width: 80%;
-    max-width: 220px;
+    width: 180px;
     background-color: white;
     color: #374151;
     transition: all 0.2s ease;
@@ -466,7 +500,7 @@
     &:focus {
       outline: none;
       border-color: #3F5B65;
-      box-shadow: 0 0 0 3px rgba(14, 22, 53, 0.1);
+      box-shadow: 0 0 0 3px rgba(63, 91, 101, 0.1);
     }
 
     &:hover {

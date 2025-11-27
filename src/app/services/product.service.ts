@@ -83,6 +83,7 @@ export class ProductService {
       params = params.set('limit', filters.limit.toString());
     }
 
+    console.log(params);
     return this.http.get<PaginatedCustomerResponse>(
       this.config.getCostingUrl('getCustomerDetails'),
       { params }

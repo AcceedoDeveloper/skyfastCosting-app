@@ -150,10 +150,11 @@ export class CustomerDetailsComponent implements OnInit {
     // Load all customers for filter options FIRST (without pagination)
     // This ensures we have data available when user selects a filter type
     // Fetch with a large limit to get all customers for filter options
-    this.productservices.getCustomersPaginated({ page: 1, limit: 1000 }).subscribe({
+    this.productservices.getCustomersPaginated({ page: 1, limit: 10 }).subscribe({
       next: (response) => {
         // Extract data array from paginated response
         const customers = response?.data || [];
+        console.log('data', response);
         if (Array.isArray(customers) && customers.length > 0) {
           console.log('Customers loaded for filters:', customers.length);
           console.log('Sample customer structure:', customers[0]);

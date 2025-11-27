@@ -38,12 +38,26 @@
 
             </div>
             <div class="date-picker-container">
+              <button
+                type="button"
+                class="date-picker-nav"
+                (click)="goToPreviousMonth()"
+                title="Previous month">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
               <input
-                id="date-filter"
-                type="date"
-                [(ngModel)]="selectedDate"
-                (ngModelChange)="onDateChange()"
+                id="month-filter"
+                type="month"
+                [(ngModel)]="selectedMonth"
+                (ngModelChange)="onMonthChange()"
                 class="date-picker" />
+              <button
+                type="button"
+                class="date-picker-nav"
+                (click)="goToNextMonth()"
+                title="Next month">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
             </div>
           </div>
         </div>

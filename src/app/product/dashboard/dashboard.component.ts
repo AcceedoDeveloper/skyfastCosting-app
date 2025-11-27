@@ -3,11 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { selectAllCustomers } from '../store/product.selectors';
-import { loadCustomers } from '../store/product.actions';
-import { CustomerDetails, Quotation } from '../../model/customer-details.model';
+import { CustomerDetails, Quotation, CustomerFilters, PaginatedCustomerResponse } from '../../model/customer-details.model';
 import { ProductService } from '../../services/product.service';
 import { ProcessDetailsDialogComponent } from './process-details-dialog.component';
 
@@ -111,7 +107,7 @@ interface CostMetric {
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  customers$!: Observable<CustomerDetails[]>;
+  private readonly customerFetchLimit = 1000;
   
   // Quotation Summary
   totalQuotations = 0;
@@ -130,9 +126,8 @@ export class DashboardComponent implements OnInit {
     { label: 'Net Difference', value: '0%', trend: 'neutral' }
   ];
 
-  // Date picker
-  selectedDate: string = new Date().toISOString().split('T')[0]; // Today's date by default
-  isInitialLoad: boolean = true; // Flag to track if it's initial load
+  // Month picker
+  selectedMonth: string = DashboardComponent.getCurrentMonth();
 
   // Two cascading dropdowns
   selectedFilterType: string = ''; // 'customer', 'partName', or 'status'
@@ -142,6 +137,8 @@ export class DashboardComponent implements OnInit {
   customerOptions: string[] = [];
   partNameOptions: string[] = [];
   statusOptions: string[] = ['Pending', 'Approved', 'Rejected'];
+  private cachedCustomerOptions: string[] = [];
+  private cachedPartNameOptions: string[] = [];
   
   // Current filter values based on selected type
   currentFilterValues: string[] = [];
@@ -319,38 +316,10 @@ export class DashboardComponent implements OnInit {
 
   private dialog = inject(MatDialog);
   
-  constructor(private store: Store, private productService: ProductService) {}
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
-    // Load customers from store
-    this.store.dispatch(loadCustomers());
-    
-    // Subscribe to customers data
-    this.customers$ = this.store.select(selectAllCustomers);
-    
-    this.customers$.subscribe(customers => {
-      // Transform customer data to quotations
-
-      console.log('Customers:', customers);
-      this.quotations = this.transformCustomersToQuotations(customers);
-
-      console.log('Quotations:', this.quotations);
-      
-      // Extract unique values for filter dropdowns
-      this.extractFilterOptions();
-      
-      // customerRevisions current filter values if a type is already selected
-      this.updateCurrentFilterValues();
-      
-      // Apply all filters
-      this.applyFilters();
-      
-      // Calculate status counts
-      this.calculateStatusCounts();
-      
-      // customerRevisions paginated quotations
-      this.updatePaginatedQuotations();
-    });
+    this.loadQuotations();
 
     this.productService.getDashboardData().subscribe(data => {
       console.log('Dashboard data:', data);
@@ -374,28 +343,40 @@ export class DashboardComponent implements OnInit {
   }
 
   extractFilterOptions(): void {
-    // Extract unique customer names
-    this.customerOptions = [...new Set(this.quotations.map(q => q.customer).filter(c => c && c !== 'N/A'))].sort();
-    
-    // Extract unique part names
-    this.partNameOptions = [...new Set(this.quotations.map(q => q.partName).filter(p => p && p !== 'N/A'))].sort();
-    
-    // Status options are already defined
+    const computedCustomers = [...new Set(this.quotations.map(q => q.customer).filter(c => c && c !== 'N/A'))].sort();
+    const computedParts = [...new Set(this.quotations.map(q => q.partName).filter(p => p && p !== 'N/A'))].sort();
+
+    if (this.selectedFilterType !== 'customer' || !this.selectedFilterValue) {
+      this.cachedCustomerOptions = computedCustomers;
+    }
+
+    if (this.selectedFilterType !== 'partName' || !this.selectedFilterValue) {
+      this.cachedPartNameOptions = computedParts;
+    }
+
+    this.customerOptions = this.cachedCustomerOptions.length ? [...this.cachedCustomerOptions] : computedCustomers;
+    this.partNameOptions = this.cachedPartNameOptions.length ? [...this.cachedPartNameOptions] : computedParts;
   }
 
   onFilterChange(): void {
-    this.pageIndex = 0; // Reset to first page when filtering
-    this.applyFilters();
-    this.calculateStatusCounts();
-    this.updatePaginatedQuotations();
+    this.pageIndex = 0;
+
+    if (this.selectedFilterType === 'status') {
+      this.applyFilters();
+      this.calculateStatusCounts();
+      this.updatePaginatedQuotations();
+      return;
+    }
+
+    this.loadQuotations();
   }
 
   applyFilters(): void {
     // Start with all quotations
     let filtered = [...this.quotations];
     
-    // Apply date filter first
-    filtered = this.applyDateFilterToArray(filtered);
+    // Apply month filter first
+    filtered = this.applyMonthFilter(filtered);
     
     // Apply filter based on selected type and value
     if (this.selectedFilterType && this.selectedFilterValue) {
@@ -420,6 +401,12 @@ export class DashboardComponent implements OnInit {
     this.selectedFilterValue = '';
     // customerRevisions the available values for the second dropdown
     this.updateCurrentFilterValues();
+
+    if (this.selectedFilterType === 'status') {
+      this.loadQuotations();
+      return;
+    }
+
     this.onFilterChange();
   }
 
@@ -427,61 +414,47 @@ export class DashboardComponent implements OnInit {
     this.onFilterChange();
   }
 
-  applyDateFilterToArray(quotations: Quotation[]): Quotation[] {
-    if (!this.selectedDate) {
+  applyMonthFilter(quotations: Quotation[]): Quotation[] {
+    if (!this.selectedMonth) {
       return quotations;
     }
 
-    const selectedDateObj = new Date(this.selectedDate + 'T00:00:00');
-    selectedDateObj.setHours(0, 0, 0, 0);
+    const [yearStr, monthStr] = this.selectedMonth.split('-');
+    const year = Number(yearStr);
+    const month = Number(monthStr);
 
-    // Get today's date for comparison
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Check if selected date is today (initial load)
-    const isToday = selectedDateObj.getTime() === today.getTime();
-
-    // On initial load with today's date, show current month's data
-    // Otherwise, filter by specific selected date
-    if (this.isInitialLoad && isToday) {
-      // Show current month's data
-      const currentMonth = today.getMonth();
-      const currentYear = today.getFullYear();
-
-      return quotations.filter(quotation => {
-        if (!quotation.sentAtDate) return false;
-        
-        const quotationDate = new Date(quotation.sentAtDate);
-        quotationDate.setHours(0, 0, 0, 0);
-        
-        return quotationDate.getFullYear() === currentYear && 
-               quotationDate.getMonth() === currentMonth;
-      });
-    } else {
-      // Filter by specific selected date
-      return quotations.filter(quotation => {
-        if (!quotation.sentAtDate) return false;
-        
-        const quotationDate = new Date(quotation.sentAtDate);
-        quotationDate.setHours(0, 0, 0, 0);
-        
-        return quotationDate.getTime() === selectedDateObj.getTime();
-      });
+    if (!year || !month) {
+      return quotations;
     }
+
+    return quotations.filter(quotation => {
+      if (!quotation.sentAtDate) return false;
+
+      const quotationDate = new Date(quotation.sentAtDate);
+      return quotationDate.getFullYear() === year &&
+             quotationDate.getMonth() === month - 1;
+    });
   }
 
-  onDateChange(): void {
-    this.isInitialLoad = false; // Mark that user has interacted with date picker
-    this.onFilterChange(); // Apply all filters including date
+  onMonthChange(): void {
+    this.loadQuotations();
+  }
+
+  goToPreviousMonth(): void {
+    this.selectedMonth = this.adjustMonth(-1);
+    this.loadQuotations();
+  }
+
+  goToNextMonth(): void {
+    this.selectedMonth = this.adjustMonth(1);
+    this.loadQuotations();
   }
 
   clearFilters(): void {
     this.selectedFilterType = '';
     this.selectedFilterValue = '';
-    this.selectedDate = new Date().toISOString().split('T')[0];
-    this.isInitialLoad = true;
-    this.onFilterChange();
+    this.selectedMonth = DashboardComponent.getCurrentMonth();
+    this.loadQuotations();
   }
 
   transformCustomersToQuotations(customers: CustomerDetails[]): Quotation[] {
@@ -538,6 +511,107 @@ export class DashboardComponent implements OnInit {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.paginatedQuotations = this.filteredQuotations.slice(startIndex, endIndex);
+  }
+
+  private loadQuotations(resetPagination: boolean = true): void {
+    if (resetPagination) {
+      this.pageIndex = 0;
+    }
+
+    const filters = this.buildCustomerFilters();
+
+    this.productService.getCustomersPaginated(filters).subscribe({
+      next: (response: PaginatedCustomerResponse) => {
+        const customers = response?.data || [];
+        this.quotations = this.transformCustomersToQuotations(customers);
+        
+        // Extract unique values for filter dropdowns
+        this.extractFilterOptions();
+        
+        // customerRevisions current filter values if a type is already selected
+        this.updateCurrentFilterValues();
+        
+        // Apply all filters
+        this.applyFilters();
+        
+        // Calculate status counts
+        this.calculateStatusCounts();
+        
+        // customerRevisions paginated quotations
+        this.updatePaginatedQuotations();
+      },
+      error: (error) => {
+        console.error('Failed to load customer quotations', error);
+        this.quotations = [];
+        this.filteredQuotations = [];
+        this.paginatedQuotations = [];
+        this.calculateStatusCounts();
+      }
+    });
+  }
+
+  private buildCustomerFilters(): CustomerFilters {
+    const filters: CustomerFilters = {
+      page: 1,
+      limit: this.customerFetchLimit
+    };
+
+    const monthRange = this.getSelectedMonthRange();
+    if (monthRange) {
+      filters.StartDate = monthRange.start;
+      filters.EndDate = monthRange.end;
+    }
+
+    if (this.selectedFilterType === 'customer' && this.selectedFilterValue) {
+      filters.customerName = this.selectedFilterValue;
+    } else if (this.selectedFilterType === 'partName' && this.selectedFilterValue) {
+      filters.partName = this.selectedFilterValue;
+    }
+
+    return filters;
+  }
+
+  private getSelectedMonthRange(): { start: string; end: string } | null {
+    if (!this.selectedMonth) {
+      return null;
+    }
+
+    const [yearStr, monthStr] = this.selectedMonth.split('-');
+    const year = Number(yearStr);
+    const month = Number(monthStr);
+
+    if (!year || !month) {
+      return null;
+    }
+
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+
+    return {
+      start: this.formatDateForApi(startDate),
+      end: this.formatDateForApi(endDate)
+    };
+  }
+
+  private formatDateForApi(date: Date): string {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private static getCurrentMonth(): string {
+    const now = new Date();
+    const month = `${now.getMonth() + 1}`.padStart(2, '0');
+    return `${now.getFullYear()}-${month}`;
+  }
+
+  private adjustMonth(offset: number): string {
+    const [yearStr, monthStr] = (this.selectedMonth || DashboardComponent.getCurrentMonth()).split('-');
+    const baseDate = new Date(Number(yearStr), Number(monthStr) - 1 + offset, 1);
+    const year = baseDate.getFullYear();
+    const month = `${baseDate.getMonth() + 1}`.padStart(2, '0');
+    return `${year}-${month}`;
   }
 
   previousPage(): void {
