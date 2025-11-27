@@ -138,16 +138,19 @@ selectedFileName: string = '';
     });
 
     this.customerdeatilas$ = this.store.select(Selector.selectAllCustomers);
-    this.customerdeatilas$.subscribe(res =>{
-      this.partName = res.map(c => c.partName);
-      this.drawingNoArray = res.map(c => c.drawingNo).filter(d => d != null && d !== undefined);
-      console.log('partname',this.partName);
-      console.log('drawingNo',this.drawingNoArray);
-      
-      
-      
-      
-    })
+    this.customerdeatilas$.subscribe(res => {
+      const customers: CustomerDetails[] = Array.isArray(res)
+        ? res
+        : Array.isArray((res as any)?.data)
+        ? (res as any).data
+        : [];
+      this.partName = customers.map((c: CustomerDetails) => c.partName);
+      this.drawingNoArray = customers
+        .map((c: CustomerDetails) => c.drawingNo)
+        .filter((d: CustomerDetails['drawingNo']) => d != null && d !== undefined);
+      console.log('partname', this.partName);
+      console.log('drawingNo', this.drawingNoArray);
+    });
     
     this.store.dispatch(customerActions.loadCustomers())
     this.store.dispatch(loadCustomer());

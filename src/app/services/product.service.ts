@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { RawMaterial, Process } from '../model/product.model';
 import { CustomerDetails, PaginatedCustomerResponse, CustomerFilters } from '../model/customer-details.model';
 import { ConfigService} from '../shared/config.service';
@@ -54,7 +55,16 @@ export class ProductService {
 
   // 🔹 Customer Details
   getCustomers(): Observable<CustomerDetails[]> {
-    return this.http.get<CustomerDetails[]>(this.config.getCostingUrl('getCustomerDetails'));
+    return this.http
+      .get<PaginatedCustomerResponse | CustomerDetails[]>(this.config.getCostingUrl('getCustomerDetails'))
+      .pipe(
+        map(response => {
+          if (Array.isArray(response)) {
+            return response;
+          }
+          return response?.data ?? [];
+        })
+      );
   }
 
   // 🔹 Get Customers with Server-Side Pagination and Filters
