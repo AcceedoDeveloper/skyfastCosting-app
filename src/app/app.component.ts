@@ -71,31 +71,24 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Set initial URL first - handle both hash and non-hash routing
     // Get URL from window.location.hash first (most reliable for hash routing)
-    let hashPath = window.location.hash;
-    if (hashPath && hashPath.startsWith('#')) {
-      hashPath = hashPath.substring(1); // Remove the #
-    }
-    const pathFromHash = hashPath.split('?')[0]; // Get path without query params
+    const pathFromHash = this.getPathFromHash();
+    const pathFromLocation = this.getPathFromLocation();
+    const routerPath = this.getRouterPath();
     
-    // Fallback to router.url if hash is not available
-    const routerPath = this.router.url.split('?')[0].replace('#', '');
-    
-    // Use hash path if available, otherwise use router path
-    this.currentUrl = pathFromHash || routerPath || '/';
+    this.currentUrl = pathFromHash || pathFromLocation || routerPath || '/';
     
     console.log('Initial URL check:', { 
-      hash: window.location.hash, 
+      hash: typeof window !== 'undefined' ? window.location.hash : '',
       pathFromHash, 
       routerUrl: this.router.url,
       routerPath,
+      pathFromLocation,
       currentUrl: this.currentUrl 
     });
     
-    // Check if current route is a public route (login or quotation)
-    const isPublicRoute = this.currentUrl === '/login' || 
-                         this.currentUrl.startsWith('/quotation') ||
-                         pathFromHash === '/quotation' ||
-                         pathFromHash?.startsWith('/quotation');
+    // Check if current route is a public route (login, quotation, report full view)
+    const isPublicRoute = [this.currentUrl, pathFromHash, pathFromLocation, routerPath]
+      .some(path => this.isPublicRoute(path));
     console.log('Is public route:', isPublicRoute, 'for URL:', this.currentUrl);
     
     // Initial state check from sessionStorage
@@ -132,11 +125,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.store.dispatch(AuthActions.logoutUser()); // This will redirect to login
         this.handleUnauthenticatedState();
       } else {
-        // On public route - just clear state but don't dispatch logoutUser (which redirects)
-        // Set loading to false so UI can show for public routes
+        // On public route - DO NOT dispatch logoutUser at all
+        // Just set loading to false so UI can show for public routes
         this.loading = false;
-        // Ensure store state is cleared but don't trigger logout effect
-        this.store.dispatch(AuthActions.logoutUser()); // This will be handled by effect to not redirect
+        // Don't clear sessionStorage or dispatch any actions - just let the route load
       }
     }
 
@@ -153,13 +145,14 @@ export class AppComponent implements OnInit, OnDestroy {
             this.store.dispatch(RoleActions.loadPermissions());
             this.loadPermissions(user.role?._id || '');
             // Only navigate if not already on a valid route
-            const routerUrl = this.router.url.replace('#', '').split('?')[0];
+            const routerUrl = this.resolveCurrentUrl();
             // Get initialScreen from user object first, then fallback to lastRoute
             const userInitialScreen = user.initialScreen;
             const lastRoute = sessionStorage.getItem('lastRoute') || userInitialScreen;
-            // Don't navigate if already on a valid route (including quotation)
+            // Don't navigate if already on a valid route (including public routes)
             // On initial login (coming from /login), use initialScreen from user or lastRoute
-            if (routerUrl === '/' || routerUrl === '' || routerUrl === '/login') {
+            const isOnPublicRoute = this.isPublicRoute(routerUrl);
+            if ((routerUrl === '/' || routerUrl === '' || routerUrl === '/login') && !isOnPublicRoute) {
               // Keep loading true during navigation from login
               this.loading = true;
               // Don't set isLoggedIn to true until navigation completes for initial login
@@ -174,7 +167,7 @@ export class AppComponent implements OnInit, OnDestroy {
               
               // Determine the route to navigate to
               const targetRoute = userInitialScreen || lastRoute || '/product/dashboard';
-              if (isInitialLogin && targetRoute && !targetRoute.includes('/login') && !targetRoute.startsWith('/quotation')) {
+              if (isInitialLogin && targetRoute && !this.isPublicRoute(targetRoute)) {
                 // On initial login, navigate to initialScreen or lastRoute
                 this.router.navigate([targetRoute], { replaceUrl: true }).then(() => {
                   // Now set isLoggedIn to true after navigation completes
@@ -184,7 +177,7 @@ export class AppComponent implements OnInit, OnDestroy {
                     this.loading = false;
                   }, 100);
                 });
-              } else if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation')) {
+              } else if (lastRoute && !lastRoute.includes('/login') && !this.isPublicRoute(lastRoute)) {
                 this.router.navigateByUrl(lastRoute).then(() => {
                   if (isInitialLogin) {
                     this.isLoggedIn = true;
@@ -205,25 +198,21 @@ export class AppComponent implements OnInit, OnDestroy {
                 });
               }
             } else {
-              // Already on a valid route, set isLoggedIn and loading immediately
+              // Already on a valid route (including public routes), set isLoggedIn and loading immediately
+              // Don't redirect away from public routes even if logged in
               this.isLoggedIn = isLoggedIn || false;
               this.loading = false;
+              // Update currentUrl to reflect actual route
+              this.currentUrl = routerUrl;
             }
           } else {
             this.permissions = this.getEmptyPermissions();
             this.sidebarItems = [];
             // Update currentUrl from router - check both hash and router.url
-            let routerUrl = this.router.url.replace('#', '').split('?')[0];
-            // Also check window.location.hash as fallback
-            if (!routerUrl || routerUrl === '/' || routerUrl === '') {
-              const hashPath = window.location.hash;
-              if (hashPath && hashPath.startsWith('#')) {
-                routerUrl = hashPath.substring(1).split('?')[0];
-              }
-            }
+            let routerUrl = this.resolveCurrentUrl();
             this.currentUrl = routerUrl;
-            // Don't redirect if user is on login or quotation route (public routes)
-            const isPublicRoute = routerUrl === '/login' || routerUrl.startsWith('/quotation');
+            // Don't redirect if user is on a public route
+            const isPublicRoute = this.isPublicRoute(routerUrl);
             if (!isPublicRoute) {
               console.log('Redirecting to login, current route:', routerUrl);
               this.router.navigate(['/login']);
@@ -239,8 +228,8 @@ export class AppComponent implements OnInit, OnDestroy {
           this.loading = false; // Always set loading to false even on error
           this.error = 'An error occurred. Redirecting to login...';
           // Only redirect if not on public route
-          const routerUrl = this.router.url.replace('#', '').split('?')[0];
-          if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+          const routerUrl = this.resolveCurrentUrl();
+          if (!this.isPublicRoute(routerUrl)) {
             this.handleUnauthenticatedState();
           }
         }
@@ -261,8 +250,8 @@ export class AppComponent implements OnInit, OnDestroy {
         // Don't block UI on permission loading error - just log it
         this.loading = false;
         // Only show error if not on public route
-        const routerUrl = this.router.url.replace('#', '').split('?')[0];
-        if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+        const routerUrl = this.resolveCurrentUrl();
+        if (!this.isPublicRoute(routerUrl)) {
           this.error = 'Failed to load permissions. Please refresh the page.';
           // Don't redirect - let user continue using the app
         }
@@ -289,8 +278,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.loading = true;
       }
       
-      // If navigating to quotation route and not logged in, ensure loading is false
-      if (this.currentUrl.startsWith('/quotation')) {
+      // If navigating to a public route and not logged in, ensure loading is false
+      if (this.isPublicRoute(this.currentUrl)) {
         this.loading = false;
       }
     });
@@ -308,7 +297,7 @@ export class AppComponent implements OnInit, OnDestroy {
       sessionStorage.setItem('lastRoute', event.urlAfterRedirects);
       
       // If navigating away from login page and user is logged in, set loading to false
-      if (url !== '/login' && !url.startsWith('/quotation')) {
+      if (!this.isPublicRoute(url)) {
         const isLoggedIn = sessionStorage.getItem('token') && sessionStorage.getItem('user');
         if (isLoggedIn) {
           setTimeout(() => {
@@ -326,8 +315,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.permissions = this.getEmptyPermissions();
         this.sidebarItems = [];
         // Only redirect if not on public route
-        const routerUrl = this.router.url.replace('#', '').split('?')[0];
-        if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+        const routerUrl = this.resolveCurrentUrl();
+        if (!this.isPublicRoute(routerUrl)) {
           this.error = 'Permission loading failed. Please refresh the page.';
           // Don't redirect - let user continue
         }
@@ -355,16 +344,48 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.permissions = this.getEmptyPermissions();
     this.sidebarItems = [];
-    // Update currentUrl from router
-    const routerUrl = this.router.url.replace('#', '').split('?')[0];
+    const routerUrl = this.resolveCurrentUrl();
     this.currentUrl = routerUrl;
-    // Don't redirect if user is on login or quotation route (public routes)
-    if (routerUrl !== '/login' && !routerUrl.startsWith('/quotation')) {
+    if (!this.isPublicRoute(routerUrl)) {
       console.log('handleUnauthenticatedState - Redirecting to login, current route:', routerUrl);
       this.router.navigate(['/login']);
     } else {
       console.log('handleUnauthenticatedState - Skipping redirect, on public route:', routerUrl);
     }
+  }
+
+  private getPathFromHash(): string {
+    if (typeof window === 'undefined') {
+      return '';
+    }
+    const hash = window.location.hash || '';
+    if (!hash) {
+      return '';
+    }
+    const normalized = hash.startsWith('#') ? hash.substring(1) : hash;
+    return normalized.split('?')[0] || '';
+  }
+
+  private getPathFromLocation(): string {
+    if (typeof window === 'undefined') {
+      return '';
+    }
+    return window.location.pathname?.split('?')[0] || '';
+  }
+
+  private getRouterPath(): string {
+    return this.router.url?.replace('#', '').split('?')[0] || '';
+  }
+
+  private resolveCurrentUrl(): string {
+    return this.getPathFromHash() || this.getPathFromLocation() || this.getRouterPath() || '/';
+  }
+
+  private isPublicRoute(url?: string | null): boolean {
+    if (!url) {
+      return false;
+    }
+    return url === '/login' || url.startsWith('/quotation') || url.startsWith('/report-full-view');
   }
 
   anyTrue(children: any): boolean {
@@ -435,7 +456,7 @@ export class AppComponent implements OnInit, OnDestroy {
       reports: true
     };
     const lastRoute = sessionStorage.getItem('lastRoute');
-    const currentUrl = this.router.url.replace('#', '').split('?')[0];
+    const currentUrl = this.resolveCurrentUrl();
     const perm: Permission = { screens: this.permissions, initialScreen: '/product/dashboard', role: '' };
     
     // Only navigate if we're on a route that needs redirect (like /system or /login)
@@ -443,7 +464,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // During initial login, delay sidebar generation until after navigation
       if (currentUrl === '/login' && this.loading) {
         // Don't generate sidebar yet - wait for navigation
-        const targetRoute = lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system' 
+        const targetRoute = lastRoute && !lastRoute.includes('/login') && !this.isPublicRoute(lastRoute) && lastRoute !== '/system' 
           ? lastRoute 
           : '/product/dashboard';
         this.router.navigate([targetRoute], { replaceUrl: true }).then(() => {
@@ -453,7 +474,7 @@ export class AppComponent implements OnInit, OnDestroy {
       } else {
         // Generate sidebar immediately for non-login routes
         this.generateSidebar(perm);
-        if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system') {
+        if (lastRoute && !lastRoute.includes('/login') && !this.isPublicRoute(lastRoute) && lastRoute !== '/system') {
           this.router.navigateByUrl(lastRoute);
         } else {
           this.router.navigate(['/product/dashboard'], { replaceUrl: true });
@@ -468,7 +489,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private applyPermissions(perm: Permission) {
     this.permissions = perm.screens;
     const lastRoute = sessionStorage.getItem('lastRoute');
-    const currentUrl = this.router.url.replace('#', '').split('?')[0];
+    const currentUrl = this.resolveCurrentUrl();
     
     // Only navigate if we're on a route that needs redirect (like /system or /login)
     // Don't override if already on a valid route like /product/dashboard
@@ -477,7 +498,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // This prevents the flash of navbar/sidebar with login form
       if (currentUrl === '/login' && this.loading) {
         // Don't generate sidebar yet - wait for navigation
-        const targetRoute = lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system'
+        const targetRoute = lastRoute && !lastRoute.includes('/login') && !this.isPublicRoute(lastRoute) && lastRoute !== '/system'
           ? lastRoute
           : (perm.initialScreen || '/product/dashboard');
         this.router.navigate([targetRoute], { replaceUrl: true }).then(() => {
@@ -487,7 +508,7 @@ export class AppComponent implements OnInit, OnDestroy {
       } else {
         // Generate sidebar immediately for non-login routes
         this.generateSidebar(perm);
-        if (lastRoute && !lastRoute.includes('/login') && !lastRoute.startsWith('/quotation') && lastRoute !== '/system') {
+        if (lastRoute && !lastRoute.includes('/login') && !this.isPublicRoute(lastRoute) && lastRoute !== '/system') {
           this.router.navigateByUrl(lastRoute);
         } else if (perm.initialScreen) {
           this.router.navigate([perm.initialScreen]);
@@ -590,12 +611,12 @@ export class AppComponent implements OnInit, OnDestroy {
   get shouldShowMainLayout(): boolean {
     // Don't show layout if loading or on login/quotation routes
     // This prevents the flash during initial login navigation
-    return !this.loading && this.isLoggedIn && this.currentUrl !== '/login' && !this.currentUrl?.startsWith('/quotation');
+    return !this.loading && this.isLoggedIn && !this.isPublicRoute(this.currentUrl);
   }
 
   get shouldShowNavbar(): boolean {
     // Don't show navbar if loading or on login/quotation routes
     // This prevents the flash during initial login navigation
-    return !this.loading && this.isLoggedIn && this.currentUrl !== '/login' && !this.currentUrl?.startsWith('/quotation');
+    return !this.loading && this.isLoggedIn && !this.isPublicRoute(this.currentUrl);
   }
 }

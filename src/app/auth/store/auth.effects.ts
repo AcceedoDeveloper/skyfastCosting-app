@@ -55,10 +55,15 @@ export class AuthEffects {
           hashPath = hashPath.substring(1);
         }
         const pathFromHash = hashPath.split('?')[0];
+        const pathFromLocation = typeof window !== 'undefined'
+          ? window.location.pathname?.split('?')[0] || ''
+          : '';
         const routerPath = this.router.url.replace('#', '').split('?')[0];
-        const currentUrl = pathFromHash || routerPath;
+        const currentUrl = pathFromHash || pathFromLocation || routerPath;
         
-        const isPublicRoute = currentUrl === '/login' || currentUrl.startsWith('/quotation');
+        const isPublicRoute = currentUrl === '/login' || 
+                              currentUrl.startsWith('/quotation') || 
+                              currentUrl.startsWith('/report-full-view');
         
         // Only redirect to login if not on a public route
         if (!isPublicRoute) {

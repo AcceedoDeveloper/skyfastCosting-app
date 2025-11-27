@@ -14,7 +14,9 @@ export interface Process {
 export interface RawMaterial {
   _id?: string;
   GradeName: string;
+  gradeName?: string;
   RatePerKg: number;
+  ratePerKg?: number;
   createdAt?: Date;
   updatedAt?: Date;
   __v?: number;

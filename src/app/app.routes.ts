@@ -16,6 +16,12 @@ export const routes: Routes = [
     canActivate: [] // Explicitly set empty array to ensure no guards are applied
   },
   {
+    path: 'report-full-view',
+    // Public route so report PDFs can be opened without auth
+    loadComponent: () => import('./product/report/report-full-view/report-full-view.component').then(m => m.ReportFullViewComponent),
+    canActivate: []
+  },
+  {
     path: 'todos',
     canActivate: [authGuard],
     loadComponent: () => import('./post-login/postlogin/postlogin.component').then(m => m.PostloginComponent)

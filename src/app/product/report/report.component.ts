@@ -1,17 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, map, take, takeUntil, Subject, BehaviorSubject, switchMap } from 'rxjs';
+import { Observable, map, takeUntil, Subject, BehaviorSubject, switchMap } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { selectAllCustomers } from '../store/product.selectors';
 import { CustomerDetails, CustomerFilters, PaginatedCustomerResponse } from '../../model/customer-details.model';
 import * as customerActions from '../store/product.actions';
 import { ProductService } from '../../services/product.service';
-import html2pdf from 'html2pdf.js';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report',
@@ -69,11 +67,10 @@ export class ReportComponent implements OnInit, OnDestroy {
   // Expandable rows tracking
   expandedRowId: string | null = null;
 
-  @ViewChild('pdfContent') pdfContent!: ElementRef;
-
   constructor(
     private store: Store,
-    private productService: ProductService
+    private productService: ProductService,
+    private router: Router
   ) {}
 
   ngOnDestroy(): void {
@@ -443,235 +440,26 @@ export class ReportComponent implements OnInit, OnDestroy {
     this.popupCustomer = null;
   }
 
-  downloadFullInfoPDF(): void {
-    if (!this.popupCustomer) {
+  openFullInfoInNewTab(): void {
+    if (!this.popupCustomer || typeof window === 'undefined') {
       return;
     }
 
-    // Always use the hidden PDF content div - it has the proper format
-    setTimeout(() => {
-      const element = document.getElementById('fullInfoPdfContent');
-      
-      if (!element) {
-        console.error('PDF content element not found');
-        return;
-      }
+    const viewId = window.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const storageKey = `reportFullView:${viewId}`;
 
-      // Save original styles
-      const originalDisplay = element.style.display;
-      const originalPosition = element.style.position;
-      const originalLeft = element.style.left;
-      const originalTop = element.style.top;
-      const originalWidth = element.style.width;
-      const originalOverflow = element.style.overflow;
-      const originalMaxHeight = element.style.maxHeight;
-      const originalVisibility = element.style.visibility;
-      const originalZIndex = element.style.zIndex;
-      const originalHeight = element.style.height;
-      
-      // Make element fully visible and rendered (positioned off-screen but visible to html2canvas)
-      element.style.display = 'block';
-      element.style.position = 'absolute';
-      element.style.left = '0';
-      element.style.top = '0';
-      element.style.width = '210mm';
-      element.style.visibility = 'visible';
-      element.style.zIndex = '9999';
-      element.style.overflow = 'visible';
-      element.style.maxHeight = 'none';
-      element.style.height = 'auto';
-      element.style.opacity = '1';
-      element.style.pointerEvents = 'none';
-      element.style.transform = 'translateX(-10000px)';
-
-      // Ensure all child elements are visible
-      const allChildren = element.querySelectorAll('*');
-      allChildren.forEach((child: any) => {
-        if (child.style) {
-          child.style.overflow = 'visible';
-          child.style.maxHeight = 'none';
-          child.style.height = 'auto';
-          child.style.display = '';
-          child.style.visibility = 'visible';
-        }
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(this.popupCustomer));
+      const urlTree = this.router.createUrlTree(['/report-full-view'], {
+        queryParams: { viewId }
       });
-
-      // Wait for full rendering - multiple delays to ensure everything is rendered
-      setTimeout(() => {
-        // Force multiple reflows
-        void element.offsetHeight;
-        void element.scrollHeight;
-        void element.clientHeight;
-        
-        // Ensure all tables and content are visible
-        const tables = element.querySelectorAll('table');
-        tables.forEach((table: any) => {
-          if (table.style) {
-            table.style.overflow = 'visible';
-            table.style.maxHeight = 'none';
-            table.style.height = 'auto';
-            table.style.display = 'table';
-          }
-        });
-        
-        const tbodyElements = element.querySelectorAll('tbody');
-        tbodyElements.forEach((tbody: any) => {
-          if (tbody.style) {
-            tbody.style.overflow = 'visible';
-            tbody.style.maxHeight = 'none';
-            tbody.style.height = 'auto';
-            tbody.style.display = 'table-row-group';
-          }
-        });
-        
-        // Additional delay to ensure Angular has rendered all *ngFor loops
-        setTimeout(() => {
-          // Final check and force reflow multiple times
-          void element.offsetHeight;
-          void element.scrollHeight;
-          void element.clientHeight;
-          
-          // Count actual rendered rows to verify
-          const processRows = element.querySelectorAll('tbody tr').length;
-          const revisionRows = element.querySelectorAll('table tbody tr').length;
-          const revisionCards = element.querySelectorAll('[style*="Revision"]').length;
-          console.log('Rendered rows - Processes:', processRows, 'Revisions:', revisionRows, 'Revision Cards:', revisionCards);
-          
-          // Ensure all ngFor loops are rendered - force change detection
-          const allNgForElements = element.querySelectorAll('[ng-reflect-ng-for-of]');
-          console.log('Found ngFor elements:', allNgForElements.length);
-          
-          const finalHeight = Math.max(
-            element.scrollHeight,
-            element.offsetHeight,
-            element.clientHeight,
-            element.getBoundingClientRect().height
-          );
-          
-          console.log('Final element height:', finalHeight);
-          
-          // Set explicit height to ensure capture
-          element.style.height = finalHeight + 'px';
-          
-          // One more delay to ensure height is applied
-          setTimeout(() => {
-            this.generatePDF(element!, true, {
-              display: originalDisplay,
-              position: originalPosition,
-              left: originalLeft,
-              top: originalTop,
-              width: originalWidth,
-              overflow: originalOverflow,
-              maxHeight: originalMaxHeight,
-              visibility: originalVisibility,
-              zIndex: originalZIndex,
-              height: originalHeight
-            });
-          }, 500);
-        }, 1000);
-      }, 1000);
-    }, 200);
-  }
-
-  private generatePDF(element: HTMLElement, restoreStyles: boolean, originalStyles: any): void {
-    const customerName = this.getCustomerName(this.popupCustomer!).replace(/[^a-z0-9]/gi, '_');
-    const partName = (this.popupCustomer?.partName || 'N/A').replace(/[^a-z0-9]/gi, '_');
-    const filename = `Customer_Full_Details_${customerName}_${partName}_${new Date().toISOString().split('T')[0]}.pdf`;
-
-    // Use html2canvas + jsPDF directly - let html2canvas auto-detect dimensions
-    html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-      allowTaint: true,
-      scrollX: 0,
-      scrollY: 0,
-      onclone: (clonedDoc: Document) => {
-        // Ensure cloned document has all elements visible
-        const clonedElement = clonedDoc.getElementById('fullInfoPdfContent');
-        if (clonedElement) {
-          clonedElement.style.display = 'block';
-          clonedElement.style.visibility = 'visible';
-          clonedElement.style.overflow = 'visible';
-          clonedElement.style.maxHeight = 'none';
-          clonedElement.style.height = 'auto';
-          
-          // Make all children visible
-          const allElements = clonedElement.querySelectorAll('*');
-          allElements.forEach((el: any) => {
-            if (el.style) {
-              el.style.overflow = 'visible';
-              el.style.maxHeight = 'none';
-              el.style.height = 'auto';
-              el.style.display = '';
-              el.style.visibility = 'visible';
-            }
-          });
-        }
-      }
-    }).then((canvas: HTMLCanvasElement) => {
-      console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const margin = 3;
-      const contentWidth = pdfWidth - (margin * 2);
-      const contentHeight = pdfHeight - (margin * 2);
-      
-      const imgWidth = contentWidth;
-      const imgHeight = (canvas.height * contentWidth) / canvas.width;
-      
-      // If content fits on one page
-      if (imgHeight <= contentHeight) {
-        pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
-      } else {
-        // Multi-page handling
-        let heightLeft = imgHeight;
-        let position = margin;
-        
-        // Add first page
-        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-        heightLeft -= contentHeight;
-        
-        // Add additional pages if needed
-        while (heightLeft > 0) {
-          position = margin - (imgHeight - heightLeft);
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-          heightLeft -= contentHeight;
-        }
-      }
-      
-      pdf.save(filename);
-      
-      if (restoreStyles) {
-        element.style.display = originalStyles.display || 'none';
-        element.style.position = originalStyles.position || '';
-        element.style.left = originalStyles.left || '';
-        element.style.top = originalStyles.top || '';
-        element.style.width = originalStyles.width || '';
-        element.style.visibility = originalStyles.visibility || 'hidden';
-        element.style.zIndex = originalStyles.zIndex || '';
-        element.style.overflow = originalStyles.overflow || '';
-        element.style.maxHeight = originalStyles.maxHeight || '';
-        element.style.height = originalStyles.height || '';
-        element.style.opacity = '';
-        element.style.pointerEvents = '';
-        element.style.transform = '';
-      }
-    }).catch((error) => {
-      console.error('PDF generation error:', error);
-      if (restoreStyles) {
-        element.style.display = originalStyles.display || 'none';
-        element.style.visibility = originalStyles.visibility || 'hidden';
-        element.style.overflow = originalStyles.overflow || '';
-        element.style.maxHeight = originalStyles.maxHeight || '';
-        element.style.height = '';
-      }
-    });
+      const url = this.router.serializeUrl(urlTree);
+      // Navigate in the same tab instead of opening a new tab
+      this.router.navigateByUrl(url);
+    } catch (error) {
+      console.error('Failed to navigate to full view', error);
+      window.localStorage.removeItem(storageKey);
+    }
   }
 
   private getCurrentMonth(): string {

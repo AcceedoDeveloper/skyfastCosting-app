@@ -23,7 +23,7 @@ export const productRoutes: Routes = [
         component: DashboardComponent
     },
     {
-path:'report',
-component: ReportComponent
+        path:'report',
+        component: ReportComponent
     }
 ];
