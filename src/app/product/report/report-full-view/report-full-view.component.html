@@ -1,185 +1,218 @@
 <ng-container *ngIf="!isLoading && customer as currentCustomer; else statusState">
   <div class="full-view">
     <header class="full-view__header">
-      <div>
-        <h1>Customer Full Details Report</h1>
-        <p>Generated on {{ getCurrentDateString() }}</p>
-      </div>
-      <div class="full-view__meta">
-        <span>ID: {{ currentCustomer._id || 'N/A' }}</span>
-        <span>Revisions: {{ currentCustomer.revisions.length || 0 }}</span>
+      <div class="header-content">
+        <div class="header-title">
+          <h1>
+            <mat-icon>description</mat-icon>
+            Customer Full Details Report
+          </h1>
+          <p class="subtitle">Generated on {{ getCurrentDateString() }}</p>
+        </div>
+        <div class="header-meta">
+          <div class="meta-item">
+            <mat-icon>fingerprint</mat-icon>
+            <span>ID: {{ currentCustomer._id || 'N/A' }}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>history</mat-icon>
+            <span>Revisions: {{ currentCustomer.revisions.length || 0 }}</span>
+          </div>
+        </div>
       </div>
     </header>
 
-    <section class="grid">
-      <div class="card">
-        <h2><mat-icon>person</mat-icon> Customer Details</h2>
-        <div class="details-grid">
-          <div>
-            <span class="label">Customer Name</span>
-            <span>{{ getCustomerName(currentCustomer) }}</span>
-          </div>
-          <div>
-            <span class="label">Part Name</span>
-            <span>{{ currentCustomer.partName || 'N/A' }}</span>
-          </div>
-          <div>
-            <span class="label">Drawing Number</span>
-            <span>{{ currentCustomer.drawingNo || 'N/A' }}</span>
-          </div>
-          <div>
-            <span class="label">Product Name</span>
-            <span>{{ currentCustomer.productName || 'N/A' }}</span>
-          </div>
-          <div>
-            <span class="label">Created Date</span>
-            <span>{{ formatDate(currentCustomer.createdAt) }}</span>
-          </div>
-          <div>
-            <span class="label">Updated Date</span>
-            <span>{{ formatDate(currentCustomer.updatedAt) }}</span>
+    <section class="content-section">
+      <div class="card table-card">
+        <div class="card-header">
+          <h2>
+            <mat-icon>person</mat-icon>
+            Customer Details
+          </h2>
+        </div>
+        <div class="card-body">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <tbody>
+                <tr class="even-row">
+                  <td class="label-cell">Customer Name</td>
+                  <td class="value-cell font-medium">{{ getCustomerName(currentCustomer) }}</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">Part Name</td>
+                  <td class="value-cell">{{ currentCustomer.partName || 'N/A' }}</td>
+                </tr>
+                <tr class="even-row">
+                  <td class="label-cell">Drawing Number</td>
+                  <td class="value-cell">{{ currentCustomer.drawingNo || 'N/A' }}</td>
+                </tr>
+                <tr class="even-row">
+                  <td class="label-cell">Created Date</td>
+                  <td class="value-cell">{{ formatDate(currentCustomer.createdAt) }}</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">Updated Date</td>
+                  <td class="value-cell">{{ formatDate(currentCustomer.updatedAt) }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
 
       <ng-container *ngIf="getLatestRevision(currentCustomer) as latestRevision">
-        <div class="card">
-          <h2><mat-icon>history</mat-icon> Latest Revision</h2>
-          <div class="details-grid">
-            <div><span class="label">Revision Number</span><span>{{ latestRevision.revisionNumber || 'N/A' }}</span></div>
-            <div><span class="label">Product Name</span><span>{{ latestRevision.productName || 'N/A' }}</span></div>
-            <div><span class="label">Casting Weight</span><span>{{ latestRevision.castingWeight || 'N/A' }}</span></div>
-            <div><span class="label">Cavities</span><span>{{ latestRevision.cavities || 'N/A' }}</span></div>
-            <div><span class="label">Melting Loss</span><span>{{ latestRevision.meltingLoss || 'N/A' }}</span></div>
-            <div><span class="label">Short Weight</span><span>{{ latestRevision.shortWeight || 'N/A' }}</span></div>
-            <div><span class="label">Rejection</span><span>{{ latestRevision.Rejection || 'N/A' }}</span></div>
-            <div><span class="label">Interest Rate</span><span>{{ latestRevision.InterestRate || 'N/A' }}</span></div>
-            <div><span class="label">Inspector Cost</span><span>{{ latestRevision.InspectorCost ? ('₹' + latestRevision.InspectorCost) : 'N/A' }}</span></div>
-            <div><span class="label">Freight</span><span>{{ latestRevision.Freight || 'N/A' }}</span></div>
-            <div><span class="label">Mode of Transport</span><span>{{ latestRevision.ModeOfTransport || 'N/A' }}</span></div>
-            <div><span class="label">Packing</span><span>{{ latestRevision.Packing || 'N/A' }}</span></div>
-            <div><span class="label">Tool Ambience</span><span>{{ latestRevision.ToolAmbience || 'N/A' }}</span></div>
-            <div><span class="label">Currency</span><span>{{ latestRevision.currency || 'N/A' }}</span></div>
+        <div class="card table-card">
+          <div class="card-header">
+            <h2>
+              <mat-icon>history</mat-icon>
+              Overall Details
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="two-column-table-wrapper">
+              <div class="table-column">
+                <div class="table-wrapper">
+                  <table class="data-table">
+                    <tbody>
+                      <tr class="even-row">
+                        <td class="label-cell">Revision Number</td>
+                        <td class="value-cell font-medium highlight">{{ latestRevision.revisionNumber || 'N/A' }}</td>
+                      </tr>
+                      <tr>
+                        <td class="label-cell">Product Name</td>
+                        <td class="value-cell">{{ latestRevision.productName || 'N/A' }}</td>
+                      </tr>
+                      <tr class="even-row">
+                        <td class="label-cell">Casting Weight</td>
+                        <td class="value-cell">{{ latestRevision.castingWeight || 'N/A' }}</td>
+                      </tr>
+                      <tr>
+                        <td class="label-cell">Cavities</td>
+                        <td class="value-cell">{{ latestRevision.cavities || 'N/A' }}</td>
+                      </tr>
+                      <tr class="even-row">
+                        <td class="label-cell">Melting Loss</td>
+                        <td class="value-cell">{{ latestRevision.meltingLoss || 'N/A' }}</td>
+                      </tr>
+                      <tr>
+                        <td class="label-cell">Short Weight</td>
+                        <td class="value-cell">{{ latestRevision.shortWeight || 'N/A' }}</td>
+                      </tr>
+                      <tr class="even-row">
+                        <td class="label-cell">Rejection</td>
+                        <td class="value-cell">{{ latestRevision.Rejection || 'N/A' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="table-column">
+                <div class="table-wrapper">
+                  <table class="data-table">
+                    <tbody>
+                      <tr class="even-row">
+                        <td class="label-cell">Interest Rate</td>
+                        <td class="value-cell">{{ latestRevision.InterestRate || 'N/A' }}</td>
+                      </tr>
+                      <tr>
+                        <td class="label-cell">Inspector Cost</td>
+                        <td class="value-cell currency">{{ latestRevision.InspectorCost ? ('₹' + latestRevision.InspectorCost) : 'N/A' }}</td>
+                      </tr>
+                      <tr class="even-row">
+                        <td class="label-cell">Freight</td>
+                        <td class="value-cell">{{ latestRevision.Freight || 'N/A' }}</td>
+                      </tr>
+                      <tr>
+                        <td class="label-cell">Mode of Transport</td>
+                        <td class="value-cell">{{ latestRevision.ModeOfTransport || 'N/A' }}</td>
+                      </tr>
+                      <tr class="even-row">
+                        <td class="label-cell">Packing</td>
+                        <td class="value-cell">
+                          <span class="badge" [class.badge-international]="latestRevision.Packing === 'international'" [class.badge-domestic]="latestRevision.Packing === 'domestic'">{{ latestRevision.Packing || 'N/A' }}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label-cell">Tool Ambience</td>
+                        <td class="value-cell">{{ latestRevision.ToolAmbience || 'N/A' }}</td>
+                      </tr>
+                      <tr class="even-row">
+                        <td class="label-cell">Currency</td>
+                        <td class="value-cell currency">{{ latestRevision.currency || 'N/A' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <section class="grid">
-          <div class="card" *ngIf="latestRevision.rawMaterial?.length">
-            <h2><mat-icon>inventory_2</mat-icon> Raw Materials</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Grade</th>
-                  <th>Rate / kg</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let material of latestRevision.rawMaterial; let i = index">
-                  <td>{{ material.GradeName || material.gradeName || 'N/A' }}</td>
-                  <td>₹{{ material.RatePerKg || material.ratePerKg || 'N/A' }}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="grid-2-col">
+          <div class="card table-card" *ngIf="latestRevision.rawMaterial?.length">
+            <div class="card-header">
+              <h2>
+                <mat-icon>inventory_2</mat-icon>
+                Raw Materials
+              </h2>
+            </div>
+            <div class="card-body">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Grade</th>
+                      <th class="text-right">Rate / kg</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let material of latestRevision.rawMaterial; let i = index" [class.even-row]="i % 2 === 0">
+                      <td class="font-medium">{{ material.GradeName || material.gradeName || 'N/A' }}</td>
+                      <td class="text-right currency">₹{{ material.RatePerKg || material.ratePerKg || 'N/A' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
-          <div class="card" *ngIf="latestRevision.processes?.length">
-            <h2><mat-icon>settings</mat-icon> Processes</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Process</th>
-                  <th>ID</th>
-                  <th>Hours</th>
-                  <th>Cost</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let process of latestRevision.processes">
-                  <td>{{ process.processName || 'N/A' }}</td>
-                  <td>{{ process.processId || 'N/A' }}</td>
-                  <td>{{ process.Hours || 'N/A' }}</td>
-                  <td>{{ process.cost ? ('₹' + process.cost) : 'N/A' }}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="card table-card" *ngIf="latestRevision.processes?.length">
+            <div class="card-header">
+              <h2>
+                <mat-icon>settings</mat-icon>
+                Processes
+              </h2>
+            </div>
+            <div class="card-body">
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Process</th>
+                      <th>ID</th>
+                      <th class="text-right">Hours</th>
+                      <th class="text-right">Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let process of latestRevision.processes; let i = index" [class.even-row]="i % 2 === 0">
+                      <td class="font-medium">{{ process.processName || 'N/A' }}</td>
+                      <td>{{ process.processId || 'N/A' }}</td>
+                      <td class="text-right">{{ process.Hours || 'N/A' }}</td>
+                      <td class="text-right currency">
+                        {{ process.cost ? ('₹' + (process.cost | number : '1.2-2')) : 'N/A' }}
+                      </td>
+                                          </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
       </ng-container>
     </section>
 
-    <section class="card" *ngIf="currentCustomer.revisions.length">
-      <h2><mat-icon>history</mat-icon> All Revisions Summary</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Revision</th>
-            <th>Product Name</th>
-            <th>Packing</th>
-            <th>Currency</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let rev of currentCustomer.revisions">
-            <td>Rev {{ rev.revisionNumber || 'N/A' }}</td>
-            <td>{{ rev.productName || 'N/A' }}</td>
-            <td>{{ rev.Packing || 'N/A' }}</td>
-            <td>{{ rev.currency || 'N/A' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
 
-    <section class="card" *ngIf="currentCustomer.revisions.length">
-      <h2><mat-icon>description</mat-icon> Detailed Revisions</h2>
-      <div class="revision" *ngFor="let rev of currentCustomer.revisions; let revIndex = index">
-        <header>
-          <h3>Revision {{ rev.revisionNumber || 'N/A' }}</h3>
-          <span>{{ rev.productName || 'N/A' }}</span>
-        </header>
-        <div class="details-grid">
-          <div><span class="label">Casting Weight</span><span>{{ rev.castingWeight || 'N/A' }}</span></div>
-          <div><span class="label">Cavities</span><span>{{ rev.cavities || 'N/A' }}</span></div>
-          <div><span class="label">Melting Loss</span><span>{{ rev.meltingLoss || 'N/A' }}</span></div>
-          <div><span class="label">Short Weight</span><span>{{ rev.shortWeight || 'N/A' }}</span></div>
-          <div><span class="label">Rejection</span><span>{{ rev.Rejection || 'N/A' }}</span></div>
-          <div><span class="label">Interest Rate</span><span>{{ rev.InterestRate || 'N/A' }}</span></div>
-          <div><span class="label">Inspector Cost</span><span>{{ rev.InspectorCost ? ('₹' + rev.InspectorCost) : 'N/A' }}</span></div>
-          <div><span class="label">Freight</span><span>{{ rev.Freight || 'N/A' }}</span></div>
-          <div><span class="label">Transport</span><span>{{ rev.ModeOfTransport || 'N/A' }}</span></div>
-          <div><span class="label">Packing Type</span><span>{{ rev.Packing || 'N/A' }}</span></div>
-          <div><span class="label">Currency</span><span>{{ rev.currency || 'N/A' }}</span></div>
-        </div>
-
-        <div class="subsection" *ngIf="rev.Packing === 'international'">
-          <h4>International Packing Details</h4>
-          <div class="details-grid">
-            <div><span class="label">CMM Inspection</span><span>{{ rev.CMMInspection || 'N/A' }}</span></div>
-            <div><span class="label">Insurance</span><span>{{ rev.Insurance || 'N/A' }}</span></div>
-            <div><span class="label">Sea Packing</span><span>{{ rev.SeaPacking || 'N/A' }}</span></div>
-            <div><span class="label">Payment 90 Days ICC</span><span>{{ rev.Payment90DaysICC || 'N/A' }}</span></div>
-            <div><span class="label">Currency</span><span>{{ rev.currency || 'N/A' }}</span></div>
-          </div>
-        </div>
-
-        <div class="subsection" *ngIf="rev.rawMaterial?.length">
-          <h4>Raw Materials</h4>
-          <div class="chips">
-            <span *ngFor="let mat of rev.rawMaterial">
-              {{ mat.GradeName || mat.gradeName || 'N/A' }} (₹{{ mat.RatePerKg || mat.ratePerKg || 'N/A' }}/kg)
-            </span>
-          </div>
-        </div>
-
-        <div class="subsection" *ngIf="rev.processes?.length">
-          <h4>Processes</h4>
-          <div class="chips">
-            <span *ngFor="let proc of rev.processes">
-              {{ proc.processName || 'N/A' }} <ng-container *ngIf="proc.cost"> (₹{{ proc.cost }})</ng-container>
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </ng-container>
 
