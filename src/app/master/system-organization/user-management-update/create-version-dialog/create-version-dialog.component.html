@@ -1,0 +1,59 @@
+<div class="create-version-dialog">
+  <h2 mat-dialog-title>Create New Version</h2>
+  
+
+
+  <mat-dialog-content>
+    <form [formGroup]="versionForm" class="version-form">
+      <div class="full-width">
+        <label>Heading</label>
+        <input type="text" placeholder="e.g., Dashboard" formControlName="heading">
+      </div>
+
+      <div formArrayName="sections">
+        <div class="file-container" *ngFor="let section of sections.controls; let i = index" [formGroupName]="i">
+
+          <div class="file-upload-section" >
+            <label>Enter the Image name</label>
+            <input type="text" placeholder="e.g., old-image.png" formControlName="label">
+            <label>upload image</label>
+            <input type="file" #image (change)="onFileSelected($event, i)" accept="image/*" style="display: none;" id="image-{{i}}">
+            <button type="button" mat-stroked-button (click)="image.click()">
+              <mat-icon>attach_file</mat-icon>
+              Choose File
+            </button>
+            <span class="file-name">{{ getFileName(i) }}</span>
+            <mat-error *ngIf="section.get('image')?.hasError('required') && section.get('image')?.touched">
+              Image is required
+            </mat-error>
+          </div>
+
+          <div class="file-action-btn">
+            <button type="button" (click)="onaddsection()"><mat-icon>add</mat-icon></button>
+            <div *ngIf="sections.length > 1">
+              <button type="button" (click)="removesection(i)"><mat-icon>remove</mat-icon></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </form>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">Cancel</button>
+    <button
+    id="btn"
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!versionForm.valid || isSubmitting"
+      >
+      <span *ngIf="!isSubmitting">Create</span>
+      <span *ngIf="isSubmitting">Creating...</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+

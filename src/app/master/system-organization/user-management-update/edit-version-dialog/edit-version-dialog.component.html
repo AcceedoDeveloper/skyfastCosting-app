@@ -1,0 +1,123 @@
+<div class="edit-version-dialog">
+  <h2 mat-dialog-title>Edit Version</h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="editForm" class="edit-form">
+
+      <!-- Heading -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Version Heading</mat-label>
+        <input matInput formControlName="heading" placeholder="e.g., Dashboard Redesign" required>
+        <mat-error *ngIf="editForm.get('heading')?.hasError('required')">
+          Heading is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Existing + New Image Sections -->
+      <div formArrayName="sections" class="sections-container">
+        <div *ngFor="let section of sections.controls; let i = index" [formGroupName]="i" class="section-card">
+
+          <div class="section-header">
+            <h3>Image {{ i + 1 }}</h3>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeSection(i)"
+              matTooltip="Remove this image"
+              *ngIf="section.get('isNew')?.value || sections.length > 1">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <!-- Label -->
+        <!-- Label -->
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>Image Label / Name</mat-label>
+  <input 
+    matInput 
+    formControlName="label" 
+    required
+    (blur)="onLabelBlur(i)"
+    placeholder="e.g., Login Page">
+  <mat-error *ngIf="section.get('label')?.hasError('required')">
+    Label is required
+  </mat-error>
+</mat-form-field>
+
+<div class="existing-image-upload-section">
+
+
+          <!-- Existing Image Preview (if not new) -->
+          <div *ngIf="!section.get('isNew')?.value" class="existing-image-preview">
+            <label>Current Image</label>
+            <img
+              [src]="section.get('existingImageUrl')?.value"
+              alt="Current image"
+              class="preview-thumbnail" />
+          </div>
+
+       <!-- File Upload (for replace or new) -->
+<div class="file-upload-section">
+  <label class="file-upload-label">
+    {{ section.get('isNew')?.value ? 'Upload New Image' : 'Replace Image (optional)' }}
+  </label>
+  <div class="file-input-wrapper">
+    <input
+      type="file"
+      #fileInput
+      (change)="onFileSelected($event, i)"
+      accept="image/*"
+      style="display: none;"
+      id="edit-image-{{i}}">
+    <button
+      type="button"
+      mat-stroked-button
+      color="primary"
+      (click)="fileInput.click()">
+      <mat-icon>attach_file</mat-icon>
+      {{ section.get('isNew')?.value ? 'Choose File' : 'Replace File' }}
+    </button>
+    <span class="file-name">{{ getFileName(i) }}</span>
+           <mat-error *ngIf="section.get('image')?.hasError('invalidFormat')">
+             Unsupported image format. Allowed: PNG, JPG, GIF, WEBP, BMP, SVG
+           </mat-error>
+  </div>
+
+  <!-- Live preview for selected image -->
+  <!-- <div *ngIf="previewUrls[i]" class="new-preview">
+    <label>Preview</label>
+    <img [src]="previewUrls[i]" alt="Selected image preview" class="preview-thumbnail" />
+  </div> -->
+</div>
+</div>
+        </div>
+      </div>
+
+      <!-- Add New Image Button -->
+      <div class="add-section-btn-wrapper">
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          (click)="addSection()">
+          <mat-icon>add</mat-icon>
+          Add New Image
+        </button>
+      </div>
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">Cancel</button>
+<button
+  mat-raised-button
+  color="primary"
+  (click)="onSubmit()"
+  [disabled]="!hasChanges() || !editForm.valid || isSubmitting">
+  <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+  <span *ngIf="!isSubmitting">Update Version</span>
+  <span *ngIf="isSubmitting">Updating...</span>
+</button>
+  </mat-dialog-actions>
+</div>

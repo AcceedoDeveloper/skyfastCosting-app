@@ -26,7 +26,7 @@ export const systemRoutes: Routes = [
         path: 'hosting-mail-settings',
         component: HostingMailSettingsComponent
     },
-    // Permissions
+
   {
     path: 'permissions',
     canActivate: [authGuard],
