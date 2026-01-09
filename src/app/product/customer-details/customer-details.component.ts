@@ -65,7 +65,7 @@ export class CustomerDetailsComponent implements OnInit {
   currentPage: number = 0;
   
   searchTerm: string = '';
-  searchFilterType: 'none' | 'all' | 'customerName' | 'drawingNo' | 'partName' = 'none';
+  searchFilterType: 'none' | 'all' | 'customerName' | 'drawingNo' | 'partName' = 'all';
   selectedSearchValue: string = '';
   searchFilterOptions: string[] = [];
   dateFilterType: 'none' | 'all' | 'date' | 'week' | 'month' | 'year' = 'month';
@@ -147,9 +147,6 @@ export class CustomerDetailsComponent implements OnInit {
       })
     );
 
-    // Load all customers for filter options FIRST (without pagination)
-    // This ensures we have data available when user selects a filter type
-    // Fetch with a large limit to get all customers for filter options
     this.productservices.getCustomersPaginated({ page: 1, limit: 10 }).subscribe({
       next: (response) => {
         // Extract data array from paginated response
@@ -194,6 +191,8 @@ export class CustomerDetailsComponent implements OnInit {
 
     // Load all customers for filter options (without pagination)
     this.store.dispatch(customerActions.loadCustomers());
+
+    this.setdefaultDateFilterValue();
     
     // Set default month filter to current month
     this.filters.month = this.getCurrentMonth();
@@ -270,34 +269,93 @@ export class CustomerDetailsComponent implements OnInit {
       disableClose:true, 
     });
 
-     dialogRef.afterClosed().subscribe(result => {
-    if (result) {
+dialogRef.afterClosed().subscribe(result => {
+    if (result === true) {
+     
+      this.loadCustomers();
+
+     
       this.store.dispatch(customerActions.loadCustomers());
+
+    
     }
   });
   }
 
+
+  private setdefaultDateFilterValue(): void {
+  const now = new Date();
+
+  switch (this.dateFilterType) {
+    case 'date':
+      this.filters.singleDate = now.toISOString().split('T')[0]; // YYYY-MM-DD
+      break;
+
+    case 'week': {
+      const year = now.getFullYear();
+      const week = this.getISOWeekNumber(now);
+      // Force correct padding and format
+      this.filters.week = `${year}-W${String(week).padStart(2, '0')}`;
+      // Extra safety: log to verify
+      console.log('Default week set to:', this.filters.week);
+      break;
+    }
+
+    case 'month':
+      this.filters.month = this.getCurrentMonth();
+      break;
+
+    case 'year':
+      this.filters.year = now.getFullYear().toString();
+      break;
+
+    default:
+      this.filters = { singleDate: '', week: '', month: '', year: '' };
+      break;
+  }
+}
+
+private getISOWeekNumber(date: Date): number {
+  // Copy date so we don't modify original
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+
+  // Set to nearest Thursday: current date + 4 - current day number
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+
+  // Get first day of year
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+
+  // Calculate full weeks to nearest Thursday
+  const weekNo = Math.ceil(
+    ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
+  );
+
+  return weekNo;
+}
+
   onDelete(_id: string | undefined) {
-    if (!_id) return; // safeguard
+  if (!_id) return;
 
-    const dialogRef = this.dialog.open(ConfrimDialogComponent, {
-      width: '350px',
-      data: {
-        title: 'Delete Customer',
-        message: 'Are you sure you want to delete this customer?'
-      }
-    });
+  const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Delete Customer',
+      message: 'Are you sure you want to delete this customer?'
+    }
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
+  dialogRef.afterClosed().subscribe(result => {
     if (result === 'confirm') {
       this.store.dispatch(customerActions.deleteCustomer({ id: _id }));
 
-      // Wait for delete success, then reload
-      this.store.dispatch(customerActions.loadCustomers());
+      // Immediately reload paginated data
+      this.loadCustomers();
+
+      this.tooser.success('Customer deleted successfully!');
     }
   });
-  }
-
+}
   onEdit(customer: CustomerDetails) {
     const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
       width: '590%',
@@ -307,12 +365,13 @@ export class CustomerDetailsComponent implements OnInit {
       disableClose:true, 
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // If user saved changes, dispatch update
-        this.store.dispatch(customerActions.loadCustomers());
-      }
-    });
+ dialogRef.afterClosed().subscribe(result => {
+    if (result === true || result === 'success') {
+      this.loadCustomers();
+      this.store.dispatch(customerActions.loadCustomers());
+     
+    }
+  });
   }
 
   onRevisionSelect(revision: any, event: any) {
@@ -391,6 +450,9 @@ export class CustomerDetailsComponent implements OnInit {
     if (this.dateFilterType === 'none' || this.dateFilterType === 'all') {
       this.dateFilterType = 'none';
     }
+    else{
+      this.setdefaultDateFilterValue();
+    }
     this.currentPage = 0; // Reset to first page
     this.loadCustomers();
   }
@@ -425,7 +487,7 @@ export class CustomerDetailsComponent implements OnInit {
     const customerId = customer._id;
     
     if (!customerId || revisions.length === 0) {
-      console.warn('⚠️ Status change skipped: Missing customer ID or revisions', {
+      console.warn(' Status change skipped: Missing customer ID or revisions', {
         customerId: customerId,
         hasRevisions: revisions.length > 0
       });
@@ -437,26 +499,26 @@ export class CustomerDetailsComponent implements OnInit {
     const oldStatus = latestRevision?.Status || 'Pending';
 
     // Log the status change
-    console.log('🔄 Status Change Detected:', {
-      customerId: customerId,
-      customerName: customer.customerName?.customerName,
-      partName: customer.partName,
-      revisionNumber: latestRevision?.revisionNumber,
-      oldStatus: oldStatus,
-      newStatus: newStatus,
-      timestamp: new Date().toISOString(),
-      changed: oldStatus !== newStatus
-    });
+    // console.log('🔄 Status Change Detected:', {
+    //   customerId: customerId,
+    //   customerName: customer.customerName?.customerName,
+    //   partName: customer.partName,
+    //   revisionNumber: latestRevision?.revisionNumber,
+    //   oldStatus: oldStatus,
+    //   newStatus: newStatus,
+    //   timestamp: new Date().toISOString(),
+    //   changed: oldStatus !== newStatus
+    // });
 
     // Log if status actually changed
     if (oldStatus !== newStatus) {
-      console.log('✅ Status Updated:', {
+      console.log(' Status Updated:', {
         from: oldStatus,
         to: newStatus,
         customer: `${customer.customerName?.customerName} - ${customer.partName}`
       });
     } else {
-      console.log('ℹ️ Status unchanged (same value selected)');
+      console.log(' Status unchanged (same value selected)');
       return; // Don't make API call if status hasn't changed
     }
 
@@ -466,7 +528,7 @@ export class CustomerDetailsComponent implements OnInit {
       Status: newStatus
     };
 
-    console.log('📦 Update Payload:', {
+    console.log(' Update Payload:', {
       customerId: customerId,
       payload: payload
     });
@@ -1064,6 +1126,96 @@ getTotalProcessCostByCurrency(revision: any, currency: string = '') {
   return revision[key] ?? revision.TotalProcessCost;
 }
 
+onDateArrowKey(event: KeyboardEvent, direction: 'prev' | 'next'): void {
+  event.preventDefault();
+  if (!this.filters.singleDate) {
+    this.filters.singleDate = new Date().toISOString().split('T')[0];
+  }
+
+  const date = new Date(this.filters.singleDate);
+  if (direction === 'prev') {
+    date.setDate(date.getDate() - 1);
+  } else {
+    date.setDate(date.getDate() + 1);
+  }
+  this.filters.singleDate = date.toISOString().split('T')[0];
+  this.onDateChange();
+}
+
+onWeekArrowKey(event: KeyboardEvent, direction: 'prev' | 'next'): void {
+  event.preventDefault();
+  if (!this.filters.week) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const week = this.getISOWeekNumber(now);
+    this.filters.week = `${year}-W${String(week).padStart(2, '0')}`;
+  }
+
+  const [yearStr, weekStr] = this.filters.week.split('-W');
+  let year = Number(yearStr);
+  let week = Number(weekStr);
+
+  if (direction === 'prev') {
+    week--;
+    if (week < 1) {
+      week = 52; // Rough estimate; some years have 53
+      year--;
+    }
+  } else {
+    week++;
+    if (week > 53) {
+      week = 1;
+      year++;
+    }
+  }
+
+  this.filters.week = `${year}-W${String(week).padStart(2, '0')}`;
+  this.onWeekChange();
+}
+
+onMonthArrowKey(event: KeyboardEvent, direction: 'prev' | 'next'): void {
+  event.preventDefault();
+  if (!this.filters.month) {
+    this.filters.month = this.getCurrentMonth();
+  }
+
+  const [yearStr, monthStr] = this.filters.month.split('-');
+  let year = Number(yearStr);
+  let month = Number(monthStr);
+
+  if (direction === 'prev') {
+    month--;
+    if (month < 1) {
+      month = 12;
+      year--;
+    }
+  } else {
+    month++;
+    if (month > 12) {
+      month = 1;
+      year++;
+    }
+  }
+
+  this.filters.month = `${year}-${String(month).padStart(2, '0')}`;
+  this.onMonthChange();
+}
+
+onYearArrowKey(event: KeyboardEvent, direction: 'prev' | 'next'): void {
+  event.preventDefault();
+
+  if (!this.filters.year) {
+    this.filters.year = new Date().getFullYear().toString();
+  }
+
+  let year = Number(this.filters.year);
+  year = direction === 'prev' ? year - 1 : year + 1;
+
+  if (year >= 2000 && year <= 2100) {
+    this.filters.year = year.toString();
+    this.onYearChange();
+  }
+}
 
 
   getTotalPriceByCurrency(revision: any, currency: string = '') {

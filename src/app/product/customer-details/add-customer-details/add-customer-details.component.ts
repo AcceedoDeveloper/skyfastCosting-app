@@ -368,7 +368,7 @@ onSave() {
    
     setTimeout(() => {
       this.store.dispatch(Action.updateCustomer({ id: this.Cusid!, customer: result }));
-      // this.toastr.success('Customer Added successfully!');
+      this.toastr.success('Customer Added successfully!');
       this.loading = false;
       this.dialogRef.close(true);
     }, 1000); 
