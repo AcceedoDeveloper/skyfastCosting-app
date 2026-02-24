@@ -100,7 +100,7 @@
 
   <!-- Popup Form -->
   <div *ngIf="showForm" class="popup-overlay">
-    <div class="popup">
+    <div class="popup permission-popup">
       <h3>{{ existingPermissionId ? 'Edit Permission' : 'Add Permission' }}</h3>
       <button class="close-btn" (click)="showForm = false">&times;</button>
 
@@ -139,7 +139,7 @@
       </form>
 
       <!-- Permissions Checkboxes -->
-      <ul class="nav-list">
+      <ul class="permissions-container">
         <!-- Dashboard -->
         <li class="nav-item permission-card">
           <div class="nav-item-content">

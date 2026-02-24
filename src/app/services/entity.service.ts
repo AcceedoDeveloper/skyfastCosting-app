@@ -84,8 +84,7 @@ export class EntityService {
   }
 
 
-  // entity.service.ts --> permission
-// entity.service.ts
+
 // 🔹 Permissions
 getPermissions(): Observable<Permission[]> {
   if (this.cachedPermissions) return of(this.cachedPermissions);

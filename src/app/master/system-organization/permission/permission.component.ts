@@ -209,7 +209,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       screens: this.permissions
     };
 
-    console.log('💾 Saving permission payload via NgRx:', payload);
+    console.log(' Saving permission payload via NgRx:', payload);
 
     if (this.existingPermissionId) {
       this.store.dispatch(RoleActions.updatePermission({ id: this.existingPermissionId, permission: payload }));
@@ -281,11 +281,11 @@ export class PermissionComponent implements OnInit, OnDestroy {
       this.initialScreen = this.availableInitialScreens.length > 0 ? this.availableInitialScreens[0].value : null;
     }
 
-    console.log('📥 Permissions loaded into form:', this.permissions);
+    // console.log(' Permissions loaded into form:', this.permissions);
   }
 
   resetPermissions() {
-    console.log('🔁 Resetting permission form');
+    // console.log('Resetting permission form');
     this.permissions = this.getEmptyPermissions();
     this.initialScreen = null;
     this.selectedRole = null;
@@ -309,7 +309,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
       screens.push({ value: '/system/roles', label: 'Role' });
     }
     if (this.permissions.user?.children?.shift) {
-      screens.push({ value: '/system/shifts', label: 'Shift' });
+      screens.push({ value: '/system/shifts', label: 'Customer' });
     }
     if (this.permissions.user?.children?.customer) {
       screens.push({ value: '/entity/customers', label: 'Customer' });

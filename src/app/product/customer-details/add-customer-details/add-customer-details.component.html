@@ -126,7 +126,7 @@
       <div class="step-actions">
         <button class="btn btn-danger" (click)="close()">Cancel</button>
       <!-- <button type="button" class="btn btn-secondary" (click)="fileInput.click()">Upload Image</button> -->
-        <button class="btn btn-primary" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
+        <button class="btn btn-primary" id="nextbtn" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
       </div>
     </form>
 
@@ -134,104 +134,105 @@
   </mat-step>
 
   <!-- STEP 2 -->
-  <mat-step [stepControl]="processForm">
-    <button class="addbtn" mat-mini-fab color="primary" (click)="addProcessSelection()">
-      <mat-icon>add</mat-icon>
-    </button>
+<mat-step [stepControl]="processForm">
+
+  <!-- Add -->
+   <div class="addcontainer">
+  <button class="addbtn" type="button" (click)="addProcessSelection()">
+    <mat-icon>add</mat-icon>
+  </button>
+   </div>
+
+
   <form [formGroup]="processForm">
+
     <ng-template matStepLabel>Materials & Processes</ng-template>
-  
-
-      <div formArrayName="processSelection">
-  <div *ngFor="let procCtrl of processSelection.controls; let i = index" [formGroupName]="i" >
-
-    <div class="step2div">
-
-      <!-- Process select -->
-    <mat-form-field appearance="outline" class="field">
-      <mat-label>Select Process</mat-label>
-      <mat-select formControlName="processId" (selectionChange)="onProcessChange(i, $event.value)">
-        <mat-option *ngFor="let p of (process$ | async)" [value]="p._id">
-         {{ p.processName }} {{ p.machineCentre }} 
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- TonnageJaw -->
-    <mat-form-field appearance="outline" class="field">
-      <mat-label>Tonnage / Jaw</mat-label>
-      <input matInput type="text" formControlName="TonnageJaw" readonly />
-    </mat-form-field>
-
-    <!-- Hours -->
-    <mat-form-field appearance="outline" class="field">
-      <mat-label>Machine / per hr</mat-label>
-      <input matInput type="number" formControlName="Hours" readonly />
-    </mat-form-field>
-
-    <!-- Cycle Time -->
-    <mat-form-field appearance="outline" class="field1">
-      <mat-label>Cycle Time / Weight</mat-label>
-      <input matInput type="number" formControlName="cycleTime" />
-    </mat-form-field>
-
-    <!-- Cavity -->
-    <mat-form-field appearance="outline" class="field1">
-      <mat-label>Cavity</mat-label>
-      <input matInput type="number" formControlName="cavity" />
-    </mat-form-field>
-
-<div class="cost" >
-  <h5 >Cost {{ calculateProcessValue(procCtrl.value) }}</h5>
-
-  
- <div class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <div class="info-content">
-
-    <h5> Formula: (Hours / (3600 / CycleTime) / Cavity)  </h5> 
-    <h5>
-      = ({{ procCtrl.value.Hours || 0 }} / (3600 / {{ procCtrl.value.cycleTime || 0 }}) / {{ procCtrl.value.cavity || 0 }})
-   </h5> 
-   <strong>Result: {{ calculateProcessValue(procCtrl.value) }}</strong>
-  </div>
-  
-
-</div>
-
-</div>
-
-</div>
 
 
 
-        <!-- Delete button -->
-    <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcessSelection(i)">
+   
+    <div formArrayName="processSelection">
+
+      <div *ngFor="let procCtrl of processSelection.controls; let i = index"
+           [formGroupName]="i"
+           class="step2div">
+
+        <!-- Process -->
+        <div class="form-group field">
+          <label>Select Process</label>
+          <select formControlName="processId"
+                  (change)="onProcessChange(i, $any($event.target).value)">
+            <option value="null">Select</option>
+            <option *ngFor="let p of (process$ | async)" [value]="p._id">
+              {{ p.processName }} {{ p.machineCentre }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Tonnage -->
+        <div class="form-group field">
+          <label>Tonnage / Jaw</label>
+          <input type="text" formControlName="TonnageJaw" readonly />
+        </div>
+
+        <!-- Hours -->
+        <div class="form-group field">
+          <label>Machine / per hr</label>
+          <input type="number" formControlName="Hours" readonly />
+        </div>
+
+        <!-- Cycle -->
+        <div class="form-group field1">
+          <label>Cycle Time / Weight</label>
+          <input type="number" formControlName="cycleTime" />
+        </div>
+
+        <!-- Cavity -->
+        <div class="form-group field1">
+          <label>Cavity</label>
+          <input type="number" formControlName="cavity" />
+        </div>
+
+        <!-- Cost -->
+        <div class="cost">
+          <h5>Cost {{ calculateProcessValue(procCtrl.value) }}</h5>
+
+          <div class="info-container" tabindex="0">
+            <mat-icon class="info-icon">info</mat-icon>
+
+            <div class="info-popup dim">
+              <div class="info-content">
+                <h5>Formula: (Hours / (3600 / CycleTime) / Cavity)</h5>
+
+                <h5>
+                  = ({{ procCtrl.value.Hours || 0 }}
+                  / (3600 / {{ procCtrl.value.cycleTime || 0 }})
+                  / {{ procCtrl.value.cavity || 0 }})
+                </h5>
+
+                <strong>
+                  Result: {{ calculateProcessValue(procCtrl.value) }}
+                </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delete -->
+       <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcessSelection(i)">
       <mat-icon class="icon">delete</mat-icon>
     </button>
 
+      </div>
     </div>
-    
 
-
-    <!-- Add Process -->
-
-
-  </div>
-</div>
-
-
-
-
-
-
-    <div class="step-actions">
-      <button class="btn btn-secondary" matStepperPrevious type="button">Back</button>
-      <button class="btn btn-primary" matStepperNext (click)="onProcessNext()">Next</button>
+    <!-- Step Actions -->
+      <div class="step-actions" >
+      <button class="btn btn-secondary" matStepperPrevious type="button" >Back</button>
+      <button class="btn btn-primary" id="nextbtn" matStepperNext (click)="onProcessNext()">Next</button>
     </div>
+
   </form>
-
 
 </mat-step>
 
@@ -295,6 +296,7 @@
                 <div class="field-row">
                   <label class="label1 pack" for="packing">Packing</label>
                   <mat-select class="lab" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
+                   
                     <mat-option *ngFor="let option of packingOptions" [value]="option">{{ option }}</mat-option>
                   </mat-select>
                 </div>

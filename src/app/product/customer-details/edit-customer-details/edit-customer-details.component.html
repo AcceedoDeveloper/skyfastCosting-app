@@ -106,45 +106,55 @@
       </div>
 
 
-      <div class="process-container" formArrayName="processes">
-      
-        <div *ngFor="let proc of processes.controls; let i = index" [formGroupName]="i" class="process-row">
+  <div class="process-container" formArrayName="processes">
 
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Process Name</mat-label>
-            <mat-select formControlName="processId" (selectionChange)="onProcessSelected($event.value, i)">
-              <mat-option *ngFor="let proc of (process$ | async)" [value]="proc._id">
-                {{ proc.processName }} {{ proc.machineCentre }} 
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+  <div *ngFor="let proc of processes.controls; let i = index"
+       [formGroupName]="i"
+       class="process-row">
 
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Tonnage/Jaw</mat-label>
-            <input matInput formControlName="TonnageJaw" readonly />
-          </mat-form-field>
+    <!-- Process Name -->
+    <div class="form-group half-width">
+      <label>Process Name</label>
+     <select formControlName="processId"
+        (change)="onProcessSelected($any($event.target).value, i)">
+        <option value="">Select Process</option>
+        <option *ngFor="let p of (process$ | async)" [value]="p._id">
+          {{ p.processName }} {{ p.machineCentre }}
+        </option>
+      </select>
+    </div>
 
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Machine / per hr</mat-label>
-            <input matInput type="number" formControlName="Hours" readonly />
-          </mat-form-field>
+    <!-- Tonnage -->
+    <div class="form-group half-width">
+      <label>Tonnage/Jaw</label>
+      <input type="text" formControlName="TonnageJaw" readonly />
+    </div>
 
-          <mat-form-field appearance="outline" class="half-width11">
-            <mat-label>Cycle Time / Weight</mat-label>
-            <input matInput type="number" formControlName="cycleTime" />
-          </mat-form-field>
+    <!-- Hours -->
+    <div class="form-group half-width">
+      <label>Machine / per hr</label>
+      <input type="number" formControlName="Hours" readonly />
+    </div>
 
-          <mat-form-field appearance="outline" class="half-width1">
-            <mat-label>Cavity</mat-label>
-            <input matInput type="number" formControlName="cavity" />
-          </mat-form-field>
+    <!-- Cycle Time -->
+    <div class="form-group half-width11">
+      <label>Cycle Time / Weight</label>
+      <input type="number" formControlName="cycleTime" />
+    </div>
 
-         <div class="cost">
-        <h5>  Cost
-      {{ calculateProcessValue(proc.value) }}
-    </h5>
+    <!-- Cavity -->
+    <div class="form-group half-width1">
+      <label>Cavity</label>
+      <input type="number" formControlName="cavity" />
+    </div>
 
-     <div class="info-container" tabindex="0">
+    <!-- Cost -->
+    <div class="cost">
+      <h5>
+        Cost {{ calculateProcessValue(proc.value) }}
+      </h5>
+
+ <div class="info-container" tabindex="0">
 <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
 <div class="info-content">
@@ -162,13 +172,14 @@
 </div>
       </div>
 
-          <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcess(i)">
+    <!-- Delete -->
+   <button mat-icon-button color="warn" class="delete-btn" (click)="removeProcess(i)">
             <mat-icon class="icon">delete</mat-icon>
           </button>
-          
-        </div>
-           
-      </div>
+
+  </div>
+
+</div>
 
   
 

@@ -284,7 +284,7 @@
   gap: 20px;
 }
 
-/* Table Container */
+
 .table-container {
   margin-top: 20px;
   background: white;
@@ -294,7 +294,7 @@
   transition: box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  height: 550px; // static height to keep paginator anchored
+  height: 550px; 
 }
 
 .table-scroll {
@@ -342,7 +342,7 @@ th {
   position: relative;
 }
 
-/* Header cell with icons */
+
 .header-cell-content {
   display: flex;
   align-items: center;
@@ -643,8 +643,8 @@ cursor: pointer;
 
 .revision-checkboxes {
   display: flex;
-  flex-wrap: wrap; /* if too many, they wrap to next line */
-  gap: 16px; /* space between checkboxes */
+  flex-wrap: wrap;
+  gap: 16px;
   margin-bottom: 1rem;
 }
 
@@ -662,7 +662,7 @@ cursor: pointer;
   color: red;
   font-weight: bold;
 }
-/* Make revision + product narrow */
+
 .small-col {
   text-align: center;
 vertical-align: middle;
@@ -670,13 +670,13 @@ vertical-align: middle;
   white-space: nowrap;
 }
 
-/* Make raw materials + processes wider */
+
 .wide-col {
   width: 40%;
   // text-align: left;
 }
 
-/* Keep table responsive */
+
 .nested-table td {
   vertical-align: top;
 }
@@ -726,19 +726,22 @@ vertical-align: middle;
   font-family: Arial, sans-serif;
   margin: 10px;
   line-height: 1.4;
-  color: #000000; // Ensure all text is black
+  color: #000000; 
 
 
   @media print {
   #pdfContent {
-    transform: scale(0.75);   /* adjust until it fits */
+    transform: scale(0.75);   
     transform-origin: top left;
     width: 100%;
   }
+  td{
+      text-align: center !important;
+    }
 }
 
   
-  // Add page borders and styling
+
   @media print {
     @page {
       margin: 0.4in;
@@ -751,9 +754,16 @@ vertical-align: middle;
       margin: 0;
       padding: 0;
     }
+
+    .numeric-cell {
+  text-align: center !important;
+  vertical-align: middle !important; 
+}
+
+    
   }
   
-  // Add page border styling for screen view
+
   &::before {
     content: '';
     position: fixed;
@@ -1888,3 +1898,8 @@ vertical-align: middle;
   visibility: visible !important;
   opacity: 1 !important;
 }
+
+ .process-nested td{
+  text-align: center !important;
+}
+
