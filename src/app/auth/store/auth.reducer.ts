@@ -123,15 +123,17 @@ export const authReducer = createReducer(
     }
   })),
 
-  on(AuthActions.verifyOtpSuccess, (state, { authResponse }) => ({
+  on(AuthActions.verifyOtpSuccess, (state) => ({
     ...state,
-    user: authResponse.user,
-    token: authResponse.accessToken,
-    isLoggedIn: true,
-    isLoading: false,
-    error: null,
+    // user: authResponse.user,
+    // token: authResponse.accessToken,
+    // isLoggedIn: true,
+    // isLoading: false,
+    // error: null,
     forgotPassword: {
-      ...initialState.forgotPassword
+         ...state.forgotPassword,
+    isLoading: false,
+    otpVerified: true   // ✅ IMPORTANT
     }
   })),
 

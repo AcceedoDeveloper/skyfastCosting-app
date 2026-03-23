@@ -1,17 +1,38 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+}
+
+
+
 .login-center {
   display: grid;
   place-items: center;
   min-height: 100vh;
+  height: 100vh;
+ background-image:url(../../../assets/login-bg.jpg);
+  background-size: cover;
+  background-position: center;
 }
 
 
 .login-page-container {
 
 
-   display: inline-block;
+   display:flex;
   border-radius: 10px;
-
  width: 100%;
+ min-width: 1100px;
+
+
 // background-color: #27ae60;
 
 }
@@ -19,8 +40,6 @@
 .login-wrapper {
   display: flex;
   width: 100%;
-  height: 100%;
- 
   background: rgb(255, 255, 255);
   border-radius: 15px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
@@ -37,7 +56,7 @@
   flex: 1;
   padding: 40px;
   position: relative;
-  min-height: 600px;
+  // min-height: 600px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -57,18 +76,18 @@
   object-fit: cover;
 
   /* Extra features */
-  display: block;              /* removes bottom space caused by inline img */
-  border-radius: 8px;          /* rounded corners */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* soft shadow */
-  transition: transform 0.3s, filter 0.3s; /* smooth hover effects */
-  cursor: pointer;             /* clickable look */
+  // display: block;              /* removes bottom space caused by inline img */
+  // border-radius: 8px;          /* rounded corners */
+  // box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* soft shadow */
+  // transition: transform 0.3s, filter 0.3s; /* smooth hover effects */
+  // cursor: pointer;             /* clickable look */
 }
 
 /* Hover effect */
-img:hover {
-  transform: scale(1.05);      /* zoom-in effect */
-  filter: brightness(1.1);     /* brighter on hover */
-}
+// img:hover {
+//   transform: scale(1.05);      /* zoom-in effect */
+//   filter: brightness(1.1);     /* brighter on hover */
+// }
 
 /* Responsive container behavior */
 .responsive-img {
@@ -78,10 +97,11 @@ img:hover {
 
 }
 
-h2 {
+h1 {
   margin-bottom: 10px;
-  color: #333;
-  font-size: 28px;
+  font-weight: bolder;
+  color: #000000;
+  font-size: 38px;
   text-align: center;
 }
 
@@ -93,15 +113,16 @@ h2 {
 
 /* Message Container with Fixed Height */
 .message-container {
-  min-height: 60px;
+  min-height: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .form-group {
   margin-bottom: 20px;
+  
   
   input {
     width: 100%;
@@ -114,8 +135,8 @@ h2 {
     
     &:focus {
       outline: none;
-      border-color: #4a90e2;
-      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+      border-color: #000000;
+      box-shadow: 0 0 0 3px rgba(63, 63, 63, 0.2);
     }
     
     &.error {
@@ -129,24 +150,25 @@ h2 {
     }
   }
   
-  label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-    font-weight: 500;
-  }
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 19px;
+  color: rgba(0, 0, 0, 0.85);
+}
 }
 
 .error-message {
   color: #e74c3c;
   font-size: 14px;
-  padding: 10px;
-  background: #fdeded;
-  border-radius: 6px;
-  animation: fadeMsg 0.3s ease;
+  // padding: 10px;
+  // background: #fdeded;
+  // border-radius: 6px;
+  // animation: fadeMsg 0.3s ease;
   
   a {
-    color: #3498db;
+    color: #FF5E5B;
     text-decoration: none;
     margin-left: 5px;
     
@@ -159,9 +181,9 @@ h2 {
 .success-message {
   color: #27ae60;
   font-size: 14px;
-  padding: 10px;
-  background: #e6f7ee;
-  border-radius: 6px;
+  // padding: 10px;
+  // background: #e6f7ee;
+  // border-radius: 6px;
   animation: fadeMsg 0.3s ease;
 }
 
@@ -173,7 +195,7 @@ h2 {
 button {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(to right, #4a90e2, #63b3ed);
+  background:#3F5B65;
   color: white;
   border: none;
   border-radius: 8px;
@@ -198,11 +220,9 @@ button {
 }
 
 .verify-button {
-  background: linear-gradient(to right, #27ae60, #2ecc71);
+background:#3F5B65;
   
-  &:hover:not(:disabled) {
-    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
-  }
+
 }
 
 .forgot-password-link, .back-to-login {
@@ -210,9 +230,13 @@ button {
   text-align: center;
   
   a {
-    color: #3498db;
-    text-decoration: none;
-    font-weight: 500;
+    display: flex;
+  justify-content: center;
+  margin-top: 22px;
+  font-size:20px;
+  font-weight:500;
+  color: rgba(0, 0, 0, 0.7);
+  text-decoration: none;
     
     &:hover {
       text-decoration: underline;
@@ -227,6 +251,13 @@ button {
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }
+}
+.OTP h4{
+  margin-bottom: 15px;
+  font-weight:600;
+  color: #000000;
+  font-size: 24px;
+  text-align: left;
 }
 
 .otp-input-container {
@@ -329,11 +360,13 @@ button {
   animation: fadeMsg 0.3s ease;
 }
 
+
 @media (max-width: 768px) {
   .login-wrapper {
     flex-direction: column;
     width: 95%;
     min-height: auto;
+
   }
   
   .login-image-section {
@@ -367,6 +400,7 @@ button {
     flex-direction: column;
     width: 95%;
     min-height: auto;
+    
   }
   
   .login-image-section {
@@ -397,6 +431,7 @@ button {
   .login-page-container {
     margin: 20px auto;
     width: 95%;
+    
   }
 
   .login-wrapper {
@@ -405,6 +440,7 @@ button {
     min-height: auto;
     box-shadow: none;
     border-radius: 10px;
+  
   }
 
   .login-form-section {
@@ -437,6 +473,7 @@ button {
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    
   }
 
   h2 { font-size: 18px; }
@@ -470,6 +507,7 @@ button {
   .login-page-container {
     width: 75%;
     padding: 25px;
+   
   }
 
   h2 { font-size: 24px; }
@@ -479,35 +517,68 @@ button {
 
 @media (min-width: 1201px) and (max-width: 1440px) {
   .login-page-container {
-    width: 70%;
-    padding: 30px;
+    width: 54%;
+    max-width: 760px;
+    margin: 0 auto;
+               /* only horizontal centering — no top margin */
+    // background-color: #27ae60;     /* keep or remove as needed */
+    border-radius: 8px;
   }
 
-  h2 { font-size: 26px; }
-  button { font-size: 16px; padding: 16px; }
-}
+  .login-form-section {
+     padding: 50px;   
 
-
-
-
-
-@media (min-width: 1201px) and (max-width: 1440px) {
-  .login-page-container {
-    width: 70%;
-    padding: 30px;
   }
 
-  h2 { font-size: 26px; }
-  button { font-size: 16px; padding: 16px; }
+  h1, h2,h3 {
+    font-size:20px;
+    font-weight: 500px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  button {
+    font-size: 13.5px;
+    padding: 9px 16px;
+  }
+
+  .login-wrapper {
+    max-height: 68vh;
+    margin: 0 auto;                   /* ← changed: no top margin, no vh units here */
+    /* width is already 100% from parent */
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    padding: 9px;
+    font-size: 13.5px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
 }
+
 
 @media (min-width: 1441px) {
   .login-page-container {
     width: 75%;
-    padding: 30px;
+    padding: 10px;
+    //  background-color: #005555;
+
+  }
+    h1, h2,h3 {
+    font-size:23px;
+    font-weight: 500px;
   }
 
-  h2 { font-size: 28px; }
+
   button { font-size: 18px; padding:18px;}
 }
 
@@ -535,4 +606,22 @@ button {
 
   h2 { font-size: 32px; }
   button { font-size: 20px; padding:18px 28px;}
+}
+
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column;
+    height: auto;                   /* ← very important: don't force 100vh on mobile */
+    width: 90%;                     /* or 95% — your choice */
+    max-width: 500px;               /* nice max on phones */
+    margin: 20px auto;              /* breathing room */
+  }
+
+  .login-image-section {
+    display: none;                  /* as you had */
+  }
+
+  .login-form-section {
+    padding: 30px 20px;
+  }
 }

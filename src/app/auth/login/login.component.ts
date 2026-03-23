@@ -4,8 +4,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, interval } from 'rxjs';
 import { LoadingSpinnerComponent } from '../../shared/loading-spinner/loading-spinner.component';
-
+import { MachineService } from '../../services/machine.service';
 import * as AuthActions from '../store/auth.action';
+import { User } from '../../model/machine.model';
 import {
   selectAuthLoading,
   selectAuthError,
@@ -29,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   forgotPasswordForm!: FormGroup;
   otpForm!: FormGroup;
-
+resetPasswordForm!: FormGroup;
   isLoading$!: Observable<boolean>;
   error$!: Observable<string | null>;
   forgotPasswordLoading$!: Observable<boolean>;
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   timeLeft = 0;
   private timerSubscription!: Subscription;
   private messageSubscription!: Subscription;
-
+private machineService = inject(MachineService);
 
   authMessage: string | null = null;
   authMessageType: 'error' | 'success' | null = null;
@@ -68,6 +69,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       digit5: ['', Validators.required],
       digit6: ['', Validators.required]
     });
+
+    this.resetPasswordForm = this.fb.group({
+  userName: ['', Validators.required],
+  password: ['', Validators.required]
+});
 
     this.error$ = this.store.select(selectAuthError);
     this.isLoading$ = this.store.select(selectAuthLoading);
@@ -190,4 +196,50 @@ export class LoginComponent implements OnInit, OnDestroy {
       previousInput?.focus();
     }
   }
+
+onResetPassword(): void {
+  if (this.resetPasswordForm.invalid) return;
+
+  const { userName, password } = this.resetPasswordForm.value;
+
+  this.machineService.getUsers().subscribe((users: User[]) => {
+
+    const user = users.find((u: User) => u.userName === userName);
+
+    if (!user) {
+      this.showTempMessage('User not found', 'error');
+      return;
+    }
+
+    // ✅ CLEAN OBJECT (IMPORTANT)
+    const updatedUser = {
+      userName: user.userName,
+      fullName: user.fullName,
+      emailId: user.emailId,
+      phoneNumber: user.phoneNumber,
+     role: user.role?.role || user.role,
+      password: password
+    };
+
+    console.log('📤 Clean Payload:', updatedUser);
+
+    this.machineService.updateUser(user._id, updatedUser as User).subscribe({
+      next: (res) => {
+        console.log('✅ Success:', res);
+        this.showTempMessage('Password reset successful!', 'success');
+
+        setTimeout(() => {
+          this.showForgotPassword = false;
+          this.otpSent = false;
+        }, 1500);
+      },
+      error: (err) => {
+        console.log('❌ Update error:', err);
+        this.showTempMessage('Failed to reset password', 'error');
+      }
+    });
+
+  });
+}
+
 }

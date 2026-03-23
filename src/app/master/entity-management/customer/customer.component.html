@@ -1,4 +1,3 @@
-
 <div class="main">
 
   <div class="header">
@@ -83,7 +82,8 @@
               <button mat-icon-button class="action-btn edit-btn" (click)="openAddCustomer(customer)" title="Edit">
                 <mat-icon class="icon">edit</mat-icon>
               </button>
-              <button mat-icon-button class="action-btn delete-btn" (click)="deleteCustomer(customer._id)" title="Delete">
+              <button mat-icon-button class="action-btn delete-btn" (click)="deleteCustomer(customer._id)"
+                title="Delete">
                 <mat-icon class="icon">delete</mat-icon>
               </button>
             </div>
@@ -91,12 +91,8 @@
         </tr>
       </tbody>
     </table>
-    <mat-paginator
-      [length]="customers.length"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[ 10, 20, 50]"
+    <mat-paginator [length]="customers.length" [pageSize]="pageSize" [pageSizeOptions]="[ 10, 20, 50]"
       (page)="onPageChange($event)">
     </mat-paginator>
   </div>
 </div>
-

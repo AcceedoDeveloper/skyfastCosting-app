@@ -1007,6 +1007,8 @@ printQuotation(customerName: string, partName: string, revision: number): void {
     },
     error: (err) => {
       console.error('Error printing quotation:', err);
+       this.isPdfLoading$.next(false); 
+        this.tooser.error('Failed to print quotation');
     }
   });
 }

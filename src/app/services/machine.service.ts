@@ -67,6 +67,8 @@ export class MachineService {
   }
 
   updateUser(id: string, user: User): Observable<User> {
+    console.log('user',user);
+    
     return this.http.put<User>(`${this.config.getCostingUrl("updateUser")}/${id}`, user);
   }
 

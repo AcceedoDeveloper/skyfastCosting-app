@@ -5,6 +5,8 @@
   "urls": [
 
      { "name": "login", "url": "login" },
+     {"name":"forgotPassword","url":"forgot-password"},
+     {"name":"verifyOtp","url":"verify-otp"},
 
     { "name": "role", "url": "getRole" },
     { "name": "addRole", "url": "addRole" },
