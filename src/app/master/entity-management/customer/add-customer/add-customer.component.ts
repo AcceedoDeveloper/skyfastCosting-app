@@ -39,11 +39,11 @@ export class AddCustomerComponent implements OnInit {
 
     this.customerForm = this.fb.group({
       customerName: [this.data?.customerName || '', Validators.required],
-      address: [this.data?.address || '', Validators.required],
+      address: [this.data?.address || ''],
       gstNumber: [this.data?.gstNumber || ''],
       phone: [this.data?.phone || ''],
-      email: [this.data?.email || '', [Validators.email]],
-      transport: [this.data?.transport || ''],
+      email: [this.data?.email || ''],
+      transport: [this.data?.transport || '',Validators.required],
       baseCost: [this.data?.baseCost || 0]
     });
   }

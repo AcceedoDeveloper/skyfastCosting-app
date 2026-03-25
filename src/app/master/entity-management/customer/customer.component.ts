@@ -67,12 +67,12 @@ export class CustomerComponent implements OnInit {
 
   openAddCustomer(customer?: Customer) {
     this.dialog.open(AddCustomerComponent, {
-      width: '600px',
-      height: '600px',
+     minWidth:'700px',
+      // height: '600px',
       data: customer || {},
       disableClose:true, 
     });
-  }
+  } 
 
  deleteCustomer(id: string) {
   const dialogRef = this.dialog.open(ConfrimDialogComponent, {
