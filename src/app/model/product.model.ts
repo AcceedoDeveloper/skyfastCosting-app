@@ -21,6 +21,7 @@ export interface Process {
   calculation: number;
   cost?: number;
   machineCentre: number;
+  Unit:string;
   createdAt?: Date;
   updatedAt?: Date;
   __v?: number;

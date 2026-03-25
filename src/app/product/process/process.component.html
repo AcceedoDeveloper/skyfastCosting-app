@@ -89,6 +89,12 @@
           </th>
           <th>
             <div class="header-cell-content">
+              <mat-icon class="header-icon">unit</mat-icon>
+              <span>Unit</span>
+            </div>
+          </th>
+          <th>
+            <div class="header-cell-content">
               <mat-icon class="header-icon">tune</mat-icon>
               <span>Actions</span>
             </div>
@@ -111,6 +117,7 @@
               <span>{{ p.machineCentre }}</span>
      
           </td>
+          <td><span>{{p.Unit}}</span></td>
           <td class="actions">
             <button mat-icon-button class="action-btn edit-btn" (click)="openEditDialog(p)" title="Edit">
               <mat-icon class="icon">edit</mat-icon>

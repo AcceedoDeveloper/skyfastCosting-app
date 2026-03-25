@@ -11,6 +11,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 import * as processActions from '../../store/product.actions';
+import { MatSelectModule } from '@angular/material/select';
 
 
 
@@ -21,7 +22,8 @@ import * as processActions from '../../store/product.actions';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule
   ],
   templateUrl: './add-process.component.html',
   styleUrl: './add-process.component.scss'
@@ -44,9 +46,10 @@ export class AddProcessComponent implements OnInit, OnDestroy {
 
     this.processForm = this.fb.group({
       processName: [data?.process?.processName || '', Validators.required],
-      TonnageJaw: [data?.process?.TonnageJaw || '', Validators.required],
-      Hours: [data?.process?.Hours || '', Validators.required],
-     machineCentre: [data?.process?.machineCentre || '', Validators.required],
+      TonnageJaw: [data?.process?.TonnageJaw || ''],
+      Hours: [data?.process?.Hours || '',Validators.required],
+     machineCentre: [data?.process?.machineCentre || ''],
+     Unit:[data?.process?.Unit ||'']
     });
   }
 

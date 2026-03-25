@@ -19,7 +19,8 @@
 }
 .first, .sec, .third {
   display: flex;
-  gap: 20px;   /* space between the two fields */
+  flex-direction: column;
+  gap: 5px;   /* space between the two fields */
 }
 
 /* Title */
@@ -33,26 +34,27 @@
   border-bottom: 1px solid #e0e0e0;
   padding-bottom: 10px;
 }
+form{
+  padding: 10px;
+}
 
 /* Form container */
 .form-container {
-  padding: 20px;
+
   display: flex;
- flex-direction: column;
-  gap: 16px;   /* spacing between fields */
+  padding: 5px;
 }
 
 /* Full width fields */
-.full-width {
-  width: 50%;
-}
 
 /* Actions (buttons) */
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 24px;
+padding-right: 15px;
+margin-top: 10px;
+// background-color: #3F5B65;
 }
 
 /* Cancel button */

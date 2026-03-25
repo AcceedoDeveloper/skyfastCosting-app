@@ -118,7 +118,7 @@ updatePaginatedUsers() {
 
   openAddDialog() {
     const dialogRef = this.dialog.open(AddProcessComponent, {
-      width: '600px',
+      width: '520px',
       height:'auto',
       maxWidth: '45vw', 
       disableClose:true,
