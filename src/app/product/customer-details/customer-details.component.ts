@@ -264,7 +264,7 @@ export class CustomerDetailsComponent implements OnInit {
   openAddProductDialog() {
     const dialogRef = this.dialog.open(AddCustomerDetailsComponent, {
       width: '590%',
-      height: '680px',
+      height: '740px',
       maxWidth: '75vw',
       disableClose:true, 
     });
@@ -1008,7 +1008,7 @@ printQuotation(customerName: string, partName: string, revision: number): void {
     error: (err) => {
       console.error('Error printing quotation:', err);
        this.isPdfLoading$.next(false); 
-        this.tooser.error('Failed to print quotation');
+        this.tooser.error('Failed to print quotation');AddCustomerDetailsComponent
     }
   });
 }

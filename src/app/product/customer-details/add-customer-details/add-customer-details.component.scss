@@ -1261,6 +1261,7 @@ display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+
 }
 
 .lab option {
@@ -1380,10 +1381,11 @@ align-items: center;
 
 /* Actions */
 .step-actions {
-  margin-top: 16px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-right: 20px;
+  margin-top: 10px;
 
 }
 
@@ -1398,8 +1400,8 @@ align-items: center;
 }
 
 #nextbtn{
-  padding: 10px;
-  width: 7%;
-  height: 5%;
+  padding: 12px;
+  width: 12%;
+  height: 10%;
 }
 

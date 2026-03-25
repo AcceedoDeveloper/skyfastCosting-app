@@ -66,6 +66,7 @@ selectedFileName: string = '';
   partName: String[] =[]; 
   drawingNoArray: (string | number)[] = []; 
 
+
     productForm!: FormGroup;
     processForm!: FormGroup;
     custoemr$! : Observable<Customer[]>;
@@ -96,6 +97,7 @@ selectedFileName: string = '';
       shortWeight: [null, Validators.required],
       meltingLoss: [null, Validators.required],
       rawMaterial: [[] , Validators.required],
+      grossweight: [{ value: 0}, Validators.required]
       
     });
 
@@ -120,6 +122,15 @@ selectedFileName: string = '';
   Payment90DaysICC: [0],
   currency: ['USD']   
     })
+
+
+this.productForm.get('castingWeight')?.valueChanges.subscribe(() => {
+  this.calculateGrossWeight();
+});
+
+this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
+  this.calculateGrossWeight();
+});
 
     
     this.custoemr$ = this.store.select(selectAllCustomers);
@@ -165,6 +176,16 @@ selectedFileName: string = '';
   });
 
   }
+
+
+calculateGrossWeight() {
+  const casting = Number(this.productForm.get('castingWeight')?.value) || 0;
+  const melting = Number(this.productForm.get('meltingLoss')?.value) || 0;
+
+  const gross = casting * melting;
+
+  this.productForm.get('grossweight')?.setValue(gross, { emitEvent: false });
+}
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

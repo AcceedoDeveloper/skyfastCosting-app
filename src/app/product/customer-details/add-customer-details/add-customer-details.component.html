@@ -63,15 +63,7 @@
               </mat-error>
             </mat-form-field>
          
-
-
-           
-          </div>
-
-          <div class="corediv">
-          
-          
-             <mat-form-field appearance="outline" class="full-width">
+                     <mat-form-field appearance="outline" class="full-width">
           <mat-label>Raw Materials</mat-label>
           <mat-select formControlName="rawMaterial" multiple>
             <mat-option *ngFor="let mat of (rawmaterial$ | async)" [value]="mat.GradeName">
@@ -82,6 +74,15 @@
             At least one raw material is required.
           </mat-error>
         </mat-form-field>
+
+
+           
+          </div>
+
+          <div class="corediv">
+          
+          
+    
           
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Casting Weight (In Kg)</mat-label>
@@ -92,12 +93,20 @@
             </mat-form-field>
           
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Short Weight</mat-label>
+              <mat-label>Short Weight (In Kg)</mat-label>
               <input type="number" matInput formControlName="shortWeight">
               <mat-error *ngIf="productForm.get('shortWeight')?.touched && productForm.get('shortWeight')?.hasError('required')">
                 Short Weight is required.
               </mat-error>
             </mat-form-field>
+
+                 <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Gross Weight</mat-label>
+                <input type="number" matInput formControlName="grossweight">
+                <mat-error *ngIf="productForm.get('grossweight')?.touched && productForm.get('grossweight')?.hasError('required')">
+                  Gross Weight is Required
+                </mat-error>
+              </mat-form-field>
           
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Melting Loss</mat-label>
@@ -106,8 +115,21 @@
                 Melting Loss is required.
               </mat-error>
             </mat-form-field>
+
+
+         
+
+                 <div class="step-actions">
+        <button class="btn btn-danger" (click)="close()">Cancel</button>
+      <!-- <button type="button" class="btn btn-secondary" (click)="fileInput.click()">Upload Image</button> -->
+        <button class="btn btn-primary" id="nextbtn" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
+      </div>
+
           </div>
         </div>
+
+    
+        
 
  <!-- <div class="upload-container">
       <input 
@@ -123,11 +145,7 @@
       </mat-dialog-content>
 
 
-      <div class="step-actions">
-        <button class="btn btn-danger" (click)="close()">Cancel</button>
-      <!-- <button type="button" class="btn btn-secondary" (click)="fileInput.click()">Upload Image</button> -->
-        <button class="btn btn-primary" id="nextbtn" matStepperNext [disabled]="productForm.invalid" (click)="save()" >Next</button>
-      </div>
+   
     </form>
 
 
@@ -229,7 +247,7 @@
     <!-- Step Actions -->
       <div class="step-actions" >
       <button class="btn btn-secondary" matStepperPrevious type="button" >Back</button>
-      <button class="btn btn-primary" id="nextbtn" matStepperNext (click)="onProcessNext()">Next</button>
+      <button class="btn btn-primary"  matStepperNext (click)="onProcessNext()">Next</button>
     </div>
 
   </form>
