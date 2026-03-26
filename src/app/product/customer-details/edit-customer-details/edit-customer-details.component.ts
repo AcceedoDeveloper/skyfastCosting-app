@@ -68,6 +68,22 @@ loading = false;
     return this.customerForm.get('processes') as FormArray;
   }
 
+  get commercialTermsParams(): FormArray {
+    return this.customerForm.get('commercialTermsParams') as FormArray;
+  }
+
+  get transpotationParams(): FormArray {
+    return this.customerForm.get('transpotationParams') as FormArray;
+  }
+
+  get rejectionParams(): FormArray {
+    return this.customerForm.get('rejectionParams') as FormArray;
+  }
+
+  get otherParams(): FormArray {
+    return this.customerForm.get('otherParams') as FormArray;
+  }
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditCustomerDetailsComponent>,
@@ -125,23 +141,32 @@ if (data?.revisions?.length) {
   currency: [revision?.currency ],
 
       castingWeight: [revision?.castingWeight ?? 0],
+      grossWeight:[revision?.grossWeight ?? 0],
       cavities: [revision?.cavities ?? 0],
       meltingLoss: [revision?.meltingLoss ?? 0],
       shortWeight: [revision?.shortWeight ?? 0],
 
-      // 👇 rawMaterial IDs for mat-select
+      // rawMaterial IDs for mat-select
       rawMaterial: [revision?.rawMaterial?.map((r: any) => r._id) || []],
 
       packingPercentage: [revision?.packingPercentage ?? null],
       packingRate: [revision?.packingRate ?? null],
-      TransportType: ['cost'],  // 👈 default is "cost"
+      TransportType: ['cost'],  // default is "cost"
       TransportCost: [revision?.packingRate ?? 0],
       TransportPercentage: [revision?.packingPercentage ?? 0],
-
+      commercialTermsParams: this.fb.array([]),
+      transpotationParams: this.fb.array([]),
+      rejectionParams: this.fb.array([]),
+      otherParams: this.fb.array([]),
       processes: this.fb.array([])
     });
 
-    // ✅ Fill processes from revision
+    this.loadCustomParams('commercialTermsParams', revision?.commercialTermsParams);
+    this.loadCustomParams('transpotationParams', revision?.transpotationParams);
+    this.loadCustomParams('rejectionParams', revision?.rejectionParams);
+    this.loadCustomParams('otherParams', revision?.otherParams);
+
+    //  Fill processes from revision
     if (revision?.processes?.length) {
       revision.processes.forEach((proc: any) => this.addProcess(proc));
     }
@@ -163,7 +188,7 @@ if (data?.revisions?.length) {
     this.process$ = this.store.select(selectAllProcess);
     this.process$.subscribe(process =>{
       console.log('process', process);
-      
+      this.syncProcessSelections(process);
     })
 
     // Initialize file name from existing data
@@ -204,9 +229,11 @@ if (data?.revisions?.length) {
 
 
   addProcess(proc: any = null) {
+    const normalizedProcessId = this.extractProcessId(proc?.processId);
+
     this.processes.push(
       this.fb.group({
-        processId: [proc?.processId || ''],
+        processId: [normalizedProcessId],
         processName: [proc?.processName || '', Validators.required],
         TonnageJaw: [proc?.TonnageJaw || ''],
         Hours: [proc?.Hours ?? 0],
@@ -216,6 +243,72 @@ if (data?.revisions?.length) {
         calculation: [proc?.calculation ?? 0]
       })
     );
+  }
+
+  private extractProcessId(processId: any): string {
+    if (!processId) {
+      return '';
+    }
+
+    if (typeof processId === 'string') {
+      return processId;
+    }
+
+    if (typeof processId === 'object') {
+      return String(processId._id || processId.$oid || processId.id || '');
+    }
+
+    return String(processId);
+  }
+
+  private syncProcessSelections(processes: Process[]): void {
+    this.processes.controls.forEach(control => {
+      const currentProcessId = this.extractProcessId(control.get('processId')?.value);
+      const currentProcessName = String(control.get('processName')?.value || '').trim();
+
+      const matchedProcess = processes.find(process =>
+        process._id === currentProcessId ||
+        (!!currentProcessName && process.processName === currentProcessName)
+      );
+
+      if (matchedProcess?._id) {
+        control.patchValue({ processId: matchedProcess._id }, { emitEvent: false });
+      }
+    });
+  }
+
+  private createParamGroup(label = '', value = ''): FormGroup {
+    return this.fb.group({
+      label: [label],
+      value: [value]
+    });
+  }
+
+  addCustomParam(section: 'commercialTermsParams' | 'transpotationParams' | 'rejectionParams' | 'otherParams') {
+    (this.customerForm.get(section) as FormArray).push(this.createParamGroup());
+  }
+
+  removeCustomParam(
+    section: 'commercialTermsParams' | 'transpotationParams' | 'rejectionParams' | 'otherParams',
+    index: number
+  ) {
+    (this.customerForm.get(section) as FormArray).removeAt(index);
+  }
+
+  private loadCustomParams(
+    section: 'commercialTermsParams' | 'transpotationParams' | 'rejectionParams' | 'otherParams',
+    params: Record<string, any> | undefined
+  ) {
+    const formArray = this.customerForm.get(section) as FormArray;
+    formArray.clear();
+
+    if (!params) {
+      return;
+    }
+
+    Object.entries(params).forEach(([label, value]) => {
+      formArray.push(this.createParamGroup(label, String(value ?? '')));
+    });
   }
 
   removeProcess(index: number) {
@@ -289,7 +382,7 @@ if (data?.revisions?.length) {
 //       revisionNumber: this.revisionNumber
 //     };
 
-//     console.log('📦 Final Payload (Correct):', updatedCustomer);
+//     console.log(' Final Payload (Correct):', updatedCustomer);
 
 //     this.store.dispatch(
 //       Action.updateCustomer({
@@ -326,6 +419,7 @@ onSave() {
       productName: formValue.productName,
       cavities: formValue.cavities,
       castingWeight: formValue.castingWeight,
+      grossWeight:formValue.grossWeight,
       shortWeight: formValue.shortWeight,
       meltingLoss: formValue.meltingLoss,
       Rejection: formValue.Rejection,
@@ -359,6 +453,10 @@ onSave() {
         cycleTime: p.cycleTime,
         cavity: p.cavity
       })),
+      commercialTermsParams: this.buildParamsMap(this.commercialTermsParams),
+      transpotationParams: this.buildParamsMap(this.transpotationParams),
+      rejectionParams: this.buildParamsMap(this.rejectionParams),
+      otherParams: this.buildParamsMap(this.otherParams),
       revisionNumber: this.revisionNumber
     };
 
@@ -402,6 +500,21 @@ onSave() {
       }
     });
   }
+}
+
+private buildParamsMap(paramArray: FormArray): Record<string, string> {
+  const params: Record<string, string> = {};
+
+  paramArray.controls.forEach(control => {
+    const label = String(control.get('label')?.value || '').trim();
+    const value = String(control.get('value')?.value || '').trim();
+
+    if (label && value) {
+      params[label] = value;
+    }
+  });
+
+  return params;
 }
 
 
@@ -459,7 +572,8 @@ onProcessSelected(processId: string, index: number) {
 }
 
   close() {
-    this.dialogRef.close();
+    this.store.dispatch(customerActions.loadCustomers());
+    this.dialogRef.close(true);
   }
 
 
@@ -522,7 +636,3 @@ currencies = [
 
 
 }
-
-
-
-

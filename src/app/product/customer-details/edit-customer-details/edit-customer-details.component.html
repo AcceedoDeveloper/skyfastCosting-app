@@ -15,9 +15,6 @@
         </div>
 
         <div class="maininputdiv">
-
-
-
           <div class="prodiv">
 
              <mat-form-field appearance="outline">
@@ -63,15 +60,23 @@
             <input matInput type="number" formControlName="castingWeight" />
           </mat-form-field>
 
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Melting Loss</mat-label>
+            <input matInput type="number" formControlName="meltingLoss" />
+          </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Gross Weight</mat-label>
+                <input type="number" matInput formControlName="grossWeight">
+       
+              </mat-form-field>
+
           <mat-form-field appearance="outline">
             <mat-label>Short Weight</mat-label>
             <input matInput type="number" formControlName="shortWeight" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Melting Loss</mat-label>
-            <input matInput type="number" formControlName="meltingLoss" />
-          </mat-form-field>
 
           
 
@@ -88,7 +93,7 @@
 
         <div class="step-actions">
           <!-- <button  (click)="onCancel()">Cancel</button> -->
-<button class="btn btn-danger" (click)="close()">Cancel</button>
+<button class="btn btn-danger" type="button" (click)="close()">Close</button>
           <button class="btn btn-primary" matStepperNext>Next</button>
         </div>
       </form>
@@ -118,6 +123,9 @@
      <select formControlName="processId"
         (change)="onProcessSelected($any($event.target).value, i)">
         <option value="">Select Process</option>
+        <option *ngIf="proc.get('processId')?.value" [value]="proc.get('processId')?.value">
+          {{ proc.get('processName')?.value || 'Saved Process' }}
+        </option>
         <option *ngFor="let p of (process$ | async)" [value]="p._id">
           {{ p.processName }} {{ p.machineCentre }}
         </option>
@@ -127,13 +135,13 @@
     <!-- Tonnage -->
     <div class="form-group half-width">
       <label>Tonnage/Jaw</label>
-      <input type="text" formControlName="TonnageJaw" readonly />
+      <input type="text" formControlName="TonnageJaw"  />
     </div>
 
     <!-- Hours -->
     <div class="form-group half-width">
       <label>Machine / per hr</label>
-      <input type="number" formControlName="Hours" readonly />
+      <input type="number" formControlName="Hours"  />
     </div>
 
     <!-- Cycle Time -->
@@ -184,6 +192,8 @@
   
 
       <div class="step-actions">
+        <button class="btn btn-danger" type="button" (click)="close()">Close</button>
+        <button class="btn btn-secondary" matStepperPrevious type="button">Back</button>
         <button class="btn btn-primary" matStepperNext>Next</button>
       </div>
     </mat-step>
@@ -205,7 +215,12 @@
       <div class="summary-row">
         <!-- Commercial Terms -->
         <div class="summary-card">
-          <h3 class="card-title">Commercial Terms</h3>
+          <div class="section-header">
+            <h3 class="card-title">Commercial Terms</h3>
+            <button type="button" class="section-add-btn" (click)="addCustomParam('commercialTermsParams')">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
           <div class="field-row">
             <label class="label1" for="tool-cost">Tool Cost (₹)</label>
             <input class="lab" id="tool-cost" matInput type="number" formControlName="ToolAmbience" />
@@ -222,16 +237,44 @@
             <label class="label1" for="die-lifetime">Die Lifetime</label>
             <input class="lab" id="die-lifetime" matInput type="number" formControlName="dieLifeTime" />
           </div>
-          <h3 class="rejection-heading" id="rejected">Rejection</h3>
+          <div class="dynamic-params" formArrayName="commercialTermsParams">
+            <div class="dynamic-param-row" *ngFor="let param of commercialTermsParams.controls; let i = index" [formGroupName]="i">
+              <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+              <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+              <button type="button" class="remove-param-btn" (click)="removeCustomParam('commercialTermsParams', i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div class="section-header rejection-header">
+            <h3 class="rejection-heading" id="rejected">Rejection</h3>
+            <button type="button" class="section-add-btn" (click)="addCustomParam('rejectionParams')">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
           <div class="field-row">
             <label class="label1 reject" for="rejection">Rejection (%)</label>
             <input class="lab" id="rejection" matInput type="number" formControlName="Rejection" />
+          </div>
+          <div class="dynamic-params" formArrayName="rejectionParams">
+            <div class="dynamic-param-row" *ngFor="let param of rejectionParams.controls; let i = index" [formGroupName]="i">
+              <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+              <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+              <button type="button" class="remove-param-btn" (click)="removeCustomParam('rejectionParams', i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Transportation -->
         <div class="summary-card">
-          <h3 class="card-title">Transportation</h3>
+          <div class="section-header">
+            <h3 class="card-title">Transportation</h3>
+            <button type="button" class="section-add-btn" (click)="addCustomParam('transpotationParams')">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
           <div class="subdiv">
             <div class="subdiv2">
               <div class="field-row">
@@ -314,15 +357,30 @@
                 </div>
               </div>
 
+              <div class="dynamic-params" formArrayName="transpotationParams">
+                <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
+                  <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+                  <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+                  <button type="button" class="remove-param-btn" (click)="removeCustomParam('transpotationParams', i)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
 
-    <div class="details-panel" [ngClass]="{'active': showTransportInput || customerForm.get('Packing')?.value === 'international' || customerForm.get('Packing')?.value === 'domestic'}">
+<div class="details-panel" [ngClass]="{'active': showTransportInput || customerForm.get('Packing')?.value === 'international' || customerForm.get('Packing')?.value === 'domestic'}">
 <!-- International Packing -->
 <div *ngIf="customerForm.get('Packing')?.value === 'international'" class="slide-card">
-  <h3 class="card-title">International Packing</h3>
+  <div class="section-header">
+    <h3 class="card-title">International Packing</h3>
+    <button type="button" class="section-add-btn" (click)="addCustomParam('otherParams')">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
    <mat-radio-group class="radio-button" formControlName="TransportType">
     <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
     <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
@@ -360,11 +418,25 @@
       </option>
     </select>
   </div>
+  <div class="dynamic-params" formArrayName="otherParams">
+    <div class="dynamic-param-row" *ngFor="let param of otherParams.controls; let i = index" [formGroupName]="i">
+      <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+      <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+      <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- Domestic Packing -->
 <div *ngIf="customerForm.get('Packing')?.value === 'domestic'" class="slide-card">
-  <h3 class="card-title">Domestic Packing</h3>
+  <div class="section-header">
+    <h3 class="card-title">Domestic Packing</h3>
+    <button type="button" class="section-add-btn" (click)="addCustomParam('otherParams')">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
   <mat-radio-group class="radio-button" formControlName="TransportType">
     <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
     <!-- <mat-radio-button class="percent" value="percentage">Percentage</mat-radio-button> -->
@@ -377,13 +449,23 @@
     <label class="label1" for="transport-percent">Transport %</label>
     <input class="lab" id="transport-percent" matInput type="number" formControlName="TransportPercentage" />
   </div>
+  <div class="dynamic-params" formArrayName="otherParams">
+    <div class="dynamic-param-row" *ngFor="let param of otherParams.controls; let i = index" [formGroupName]="i">
+      <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+      <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+      <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>
 </div>
 
     </div>
 
     <div class="step-actions">
-      <button class="btn btn-danger" (click)="close()">Cancel</button>
+      <button class="btn btn-danger" type="button" (click)="close()">Close</button>
+      <button class="btn btn-secondary" matStepperPrevious type="button">Back</button>
       <button class="btn btn-warning" matStepperNext (click)="incrementRevision()">Save As New Revision</button>
       <button class="btn btn-primary" matStepperNext (click)="onSave()">Save</button>
     </div>
@@ -399,5 +481,3 @@
 
 <!-- Loading spinner overlay -->
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-
-

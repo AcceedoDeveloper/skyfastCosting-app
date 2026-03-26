@@ -38,6 +38,7 @@ export interface Revision {
   cavities: number;
   meltingLoss: number;
   shortWeight: number;
+  grossWeight:number;
   rawMaterial?: RawMaterial[];
   processes?: Process[];
   productName: string;
@@ -53,6 +54,10 @@ export interface Revision {
   SeaPacking: number;
   Payment90DaysICC: number;
   currency: string;
+  commercialTermsParams?: Record<string, string>;
+  transpotationParams?: Record<string, string>;
+  rejectionParams?: Record<string, string>;
+  otherParams?: Record<string, string>;
   Status?: string;
 }
 

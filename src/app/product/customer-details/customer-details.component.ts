@@ -271,13 +271,10 @@ export class CustomerDetailsComponent implements OnInit {
 
 dialogRef.afterClosed().subscribe(result => {
     if (result === true) {
-     
-      this.loadCustomers();
-
-     
-      this.store.dispatch(customerActions.loadCustomers());
-
     
+      this.loadCustomers();
+      this.store.dispatch(customerActions.loadCustomers());
+  
     }
   });
   }
@@ -359,7 +356,7 @@ private getISOWeekNumber(date: Date): number {
   onEdit(customer: CustomerDetails) {
     const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
       width: '590%',
-      height: '650px',
+      height: '740px',
       maxWidth: '75vw',
       data: customer,
       disableClose:true, 

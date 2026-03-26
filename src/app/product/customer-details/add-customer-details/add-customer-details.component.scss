@@ -12,9 +12,6 @@
 
 
 
-
-
-
 .maininputdiv {
   display: flex;
   gap: 30px;           
@@ -74,7 +71,15 @@
 }
 
 /* Step Actions Styling */
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
 
+  margin-top: 30px;
+  margin-right: 70px;
+}
 
 /* Button Styling */
 .btn {
@@ -365,6 +370,7 @@
  
 }
 
+
 .delete-btn:hover {
   color: #b71c1c;
   transform: scale(1.1);
@@ -619,7 +625,6 @@ mat-radio-group {
   position: relative;
   display: inline-block;
   cursor: pointer;
-  // background-color: #0f172a;
 }
 
 .info-icon {
@@ -818,6 +823,42 @@ mat-radio-group {
   letter-spacing: 0.3px;
 }
 
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.section-add-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #e8f1ff;
+  color: #0f5bd8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.section-add-btn:hover {
+  background: #d8e8ff;
+  transform: translateY(-1px);
+}
+
+.section-add-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.rejection-header {
+  margin-top: 16px;
+}
+
 /* === FIELD ROW === */
 .field-row {
   display: flex;
@@ -842,7 +883,7 @@ mat-radio-group {
 /* === INPUTS & SELECTS === */
 .lab {
   flex: 1;
-  padding: 2px 12px;
+  padding: 8px 12px;
   font-size: 13px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
@@ -898,6 +939,51 @@ mat-radio-group.radio-button {
 .file-upload:hover {
   border-color: #1e293b;
   background: #f1f5f9;
+}
+
+.dynamic-params {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.dynamic-param-row {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  width: 100%;
+}
+
+.dynamic-input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.dynamic-input:focus {
+  border-color: #0f172a;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
+
+.remove-param-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .file-upload img {
@@ -979,7 +1065,12 @@ mat-radio-group.radio-button {
 }
 
 /* === BUTTONS === */
-
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  gap: 10px;
+}
 
 .btn-primary {
   background: #0f172a;
@@ -1225,64 +1316,16 @@ mat-icon {
 
 }
 
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* Semi-transparent overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000; /* High z-index to appear above dialog */
-}
-
-mat-spinner {
-  color: #ffffff; /* White spinner for contrast */
-}
-
-button.btn.btn-primary[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-
-#step-actionfinal{
-display: flex;
-  justify-content: space-between;
-  align-items: center;
- 
-}
-
-.step-actionsss{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-
-}
-
 .lab option {
   padding: 0px 4px;
   line-height: 1;
   font-size: 10px;
-  height: 10px;
-  min-height: 10px !important;
-  max-height: 10px !important;
+  height: 16px;
+  min-height: 16px;
+  max-height: 16px;
   margin: 0;
 }
 
-#currency-option {
-  padding: 0px 4px;
-  line-height: 1;
-  font-size: 10px;
-  height: 10px;
-  min-height: 10px !important;
-  max-height: 10px !important;
-  margin: 0;
-} 
 .step-container {
   width: 100%;
   padding: 10px;
@@ -1381,11 +1424,10 @@ align-items: center;
 
 /* Actions */
 .step-actions {
+  margin-top: 16px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-right: 20px;
-  margin-top: 10px;
 
 }
 
@@ -1400,8 +1442,7 @@ align-items: center;
 }
 
 #nextbtn{
-  padding: 12px;
-  width: 12%;
-  height: 10%;
+  padding: 10px;
+  width: 7%;
+  height: 5%;
 }
-

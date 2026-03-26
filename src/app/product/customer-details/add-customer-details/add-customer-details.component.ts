@@ -1,7 +1,7 @@
 
 
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -21,6 +21,7 @@ import * as Action from '../../store/product.actions';
 import { Process, RawMaterial} from '../../../model/product.model';
 import {selectAllProcess, selectAllRawMaterials } from '../../store/product.selectors';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepper } from '@angular/material/stepper';
 import { MatRadioModule} from '@angular/material/radio';
 import { Actions, ofType } from '@ngrx/effects';
 import {  take } from 'rxjs/operators';
@@ -56,6 +57,7 @@ import { ConfigService } from '../../../shared/config.service';
   styleUrl: './add-customer-details.component.scss'
 })
 export class AddCustomerDetailsComponent implements OnInit{
+  @ViewChild('stepper') stepper!: MatStepper;
 
 
   loading: boolean = false;
@@ -97,7 +99,7 @@ selectedFileName: string = '';
       shortWeight: [null, Validators.required],
       meltingLoss: [null, Validators.required],
       rawMaterial: [[] , Validators.required],
-      grossweight: [{ value: 0}, Validators.required]
+      grossWeight: [{ value: 0}, Validators.required]
       
     });
 
@@ -120,7 +122,11 @@ selectedFileName: string = '';
   Insurance: [0],
   SeaPacking: [0],
   Payment90DaysICC: [0],
-  currency: ['USD']   
+  currency: ['USD'],
+  commercialTermsParams: this.fb.array([]),
+  transpotationParams: this.fb.array([]),
+  rejectionParams: this.fb.array([]),
+  otherParams: this.fb.array([])
     })
 
 
@@ -184,7 +190,7 @@ calculateGrossWeight() {
 
   const gross = casting * melting;
 
-  this.productForm.get('grossweight')?.setValue(gross, { emitEvent: false });
+  this.productForm.get('grossWeight')?.setValue(gross, { emitEvent: false });
 }
 
   onFileSelected(event: Event): void {
@@ -256,11 +262,46 @@ calculateGrossWeight() {
 
 
   close() {
-    this.dialogRef.close();
+    this.store.dispatch(customerActions.loadCustomers());
+    this.dialogRef.close(true);
   }
 
-  get processSelection(): FormArray {
+get processSelection(): FormArray {
   return this.processForm.get('processSelection') as FormArray;
+}
+
+get commercialTermsParams(): FormArray {
+  return this.processForm.get('commercialTermsParams') as FormArray;
+}
+
+get transpotationParams(): FormArray {
+  return this.processForm.get('transpotationParams') as FormArray;
+}
+
+get rejectionParams(): FormArray {
+  return this.processForm.get('rejectionParams') as FormArray;
+}
+
+get otherParams(): FormArray {
+  return this.processForm.get('otherParams') as FormArray;
+}
+
+private createParamGroup(): FormGroup {
+  return this.fb.group({
+    label: [''],
+    value: ['']
+  });
+}
+
+addCustomParam(section: 'commercialTermsParams' | 'transpotationParams' | 'rejectionParams' | 'otherParams') {
+  (this.processForm.get(section) as FormArray).push(this.createParamGroup());
+}
+
+removeCustomParam(
+  section: 'commercialTermsParams' | 'transpotationParams' | 'rejectionParams' | 'otherParams',
+  index: number
+) {
+  (this.processForm.get(section) as FormArray).removeAt(index);
 }
 
 
@@ -311,45 +352,9 @@ onProcessChange(index: number, processId: string) {
 
 
 
-onProcessNext() {
-  console.log('Full Process Selection:', this.processForm.value.processSelection);
-}
-
 onSave() {
   this.loading = true;
-
-  const processSelections = this.processForm.value.processSelection.map((p: any) => ({
-    processId: p.processId,
-    processName: p.processName,
-    TonnageJaw: p.TonnageJaw,
-    Hours: p.Hours,
-    cycleTime: p.cycleTime,
-    cavity: p.cavity
-  }));
-
-  const result = {
-    ...this.productForm.value,
-    processes: processSelections,
-    Rejection: this.processForm.value.Rejection,
-    Packing: this.processForm.value.Packing,
-    InterestRate: this.processForm.value.InterestRate,
-    InspectorCost: this.processForm.value.InspectorCost,
-    ToolAmbience: this.processForm.value.ToolAmbience,
-    packingRate: this.processForm.value.TransportCost,
-    Freight: this.processForm.value.Freight,
-    ModeOfTransport: this.processForm.value.ModeOfTransport,
-    packingPercentage: this.processForm.value.TransportPercentage,
-    revisionNumber: 1,
-    overHeadsPercent: this.processForm.value.overHeadsPercent,
-    DieLifeTime: this.processForm.value.dieLifeTime,
-    TransportPercentage: this.processForm.value.TransportPercentage,
-    TransportCost: this.processForm.value.TransportCost,
-    CMMInspection: this.processForm.value.CMMInspection,
-    Insurance: this.processForm.value.Insurance,
-    SeaPacking: this.processForm.value.SeaPacking,
-    Payment90DaysICC: this.processForm.value.Payment90DaysICC,
-    currency: this.processForm.value.currency,
-  };
+  const result = this.buildCustomerPayload();
 
   console.log('Final JSON (Full):', result);
   console.log('data id', this.Cusid);
@@ -397,6 +402,93 @@ onSave() {
 
   // Remove this line as dialogRef.close() is handled inside the setTimeout blocks
   // this.dialogRef.close();
+}
+
+onProcessNext() {
+  if (!this.Cusid) {
+    this.toastr.error('Please complete step 1 and wait for the product to be created.');
+    return;
+  }
+
+  if (!(this.processSelection.length > 0 && this.processSelection.valid)) {
+    this.processSelection.markAllAsTouched();
+    return;
+  }
+
+  this.loading = true;
+  const result = this.buildCustomerPayload();
+
+  this.productservices.updateCustomer(this.Cusid, result).subscribe({
+    next: () => {
+      this.loading = false;
+      this.toastr.success('Process details saved successfully.');
+      this.stepper.next();
+    },
+    error: (err) => {
+      console.error('Process step save failed:', err);
+      this.loading = false;
+      this.toastr.error('Failed to save process details.');
+    }
+  });
+}
+
+private buildCustomerPayload() {
+  const processSelections = this.processForm.value.processSelection.map((p: any) => ({
+    processId: p.processId,
+    processName: p.processName,
+    TonnageJaw: p.TonnageJaw,
+    Hours: p.Hours,
+    cycleTime: p.cycleTime,
+    cavity: p.cavity
+  }));
+
+  const commercialTermsParams = this.buildParamsMap(this.commercialTermsParams);
+  const transpotationParams = this.buildParamsMap(this.transpotationParams);
+  const rejectionParams = this.buildParamsMap(this.rejectionParams);
+  const otherParams = this.buildParamsMap(this.otherParams);
+
+  return {
+    ...this.productForm.value,
+    processes: processSelections,
+    Rejection: this.processForm.value.Rejection,
+    Packing: this.processForm.value.Packing,
+    InterestRate: this.processForm.value.InterestRate,
+    InspectorCost: this.processForm.value.InspectorCost,
+    ToolAmbience: this.processForm.value.ToolAmbience,
+    packingRate: this.processForm.value.TransportCost,
+    Freight: this.processForm.value.Freight,
+    ModeOfTransport: this.processForm.value.ModeOfTransport,
+    packingPercentage: this.processForm.value.TransportPercentage,
+    revisionNumber: 1,
+    overHeadsPercent: this.processForm.value.overHeadsPercent,
+    DieLifeTime: this.processForm.value.dieLifeTime,
+    TransportPercentage: this.processForm.value.TransportPercentage,
+    TransportCost: this.processForm.value.TransportCost,
+    CMMInspection: this.processForm.value.CMMInspection,
+    Insurance: this.processForm.value.Insurance,
+    SeaPacking: this.processForm.value.SeaPacking,
+    Payment90DaysICC: this.processForm.value.Payment90DaysICC,
+    currency: this.processForm.value.currency,
+    commercialTermsParams,
+    transpotationParams,
+    rejectionParams,
+    otherParams,
+  };
+}
+
+private buildParamsMap(paramArray: FormArray): Record<string, string> {
+  const params: Record<string, string> = {};
+
+  paramArray.controls.forEach(control => {
+    const label = String(control.get('label')?.value || '').trim();
+    const value = String(control.get('value')?.value || '').trim();
+
+    if (label && value) {
+      params[label] = value;
+    }
+  });
+
+  return params;
 }
 
 calculateProcessValue(proc: any): number {
@@ -523,7 +615,3 @@ getImageUrl(imagePath: string | null | undefined): string {
 
 
 }
-
-
-
-
