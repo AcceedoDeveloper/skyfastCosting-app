@@ -298,10 +298,13 @@
             <div class="dynamic-params" formArrayName="commercialTermsParams">
               <div class="dynamic-param-row" *ngFor="let param of commercialTermsParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-                <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-                <button type="button" class="remove-param-btn" (click)="removeCustomParam('commercialTermsParams', i)">
-                  <mat-icon>close</mat-icon>
-                </button>
+               <div class="input-wrapper">
+                 <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+                 <button type="button" class="remove-param-btn" (click)="removeCustomParam('commercialTermsParams', i)">
+                   <mat-icon>close</mat-icon>
+                 </button>
+
+               </div>
               </div>
             </div>
             <div class="section-header rejection-header">
@@ -317,10 +320,14 @@
             <div class="dynamic-params" formArrayName="rejectionParams">
               <div class="dynamic-param-row" *ngFor="let param of rejectionParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-                <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-                <button type="button" class="remove-param-btn" (click)="removeCustomParam('rejectionParams', i)">
-                  <mat-icon>close</mat-icon>
-                </button>
+               
+                <div class="input-wrapper">
+
+                  <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+                  <button type="button" class="remove-param-btn" (click)="removeCustomParam('rejectionParams', i)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -360,10 +367,13 @@
                       <div class="dynamic-params" formArrayName="transpotationParams">
               <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-                <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-                <button type="button" class="remove-param-btn" (click)="removeCustomParam('transpotationParams', i)">
-                  <mat-icon>close</mat-icon>
-                </button>
+               <div class="input-wrapper">
+
+                 <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+                 <button type="button" class="remove-param-btn" (click)="removeCustomParam('transpotationParams', i)">
+                   <mat-icon>close</mat-icon>
+                 </button>
+               </div>
               </div>
             </div>
 
@@ -495,10 +505,13 @@
             <div class="dynamic-params" formArrayName="otherParams">
               <div class="dynamic-param-row" *ngFor="let param of otherParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-                <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-                <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
-                  <mat-icon>close</mat-icon>
-                </button>
+             <div class="input-wrapper">
+
+               <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+               <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
+                 <mat-icon>close</mat-icon>
+               </button>
+             </div>
               </div>
             </div>
           </div>
@@ -534,10 +547,13 @@
             <div class="dynamic-params" formArrayName="otherParams">
               <div class="dynamic-param-row" *ngFor="let param of otherParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-                <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-                <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
-                  <mat-icon>close</mat-icon>
-                </button>
+             <div class="input-wrapper">
+
+               <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+               <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
+                 <mat-icon>close</mat-icon>
+               </button>
+             </div>
               </div>
             </div>
 
@@ -549,11 +565,11 @@
 
       <div class="step-actions" id="step-actionfinal">
          <button class="btn btn-secondary" matStepperPrevious type="button">Back</button>
-         <div class="step-actionsss">
+     
 
            <button class="btn btn-danger" type="button" (click)="close()">Close</button>
           <button class="btn btn-primary" matStepperNext (click)="onSave()">Save</button>
-         </div>
+  
       </div>
     </div>
   </form>

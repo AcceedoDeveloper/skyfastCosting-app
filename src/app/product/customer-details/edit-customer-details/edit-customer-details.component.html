@@ -94,7 +94,7 @@
         <div class="step-actions">
           <!-- <button  (click)="onCancel()">Cancel</button> -->
 <button class="btn btn-danger" type="button" (click)="close()">Close</button>
-          <button class="btn btn-primary" matStepperNext>Next</button>
+          <button class="btn btn-primary" type="button" (click)="onBasicNext()">Next</button>
         </div>
       </form>
     </mat-step>
@@ -194,7 +194,7 @@
       <div class="step-actions">
         <button class="btn btn-danger" type="button" (click)="close()">Close</button>
         <button class="btn btn-secondary" matStepperPrevious type="button">Back</button>
-        <button class="btn btn-primary" matStepperNext>Next</button>
+        <button class="btn btn-primary" type="button" (click)="onProcessNext()">Next</button>
       </div>
     </mat-step>
 
@@ -240,10 +240,13 @@
           <div class="dynamic-params" formArrayName="commercialTermsParams">
             <div class="dynamic-param-row" *ngFor="let param of commercialTermsParams.controls; let i = index" [formGroupName]="i">
               <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+            <div class="input-wrapper">
+
               <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
               <button type="button" class="remove-param-btn" (click)="removeCustomParam('commercialTermsParams', i)">
                 <mat-icon>close</mat-icon>
               </button>
+            </div>
             </div>
           </div>
           <div class="section-header rejection-header">
@@ -259,10 +262,13 @@
           <div class="dynamic-params" formArrayName="rejectionParams">
             <div class="dynamic-param-row" *ngFor="let param of rejectionParams.controls; let i = index" [formGroupName]="i">
               <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-              <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-              <button type="button" class="remove-param-btn" (click)="removeCustomParam('rejectionParams', i)">
-                <mat-icon>close</mat-icon>
-              </button>
+              <div class="input-wrapper">
+
+                <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+                <button type="button" class="remove-param-btn" (click)="removeCustomParam('rejectionParams', i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -296,6 +302,21 @@
                 <mat-select class="lab" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
                   <mat-option *ngFor="let option of packingOptions" [value]="option">{{ option }}</mat-option>
                 </mat-select>
+              </div>
+
+                        <div class="dynamic-params" formArrayName="transpotationParams">
+                <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
+ <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+                
+ <div class="input-wrapper">
+
+   <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+                    <button type="button" class="remove-param-btn" (click)="removeCustomParam('transpotationParams', i)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+ </div>
+ 
+                </div>
               </div>
 
               <!-- File Upload -->
@@ -357,15 +378,7 @@
                 </div>
               </div>
 
-              <div class="dynamic-params" formArrayName="transpotationParams">
-                <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
-                  <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-                  <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-                  <button type="button" class="remove-param-btn" (click)="removeCustomParam('transpotationParams', i)">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                </div>
-              </div>
+    
 
             </div>
           </div>
@@ -373,13 +386,12 @@
       </div>
 
 <div class="details-panel" [ngClass]="{'active': showTransportInput || customerForm.get('Packing')?.value === 'international' || customerForm.get('Packing')?.value === 'domestic'}">
+
 <!-- International Packing -->
 <div *ngIf="customerForm.get('Packing')?.value === 'international'" class="slide-card">
   <div class="section-header">
     <h3 class="card-title">International Packing</h3>
-    <button type="button" class="section-add-btn" (click)="addCustomParam('otherParams')">
-      <mat-icon>add</mat-icon>
-    </button>
+
   </div>
    <mat-radio-group class="radio-button" formControlName="TransportType">
     <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
@@ -418,24 +430,14 @@
       </option>
     </select>
   </div>
-  <div class="dynamic-params" formArrayName="otherParams">
-    <div class="dynamic-param-row" *ngFor="let param of otherParams.controls; let i = index" [formGroupName]="i">
-      <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-      <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-      <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-  </div>
+
 </div>
 
 <!-- Domestic Packing -->
 <div *ngIf="customerForm.get('Packing')?.value === 'domestic'" class="slide-card">
   <div class="section-header">
     <h3 class="card-title">Domestic Packing</h3>
-    <button type="button" class="section-add-btn" (click)="addCustomParam('otherParams')">
-      <mat-icon>add</mat-icon>
-    </button>
+ 
   </div>
   <mat-radio-group class="radio-button" formControlName="TransportType">
     <!-- <mat-radio-button class="costs" value="cost">Cost</mat-radio-button> -->
@@ -449,16 +451,38 @@
     <label class="label1" for="transport-percent">Transport %</label>
     <input class="lab" id="transport-percent" matInput type="number" formControlName="TransportPercentage" />
   </div>
+
+</div>
+
+                 <div class="section-header">
+              <h3 class="card-title">Other</h3>
+   <button type="button" class="section-add-btn" (click)="addCustomParam('otherParams')">
+      <mat-icon>add</mat-icon>
+    </button>
+            </div>
+
+
+
+
   <div class="dynamic-params" formArrayName="otherParams">
     <div class="dynamic-param-row" *ngFor="let param of otherParams.controls; let i = index" [formGroupName]="i">
       <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-      <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-      <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
-        <mat-icon>close</mat-icon>
-      </button>
+
+
+
+      <div class="input-wrapper">
+        <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+        <button type="button" class="remove-param-btn" (click)="removeCustomParam('otherParams', i)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+
     </div>
   </div>
-</div>
+
+
+
 </div>
 
     </div>

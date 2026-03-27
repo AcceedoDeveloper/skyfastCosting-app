@@ -1446,3 +1446,43 @@ align-items: center;
   width: 7%;
   height: 5%;
 }
+
+.input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.input-wrapper .dynamic-input {
+  width: 100%;
+  padding-right: 40px; /* space for button */
+}
+
+
+.input-wrapper .remove-param-btn {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.input-wrapper .remove-param-btn mat-icon {
+  font-size: 14px;   /* icon size */
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+}
+
+/* optional hover */
+.input-wrapper .remove-param-btn:hover {
+  background: #fecaca;
+}
