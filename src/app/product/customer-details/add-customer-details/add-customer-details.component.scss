@@ -951,6 +951,7 @@ mat-radio-group.radio-button {
 
 .dynamic-param-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 26px;
   width: 100%;
@@ -958,7 +959,8 @@ mat-radio-group.radio-button {
 
 .dynamic-input {
   flex: 1;
-  min-width: 0;
+  max-width: 160px;
+  min-width: 140px;
   height: 36px;
   padding: 8px 10px;
   border: 1px solid #d1d5db;
@@ -978,7 +980,7 @@ mat-radio-group.radio-button {
   height: 32px;
   border: none;
   border-radius: 50%;
-  background: #fee2e2;
+
   color: #dc2626;
   display: inline-flex;
   align-items: center;
@@ -1449,7 +1451,7 @@ align-items: center;
 
 .input-wrapper {
   position: relative;
-  flex: 1;
+  // flex: 1;
 }
 
 .input-wrapper .dynamic-input {
@@ -1461,12 +1463,12 @@ align-items: center;
 .input-wrapper .remove-param-btn {
   position: absolute;
   top: 50%;
-  right: 9px;
+  right: 2px;
   transform: translateY(-50%);
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #fee2e2;
+  background: #ffffff;
   color: #dc2626;
   border: none;
   display: flex;
