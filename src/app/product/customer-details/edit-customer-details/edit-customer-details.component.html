@@ -41,11 +41,6 @@
           </mat-form-field>
 
       
-
-          </div>
-
-           <div class="corediv">
-
                 <mat-form-field appearance="outline">
             <mat-label>Raw Materials</mat-label>
             <mat-select formControlName="rawMaterial" multiple>
@@ -54,6 +49,11 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+
+          </div>
+
+           <div class="corediv">
+
 
               <mat-form-field appearance="outline">
             <mat-label>Casting Weight (In Kg)</mat-label>
@@ -79,7 +79,11 @@
 
 
           
-
+    <div class="step-actions">
+          <!-- <button  (click)="onCancel()">Cancel</button> -->
+<button class="btn btn-danger" type="button" (click)="close()">Close</button>
+          <button class="btn btn-primary" type="button" (click)="onBasicNext()">Next</button>
+        </div>
 
            </div>
          
@@ -91,11 +95,7 @@
         
 
 
-        <div class="step-actions">
-          <!-- <button  (click)="onCancel()">Cancel</button> -->
-<button class="btn btn-danger" type="button" (click)="close()">Close</button>
-          <button class="btn btn-primary" type="button" (click)="onBasicNext()">Next</button>
-        </div>
+    
       </form>
     </mat-step>
 
@@ -156,6 +156,11 @@
       <input type="number" formControlName="cavity" />
     </div>
 
+    <div class="form-group half-width1" *ngIf="proc.value.Unit === 'Square Inch'">
+      <label>Manual Entry</label>
+      <input type="number" formControlName="manualEntry" />
+    </div>
+
     <!-- Cost -->
     <div class="cost">
       <h5>
@@ -167,9 +172,9 @@
 <div class="info-popup dim">
 <div class="info-content">
 
-  <h5> Formula: (Hours / (3600 / CycleTime) / Cavity)  </h5> 
+  <h5>{{ getProcessFormulaTitle(proc.value) }}</h5> 
   <h5>
-    = ({{ proc.value.Hours || 0 }} / (3600 / {{ proc.value.cycleTime || 0 }}) / {{ proc.value.cavity || 0 }})
+    {{ getProcessFormulaBreakdown(proc.value) }}
  </h5> 
  <strong>Result: {{ calculateProcessValue(proc.value) }}</strong>
 </div>

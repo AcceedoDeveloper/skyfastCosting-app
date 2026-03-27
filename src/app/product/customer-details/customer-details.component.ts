@@ -356,7 +356,7 @@ private getISOWeekNumber(date: Date): number {
   onEdit(customer: CustomerDetails) {
     const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
       width: '590%',
-      height: '740px',
+      height: '670px',
       maxWidth: '75vw',
       data: customer,
       disableClose:true, 

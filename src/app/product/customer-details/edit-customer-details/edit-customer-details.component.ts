@@ -95,7 +95,7 @@ loading = false;
     private config:ConfigService
   ) {
 
-    console.log('data', data);
+    // console.log('data', data);
     
   const revision = data?.revisions?.[data.revisions.length - 1];
   
@@ -180,7 +180,7 @@ if (data?.revisions?.length) {
     this.rawMaterial$ = this.store.select(selectAllRawMaterials);
 
     this.rawMaterial$.subscribe( raw =>{
-      console.log('raw data', raw);
+      // console.log('raw data', raw);
     })
 
     this.store.dispatch(Action.loadRawMaterials());
@@ -188,15 +188,15 @@ if (data?.revisions?.length) {
 
     this.process$ = this.store.select(selectAllProcess);
     this.process$.subscribe(process =>{
-      console.log('process', process);
+      // console.log('process', process);
       this.syncProcessSelections(process);
     })
 
     // Initialize file name from existing data
-    console.log('data.drawingImage:', this.data?.drawingImage);
+    // console.log('data.drawingImage:', this.data?.drawingImage);
     if (this.data?.drawingImage) {
       this.previewUrl = this.getImageUrl(this.data.drawingImage);
-      console.log('previewUrl set to:', this.previewUrl);
+      // console.log('previewUrl set to:', this.previewUrl);
     }
   }
 
@@ -238,8 +238,10 @@ if (data?.revisions?.length) {
         processName: [proc?.processName || '', Validators.required],
         TonnageJaw: [proc?.TonnageJaw || ''],
         Hours: [proc?.Hours ?? 0],
+        Unit: [proc?.Unit || ''],
         cycleTime: [proc?.cycleTime ?? 0],
         cavity: [proc?.cavity ?? 0],
+        manualEntry: [proc?.manualEntry ?? null],
         cost: [proc?.cost ?? 0],
         calculation: [proc?.calculation ?? 0]
       })
@@ -273,7 +275,20 @@ if (data?.revisions?.length) {
       );
 
       if (matchedProcess?._id) {
-        control.patchValue({ processId: matchedProcess._id }, { emitEvent: false });
+        const patchData: any = {
+          processId: matchedProcess._id,
+          processName: matchedProcess.processName,
+          TonnageJaw: control.get('TonnageJaw')?.value || matchedProcess.TonnageJaw,
+          Hours: control.get('Hours')?.value || matchedProcess.Hours,
+          Unit: matchedProcess.Unit,
+          cycleTime: control.get('cycleTime')?.value || matchedProcess.cycleTime
+        };
+
+        if (!control.get('cavity')?.value && matchedProcess.processName === 'PDC') {
+          patchData.cavity = this.customerForm.get('cavities')?.value || matchedProcess.cavity;
+        }
+
+        control.patchValue(patchData, { emitEvent: false });
       }
     });
   }
@@ -364,7 +379,7 @@ private persistCustomer(keepDialogOpen: boolean, onSuccess?: () => void) {
 
     this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
       next: (res) => {
-        console.log('Customer updated:', res);
+        // console.log('Customer updated:', res);
         setTimeout(() => {
           this.toastr.success('Customer updated successfully!');
           this.loading = false;
@@ -480,7 +495,7 @@ private buildParamsMap(paramArray: FormArray): Record<string, string> {
 
 incrementRevision() {
   this.revisionNumber++;
-  console.log('🔄 Revision incremented:', this.revisionNumber);
+  // console.log('🔄 Revision incremented:', this.revisionNumber);
   this.onSave();
 }
 
@@ -489,14 +504,58 @@ incrementRevision() {
     this.dialogRef.close();
   }
 
-  calculateProcessValue(proc: any): number {
+calculateProcessValue(proc: any): number {
   if (!proc) return 0;
 
+  const unit = String(proc.Unit || '').toLowerCase();
   const hours = Number(proc.Hours) || 0;
-  const cycleTime = Number(proc.cycleTime) || 1; // prevent divide by 0
+  const cycleTime = Number(proc.cycleTime) || 1;
   const cavity = Number(proc.cavity) || 1;
+  const castingWeight = Number(this.customerForm.get('castingWeight')?.value) || 0;
+  const manualEntry = Number(proc.manualEntry) || 0;
 
-  return +(hours / (3600 / cycleTime)/ cavity).toFixed(4); // rounded to 4 decimals
+  if (unit === 'weight') {
+    return +(castingWeight * hours).toFixed(4);
+  }
+
+  if (unit === 'square inch') {
+    return +(castingWeight * hours * manualEntry).toFixed(4);
+  }
+
+  return +(hours / (3600 / cycleTime)/ cavity).toFixed(4);
+}
+
+getProcessFormulaTitle(proc: any): string {
+  const unit = String(proc?.Unit || '').toLowerCase();
+
+  if (unit === 'weight') {
+    return 'Formula: Casting Weight * Machine / per hr';
+  }
+
+  if (unit === 'square inch') {
+    return 'Formula: Casting Weight * Machine / per hr * Manual Entry';
+  }
+
+  return 'Formula: (Hours / (3600 / CycleTime) / Cavity)';
+}
+
+getProcessFormulaBreakdown(proc: any): string {
+  const unit = String(proc?.Unit || '').toLowerCase();
+  const castingWeight = Number(this.customerForm.get('castingWeight')?.value) || 0;
+  const hours = Number(proc?.Hours) || 0;
+  const cycleTime = Number(proc?.cycleTime) || 0;
+  const cavity = Number(proc?.cavity) || 0;
+  const manualEntry = Number(proc?.manualEntry) || 0;
+
+  if (unit === 'weight') {
+    return `= (${castingWeight} * ${hours})`;
+  }
+
+  if (unit === 'square inch') {
+    return `= (${castingWeight} * ${hours} * ${manualEntry})`;
+  }
+
+  return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
 }
 
 
@@ -512,6 +571,7 @@ onProcessSelected(processId: string, index: number) {
         processName: selectedProc.processName,
         TonnageJaw: selectedProc.TonnageJaw,
         Hours: selectedProc.Hours,
+        Unit: selectedProc.Unit,
         cycleTime: selectedProc.cycleTime,
         cost: selectedProc.cost,
         calculation: selectedProc.calculation
@@ -594,4 +654,3 @@ currencies = [
 
 
 }
-

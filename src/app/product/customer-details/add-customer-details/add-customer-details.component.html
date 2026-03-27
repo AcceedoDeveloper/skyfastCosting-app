@@ -215,6 +215,11 @@
           <input type="number" formControlName="cavity" />
         </div>
 
+        <div class="form-group field1" *ngIf="procCtrl.value.Unit === 'Square Inch'">
+          <label>Manual Entry</label>
+          <input type="number" formControlName="manualEntry" />
+        </div>
+
         <!-- Cost -->
         <div class="cost">
           <h5>Cost {{ calculateProcessValue(procCtrl.value) }}</h5>
@@ -224,12 +229,10 @@
 
             <div class="info-popup dim">
               <div class="info-content">
-                <h5>Formula: (Hours / (3600 / CycleTime) / Cavity)</h5>
+                <h5>{{ getProcessFormulaTitle(procCtrl.value) }}</h5>
 
                 <h5>
-                  = ({{ procCtrl.value.Hours || 0 }}
-                  / (3600 / {{ procCtrl.value.cycleTime || 0 }})
-                  / {{ procCtrl.value.cavity || 0 }})
+                  {{ getProcessFormulaBreakdown(procCtrl.value) }}
                 </h5>
 
                 <strong>
