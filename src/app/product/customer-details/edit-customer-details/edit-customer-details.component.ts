@@ -95,7 +95,7 @@ loading = false;
     private config:ConfigService
   ) {
 
-    // console.log('data', data);
+    console.log('data', data);
     
   const revision = data?.revisions?.[data.revisions.length - 1];
   
@@ -180,7 +180,7 @@ if (data?.revisions?.length) {
     this.rawMaterial$ = this.store.select(selectAllRawMaterials);
 
     this.rawMaterial$.subscribe( raw =>{
-      // console.log('raw data', raw);
+      console.log('raw data', raw);
     })
 
     this.store.dispatch(Action.loadRawMaterials());
@@ -188,15 +188,15 @@ if (data?.revisions?.length) {
 
     this.process$ = this.store.select(selectAllProcess);
     this.process$.subscribe(process =>{
-      // console.log('process', process);
+      console.log('process', process);
       this.syncProcessSelections(process);
     })
 
     // Initialize file name from existing data
-    // console.log('data.drawingImage:', this.data?.drawingImage);
+    console.log('data.drawingImage:', this.data?.drawingImage);
     if (this.data?.drawingImage) {
       this.previewUrl = this.getImageUrl(this.data.drawingImage);
-      // console.log('previewUrl set to:', this.previewUrl);
+      console.log('previewUrl set to:', this.previewUrl);
     }
   }
 
@@ -379,7 +379,7 @@ private persistCustomer(keepDialogOpen: boolean, onSuccess?: () => void) {
 
     this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
       next: (res) => {
-        // console.log('Customer updated:', res);
+        console.log('Customer updated:', res);
         setTimeout(() => {
           this.toastr.success('Customer updated successfully!');
           this.loading = false;
@@ -495,7 +495,7 @@ private buildParamsMap(paramArray: FormArray): Record<string, string> {
 
 incrementRevision() {
   this.revisionNumber++;
-  // console.log('🔄 Revision incremented:', this.revisionNumber);
+  console.log('🔄 Revision incremented:', this.revisionNumber);
   this.onSave();
 }
 

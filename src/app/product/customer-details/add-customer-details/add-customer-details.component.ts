@@ -141,17 +141,17 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
     
     this.custoemr$ = this.store.select(selectAllCustomers);
     this.custoemr$.subscribe(customers => {
-      // console.log('Customers from store:', customers);
+      console.log('Customers from store:', customers);
     });
 
     this.rawmaterial$ = this.store.select(selectAllRawMaterials);
     this.rawmaterial$.subscribe(rawMaterials => {
-      // console.log('Raw Materials from store:', rawMaterials);
+      console.log('Raw Materials from store:', rawMaterials);
     });
 
     this.process$ = this.store.select(selectAllProcess);
     this.process$.subscribe(processes => {
-      // console.log('Processes from store:', processes);
+      console.log('Processes from store:', processes);
     });
 
     this.customerdeatilas$ = this.store.select(Selector.selectAllCustomers);
@@ -165,8 +165,8 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
       this.drawingNoArray = customers
         .map((c: CustomerDetails) => c.drawingNo)
         .filter((d: CustomerDetails['drawingNo']) => d != null && d !== undefined);
-      // console.log('partname', this.partName);
-      // console.log('drawingNo', this.drawingNoArray);
+      console.log('partname', this.partName);
+      console.log('drawingNo', this.drawingNoArray);
     });
     
     this.store.dispatch(customerActions.loadCustomers())
@@ -227,7 +227,7 @@ calculateGrossWeight() {
     delete formValue.rawMaterial;
   }
 
-  // console.log('data', formValue);
+  console.log('data', formValue);
 
   if (this.selectedFile) {
     // Send FormData directly to service, not via NgRx
@@ -247,7 +247,7 @@ calculateGrossWeight() {
     this.productservices.createCustomerDetails(formData).subscribe({
       next: (customer) => {
         this.Cusid = customer._id;
-        // console.log('✅ Customer created with image:', customer._id);
+        console.log('✅ Customer created with image:', customer._id);
       },
       error: (err) => console.error(err)
     });
@@ -358,8 +358,8 @@ onSave() {
   this.loading = true;
   const result = this.buildCustomerPayload();
 
-  // console.log('Final JSON (Full):', result);
-  // console.log('data id', this.Cusid);
+  console.log('Final JSON (Full):', result);
+  console.log('data id', this.Cusid);
 
   let payload: any;
   if (this.selectedFile) {
@@ -375,7 +375,7 @@ onSave() {
 
     this.productservices.updateCustomer(this.Cusid!, formData).subscribe({
       next: (res) => {
-        // console.log('✅ Customer updated:', res);
+        console.log('✅ Customer updated:', res);
       
         setTimeout(() => {
           this.toastr.success('Customer Added successfully!');
