@@ -50,10 +50,12 @@ export interface Revision {
   overHeadsPercent: number;
   DieLifeTime?: number;
   CMMInspection: number;
+  
   Insurance: number;
   SeaPacking: number;
   Payment90DaysICC: number;
   currency: string;
+  includeRejections?: boolean;
   commercialTermsParams?: Record<string, string>;
   transpotationParams?: Record<string, string>;
   rejectionParams?: Record<string, string>;

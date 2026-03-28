@@ -264,6 +264,10 @@
             <label class="label1 reject" for="rejection">Rejection (%)</label>
             <input class="lab" id="rejection" matInput type="number" formControlName="Rejection" />
           </div>
+          <div class="field-row checkbox-row">
+            <label class="label1">includeRejections</label>
+            <mat-checkbox formControlName="includeRejections"></mat-checkbox>
+          </div>
           <div class="dynamic-params" formArrayName="rejectionParams">
             <div class="dynamic-param-row" *ngFor="let param of rejectionParams.controls; let i = index" [formGroupName]="i">
               <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />

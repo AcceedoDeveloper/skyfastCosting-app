@@ -29,6 +29,7 @@ import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from '../../../shared/config.service';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-edit-customer-details',
@@ -43,6 +44,7 @@ import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading
     MatDialogModule,
     MatStepperModule,
     MatRadioModule,
+    MatCheckboxModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './edit-customer-details.component.html',
@@ -139,6 +141,7 @@ if (data?.revisions?.length) {
   Insurance: [revision?.Insurance],
   SeaPacking: [revision?.SeaPacking],
   Payment90DaysICC: [revision?.Payment90DaysICC],
+  includeRejections: [revision?.includeRejections ?? false],
   currency: [revision?.currency ],
 
       castingWeight: [revision?.castingWeight ?? 0],
@@ -354,12 +357,28 @@ onSave() {
 }
 
 onBasicNext() {
-  if (!this.customerForm.valid) {
-    this.customerForm.markAllAsTouched();
+  if (
+    this.customerForm.get('customerName')?.invalid ||
+    this.customerForm.get('productName')?.invalid ||
+    this.customerForm.get('partName')?.invalid ||
+    this.customerForm.get('rawMaterial')?.invalid ||
+    this.customerForm.get('castingWeight')?.invalid ||
+    this.customerForm.get('meltingLoss')?.invalid ||
+    this.customerForm.get('shortWeight')?.invalid ||
+    this.customerForm.get('grossWeight')?.invalid
+  ) {
+    this.customerForm.get('customerName')?.markAsTouched();
+    this.customerForm.get('productName')?.markAsTouched();
+    this.customerForm.get('partName')?.markAsTouched();
+    this.customerForm.get('rawMaterial')?.markAsTouched();
+    this.customerForm.get('castingWeight')?.markAsTouched();
+    this.customerForm.get('meltingLoss')?.markAsTouched();
+    this.customerForm.get('shortWeight')?.markAsTouched();
+    this.customerForm.get('grossWeight')?.markAsTouched();
     return;
   }
 
-  this.persistCustomer(true, () => this.stepper.next());
+  this.stepper.next();
 }
 
 onProcessNext() {
@@ -368,7 +387,21 @@ onProcessNext() {
     return;
   }
 
-  this.persistCustomer(true, () => this.stepper.next());
+  this.loading = true;
+  const payload = this.buildProcessStepPayload();
+
+  this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
+    next: () => {
+      this.toastr.success('Process details saved successfully!');
+      this.loading = false;
+      this.stepper.next();
+    },
+    error: (err) => {
+      console.error('Process step update failed:', err);
+      this.toastr.error(err?.error?.message || 'Failed to save process details');
+      this.loading = false;
+    }
+  });
 }
 
 private persistCustomer(keepDialogOpen: boolean, onSuccess?: () => void) {
@@ -396,12 +429,30 @@ private persistCustomer(keepDialogOpen: boolean, onSuccess?: () => void) {
       error: (err) => {
         console.error('Update failed:', err);
         setTimeout(() => {
-          this.toastr.error('Failed to update customer');
+          this.toastr.error(err?.error?.message || 'Failed to update customer');
           this.loading = false;
         }, 1000);
       }
     });
   });
+}
+
+private buildProcessStepPayload() {
+  const formValue = this.customerForm.value;
+
+  return {
+    processes: (formValue.processes || []).map((p: any) => ({
+      processId: p.processId,
+      processName: p.processName,
+      TonnageJaw: p.TonnageJaw,
+      sqInch: p.sqInch,
+      Hours: p.Hours,
+      cycleTime: p.cycleTime,
+      cavity: p.cavity
+    })),
+    noOfProcess: this.processes.length,
+    revisionNumber: this.revisionNumber
+  };
 }
 
 private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
@@ -428,6 +479,7 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     ToolAmbience: formValue.ToolAmbience,
     overHeadsPercent: formValue.overHeadsPercent,
     DieLifeTime: formValue.dieLifeTime,
+    includeRejections: formValue.includeRejections,
     packingPercentage: formValue.TransportPercentage,
     packingRate: formValue.TransportCost,
     ...(formValue.Packing === 'international' && {

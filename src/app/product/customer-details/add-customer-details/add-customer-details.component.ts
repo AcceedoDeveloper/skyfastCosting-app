@@ -32,6 +32,7 @@ import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { selectLastAddedCustomer } from '../../store/product.selectors';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 import { ConfigService } from '../../../shared/config.service';
 
@@ -51,6 +52,7 @@ import { ConfigService } from '../../../shared/config.service';
     MatStepperModule,
     MatRadioModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './add-customer-details.component.html',
@@ -122,6 +124,7 @@ selectedFileName: string = '';
   Insurance: [0],
   SeaPacking: [0],
   Payment90DaysICC: [0],
+  includeRejections: [true],
   currency: ['USD'],
   commercialTermsParams: this.fb.array([]),
   transpotationParams: this.fb.array([]),
@@ -132,6 +135,7 @@ selectedFileName: string = '';
 
 this.productForm.get('castingWeight')?.valueChanges.subscribe(() => {
   this.calculateGrossWeight();
+  this.updateAllProcessCycleTimes();
 });
 
 this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
@@ -188,7 +192,7 @@ calculateGrossWeight() {
   const casting = Number(this.productForm.get('castingWeight')?.value) || 0;
   const melting = Number(this.productForm.get('meltingLoss')?.value) || 0;
 
-  const gross = casting * melting;
+  const gross = casting *(1+(melting/100)) ;
 
   this.productForm.get('grossWeight')?.setValue(gross, { emitEvent: false });
 }
@@ -317,6 +321,7 @@ addProcessSelection() {
     sqInch: [null],
   });
   this.processSelection.push(group);
+  this.updateProcessCycleTime(this.processSelection.length - 1);
 }
 
 
@@ -340,6 +345,11 @@ onProcessChange(index: number, processId: string) {
         cycleTime: selectedProcess.cycleTime
       };
 
+      const unit = String(selectedProcess.Unit || '').toLowerCase();
+      if (unit === 'weight' ) {
+        patchData.cycleTime = this.productForm.get('castingWeight')?.value || 0;
+      }
+
       // 🔹 If processName is PDC, auto-fill cavity from productForm
       if (selectedProcess.processName === 'PDC') {
         patchData.cavity = this.productForm.get('cavities')?.value || null;
@@ -348,6 +358,20 @@ onProcessChange(index: number, processId: string) {
       this.processSelection.at(index).patchValue(patchData);
     }
   });
+}
+
+private updateAllProcessCycleTimes() {
+  this.processSelection.controls.forEach((_, index) => this.updateProcessCycleTime(index));
+}
+
+private updateProcessCycleTime(index: number) {
+  const group = this.processSelection.at(index) as FormGroup;
+  const unit = String(group.get('Unit')?.value || '').toLowerCase();
+
+  if (unit === 'weight' ) {
+    const castingWeight = this.productForm.get('castingWeight')?.value || 0;
+    group.get('cycleTime')?.setValue(castingWeight, { emitEvent: false });
+  }
 }
 
 
@@ -467,9 +491,11 @@ private buildCustomerPayload() {
     revisionNumber: 1,
     overHeadsPercent: this.processForm.value.overHeadsPercent,
     DieLifeTime: this.processForm.value.dieLifeTime,
+    includeRejections: this.processForm.value.includeRejections ?? true,
     TransportPercentage: this.processForm.value.TransportPercentage,
     TransportCost: this.processForm.value.TransportCost,
     CMMInspection: this.processForm.value.CMMInspection,
+  
     Insurance: this.processForm.value.Insurance,
     SeaPacking: this.processForm.value.SeaPacking,
     Payment90DaysICC: this.processForm.value.Payment90DaysICC,
