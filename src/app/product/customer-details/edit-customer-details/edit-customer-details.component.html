@@ -197,7 +197,7 @@
   
 
       <div class="step-actions">
-        <button class="btn btn-danger" type="button" (click)="close()">Close</button>
+        <!-- <button class="btn btn-danger" type="button" (click)="close()">Close</button> -->
         <button class="btn btn-secondary" matStepperPrevious type="button">Back</button>
         <button class="btn btn-primary" type="button" (click)="onProcessNext()">Next</button>
       </div>
@@ -263,10 +263,6 @@
           <div class="field-row">
             <label class="label1 reject" for="rejection">Rejection (%)</label>
             <input class="lab" id="rejection" matInput type="number" formControlName="Rejection" />
-          </div>
-          <div class="field-row checkbox-row">
-            <label class="label1">includeRejections</label>
-            <mat-checkbox formControlName="includeRejections"></mat-checkbox>
           </div>
           <div class="dynamic-params" formArrayName="rejectionParams">
             <div class="dynamic-param-row" *ngFor="let param of rejectionParams.controls; let i = index" [formGroupName]="i">

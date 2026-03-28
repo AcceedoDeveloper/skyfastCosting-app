@@ -29,7 +29,6 @@ import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from '../../../shared/config.service';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-edit-customer-details',
@@ -44,7 +43,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatDialogModule,
     MatStepperModule,
     MatRadioModule,
-    MatCheckboxModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './edit-customer-details.component.html',
@@ -141,7 +139,6 @@ if (data?.revisions?.length) {
   Insurance: [revision?.Insurance],
   SeaPacking: [revision?.SeaPacking],
   Payment90DaysICC: [revision?.Payment90DaysICC],
-  includeRejections: [revision?.includeRejections ?? false],
   currency: [revision?.currency ],
 
       castingWeight: [revision?.castingWeight ?? 0],
@@ -244,7 +241,7 @@ if (data?.revisions?.length) {
         Unit: [proc?.Unit || ''],
         cycleTime: [proc?.cycleTime ?? 0],
         cavity: [proc?.cavity ?? 0],
-        sqInch: [proc?.sqInch ?? null],
+        sqInch: [proc?.sqInch ?? 0],
         cost: [proc?.cost ?? 0],
         calculation: [proc?.calculation ?? 0]
       })
@@ -278,15 +275,20 @@ if (data?.revisions?.length) {
       );
 
       if (matchedProcess?._id) {
+        const matchedUnit = String((matchedProcess as any).Unit || '').toLowerCase();
         const patchData: any = {
           processId: matchedProcess._id,
           processName: matchedProcess.processName,
           TonnageJaw: control.get('TonnageJaw')?.value || matchedProcess.TonnageJaw,
-          sqInch:control.get('sqInch')?.value,
+          sqInch: this.toFiniteNumber(control.get('sqInch')?.value, this.toFiniteNumber((matchedProcess as any).sqInch, 0)),
           Hours: control.get('Hours')?.value || matchedProcess.Hours,
           Unit: matchedProcess.Unit,
           cycleTime: control.get('cycleTime')?.value || matchedProcess.cycleTime
         };
+
+        if (matchedUnit === 'weight') {
+          patchData.cycleTime = this.toFiniteNumber(this.customerForm.get('castingWeight')?.value, 0);
+        }
 
         if (!control.get('cavity')?.value && matchedProcess.processName === 'PDC') {
           patchData.cavity = this.customerForm.get('cavities')?.value || matchedProcess.cavity;
@@ -357,45 +359,12 @@ onSave() {
 }
 
 onBasicNext() {
-  if (
-    this.customerForm.get('customerName')?.invalid ||
-    this.customerForm.get('productName')?.invalid ||
-    this.customerForm.get('partName')?.invalid ||
-    this.customerForm.get('rawMaterial')?.invalid ||
-    this.customerForm.get('castingWeight')?.invalid ||
-    this.customerForm.get('meltingLoss')?.invalid ||
-    this.customerForm.get('shortWeight')?.invalid ||
-    this.customerForm.get('grossWeight')?.invalid
-  ) {
-    this.customerForm.get('customerName')?.markAsTouched();
-    this.customerForm.get('productName')?.markAsTouched();
-    this.customerForm.get('partName')?.markAsTouched();
-    this.customerForm.get('rawMaterial')?.markAsTouched();
-    this.customerForm.get('castingWeight')?.markAsTouched();
-    this.customerForm.get('meltingLoss')?.markAsTouched();
-    this.customerForm.get('shortWeight')?.markAsTouched();
-    this.customerForm.get('grossWeight')?.markAsTouched();
+  if (!this.customerForm.valid) {
+    this.customerForm.markAllAsTouched();
     return;
   }
 
-  this.loading = true;
-
-  this.rawMaterial$.pipe(take(1)).subscribe(allRawMaterials => {
-    const payload = this.buildBasicStepPayload(allRawMaterials);
-
-    this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
-      next: () => {
-        this.toastr.success('Basic details saved successfully!');
-        this.loading = false;
-        this.stepper.next();
-      },
-      error: (err) => {
-        console.error('Basic step update failed:', err);
-        this.toastr.error(err?.error?.message || 'Failed to save basic details');
-        this.loading = false;
-      }
-    });
-  });
+  this.persistCustomer(true, () => this.stepper.next());
 }
 
 onProcessNext() {
@@ -404,21 +373,7 @@ onProcessNext() {
     return;
   }
 
-  this.loading = true;
-  const payload = this.buildProcessStepPayload();
-
-  this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
-    next: () => {
-      this.toastr.success('Process details saved successfully!');
-      this.loading = false;
-      this.stepper.next();
-    },
-    error: (err) => {
-      console.error('Process step update failed:', err);
-      this.toastr.error(err?.error?.message || 'Failed to save process details');
-      this.loading = false;
-    }
-  });
+  this.persistCustomer(true, () => this.stepper.next());
 }
 
 private persistCustomer(keepDialogOpen: boolean, onSuccess?: () => void) {
@@ -446,55 +401,12 @@ private persistCustomer(keepDialogOpen: boolean, onSuccess?: () => void) {
       error: (err) => {
         console.error('Update failed:', err);
         setTimeout(() => {
-          this.toastr.error(err?.error?.message || 'Failed to update customer');
+          this.toastr.error('Failed to update customer');
           this.loading = false;
         }, 1000);
       }
     });
   });
-}
-
-private buildProcessStepPayload() {
-  const formValue = this.customerForm.value;
-
-  return {
-    processes: (formValue.processes || []).map((p: any) => ({
-      processId: p.processId,
-      processName: p.processName,
-      TonnageJaw: p.TonnageJaw,
-      sqInch: p.sqInch,
-      Hours: p.Hours,
-      cycleTime: p.cycleTime,
-      cavity: p.cavity
-    })),
-    noOfProcess: this.processes.length,
-    revisionNumber: this.revisionNumber
-  };
-}
-
-private buildBasicStepPayload(allRawMaterials: RawMaterial[]) {
-  const formValue = this.customerForm.value;
-
-  const selectedRawMaterials = (formValue.rawMaterial || []).map((id: string) => {
-    const found = allRawMaterials.find(r => r._id === id);
-    return found ? found.GradeName : id;
-  });
-
-  return {
-    customerName: typeof this.data?.customerName === 'string'
-      ? this.data.customerName
-      : this.data?.customerName?.customerName || '',
-    partName: formValue.partName,
-    drawingNo: formValue.drawingNo,
-    productName: formValue.productName,
-    castingWeight: formValue.castingWeight,
-    grossWeight: formValue.grossWeight,
-    shortWeight: formValue.shortWeight,
-    meltingLoss: formValue.meltingLoss,
-    rawMaterial: selectedRawMaterials,
-    noOfRawMaterials: selectedRawMaterials.length,
-    revisionNumber: this.revisionNumber
-  };
 }
 
 private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
@@ -521,7 +433,6 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     ToolAmbience: formValue.ToolAmbience,
     overHeadsPercent: formValue.overHeadsPercent,
     DieLifeTime: formValue.dieLifeTime,
-    includeRejections: formValue.includeRejections,
     packingPercentage: formValue.TransportPercentage,
     packingRate: formValue.TransportCost,
     ...(formValue.Packing === 'international' && {
@@ -537,15 +448,7 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
       ? this.data.customerName
       : this.data?.customerName?.customerName || '',
     rawMaterial: selectedRawMaterials,
-    processes: (formValue.processes || []).map((p: any) => ({
-      processId: p.processId,
-      processName: p.processName,
-      TonnageJaw: p.TonnageJaw,
-      sqInch:p.sqInch,
-      Hours: p.Hours,
-      cycleTime: p.cycleTime,
-      cavity: p.cavity
-    })),
+    processes: (formValue.processes || []).map((p: any) => this.buildProcessPayload(p)),
     commercialTermsParams: this.buildParamsMap(this.commercialTermsParams),
     transpotationParams: this.buildParamsMap(this.transpotationParams),
     rejectionParams: this.buildParamsMap(this.rejectionParams),
@@ -586,12 +489,39 @@ private buildParamsMap(paramArray: FormArray): Record<string, string> {
   return params;
 }
 
+private toFiniteNumber(value: any, fallback = 0): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+private buildProcessPayload(process: any) {
+  const normalizedProcess = {
+    ...process,
+    processId: this.extractProcessId(process?.processId),
+    sqInch: this.toFiniteNumber(process?.sqInch, 0),
+    Hours: this.toFiniteNumber(process?.Hours, 0),
+    cycleTime: this.toFiniteNumber(process?.cycleTime, 0),
+    cavity: this.toFiniteNumber(process?.cavity, 0)
+  };
+
+  return {
+    processId: normalizedProcess.processId,
+    processName: normalizedProcess.processName,
+    TonnageJaw: normalizedProcess.TonnageJaw,
+    sqInch: normalizedProcess.sqInch,
+    Hours: normalizedProcess.Hours,
+    cost: this.calculateProcessValue(normalizedProcess),
+    cycleTime: normalizedProcess.cycleTime,
+    cavity: normalizedProcess.cavity
+  };
+}
+
 
 
 
 incrementRevision() {
   this.revisionNumber++;
-  console.log('🔄 Revision incremented:', this.revisionNumber);
+  console.log(' Revision incremented:', this.revisionNumber);
   this.onSave();
 }
 
@@ -604,53 +534,52 @@ calculateProcessValue(proc: any): number {
   if (!proc) return 0;
 
   const unit = String(proc.Unit || '').toLowerCase();
-  const hours = Number(proc.Hours) || 0;
-  const cycleTime = Number(proc.cycleTime) || 1;
-  const cavity = Number(proc.cavity) || 1;
-  const castingWeight = Number(this.customerForm.get('castingWeight')?.value) || 0;
-  const sqInch = Number(proc.sqInch) || 0;
-
+  const hours = this.toFiniteNumber(proc.Hours, 0);
+  const cycleTime = this.toFiniteNumber(proc.cycleTime, 1);
+  const cavity = this.toFiniteNumber(proc.cavity, 1);
+  const castingWeight = this.toFiniteNumber(this.customerForm.get('castingWeight')?.value, 0);
+  const sqInch = this.toFiniteNumber(proc.sqInch, 0);
 
   if (unit === 'weight') {
     return +(castingWeight * hours).toFixed(4);
   }
 
-
   if (unit === 'square inch') {
     return +(sqInch * hours).toFixed(4);
   }
 
-  return +(hours / (3600 / cycleTime) / cavity).toFixed(4);
+  const value = hours / (3600 / cycleTime) / cavity;
+  return Number.isFinite(value) ? +value.toFixed(4) : 0;
 }
 
 getProcessFormulaTitle(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
 
   if (unit === 'weight') {
-    return 'Formula: Casting Weight × Machine Hour';
+    return 'Formula: Casting Weight * Machine / per hr';
   }
 
   if (unit === 'square inch') {
-    return 'Formula: Sq.Inch × Machine Hour';
+    return 'Formula: sqInch * Machine / per hr';
   }
 
-  return 'Formula: (Hours / (3600 / CycleTime) / Cavity)';
+  return 'Formula: (Machine / per hr / (3600 / CycleTime) / Cavity)';
 }
 
 getProcessFormulaBreakdown(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
-  const castingWeight = Number(this.customerForm.get('castingWeight')?.value) || 0;
-  const hours = Number(proc?.Hours) || 0;
-  const cycleTime = Number(proc?.cycleTime) || 0;
-  const cavity = Number(proc?.cavity) || 0;
-  const sqInch = Number(proc?.sqInch) || 0;
+  const castingWeight = this.toFiniteNumber(this.customerForm.get('castingWeight')?.value, 0);
+  const hours = this.toFiniteNumber(proc?.Hours, 0);
+  const cycleTime = this.toFiniteNumber(proc?.cycleTime, 0);
+  const cavity = this.toFiniteNumber(proc?.cavity, 0);
+  const sqInch = this.toFiniteNumber(proc?.sqInch, 0);
 
   if (unit === 'weight') {
-    return `= (${castingWeight} × ${hours})`;
+    return `= (${castingWeight} * ${hours})`;
   }
 
   if (unit === 'square inch') {
-    return `= (${sqInch} × ${hours})`;
+    return `= (${sqInch} * ${hours})`;
   }
 
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
@@ -664,17 +593,22 @@ onProcessSelected(processId: string, index: number) {
 
     if (selectedProc) {
       const processGroup = this.processes.at(index);
+      const selectedUnit = String(selectedProc.Unit || '').toLowerCase();
 
       const patchData: any = {
         processName: selectedProc.processName,
         TonnageJaw: selectedProc.TonnageJaw,
-        sqInch:selectedProc.sqInch,
+        sqInch: this.toFiniteNumber(selectedProc.sqInch, 0),
         Hours: selectedProc.Hours,
         Unit: selectedProc.Unit,
         cycleTime: selectedProc.cycleTime,
         cost: selectedProc.cost,
         calculation: selectedProc.calculation
       };
+
+      if (selectedUnit === 'weight') {
+        patchData.cycleTime = this.toFiniteNumber(this.customerForm.get('castingWeight')?.value, 0);
+      }
 
       // 🔹 If processName is PDC → auto-fill cavity from customerForm
       if (selectedProc.processName === 'PDC') {

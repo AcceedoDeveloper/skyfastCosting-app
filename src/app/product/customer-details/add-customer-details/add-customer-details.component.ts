@@ -32,7 +32,6 @@ import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { selectLastAddedCustomer } from '../../store/product.selectors';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 import { ConfigService } from '../../../shared/config.service';
 
@@ -52,7 +51,6 @@ import { ConfigService } from '../../../shared/config.service';
     MatStepperModule,
     MatRadioModule,
     MatProgressSpinnerModule,
-    MatCheckboxModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './add-customer-details.component.html',
@@ -124,7 +122,6 @@ selectedFileName: string = '';
   Insurance: [0],
   SeaPacking: [0],
   Payment90DaysICC: [0],
-  includeRejections: [true],
   currency: ['USD'],
   commercialTermsParams: this.fb.array([]),
   transpotationParams: this.fb.array([]),
@@ -318,7 +315,7 @@ addProcessSelection() {
     Unit: [''],
     cycleTime: [''],
     cavity: [null, Validators.required],
-    sqInch: [null],
+    sqInch: [0, Validators.required],
   });
   this.processSelection.push(group);
   this.updateProcessCycleTime(this.processSelection.length - 1);
@@ -339,7 +336,7 @@ onProcessChange(index: number, processId: string) {
         processId: selectedProcess._id,
         processName: selectedProcess.processName,
         TonnageJaw: selectedProcess.TonnageJaw,
-        sqInch:selectedProcess.sqInch,
+        sqInch: this.toFiniteNumber(selectedProcess.sqInch, 0),
         Hours: selectedProcess.Hours,
         Unit: selectedProcess.Unit,
         cycleTime: selectedProcess.cycleTime
@@ -460,16 +457,9 @@ onProcessNext() {
 }
 
 private buildCustomerPayload() {
-  const processSelections = this.processForm.value.processSelection.map((p: any) => ({
-    processId: p.processId,
-    processName: p.processName,
-    TonnageJaw: p.TonnageJaw,
-    sqInch:p.sqInch,
-    Hours: p.Hours,
-    cost: this.calculateProcessValue(p),
-    cycleTime: p.cycleTime,
-    cavity: p.cavity
-  }));
+  const processSelections = this.processForm.value.processSelection.map((p: any) =>
+    this.buildProcessPayload(p)
+  );
 
   const commercialTermsParams = this.buildParamsMap(this.commercialTermsParams);
   const transpotationParams = this.buildParamsMap(this.transpotationParams);
@@ -491,11 +481,9 @@ private buildCustomerPayload() {
     revisionNumber: 1,
     overHeadsPercent: this.processForm.value.overHeadsPercent,
     DieLifeTime: this.processForm.value.dieLifeTime,
-    includeRejections: this.processForm.value.includeRejections ?? true,
     TransportPercentage: this.processForm.value.TransportPercentage,
     TransportCost: this.processForm.value.TransportCost,
     CMMInspection: this.processForm.value.CMMInspection,
-  
     Insurance: this.processForm.value.Insurance,
     SeaPacking: this.processForm.value.SeaPacking,
     Payment90DaysICC: this.processForm.value.Payment90DaysICC,
@@ -522,62 +510,91 @@ private buildParamsMap(paramArray: FormArray): Record<string, string> {
   return params;
 }
 
+private toFiniteNumber(value: any, fallback = 0): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+private buildProcessPayload(process: any) {
+  const normalizedProcess = {
+    ...process,
+    sqInch: this.toFiniteNumber(process?.sqInch, 0),
+    Hours: this.toFiniteNumber(process?.Hours, 0),
+    cycleTime: this.toFiniteNumber(process?.cycleTime, 0),
+    cavity: this.toFiniteNumber(process?.cavity, 0)
+  };
+
+  return {
+    processId: normalizedProcess.processId,
+    processName: normalizedProcess.processName,
+    TonnageJaw: normalizedProcess.TonnageJaw,
+    sqInch: normalizedProcess.sqInch,
+    Hours: normalizedProcess.Hours,
+    cost: this.calculateProcessValue(normalizedProcess),
+    cycleTime: normalizedProcess.cycleTime,
+    cavity: normalizedProcess.cavity
+  };
+}
+
 calculateProcessValue(proc: any): number {
   if (!proc) return 0;
 
   const unit = String(proc.Unit || '').toLowerCase();
-  const hours = Number(proc.Hours) || 0;
-  const cycleTime = Number(proc.cycleTime) || 1;
-  const cavity = Number(proc.cavity) || 1;
-  const castingWeight = Number(this.productForm.get('castingWeight')?.value) || 0;
-  const sqInch = Number(proc.sqInch) || 0;
+  const hours = this.toFiniteNumber(proc.Hours, 0);
+  const cycleTime = this.toFiniteNumber(proc.cycleTime, 1);
+  const cavity = this.toFiniteNumber(proc.cavity, 1);
+  const castingWeight = this.toFiniteNumber(this.productForm.get('castingWeight')?.value, 0);
+  const sqInch = this.toFiniteNumber(proc.sqInch, 0);
 
-  // ✅ Weight based
   if (unit === 'weight') {
     return +(castingWeight * hours).toFixed(4);
   }
 
-  // ✅ Square Inch based (UPDATED as per your requirement)
   if (unit === 'square inch') {
     return +(sqInch * hours).toFixed(4);
   }
 
-  // ✅ Default (normal flow)
-  return +(hours / (3600 / cycleTime) / cavity).toFixed(4);
+  const value = hours / (3600 / cycleTime) / cavity;
+  return Number.isFinite(value) ? +value.toFixed(4) : 0;
 }
 
 getProcessFormulaTitle(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
 
   if (unit === 'weight') {
-    return 'Formula: Casting Weight × Machine Hour';
+    return 'Formula: Casting Weight * Machine / per hr';
   }
 
   if (unit === 'square inch') {
-    return 'Formula: Sq.Inch × Machine Hour';
+    return 'Formula: sqInch * Machine / per hr';
   }
 
-  return 'Formula: (Hours / (3600 / CycleTime) / Cavity)';
+  return 'Formula: (Machine / per hr / (3600 / CycleTime) / Cavity)';
 }
 
 getProcessFormulaBreakdown(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
-  const castingWeight = Number(this.productForm.get('castingWeight')?.value) || 0;
-  const hours = Number(proc?.Hours) || 0;
-  const cycleTime = Number(proc?.cycleTime) || 0;
-  const cavity = Number(proc?.cavity) || 0;
-  const sqInch = Number(proc?.sqInch) || 0;
+  const castingWeight = this.toFiniteNumber(this.productForm.get('castingWeight')?.value, 0);
+  const hours = this.toFiniteNumber(proc?.Hours, 0);
+  const cycleTime = this.toFiniteNumber(proc?.cycleTime, 0);
+  const cavity = this.toFiniteNumber(proc?.cavity, 0);
+  const sqInch = this.toFiniteNumber(proc?.sqInch, 0);
 
   if (unit === 'weight') {
-    return `= (${castingWeight} × ${hours})`;
+    return `= (${castingWeight} * ${hours})`;
   }
 
   if (unit === 'square inch') {
-    return `= (${sqInch} × ${hours})`;
+    return `= (${sqInch} * ${hours})`;
   }
 
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
 }
+
+
+
+
+
 
 
 
