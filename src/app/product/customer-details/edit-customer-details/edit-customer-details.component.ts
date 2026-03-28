@@ -378,7 +378,24 @@ onBasicNext() {
     return;
   }
 
-  this.stepper.next();
+  this.loading = true;
+
+  this.rawMaterial$.pipe(take(1)).subscribe(allRawMaterials => {
+    const payload = this.buildBasicStepPayload(allRawMaterials);
+
+    this.productservices.updateCustomer(this.data?._id!, payload).subscribe({
+      next: () => {
+        this.toastr.success('Basic details saved successfully!');
+        this.loading = false;
+        this.stepper.next();
+      },
+      error: (err) => {
+        console.error('Basic step update failed:', err);
+        this.toastr.error(err?.error?.message || 'Failed to save basic details');
+        this.loading = false;
+      }
+    });
+  });
 }
 
 onProcessNext() {
@@ -451,6 +468,31 @@ private buildProcessStepPayload() {
       cavity: p.cavity
     })),
     noOfProcess: this.processes.length,
+    revisionNumber: this.revisionNumber
+  };
+}
+
+private buildBasicStepPayload(allRawMaterials: RawMaterial[]) {
+  const formValue = this.customerForm.value;
+
+  const selectedRawMaterials = (formValue.rawMaterial || []).map((id: string) => {
+    const found = allRawMaterials.find(r => r._id === id);
+    return found ? found.GradeName : id;
+  });
+
+  return {
+    customerName: typeof this.data?.customerName === 'string'
+      ? this.data.customerName
+      : this.data?.customerName?.customerName || '',
+    partName: formValue.partName,
+    drawingNo: formValue.drawingNo,
+    productName: formValue.productName,
+    castingWeight: formValue.castingWeight,
+    grossWeight: formValue.grossWeight,
+    shortWeight: formValue.shortWeight,
+    meltingLoss: formValue.meltingLoss,
+    rawMaterial: selectedRawMaterials,
+    noOfRawMaterials: selectedRawMaterials.length,
     revisionNumber: this.revisionNumber
   };
 }
@@ -568,26 +610,28 @@ calculateProcessValue(proc: any): number {
   const castingWeight = Number(this.customerForm.get('castingWeight')?.value) || 0;
   const sqInch = Number(proc.sqInch) || 0;
 
+
   if (unit === 'weight') {
     return +(castingWeight * hours).toFixed(4);
   }
 
+
   if (unit === 'square inch') {
-    return +(castingWeight * hours * sqInch).toFixed(4);
+    return +(sqInch * hours).toFixed(4);
   }
 
-  return +(hours / (3600 / cycleTime)/ cavity).toFixed(4);
+  return +(hours / (3600 / cycleTime) / cavity).toFixed(4);
 }
 
 getProcessFormulaTitle(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
 
   if (unit === 'weight') {
-    return 'Formula: Casting Weight * Machine / per hr';
+    return 'Formula: Casting Weight × Machine Hour';
   }
 
   if (unit === 'square inch') {
-    return 'Formula: Casting Weight * Machine / per hr * sqInch';
+    return 'Formula: Sq.Inch × Machine Hour';
   }
 
   return 'Formula: (Hours / (3600 / CycleTime) / Cavity)';
@@ -602,11 +646,11 @@ getProcessFormulaBreakdown(proc: any): string {
   const sqInch = Number(proc?.sqInch) || 0;
 
   if (unit === 'weight') {
-    return `= (${castingWeight} * ${hours})`;
+    return `= (${castingWeight} × ${hours})`;
   }
 
   if (unit === 'square inch') {
-    return `= (${castingWeight} * ${hours} * ${sqInch})`;
+    return `= (${sqInch} × ${hours})`;
   }
 
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;

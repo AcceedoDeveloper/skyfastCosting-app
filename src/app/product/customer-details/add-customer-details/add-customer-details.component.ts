@@ -532,14 +532,17 @@ calculateProcessValue(proc: any): number {
   const castingWeight = Number(this.productForm.get('castingWeight')?.value) || 0;
   const sqInch = Number(proc.sqInch) || 0;
 
+  // ✅ Weight based
   if (unit === 'weight') {
     return +(castingWeight * hours).toFixed(4);
   }
 
+  // ✅ Square Inch based (UPDATED as per your requirement)
   if (unit === 'square inch') {
-    return +(castingWeight * hours * sqInch).toFixed(4);
+    return +(sqInch * hours).toFixed(4);
   }
 
+  // ✅ Default (normal flow)
   return +(hours / (3600 / cycleTime) / cavity).toFixed(4);
 }
 
@@ -547,11 +550,11 @@ getProcessFormulaTitle(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
 
   if (unit === 'weight') {
-    return 'Formula: Casting Weight * Machine / per hr';
+    return 'Formula: Casting Weight × Machine Hour';
   }
 
   if (unit === 'square inch') {
-    return 'Formula: Casting Weight * Machine / per hr * sqInch';
+    return 'Formula: Sq.Inch × Machine Hour';
   }
 
   return 'Formula: (Hours / (3600 / CycleTime) / Cavity)';
@@ -566,20 +569,15 @@ getProcessFormulaBreakdown(proc: any): string {
   const sqInch = Number(proc?.sqInch) || 0;
 
   if (unit === 'weight') {
-    return `= (${castingWeight} * ${hours})`;
+    return `= (${castingWeight} × ${hours})`;
   }
 
   if (unit === 'square inch') {
-    return `= (${castingWeight} * ${hours} * ${sqInch})`;
+    return `= (${sqInch} × ${hours})`;
   }
 
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
 }
-
-
-
-
-
 
 
 

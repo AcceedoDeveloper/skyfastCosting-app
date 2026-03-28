@@ -145,7 +145,7 @@
     </div>
 
     <!-- Cycle Time -->
-    <div class="form-group half-width11">
+    <div class="form-group half-width11" *ngIf="proc.value.Unit !== 'Square Inch'">
       <label>Cycle Time / Weight</label>
       <input type="number" formControlName="cycleTime" />
     </div>
