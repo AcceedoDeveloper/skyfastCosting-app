@@ -241,7 +241,7 @@ if (data?.revisions?.length) {
         Unit: [proc?.Unit || ''],
         cycleTime: [proc?.cycleTime ?? 0],
         cavity: [proc?.cavity ?? 0],
-        manualEntry: [proc?.manualEntry ?? null],
+        sqInch: [proc?.sqInch ?? null],
         cost: [proc?.cost ?? 0],
         calculation: [proc?.calculation ?? 0]
       })
@@ -279,6 +279,7 @@ if (data?.revisions?.length) {
           processId: matchedProcess._id,
           processName: matchedProcess.processName,
           TonnageJaw: control.get('TonnageJaw')?.value || matchedProcess.TonnageJaw,
+          sqInch:control.get('sqInch')?.value,
           Hours: control.get('Hours')?.value || matchedProcess.Hours,
           Unit: matchedProcess.Unit,
           cycleTime: control.get('cycleTime')?.value || matchedProcess.cycleTime
@@ -446,6 +447,7 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
       processId: p.processId,
       processName: p.processName,
       TonnageJaw: p.TonnageJaw,
+      sqInch:p.sqInch,
       Hours: p.Hours,
       cycleTime: p.cycleTime,
       cavity: p.cavity
@@ -512,14 +514,14 @@ calculateProcessValue(proc: any): number {
   const cycleTime = Number(proc.cycleTime) || 1;
   const cavity = Number(proc.cavity) || 1;
   const castingWeight = Number(this.customerForm.get('castingWeight')?.value) || 0;
-  const manualEntry = Number(proc.manualEntry) || 0;
+  const sqInch = Number(proc.sqInch) || 0;
 
   if (unit === 'weight') {
     return +(castingWeight * hours).toFixed(4);
   }
 
   if (unit === 'square inch') {
-    return +(castingWeight * hours * manualEntry).toFixed(4);
+    return +(castingWeight * hours * sqInch).toFixed(4);
   }
 
   return +(hours / (3600 / cycleTime)/ cavity).toFixed(4);
@@ -533,7 +535,7 @@ getProcessFormulaTitle(proc: any): string {
   }
 
   if (unit === 'square inch') {
-    return 'Formula: Casting Weight * Machine / per hr * Manual Entry';
+    return 'Formula: Casting Weight * Machine / per hr * sqInch';
   }
 
   return 'Formula: (Hours / (3600 / CycleTime) / Cavity)';
@@ -545,14 +547,14 @@ getProcessFormulaBreakdown(proc: any): string {
   const hours = Number(proc?.Hours) || 0;
   const cycleTime = Number(proc?.cycleTime) || 0;
   const cavity = Number(proc?.cavity) || 0;
-  const manualEntry = Number(proc?.manualEntry) || 0;
+  const sqInch = Number(proc?.sqInch) || 0;
 
   if (unit === 'weight') {
     return `= (${castingWeight} * ${hours})`;
   }
 
   if (unit === 'square inch') {
-    return `= (${castingWeight} * ${hours} * ${manualEntry})`;
+    return `= (${castingWeight} * ${hours} * ${sqInch})`;
   }
 
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
@@ -570,6 +572,7 @@ onProcessSelected(processId: string, index: number) {
       const patchData: any = {
         processName: selectedProc.processName,
         TonnageJaw: selectedProc.TonnageJaw,
+        sqInch:selectedProc.sqInch,
         Hours: selectedProc.Hours,
         Unit: selectedProc.Unit,
         cycleTime: selectedProc.cycleTime,

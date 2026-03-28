@@ -22,6 +22,7 @@ export interface Process {
   cost?: number;
   machineCentre: number;
   Unit:string;
+  sqInch:string;
   createdAt?: Date;
   updatedAt?: Date;
   __v?: number;

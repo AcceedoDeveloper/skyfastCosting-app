@@ -314,7 +314,7 @@ addProcessSelection() {
     Unit: [''],
     cycleTime: [''],
     cavity: [null, Validators.required],
-    manualEntry: [null],
+    sqInch: [null],
   });
   this.processSelection.push(group);
 }
@@ -334,6 +334,7 @@ onProcessChange(index: number, processId: string) {
         processId: selectedProcess._id,
         processName: selectedProcess.processName,
         TonnageJaw: selectedProcess.TonnageJaw,
+        sqInch:selectedProcess.sqInch,
         Hours: selectedProcess.Hours,
         Unit: selectedProcess.Unit,
         cycleTime: selectedProcess.cycleTime
@@ -439,6 +440,7 @@ private buildCustomerPayload() {
     processId: p.processId,
     processName: p.processName,
     TonnageJaw: p.TonnageJaw,
+    sqInch:p.sqInch,
     Hours: p.Hours,
     cost: this.calculateProcessValue(p),
     cycleTime: p.cycleTime,
@@ -502,14 +504,14 @@ calculateProcessValue(proc: any): number {
   const cycleTime = Number(proc.cycleTime) || 1;
   const cavity = Number(proc.cavity) || 1;
   const castingWeight = Number(this.productForm.get('castingWeight')?.value) || 0;
-  const manualEntry = Number(proc.manualEntry) || 0;
+  const sqInch = Number(proc.sqInch) || 0;
 
   if (unit === 'weight') {
     return +(castingWeight * hours).toFixed(4);
   }
 
   if (unit === 'square inch') {
-    return +(castingWeight * hours * manualEntry).toFixed(4);
+    return +(castingWeight * hours * sqInch).toFixed(4);
   }
 
   return +(hours / (3600 / cycleTime) / cavity).toFixed(4);
@@ -523,7 +525,7 @@ getProcessFormulaTitle(proc: any): string {
   }
 
   if (unit === 'square inch') {
-    return 'Formula: Casting Weight * Machine / per hr * Manual Entry';
+    return 'Formula: Casting Weight * Machine / per hr * sqInch';
   }
 
   return 'Formula: (Hours / (3600 / CycleTime) / Cavity)';
@@ -535,14 +537,14 @@ getProcessFormulaBreakdown(proc: any): string {
   const hours = Number(proc?.Hours) || 0;
   const cycleTime = Number(proc?.cycleTime) || 0;
   const cavity = Number(proc?.cavity) || 0;
-  const manualEntry = Number(proc?.manualEntry) || 0;
+  const sqInch = Number(proc?.sqInch) || 0;
 
   if (unit === 'weight') {
     return `= (${castingWeight} * ${hours})`;
   }
 
   if (unit === 'square inch') {
-    return `= (${castingWeight} * ${hours} * ${manualEntry})`;
+    return `= (${castingWeight} * ${hours} * ${sqInch})`;
   }
 
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
