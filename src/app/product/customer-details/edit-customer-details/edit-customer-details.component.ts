@@ -128,7 +128,7 @@ if (data?.revisions?.length) {
       Freight:[revision?.Freight ?? ''],
       ModeOfTransport:[revision?.ModeOfTransport ?? ''],
 
-      Packing: [revision?.Packing || ''],
+      Packing: [revision?.Packing || 'none'],
       ToolAmbience: [revision?.ToolAmbience ],
       overHeadsPercent: [revision?.overHeadsPercent ],
       dieLifeTime: [ revision?.DieLifeTime ],

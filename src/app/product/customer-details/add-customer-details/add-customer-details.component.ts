@@ -106,7 +106,7 @@ selectedFileName: string = '';
     this.processForm = this.fb.group({
       processSelection: this.fb.array([]) ,
       Rejection: [0, Validators.required],
-    Packing : [null, Validators.required],
+    Packing : ['none', Validators.required],
     InterestRate : [0, Validators.required],
     InspectorCost: [0, Validators.required],
     Freight:[],
