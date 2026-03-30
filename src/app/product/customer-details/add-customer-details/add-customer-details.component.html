@@ -281,10 +281,13 @@
                 <mat-icon>add</mat-icon>
               </button>
             </div>
+
+
             <div class="field-row">
               <label class="label1" for="tool-cost">Tool Cost (₹)</label>
               <input class="lab" id="tool-cost" matInput type="number" formControlName="ToolAmbience" />
             </div>
+
             <div class="field-row">
               <label class="label1" for="inspector-cost">Inspector Cost (₹)</label>
               <input class="lab" id="inspector-cost" matInput type="number" formControlName="InspectorCost" />
@@ -298,6 +301,22 @@
               <label class="label1" for="die-lifetime">Die Lifetime</label>
               <input class="lab" id="die-lifetime" matInput type="number" formControlName="dieLifeTime" />
             </div>
+
+            <div class="field-row">
+           <label class="label1" for="die-lifetime">Die Maintenace</label>
+           <input class="lab1" id="die-lifetime" matInput type="text" formControlName="DieMaintenance">
+            </div>
+
+            <div class="field-row">
+             <label class="label1" for="die-lifetime">Inspection</label>
+             <input class="lab1" id="die-lifetime" matInput  type="text" formControlName="Inspection">
+            </div>
+
+             <div class="field-row">
+             <label class="label1" for="die-lifetime">WIP Parts HandLing Tray</label>
+             <input class="lab1" id="die-lifetime" matInput  type="text" formControlName="WIPPartsHandlingTray">
+            </div>
+
             <div class="dynamic-params" formArrayName="commercialTermsParams">
               <div class="dynamic-param-row" *ngFor="let param of commercialTermsParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
@@ -310,16 +329,25 @@
                </div>
               </div>
             </div>
+
             <div class="section-header rejection-header">
               <h3 class="rejection-heading" id="rejected">Rejection</h3>
               <button type="button" class="section-add-btn" (click)="addCustomParam('rejectionParams')">
                 <mat-icon>add</mat-icon>
               </button>
             </div>
+
             <div class="field-row">
               <label class="label1 reject" for="rejection">Rejection (%)</label>
               <input class="lab" id="rejection" matInput type="number" formControlName="Rejection" />
             </div>
+
+              <div class="field-row checkbox-row">
+              <label class="label1">includeRejections</label>
+              <mat-checkbox formControlName="includeRejections"></mat-checkbox>
+              </div>
+
+            
             <div class="dynamic-params" formArrayName="rejectionParams">
               <div class="dynamic-param-row" *ngFor="let param of rejectionParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
@@ -357,6 +385,9 @@
               <label class="label1" for="Freight">ModeOfTransport</label>
               <input class="lab" id="ModeOfTransport" matInput type="text" formControlName="ModeOfTransport">
             </div>
+
+
+
               </div>
               <div class="subdiv2">
                 <div class="field-row">
@@ -366,6 +397,23 @@
                     <mat-option *ngFor="let option of packingOptions" [value]="option">{{ option }}</mat-option>
                   </mat-select>
                 </div>
+              </div>
+
+              <div class="field-row">
+                <label class="label1 pack">Payment Terms</label>
+                <mat-select class="lab" formControlName="PaymentTerms" >
+                  <mat-option value="" disabled selected>Select</mat-option>
+                    <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
+                </mat-select>
+              </div>
+
+              <div class="field-row">
+                <label class="label1 pack">Delivery Terms</label>
+                <mat-select class="lab" formControlName="DeliveryTerms">
+                  <mat-option value="" disabled selected>Select</mat-option>
+                  <mat-option *ngFor="let option of deliverytermsoption" [value]="option">{{option}}</mat-option>
+                </mat-select>
+
               </div>
                       <div class="dynamic-params" formArrayName="transpotationParams">
               <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">

@@ -34,6 +34,7 @@ import { selectLastAddedCustomer } from '../../store/product.selectors';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 import { ConfigService } from '../../../shared/config.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @Component({
@@ -52,6 +53,8 @@ import { ConfigService } from '../../../shared/config.service';
     MatRadioModule,
     MatProgressSpinnerModule,
     LoadingSpinnerComponent,
+    MatCheckboxModule,
+   
   ],
   templateUrl: './add-customer-details.component.html',
   styleUrl: './add-customer-details.component.scss'
@@ -77,6 +80,8 @@ selectedFileName: string = '';
     Cusid?: string;
     showTransportInput = false; 
     packingOptions: string[] = ["none", "domestic", "international"];
+    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","Immediate"];
+    deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
 
     constructor(
     private fb: FormBuilder,
@@ -107,6 +112,8 @@ selectedFileName: string = '';
       processSelection: this.fb.array([]) ,
       Rejection: [0, Validators.required],
     Packing : ['none', Validators.required],
+    PaymentTerms:['',Validators.required],
+    DeliveryTerms:['',Validators.required],
     InterestRate : [0, Validators.required],
     InspectorCost: [0, Validators.required],
     Freight:[],
@@ -118,10 +125,14 @@ selectedFileName: string = '';
   TransportPercentage: [0],
   overHeadsPercent : [0, Validators.required],
   dieLifeTime : [0, Validators.required],
+  DieMaintenance:[''],
+  Inspection:[''],
+  WIPPartsHandlingTray:[''],
   CMMInspection: [0],
   Insurance: [0],
   SeaPacking: [0],
   Payment90DaysICC: [0],
+   includeRejections: [true],
   currency: ['USD'],
   commercialTermsParams: this.fb.array([]),
   transpotationParams: this.fb.array([]),
@@ -471,6 +482,9 @@ private buildCustomerPayload() {
     processes: processSelections,
     Rejection: this.processForm.value.Rejection,
     Packing: this.processForm.value.Packing,
+    PaymentTerms:this.processForm.value.PaymentTerms,
+    DeliveryTerms:this.processForm.value.DeliveryTerms,
+
     InterestRate: this.processForm.value.InterestRate,
     InspectorCost: this.processForm.value.InspectorCost,
     ToolAmbience: this.processForm.value.ToolAmbience,
@@ -480,7 +494,12 @@ private buildCustomerPayload() {
     packingPercentage: this.processForm.value.TransportPercentage,
     revisionNumber: 1,
     overHeadsPercent: this.processForm.value.overHeadsPercent,
+   
     DieLifeTime: this.processForm.value.dieLifeTime,
+    DieMaintenance:this.processForm.value.DieMaintenance,
+    Inspection:this.processForm.value.Inspection,
+    WIPPartsHandlingTray:this.processForm.value.WIPPartsHandlingTray,
+    includeRejections: this.processForm.value.includeRejections ?? true,
     TransportPercentage: this.processForm.value.TransportPercentage,
     TransportCost: this.processForm.value.TransportCost,
     CMMInspection: this.processForm.value.CMMInspection,

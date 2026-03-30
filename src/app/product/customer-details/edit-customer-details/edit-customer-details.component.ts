@@ -29,6 +29,7 @@ import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from '../../../shared/config.service';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-edit-customer-details',
@@ -43,6 +44,7 @@ import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading
     MatDialogModule,
     MatStepperModule,
     MatRadioModule,
+     MatCheckboxModule,
     LoadingSpinnerComponent,
   ],
   templateUrl: './edit-customer-details.component.html',
@@ -57,6 +59,8 @@ export class EditCustomerDetailsComponent implements OnInit {
   revisionNumber = 1; 
   selectedRevisionIndex = 0; // default first revision
   packingOptions: string[] = ["none", "domestic", "international"];
+    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","Immediate"];
+    deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
 
   selectedFile: File | null = null;
 previewUrl: string | ArrayBuffer | null = null;
@@ -129,15 +133,22 @@ if (data?.revisions?.length) {
       ModeOfTransport:[revision?.ModeOfTransport ?? ''],
 
       Packing: [revision?.Packing || 'none'],
+
       ToolAmbience: [revision?.ToolAmbience ],
       overHeadsPercent: [revision?.overHeadsPercent ],
       dieLifeTime: [ revision?.DieLifeTime ],
-
+      DieMaintenance:[revision?.DieMaintenance],
+      Inspection:[revision?.Inspection],
+      WIPPartsHandlingTray:[revision?.WIPPartsHandlingTray],
+  PaymentTerms: [revision?.PaymentTerms || ''],
+  DeliveryTerms: [revision?.DeliveryTerms || ''],
 
 
       CMMInspection: [revision?.CMMInspection],
   Insurance: [revision?.Insurance],
   SeaPacking: [revision?.SeaPacking],
+    includeRejections: [revision?.includeRejections ?? false],
+
   Payment90DaysICC: [revision?.Payment90DaysICC],
   currency: [revision?.currency ],
 
@@ -432,7 +443,15 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     ModeOfTransport: formValue.ModeOfTransport,
     ToolAmbience: formValue.ToolAmbience,
     overHeadsPercent: formValue.overHeadsPercent,
+    DieMaintenance:formValue.DieMaintenance,
+    Inspection:formValue.Inspection,
     DieLifeTime: formValue.dieLifeTime,
+    PaymentTerms:formValue.PaymentTerms,
+    DeliveryTerms:formValue.DeliveryTerms,
+    WIPPartsHandlingTray:formValue.WIPPartsHandlingTray,
+
+        includeRejections: formValue.includeRejections,
+
     packingPercentage: formValue.TransportPercentage,
     packingRate: formValue.TransportCost,
     ...(formValue.Packing === 'international' && {

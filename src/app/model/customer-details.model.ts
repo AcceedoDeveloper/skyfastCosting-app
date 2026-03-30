@@ -50,7 +50,11 @@ export interface Revision {
   overHeadsPercent: number;
   DieLifeTime?: number;
   CMMInspection: number;
-  
+  DieMaintenance:string;
+  Inspection:string;
+  WIPPartsHandlingTray:string;
+  PaymentTerms:string;
+  DeliveryTerms:string;
   Insurance: number;
   SeaPacking: number;
   Payment90DaysICC: number;
