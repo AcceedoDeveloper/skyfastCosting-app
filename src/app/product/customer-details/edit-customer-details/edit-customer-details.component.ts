@@ -441,6 +441,7 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     InspectorCost: formValue.InspectorCost,
     Freight: formValue.Freight,
     ModeOfTransport: formValue.ModeOfTransport,
+    CMMInspection: formValue.CMMInspection,
     ToolAmbience: formValue.ToolAmbience,
     overHeadsPercent: formValue.overHeadsPercent,
     DieMaintenance:formValue.DieMaintenance,
@@ -455,7 +456,6 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     packingPercentage: formValue.TransportPercentage,
     packingRate: formValue.TransportCost,
     ...(formValue.Packing === 'international' && {
-      CMMInspection: formValue.CMMInspection,
       Insurance: formValue.Insurance,
       SeaPacking: formValue.SeaPacking,
       Payment90DaysICC: formValue.Payment90DaysICC,

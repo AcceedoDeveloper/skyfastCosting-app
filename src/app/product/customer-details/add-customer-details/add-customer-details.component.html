@@ -105,7 +105,7 @@
             </mat-form-field>
 
                   <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Gross Weight</mat-label>
+                <mat-label>Gross Weight (In Kg)</mat-label>
                 <input type="number" matInput formControlName="grossWeight">
                 <mat-error *ngIf="productForm.get('grossweight')?.touched && productForm.get('grossweight')?.hasError('required')">
                   Gross Weight is Required
@@ -581,6 +581,10 @@
             <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'cost'">
               <label class="label1" for="transport-cost">Transport Cost (₹)</label>
               <input class="lab" id="transport-cost" matInput type="number" formControlName="TransportCost" />
+            </div>
+                <div class="field-row">
+              <label class="label1" for="cmm-inspection">CMM Inspection</label>
+              <input class="lab" id="cmm-inspection" matInput type="number" formControlName="CMMInspection" />
             </div>
 
             <div class="field-row" *ngIf="processForm.get('TransportType')?.value === 'percentage'">

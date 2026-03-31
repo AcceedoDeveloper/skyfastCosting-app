@@ -140,6 +140,7 @@ selectedFileName: string = '';
   otherParams: this.fb.array([])
     })
 
+    
 
 this.productForm.get('castingWeight')?.valueChanges.subscribe(() => {
   this.calculateGrossWeight();
