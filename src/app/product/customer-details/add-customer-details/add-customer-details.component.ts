@@ -128,7 +128,7 @@ selectedFileName: string = '';
   DieMaintenance:[''],
   Inspection:[''],
   WIPPartsHandlingTray:[''],
-  CMMInspection: [0],
+  CMMInspection: [0,Validators.required],
   Insurance: [0],
   SeaPacking: [0],
   Payment90DaysICC: [0],
@@ -140,7 +140,7 @@ selectedFileName: string = '';
   otherParams: this.fb.array([])
     })
 
-    
+
 
 this.productForm.get('castingWeight')?.valueChanges.subscribe(() => {
   this.calculateGrossWeight();
@@ -242,7 +242,35 @@ calculateGrossWeight() {
 
   console.log('data', formValue);
 
-  if (this.selectedFile) {
+  if (this.Cusid && this.selectedFile) {
+    const formData = new FormData();
+
+    Object.entries(formValue).forEach(([key, value]) => {
+      if (Array.isArray(value) || typeof value === 'object') {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value as any);
+      }
+    });
+
+    formData.append('drawingImage', this.selectedFile);
+
+    this.productservices.updateCustomer(this.Cusid, formData).subscribe({
+      next: (customer) => {
+        console.log('Customer updated from step 1:', customer);
+      },
+      error: (err) => console.error(err)
+    });
+
+  } else if (this.Cusid) {
+    this.productservices.updateCustomer(this.Cusid, formValue).subscribe({
+      next: (customer) => {
+        console.log('Customer updated from step 1:', customer);
+      },
+      error: (err) => console.error(err)
+    });
+
+  } else if (this.selectedFile) {
     // Send FormData directly to service, not via NgRx
     const formData = new FormData();
 
@@ -270,7 +298,9 @@ calculateGrossWeight() {
     this.store.dispatch(Action.AddCustomerDetailsComponent({ customer: formValue }));
   }
 
-  this.addProcessSelection();
+  if (this.processSelection.length === 0) {
+    this.addProcessSelection();
+  }
 }
 
 
