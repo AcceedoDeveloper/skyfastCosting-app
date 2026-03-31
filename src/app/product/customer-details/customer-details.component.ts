@@ -204,6 +204,41 @@ export class CustomerDetailsComponent implements OnInit {
     this.loadCustomers();
   }
 
+  getParamRows(params: Record<string, any> | undefined | null, chunkSize = 3): Array<Array<{ label: string; value: string }>> {
+    if (!params) {
+      return [];
+    }
+
+    const entries = Object.entries(params)
+      .filter(([label, value]) => String(label).trim() && value !== null && value !== undefined && String(value).trim() !== '')
+      .map(([label, value]) => ({
+        label: String(label),
+        value: String(value)
+      }));
+
+    const rows: Array<Array<{ label: string; value: string }>> = [];
+
+    for (let index = 0; index < entries.length; index += chunkSize) {
+      rows.push(entries.slice(index, index + chunkSize));
+    }
+
+    return rows;
+  }
+
+  getEmptyParamSlots(count: number): number[] {
+    return Array.from({ length: Math.max(count, 0) }, (_, index) => index);
+  }
+
+  getDisplayedLabourCost(revision: any): number {
+    if (!revision) {
+      return 0;
+    }
+
+    return revision.includeRejections === false
+      ? (revision.sumOfProcessCost ?? 0)
+      : (revision.TotalProcessCost ?? 0);
+  }
+
   applyFilter(): void {
     this.loadCustomers();
   }
@@ -1240,6 +1275,3 @@ isInternationalQuotation(): boolean {
   }
 
 }
-
-
-

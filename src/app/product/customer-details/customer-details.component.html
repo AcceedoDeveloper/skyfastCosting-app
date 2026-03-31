@@ -900,7 +900,7 @@
                   <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
                   <th colspan="1">Net Material Cost (M)</th>
                    <th colspan="1">ICC</th>
-                  <th colspan="1">Total Labour yuuyuCost (L)</th>
+                  <th colspan="1">Total Labour Cost (L)</th>
                   <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
                   <th colspan="1">Tool Amortization</th>
                   <th colspan="2">Total price</th>
@@ -909,7 +909,7 @@
                 
                   <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</td>
                   <td colspan="1">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}</td>
-                  <td colspan="1">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
+                  <td colspan="1">{{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}</td>
                    <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}
                              <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
@@ -1000,6 +1000,16 @@
                               <th>Packing</th>
                               <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
                           </tr>
+                          <tr *ngFor="let paramRow of getParamRows(quotationData.results[0].revisions[0].otherParams)">
+                              <ng-container *ngFor="let param of paramRow">
+                                  <th>{{ param.label }}</th>
+                                  <td>{{ param.value }}</td>
+                              </ng-container>
+                              <ng-container *ngFor="let _ of getEmptyParamSlots(3 - paramRow.length)">
+                                  <th></th>
+                                  <td></td>
+                              </ng-container>
+                          </tr>
                           <tr>
                               <th>Applicable Tax</th>
                               <td colspan="5">CGST / SGST / IGST</td>
@@ -1040,6 +1050,16 @@
                               <th></th>
                               <td></td>
                               <td colspan="2"></td>
+                          </tr>
+                          <tr *ngFor="let paramRow of getParamRows(quotationData.results[0].revisions[0].otherParams)">
+                              <ng-container *ngFor="let param of paramRow">
+                                  <th>{{ param.label }}</th>
+                                  <td>{{ param.value }}</td>
+                              </ng-container>
+                              <ng-container *ngFor="let _ of getEmptyParamSlots(3 - paramRow.length)">
+                                  <th></th>
+                                  <td></td>
+                              </ng-container>
                           </tr>
                           <tr>
                               <th>Applicable Tax</th>
@@ -1088,9 +1108,6 @@
 
 </div>
 </div>
-
-
-
 
 
 
