@@ -78,7 +78,7 @@ selectedFileName: string = '';
     rawmaterial$! : Observable<RawMaterial[]>;
     process$! : Observable<Process[]>;
     Cusid?: string;
-    showTransportInput = false; 
+    showTransportInput = true; 
     packingOptions: string[] = ["none", "domestic", "international"];
     paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","Immediate"];
     deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
@@ -111,13 +111,13 @@ selectedFileName: string = '';
     this.processForm = this.fb.group({
       processSelection: this.fb.array([]) ,
       Rejection: [0, Validators.required],
-    Packing : ['none', Validators.required],
+    Packing : ['domestic', Validators.required],
     PaymentTerms:['',Validators.required],
     DeliveryTerms:['',Validators.required],
     InterestRate : [0, Validators.required],
     InspectorCost: [0, Validators.required],
-    Freight:[],
-    ModeOfTransport:[],
+    Freight:[''],
+    ModeOfTransport:[''],
 
     ToolAmbience: [0, Validators.required],
      TransportType: ['cost'],  // 👈 default is "cost"
@@ -139,6 +139,8 @@ selectedFileName: string = '';
   rejectionParams: this.fb.array([]),
   otherParams: this.fb.array([])
     })
+
+    this.onPackingChange(this.processForm.get('Packing')?.value);
 
 
 

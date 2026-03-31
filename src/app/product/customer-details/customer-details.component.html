@@ -710,9 +710,10 @@
   <div class="info-popup dim">
     <p class="info-popup-text">
   
-      (Component Weight (Kg) * 1.05)  
+      (Component Weight (Kg) * 1 + (meltingLoss / 100)  )
     </p>
-   {{ quotationData.results[0].revisions[0].castingWeight }} * 1.05
+   {{ quotationData.results[0].revisions[0].castingWeight }} * 
+{{ 1 + (quotationData.results[0].revisions[0].meltingLoss / 100) }}
   <br />
   <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3' }}</strong>
 </div>

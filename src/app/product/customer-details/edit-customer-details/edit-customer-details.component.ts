@@ -132,7 +132,7 @@ if (data?.revisions?.length) {
       Freight:[revision?.Freight ?? ''],
       ModeOfTransport:[revision?.ModeOfTransport ?? ''],
 
-      Packing: [revision?.Packing || 'none'],
+      Packing: [revision?.Packing || 'domestic'],
 
       ToolAmbience: [revision?.ToolAmbience ],
       overHeadsPercent: [revision?.overHeadsPercent ],
@@ -188,6 +188,8 @@ if (data?.revisions?.length) {
   
 
   ngOnInit(): void {
+    this.onPackingChange(this.customerForm.get('Packing')?.value);
+
     this.rawMaterial$ = this.store.select(selectAllRawMaterials);
 
     this.rawMaterial$.subscribe( raw =>{
