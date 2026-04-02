@@ -940,7 +940,7 @@
 </span>
                     </td>
                   <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
-                  <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-2'}}
+                  <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{ quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-2'}}
                      <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 
@@ -949,21 +949,35 @@
   <!-- International Packing -->
   <div *ngIf="quotationData.results[0].revisions[0].Packing === 'international'">
     <p class="info-popup-text"> 
-      (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC))
+      (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC)<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
     </p>
     {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
+    <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
+      <br />
+      + 
+      <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">
+    {{ term.value | number:'1.2-2' }}<span *ngIf="!last"> + </span>
+      </ng-container>
+    </ng-container>
     <br />
-    <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+    <strong>Result: {{ quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-3'}}</strong>
   </div>
   <!-- Domestic Packing -->
   <div *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic'">
     <p class="info-popup-text"> 
-      (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing)
+      (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
     </p>
   
     {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
+    <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
+      <br />
+      + 
+      <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">
+        {{ term.value | number:'1.2-2' }}<span *ngIf="!last"> + </span>
+      </ng-container>
+    </ng-container>
     <br />
-    <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+    <strong>Result: {{ quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-3'}}</strong>
   </div>
 </div>
  
@@ -1109,10 +1123,6 @@
 
 </div>
 </div>
-
-
-
-
 
 
 

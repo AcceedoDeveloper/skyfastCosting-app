@@ -959,7 +959,7 @@ downloadPDF() {
 
 
 
-downloadQuotations(customerName: string, partName: string, revision: number): void {
+  downloadQuotations(customerName: string, partName: string, revision: number): void {
   // Show popup immediately with loading state
   this.pdfview = true;
   this.domesticpdf = false;
@@ -972,6 +972,14 @@ downloadQuotations(customerName: string, partName: string, revision: number): vo
   this.productservices.quotationData(customerName, partName, revision).subscribe({
     next: (res) => {
       this.quotationData = res;
+      const currentRevision = this.quotationData?.results?.[0]?.revisions?.[0];
+      if (currentRevision) {
+        const otherParamsBreakdown = this.getNumericOtherParams(currentRevision.otherParams);
+        const otherParamsTotal = otherParamsBreakdown.reduce((sum, item) => sum + item.value, 0);
+        currentRevision.otherParamsBreakdown = otherParamsBreakdown;
+        currentRevision.otherParamsTotal = otherParamsTotal;
+        currentRevision.displayTotalPrice = (currentRevision.TotalPrice || 0) + otherParamsTotal;
+      }
       this.isQuotationLoading = false; // Hide loading spinner
       console.log('Quotation Data:', this.quotationData);
       
@@ -1267,6 +1275,50 @@ isInternationalQuotation(): boolean {
     return revision[key] ?? revision.TotalPrice;
   }
 
+  private getNumericOtherParams(
+    otherParams: Record<string, any> | undefined | null
+  ): Array<{ label: string; value: number }> {
+    if (!otherParams) {
+      return [];
+    }
+
+    return Object.entries(otherParams).reduce((items, [label, value]) => {
+      if (!label || !String(label).trim()) {
+        return items;
+      }
+
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        items.push({ label: String(label).trim(), value });
+        return items;
+      }
+
+      if (typeof value !== 'string') {
+        return items;
+      }
+
+      const normalized = value
+        .replace(/,/g, '')
+        .replace(/rs\.?/gi, '')
+        .replace(/inr/gi, '')
+        .replace(/usd/gi, '')
+        .replace(/eur/gi, '')
+        .replace(/gbp/gi, '')
+        .replace(/\$/g, '')
+        .trim();
+
+      if (!/^-?\d*\.?\d+$/.test(normalized)) {
+        return items;
+      }
+
+      const parsed = Number(normalized);
+      if (Number.isFinite(parsed)) {
+        items.push({ label: String(label).trim(), value: parsed });
+      }
+
+      return items;
+    }, [] as Array<{ label: string; value: number }>);
+  }
+
   private getCurrentMonth(): string {
     const now = new Date();
     const year = now.getFullYear();
@@ -1275,3 +1327,4 @@ isInternationalQuotation(): boolean {
   }
 
 }
+
