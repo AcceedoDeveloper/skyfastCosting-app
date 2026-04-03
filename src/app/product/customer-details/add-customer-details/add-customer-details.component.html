@@ -185,7 +185,7 @@
           <select formControlName="processId"
                   (change)="onProcessChange(i, $any($event.target).value)">
             <option value="null">Select</option>
-            <option *ngFor="let p of (process$ | async)" [value]="p._id">
+            <option *ngFor="let p of getAvailableProcesses(i, (process$ | async) || [])" [value]="p._id">
               {{ p.processName }} {{ p.machineCentre }}
             </option>
           </select>
@@ -209,16 +209,18 @@
           <input type="number" formControlName="cycleTime" />
         </div>
 
+         <div class="form-group field1" *ngIf="procCtrl.value.Unit === 'Square Inch'">
+          <label>sqInch</label>
+          <input type="number" formControlName="sqInch" />
+        </div>
+        
         <!-- Cavity -->
         <div class="form-group field1">
           <label>Cavity</label>
           <input type="number" formControlName="cavity" />
         </div>
 
-        <div class="form-group field1" *ngIf="procCtrl.value.Unit === 'Square Inch'">
-          <label>sqInch</label>
-          <input type="number" formControlName="sqInch" />
-        </div>
+        
 
         <!-- Cost -->
         <div class="cost">

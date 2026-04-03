@@ -818,8 +818,8 @@ mat-radio-group {
 .card-title {
   font-size: 16px;
   font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 16px;
+  color: hsl(0, 7%, 3%);
+  margin-top: 20px;
   border-bottom: 1px solid #e2e8f0;
   padding-bottom: 6px;
   letter-spacing: 0.3px;
@@ -833,6 +833,7 @@ mat-radio-group {
 }
 
 .section-add-btn {
+  margin-top: 15px;
   width: 30px;
   height: 30px;
   border: none;
@@ -928,7 +929,7 @@ mat-radio-group.radio-button {
 
 /* === FILE UPLOAD === */
 .file-upload {
-  margin-top: 8px;
+  margin-top: 20px;
  
   padding: 14px;
   border: 1.5px dashed #0073ff;
@@ -1288,7 +1289,7 @@ mat-radio-group.radio-button {
 }
 
 #Upload{
-   margin-top: 50px;
+   margin-top: 110px;
 }
 
 .uploadimg{
