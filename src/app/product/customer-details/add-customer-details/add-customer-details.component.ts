@@ -30,7 +30,6 @@ import * as customerActions from '../../store/product.actions';
 import* as Selector from '../../store/product.selectors';
 import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
-import { selectLastAddedCustomer } from '../../store/product.selectors';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 import { ConfigService } from '../../../shared/config.service';
@@ -95,6 +94,8 @@ selectedFileName: string = '';
   ) {}
 
   ngOnInit(): void {
+    this.Cusid = this.data?._id;
+
     this.productForm = this.fb.group({
       customerName: ['', Validators.required],
       productName: ['', Validators.required],
@@ -188,13 +189,6 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
     this.store.dispatch(loadCustomer());
     this.store.dispatch(Action.loadRawMaterials());
     this.store.dispatch(Action.loadProcess());
-
-    this.store.select(selectLastAddedCustomer).subscribe(customer => {
-    if (customer) {
-      this.Cusid = customer._id;
-      // console.log('✅ Customer ID from NgRx:', this.Cusid);
-    }
-  });
 
   }
 
@@ -290,14 +284,26 @@ calculateGrossWeight() {
     this.productservices.createCustomerDetails(formData).subscribe({
       next: (customer) => {
         this.Cusid = customer._id;
+        this.toastr.success('Customer created successfully!');
         console.log('✅ Customer created with image:', customer._id);
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to create customer');
+      }
     });
 
   } else {
-    // No image → safe to dispatch via NgRx
-    this.store.dispatch(Action.AddCustomerDetailsComponent({ customer: formValue }));
+    this.productservices.createCustomerDetails(formValue).subscribe({
+      next: (customer) => {
+        this.Cusid = customer._id;
+        this.toastr.success('Customer created successfully!');
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to create customer');
+      }
+    });
   }
 
   if (this.processSelection.length === 0) {
