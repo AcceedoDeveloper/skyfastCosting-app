@@ -1,7 +1,7 @@
 
-
+import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -62,6 +62,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 export class AddCustomerDetailsComponent implements OnInit{
   @ViewChild('stepper') stepper!: MatStepper;
 
+  
+
 
   loading: boolean = false;
     selectedFile: File | null = null;
@@ -80,10 +82,11 @@ selectedFileName: string = '';
     Cusid?: string;
     showTransportInput = true; 
     packingOptions: string[] = ["none", "domestic", "international"];
-    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","Immediate"];
+    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","90 Days","Immediate"];
     deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
 
     constructor(
+      private dialog: MatDialog,
     private fb: FormBuilder,
     private store: Store,
      private actions$: Actions, 
@@ -93,6 +96,16 @@ selectedFileName: string = '';
      private toastr : ToastrService,
      private config: ConfigService
   ) {}
+
+  openCustomerPopup() {
+  this.dialog.open(AddCustomerDetailsComponent, {
+    width: '95vw',
+    maxWidth: '1400px',
+    height: '95vh',
+    panelClass: 'zoho-dialog',
+    disableClose: true
+  });
+}
 
   ngOnInit(): void {
     
@@ -245,6 +258,8 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
         });
       }
 
+      
+
       // Populate other process form fields
       this.processForm.patchValue({
         Rejection: this.data.Rejection || 0,
@@ -302,6 +317,15 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
       }
     }
 
+  }
+
+  @HostListener('wheel', ['$event'])
+  onNumberInputWheel(event: WheelEvent): void {
+    const target = event.target as HTMLInputElement | null;
+
+    if (target?.tagName === 'INPUT' && target.type === 'number' && document.activeElement === target) {
+      event.preventDefault();
+    }
   }
 
 

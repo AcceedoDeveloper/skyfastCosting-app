@@ -17,6 +17,12 @@
   gap: 30px;           
   align-items: flex-start;
 }
+
+.dialog-content {
+  max-height: none;
+  overflow: hidden;
+  padding-bottom: 8px;
+}
 .checkbox-row {
   align-items: center;
 }

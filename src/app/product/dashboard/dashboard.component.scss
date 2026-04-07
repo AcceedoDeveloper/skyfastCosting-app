@@ -42,6 +42,8 @@
   box-shadow: var(--dashboard-shadow);
   border: 1px solid var(--dashboard-border);
   min-width: 0;
+  width: 93%;
+  margin-left: 37px;
 }
 
 .summary-panel-header {
@@ -314,6 +316,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  width: 103.8%;
 
 }
 
@@ -465,66 +468,48 @@
     border-color: #111827;
   }
 }
-
 .date-picker-container {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;   /* keep everything in one line */
   justify-content: flex-end;
+  white-space: nowrap; /* prevent line break */
+}
 
-  .date-picker-nav {
-    width: 30px;
-    height: 32px;
-    border-radius: 10px;
-    border: 1px solid #d1d5db;
-    background: white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: #1f2937;
+.date-picker-container .date-picker-nav {
+  width: 30px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #1f2937;
+  flex-shrink: 0;      /* button size fixed */
+}
 
-    mat-icon {
-      font-size: 20px;
-      line-height: 1;
-    }
+.date-picker-container .date-picker-nav mat-icon {
+  font-size: 20px;
+  line-height: 1;
+}
 
-    &:hover {
-      border-color: #3F5B65;
-      color: #3F5B65;
-      box-shadow: 0 4px 10px rgba(63, 91, 101, 0.1);
-    }
-
-    &:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(63, 91, 101, 0.2);
-    }
-  }
-
-  .date-picker {
-    padding: 6px 10px;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    width: min(180px, 100%);
-    background-color: white;
-    color: #374151;
-    transition: all 0.2s ease;
-
-    &:focus {
-      outline: none;
-      border-color: #3F5B65;
-      box-shadow: 0 0 0 3px rgba(63, 91, 101, 0.1);
-    }
-
-    &:hover {
-      border-color: #3F5B65;
-    }
-  }
+.date-picker-container .date-picker {
+  padding: 6px 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 180px;
+  min-width: 180px;
+  flex-shrink: 0;      /* prevent shrinking to next line */
+  background-color: white;
+  color: #374151;
+  transition: all 0.2s ease;
 }
 
 .table-container {
@@ -550,7 +535,7 @@
   padding: 3px 6px;
   background: linear-gradient(180deg, #fbfcfd 0%, #f3f6f9 100%);
   border-top: 1px solid var(--dashboard-border);
-  font-size: 8.5px;
+  font-size: 12px;
   flex-wrap: wrap;
 }
 
@@ -592,7 +577,7 @@
 }
 
 .page-info {
-  font-size: 8.5px;
+  font-size: 12px;
   color: #666;
   min-width: 40px;
   text-align: center;

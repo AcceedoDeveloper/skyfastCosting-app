@@ -298,9 +298,10 @@ export class CustomerDetailsComponent implements OnInit {
 
   openAddProductDialog() {
     const dialogRef = this.dialog.open(AddCustomerDetailsComponent, {
-      width: '590%',
-      height: '740px',
-      maxWidth: '75vw',
+      width: '96vw',
+      height: '92vh',
+      maxWidth: '1480px',
+      panelClass: 'zoho-dialog',
       disableClose:true, 
     });
 
@@ -390,9 +391,10 @@ private getISOWeekNumber(date: Date): number {
 }
   onEdit(customer: CustomerDetails) {
     const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
-      width: '590%',
-      height: '670px',
-      maxWidth: '75vw',
+      width: '96vw',
+      height: '92vh',
+      maxWidth: '1480px',
+      panelClass: 'zoho-dialog',
       data: customer,
       disableClose:true, 
     });

@@ -4,64 +4,51 @@
   {{ errorMessage }}
 </div>
 
-<form [formGroup]="processForm" (ngSubmit)="onSave()" >
-
+<form [formGroup]="processForm" (ngSubmit)="onSave()">
   <div class="form-container">
-
-    <div >
-  
+    <div>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Process Name</mat-label>
         <input matInput formControlName="processName">
       </mat-form-field>
-    
+
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Tonnage / Jaw</mat-label>
         <input matInput formControlName="TonnageJaw">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-  <mat-label>Unit</mat-label>
-  <mat-select formControlName="Unit">
-    <mat-option value="Hour">Hour</mat-option>
-    <mat-option value="Weight">Weight</mat-option>
-    <mat-option value="Square Inch">Square Inch</mat-option>
-  </mat-select>
-</mat-form-field>
-
+        <mat-label>Unit</mat-label>
+        <mat-select formControlName="Unit">
+          <mat-option value="Hour">Hour</mat-option>
+          <mat-option value="Weight">Weight</mat-option>
+          <mat-option value="Square Inch">Square Inch</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
-  
-    <div >
-  
+
+    <div>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Cost Per Hr</mat-label>
-        <input matInput type="number"  formControlName="Hours">
-      </mat-form-field>  
-  
-  
+        <input matInput type="number" formControlName="Hours">
+      </mat-form-field>
+
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Machine Center</mat-label>
-        <input matInput type="number"  formControlName="machineCentre">
+        <input matInput type="number" formControlName="machineCentre">
       </mat-form-field>
-  
-    <div class="actions">
-    <button class="btn btn-danger" type="button" (click)="onCancel()">Cancel</button>
-    <button class="submit-button" type="submit">{{ isEditMode ? 'Update' : 'Save' }}</button>
-  </div>
-    
-      <!-- Process Cost Display -->
-      <!-- <div class="cost-display-box">
+
+      <div class="actions">
+        <button class="btn btn-danger" type="button" (click)="onCancel()">Cancel</button>
+        <button class="submit-button" type="submit">{{ isEditMode ? 'Update' : 'Save' }}</button>
+      </div>
+
+      <div class="cost-display-box">
         <h5>Process Cost</h5>
         <div class="cost-value">
-          ₹{{ calculateProcessCost() }}/Hour
+          {{ getCostPerHourDisplay() }}
         </div>
-      </div> -->
-      
+      </div>
     </div>
   </div>
-
-
-
-
-
 </form>

@@ -59,7 +59,7 @@ export class EditCustomerDetailsComponent implements OnInit {
   revisionNumber = 1; 
   selectedRevisionIndex = 0; // default first revision
   packingOptions: string[] = ["none", "domestic", "international"];
-    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","Immediate"];
+    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","90 Days","Immediate"];
     deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
 
   selectedFile: File | null = null;
