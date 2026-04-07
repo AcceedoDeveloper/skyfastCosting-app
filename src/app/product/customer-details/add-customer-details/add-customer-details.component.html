@@ -185,7 +185,7 @@
           <select formControlName="processId"
                   (change)="onProcessChange(i, $any($event.target).value)">
             <option value="null">Select</option>
-            <option *ngFor="let p of getAvailableProcesses(i, (process$ | async) || [])" [value]="p._id">
+            <option *ngFor="let p of (process$ | async)" [value]="p._id">
               {{ p.processName }} {{ p.machineCentre }}
             </option>
           </select>
@@ -213,7 +213,7 @@
           <label>sqInch</label>
           <input type="number" formControlName="sqInch" />
         </div>
-        
+
         <!-- Cavity -->
         <div class="form-group field1">
           <label>Cavity</label>
@@ -304,7 +304,7 @@
               <input class="lab" id="die-lifetime" matInput type="number" formControlName="dieLifeTime" />
             </div>
 
-            <div class="field-row">
+            <!-- <div class="field-row">
            <label class="label1" for="die-lifetime">Die Maintenace</label>
            <input class="lab" id="die-lifetime" matInput type="text" formControlName="DieMaintenance">
             </div>
@@ -317,7 +317,7 @@
              <div class="field-row">
              <label class="label1" for="die-lifetime">WIP Parts HandLing Tray</label>
              <input class="lab" id="die-lifetime" matInput  type="text" formControlName="WIPPartsHandlingTray">
-            </div>
+            </div> -->
 
             <div class="dynamic-params" formArrayName="commercialTermsParams">
               <div class="dynamic-param-row" *ngFor="let param of commercialTermsParams.controls; let i = index" [formGroupName]="i">

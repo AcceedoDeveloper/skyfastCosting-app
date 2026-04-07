@@ -625,3 +625,105 @@ background:#3F5B65;
     padding: 30px 20px;
   }
 }
+
+/* Final stable layout for 100/125/150% zoom */
+.login-center {
+  min-height: 100dvh !important;
+  height: auto !important;
+  padding: clamp(14px, 2.2vw, 28px) !important;
+}
+
+.login-page-container {
+  width: min(1040px, 88vw) !important;
+  max-width: 1040px !important;
+  min-width: 0 !important;
+  margin: 0 auto !important;
+}
+
+.login-wrapper {
+  display: grid !important;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(320px, 1.1fr) !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: clamp(420px, 56dvh, 560px) !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+.login-image-section,
+.login-form-section {
+  min-width: 0 !important;
+}
+
+.login-image-section {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(14px, 2vw, 26px) !important;
+}
+
+.login-image-section img {
+  width: 100% !important;
+  max-width: 340px !important;
+  height: auto !important;
+  max-height: 40dvh !important;
+  object-fit: contain !important;
+}
+
+.login-form-section {
+  padding: clamp(16px, 2vw, 24px) !important;
+}
+
+.login-form-section h1 {
+  font-size: clamp(34px, 3vw, 52px) !important;
+  margin-bottom: 8px !important;
+}
+
+.login-form-section .subtitle {
+  margin-bottom: 14px !important;
+  font-size: clamp(17px, 1.4vw, 22px) !important;
+}
+
+.login-form-section label {
+  font-size: clamp(16px, 1.2vw, 20px) !important;
+  margin-bottom: 6px !important;
+}
+
+.login-form-section .form-group {
+  margin-bottom: 12px !important;
+}
+
+.login-form-section input {
+  padding: 10px 13px !important;
+  font-size: 14px !important;
+}
+
+.login-form-section button {
+  padding: 10px 13px !important;
+  font-size: 14px !important;
+}
+
+.forgot-password-link a {
+  margin-top: 14px !important;
+  font-size: clamp(16px, 1.3vw, 20px) !important;
+}
+
+/* Keep split view on desktop zoom levels; collapse only on true tablet/mobile widths */
+@media (max-width: 900px) {
+  .login-wrapper {
+    display: block !important;
+    min-height: auto !important;
+    overflow: auto !important;
+  }
+
+  .login-image-section {
+    display: none !important;
+  }
+
+  .login-form-section {
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    padding: 30px 22px !important;
+  }
+}

@@ -137,9 +137,9 @@ if (data?.revisions?.length) {
       ToolAmbience: [revision?.ToolAmbience ],
       overHeadsPercent: [revision?.overHeadsPercent ],
       dieLifeTime: [ revision?.DieLifeTime ],
-      DieMaintenance:[revision?.DieMaintenance],
-      Inspection:[revision?.Inspection],
-      WIPPartsHandlingTray:[revision?.WIPPartsHandlingTray],
+      // DieMaintenance:[revision?.DieMaintenance],
+      // Inspection:[revision?.Inspection],
+      // WIPPartsHandlingTray:[revision?.WIPPartsHandlingTray],
   PaymentTerms: [revision?.PaymentTerms || ''],
   DeliveryTerms: [revision?.DeliveryTerms || ''],
 
@@ -446,12 +446,12 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     CMMInspection: formValue.CMMInspection,
     ToolAmbience: formValue.ToolAmbience,
     overHeadsPercent: formValue.overHeadsPercent,
-    DieMaintenance:formValue.DieMaintenance,
-    Inspection:formValue.Inspection,
+    // DieMaintenance:formValue.DieMaintenance,
+    // Inspection:formValue.Inspection,
     DieLifeTime: formValue.dieLifeTime,
     PaymentTerms:formValue.PaymentTerms,
     DeliveryTerms:formValue.DeliveryTerms,
-    WIPPartsHandlingTray:formValue.WIPPartsHandlingTray,
+    // WIPPartsHandlingTray:formValue.WIPPartsHandlingTray,
 
         includeRejections: formValue.includeRejections,
 

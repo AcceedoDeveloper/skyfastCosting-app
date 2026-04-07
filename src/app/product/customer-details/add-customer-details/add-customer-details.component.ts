@@ -30,7 +30,6 @@ import * as customerActions from '../../store/product.actions';
 import* as Selector from '../../store/product.selectors';
 import { ProductService } from '../../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
-import { selectLastAddedCustomer } from '../../store/product.selectors';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 import { ConfigService } from '../../../shared/config.service';
@@ -73,7 +72,7 @@ selectedFileName: string = '';
   partName: String[] =[]; 
   drawingNoArray: (string | number)[] = []; 
 
-    
+
     productForm!: FormGroup;
     processForm!: FormGroup;
     custoemr$! : Observable<Customer[]>;
@@ -108,7 +107,8 @@ selectedFileName: string = '';
 }
 
   ngOnInit(): void {
-    
+    this.Cusid = this.data?._id;
+
     this.productForm = this.fb.group({
       customerName: ['', Validators.required],
       productName: ['', Validators.required],
@@ -139,9 +139,9 @@ selectedFileName: string = '';
   TransportPercentage: [0],
   overHeadsPercent : [0, Validators.required],
   dieLifeTime : [0, Validators.required],
-  DieMaintenance:[''],
-  Inspection:[''],
-  WIPPartsHandlingTray:[''],
+  // DieMaintenance:[''],
+  // Inspection:[''],
+  // WIPPartsHandlingTray:[''],
   CMMInspection: [0,Validators.required],
   Insurance: [0],
   SeaPacking: [0],
@@ -366,27 +366,6 @@ calculateGrossWeight() {
     : null;
 }
 
-private duplicateProcessValidator(index: number): any {
-  return (group: FormGroup) => {
-    const processId = group.get('processId')?.value;
-    if (!processId) return null;
-
-    // Check if this processId is already selected in another row
-    const isDuplicate = this.processSelection.controls.some((control, i) => {
-      if (i === index) return false; // Skip current row
-      return control.get('processId')?.value === processId;
-    });
-
-    if (isDuplicate) {
-      console.warn('❌ Duplicate process selected at index:', index);
-      group.setErrors({ duplicateProcess: true });
-      return { duplicateProcess: true };
-    }
-
-    return null;
-  };
-}
-
  save() {
   const formValue = { ...this.productForm.value };
   if (formValue.rawMaterial.length === 0) {
@@ -441,14 +420,26 @@ private duplicateProcessValidator(index: number): any {
     this.productservices.createCustomerDetails(formData).subscribe({
       next: (customer) => {
         this.Cusid = customer._id;
+        this.toastr.success('Customer created successfully!');
         console.log('✅ Customer created with image:', customer._id);
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to create customer');
+      }
     });
 
   } else {
-    // No image → safe to dispatch via NgRx
-    this.store.dispatch(Action.AddCustomerDetailsComponent({ customer: formValue }));
+    this.productservices.createCustomerDetails(formValue).subscribe({
+      next: (customer) => {
+        this.Cusid = customer._id;
+        this.toastr.success('Customer created successfully!');
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to create customer');
+      }
+    });
   }
 
   if (this.processSelection.length === 0) {
@@ -500,61 +491,30 @@ removeCustomParam(
   (this.processForm.get(section) as FormArray).removeAt(index);
 }
 
+
 addProcessSelection() {
-  const availableProcessesCount = this.processSelection.length;
-
-  this.process$.pipe(take(1)).subscribe((processes) => {
-    if (availableProcessesCount >= processes.length) {
-      this.toastr.warning('All processes are already selected');
-      return;
-    }
-
-    const group = this.fb.group({
-      processId: [null, Validators.required],
-      processName: ['', Validators.required],
-      TonnageJaw: [''],
-      Hours: [''],
-      Unit: [''],
-      cycleTime: [''],
-      cavity: [null, Validators.required],
-      sqInch: [0, Validators.required],
-    });
-
-    this.processSelection.push(group);
-    
-    console.log('✅ New process row added at index:', this.processSelection.length - 1);
-
-    this.updateProcessCycleTime(this.processSelection.length - 1);
+  const group = this.fb.group({
+    processId: [null, Validators.required],   
+    processName: ['', Validators.required],
+    TonnageJaw: [''],
+    Hours: [''],
+    Unit: [''],
+    cycleTime: [''],
+    cavity: [null, Validators.required],
+    sqInch: [0, Validators.required],
   });
+  this.processSelection.push(group);
+  this.updateProcessCycleTime(this.processSelection.length - 1);
 }
 
 
 
 removeProcessSelection(index: number) {
-  const removedProcess = this.processSelection.at(index).get('processName')?.value;
   this.processSelection.removeAt(index);
-  console.log('❌ Process removed:', removedProcess, 'at index:', index);
-  this.toastr.info('Process removed');
 }
 
 
 onProcessChange(index: number, processId: string) {
-  // Validate against duplicate selection
-  if (processId && processId !== 'null') {
-    const isDuplicate = this.processSelection.controls.some((control, i) => {
-      if (i === index) return false;
-      const selectedProcessId = control.get('processId')?.value;
-      return selectedProcessId === processId;
-    });
-
-    if (isDuplicate) {
-      console.warn('❌ This process is already selected in another row');
-      this.toastr.error('This process is already selected in another row');
-      this.processSelection.at(index).patchValue({ processId: null });
-      return;
-    }
-  }
-
   this.process$.pipe(take(1)).subscribe(processes => {
     const selectedProcess = processes.find(p => p._id === processId);
     if (selectedProcess) {
@@ -578,10 +538,7 @@ onProcessChange(index: number, processId: string) {
         patchData.cavity = this.productForm.get('cavities')?.value || null;
       }
 
-      console.log('✅ Process selected - Index:', index, 'Process:', selectedProcess.processName, 'Patch Data:', patchData);
       this.processSelection.at(index).patchValue(patchData);
-    } else if (processId && processId !== 'null') {
-      console.warn('❌ Process not found:', processId);
     }
   });
 }
@@ -714,9 +671,9 @@ private buildCustomerPayload() {
     overHeadsPercent: this.processForm.value.overHeadsPercent,
    
     DieLifeTime: this.processForm.value.dieLifeTime,
-    DieMaintenance:this.processForm.value.DieMaintenance,
-    Inspection:this.processForm.value.Inspection,
-    WIPPartsHandlingTray:this.processForm.value.WIPPartsHandlingTray,
+    // DieMaintenance:this.processForm.value.DieMaintenance,
+    // Inspection:this.processForm.value.Inspection,
+    // WIPPartsHandlingTray:this.processForm.value.WIPPartsHandlingTray,
     includeRejections: this.processForm.value.includeRejections ?? true,
     TransportPercentage: this.processForm.value.TransportPercentage,
     TransportCost: this.processForm.value.TransportCost,
@@ -937,32 +894,8 @@ getImageUrl(imagePath: string | null | undefined): string {
 //   }
 // }
 
-getAvailableProcesses(currentIndex: number, allProcesses: any[] | null | undefined): any[] {
-  if (!allProcesses || !Array.isArray(allProcesses) || !this.processSelection) {
-    return [];
-  }
 
-  // Get all selected process IDs except current row
-  const selectedProcessIds = this.processSelection.controls
-    .map((control: any, index: number) => {
-      const processId = control.get('processId')?.value;
-      return index !== currentIndex && processId && processId !== 'null' ? processId : null;
-    })
-    .filter((id: any) => id);
 
-  // Keep current selected value visible
-  const currentSelectedId = this.processSelection.at(currentIndex).get('processId')?.value;
 
-  // Filter: exclude already selected processes, but always show the current selection
-  const available = allProcesses.filter(
-    (process: any) =>
-      !selectedProcessIds.includes(process._id) ||
-      process._id === currentSelectedId
-  );
-
-  console.log(`[Process Filter] Index: ${currentIndex}, Available: ${available.length}, Selected: ${selectedProcessIds.length}, Current: ${currentSelectedId}`);
-  
-  return available;
-}
 
 }
