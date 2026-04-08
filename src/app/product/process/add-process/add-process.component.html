@@ -4,18 +4,14 @@
   {{ errorMessage }}
 </div>
 
-<form [formGroup]="processForm" (ngSubmit)="onSave()" >
-
-  
+<form [formGroup]="processForm" (ngSubmit)="onSave()">
   <div class="form-container">
-
-    <div >
-  
+    <div>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Process Name</mat-label>
         <input matInput formControlName="processName">
       </mat-form-field>
-    
+
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Tonnage / Jaw</mat-label>
         <input matInput formControlName="TonnageJaw">
@@ -56,13 +52,16 @@
       <!-- <div class="cost-display-box">
         <h5>Process Cost</h5>
         <div class="cost-value">
-          ₹{{ calculateProcessCost() }}/Hour
+          {{ getCostPerHourDisplay() }}
         </div>
-      </div> -->
-      
+      </div>
     </div>
 
 
   </div>
+
+
+
+
 
 </form>

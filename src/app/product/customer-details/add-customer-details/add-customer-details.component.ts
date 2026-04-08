@@ -1,7 +1,7 @@
 
-
+import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -61,6 +61,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 export class AddCustomerDetailsComponent implements OnInit{
   @ViewChild('stepper') stepper!: MatStepper;
 
+  
+
 
   loading: boolean = false;
     selectedFile: File | null = null;
@@ -79,10 +81,11 @@ selectedFileName: string = '';
     Cusid?: string;
     showTransportInput = true; 
     packingOptions: string[] = ["none", "domestic", "international"];
-    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","Immediate"];
+    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","90 Days","Immediate"];
     deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
 
     constructor(
+      private dialog: MatDialog,
     private fb: FormBuilder,
     private store: Store,
      private actions$: Actions, 
@@ -92,6 +95,16 @@ selectedFileName: string = '';
      private toastr : ToastrService,
      private config: ConfigService
   ) {}
+
+  openCustomerPopup() {
+  this.dialog.open(AddCustomerDetailsComponent, {
+    width: '95vw',
+    maxWidth: '1400px',
+    height: '95vh',
+    panelClass: 'zoho-dialog',
+    disableClose: true
+  });
+}
 
   ngOnInit(): void {
     this.Cusid = this.data?._id;
@@ -190,6 +203,129 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
     this.store.dispatch(Action.loadRawMaterials());
     this.store.dispatch(Action.loadProcess());
 
+    this.store.select(selectLastAddedCustomer).subscribe(customer => {
+    if (customer) {
+      this.Cusid = customer._id;
+      // console.log('✅ Customer ID from NgRx:', this.Cusid);
+    }
+  });
+
+    // Populate form with incoming data if it exists (for edit mode)
+    if (this.data) {
+      this.Cusid = this.data._id;
+      
+      // Populate productForm with data
+      if (this.data.customerName) {
+        this.productForm.patchValue({
+          customerName: this.data.customerName,
+          productName: this.data.productName,
+          partName: this.data.partName,
+          drawingNo: this.data.drawingNo,
+          castingWeight: this.data.castingWeight,
+          shortWeight: this.data.shortWeight,
+          meltingLoss: this.data.meltingLoss,
+          rawMaterial: this.data.rawMaterial || [],
+          grossWeight: this.data.grossWeight
+        });
+      }
+
+      // Wait for processes$ to load from store, then populate
+      if (this.data.processes && this.data.processes.length > 0) {
+        this.process$.pipe(take(1)).subscribe(storeProcesses => {
+          if (storeProcesses && storeProcesses.length > 0) {
+            const processArray = this.processForm.get('processSelection') as FormArray;
+            this.data.processes.forEach((proc: any, index: number) => {
+              const group = this.fb.group({
+                processId: [proc.processId, Validators.required],
+                processName: [proc.processName, Validators.required],
+                TonnageJaw: [proc.TonnageJaw],
+                Hours: [proc.Hours],
+                Unit: [proc.Unit],
+                cycleTime: [proc.cycleTime],
+                cavity: [proc.cavity, Validators.required],
+                sqInch: [proc.sqInch, Validators.required],
+              });
+              processArray.push(group);
+              
+              console.log('✅ Process loaded at index', index, ':', proc.processName);
+              
+              // Trigger process change to fully populate all fields from process master
+              setTimeout(() => {
+                this.onProcessChange(index, proc.processId);
+              }, 150);
+            });
+          }
+        });
+      }
+
+      
+
+      // Populate other process form fields
+      this.processForm.patchValue({
+        Rejection: this.data.Rejection || 0,
+        Packing: this.data.Packing || 'domestic',
+        PaymentTerms: this.data.PaymentTerms || '',
+        DeliveryTerms: this.data.DeliveryTerms || '',
+        InterestRate: this.data.InterestRate || 0,
+        InspectorCost: this.data.InspectorCost || 0,
+        Freight: this.data.Freight || '',
+        ModeOfTransport: this.data.ModeOfTransport || '',
+        ToolAmbience: this.data.ToolAmbience || 0,
+        TransportType: this.data.TransportType || 'cost',
+        TransportCost: this.data.TransportCost || this.data.packingRate || 0,
+        TransportPercentage: this.data.TransportPercentage || this.data.packingPercentage || 0,
+        overHeadsPercent: this.data.overHeadsPercent || 0,
+        dieLifeTime: this.data.DieLifeTime || 0,
+        DieMaintenance: this.data.DieMaintenance || '',
+        Inspection: this.data.Inspection || '',
+        WIPPartsHandlingTray: this.data.WIPPartsHandlingTray || '',
+        CMMInspection: this.data.CMMInspection || 0,
+        Insurance: this.data.Insurance || 0,
+        SeaPacking: this.data.SeaPacking || 0,
+        Payment90DaysICC: this.data.Payment90DaysICC || 0,
+        includeRejections: this.data.includeRejections !== undefined ? this.data.includeRejections : true,
+        currency: this.data.currency || 'USD'
+      });
+
+      // Populate custom params arrays
+      if (this.data.commercialTermsParams) {
+        Object.entries(this.data.commercialTermsParams).forEach(([label, value]) => {
+          const paramArray = this.processForm.get('commercialTermsParams') as FormArray;
+          paramArray.push(this.fb.group({ label, value }));
+        });
+      }
+
+      if (this.data.transpotationParams) {
+        Object.entries(this.data.transpotationParams).forEach(([label, value]) => {
+          const paramArray = this.processForm.get('transpotationParams') as FormArray;
+          paramArray.push(this.fb.group({ label, value }));
+        });
+      }
+
+      if (this.data.rejectionParams) {
+        Object.entries(this.data.rejectionParams).forEach(([label, value]) => {
+          const paramArray = this.processForm.get('rejectionParams') as FormArray;
+          paramArray.push(this.fb.group({ label, value }));
+        });
+      }
+
+      if (this.data.otherParams) {
+        Object.entries(this.data.otherParams).forEach(([label, value]) => {
+          const paramArray = this.processForm.get('otherParams') as FormArray;
+          paramArray.push(this.fb.group({ label, value }));
+        });
+      }
+    }
+
+  }
+
+  @HostListener('wheel', ['$event'])
+  onNumberInputWheel(event: WheelEvent): void {
+    const target = event.target as HTMLInputElement | null;
+
+    if (target?.tagName === 'INPUT' && target.type === 'number' && document.activeElement === target) {
+      event.preventDefault();
+    }
   }
 
 

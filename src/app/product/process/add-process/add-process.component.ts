@@ -29,7 +29,7 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './add-process.component.scss'
 })
 export class AddProcessComponent implements OnInit, OnDestroy {
-   processForm: FormGroup;
+  processForm: FormGroup;
   isEditMode: boolean = false;
   errorMessage: string | null = null;
   private destroy$ = new Subject<void>();
@@ -123,5 +123,14 @@ export class AddProcessComponent implements OnInit, OnDestroy {
     }
   }
 
+  getCostPerHourDisplay(): string {
+    const hoursValue = this.processForm.get('Hours')?.value;
+
+    if (hoursValue === null || hoursValue === undefined || hoursValue === '') {
+      return '----';
+    }
+
+    return `₹${hoursValue}/Hour`;
+  }
 
 }
