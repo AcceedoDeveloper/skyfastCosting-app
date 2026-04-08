@@ -776,6 +776,26 @@ mat-radio-group {
 }
 
 /* === BASE CONTAINER === */
+.other-details-form {
+  max-height: 72vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
+.other-details-form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.other-details-form::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.other-details-form::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .other-details {
   margin: 30px auto;
   padding: 24px 28px;
@@ -1295,7 +1315,7 @@ mat-radio-group.radio-button {
 }
 
 #Upload{
-   margin-top: 110px;
+   margin-top: 60px;
 }
 
 .uploadimg{
