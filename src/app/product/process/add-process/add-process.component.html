@@ -6,6 +6,7 @@
 
 <form [formGroup]="processForm" (ngSubmit)="onSave()" >
 
+  
   <div class="form-container">
 
     <div >
@@ -20,30 +21,32 @@
         <input matInput formControlName="TonnageJaw">
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
-  <mat-label>Unit</mat-label>
-  <mat-select formControlName="Unit">
-    <mat-option value="Hour">Hour</mat-option>
-    <mat-option value="Weight">Weight</mat-option>
-    <mat-option value="Square Inch">Square Inch</mat-option>
-  </mat-select>
-</mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Machine Center</mat-label>
+        <input matInput type="number"  formControlName="machineCentre">
+    </mat-form-field>
 
     </div>
   
     <div >
+
+
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>Unit</mat-label>
+ <mat-select formControlName="Unit">
+    <mat-option value="Hour">Hour</mat-option>
+    <mat-option value="Weight">Weight</mat-option>
+    <mat-option value="Square Inch">Square Inch</mat-option>
+    <mat-option value="Cost">Cost</mat-option>
+  </mat-select>
+</mat-form-field>
   
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Cost Per Hr</mat-label>
-        <input matInput type="number"  formControlName="Hours">
-      </mat-form-field>  
+ <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Cost Per Hr</mat-label>
+  <input matInput type="number"  formControlName="Hours">
+</mat-form-field>  
   
-  
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Machine Center</mat-label>
-        <input matInput type="number"  formControlName="machineCentre">
-      </mat-form-field>
-  
+
     <div class="actions">
     <button class="btn btn-danger" type="button" (click)="onCancel()">Cancel</button>
     <button class="submit-button" type="submit">{{ isEditMode ? 'Update' : 'Save' }}</button>
@@ -58,10 +61,8 @@
       </div> -->
       
     </div>
+
+
   </div>
-
-
-
-
 
 </form>

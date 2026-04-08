@@ -298,7 +298,7 @@ export class CustomerDetailsComponent implements OnInit {
 
   openAddProductDialog() {
     const dialogRef = this.dialog.open(AddCustomerDetailsComponent, {
-      width: '590%',
+        width: '590%',
       height: '740px',
       maxWidth: '75vw',
       disableClose:true, 

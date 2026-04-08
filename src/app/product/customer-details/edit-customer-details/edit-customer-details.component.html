@@ -135,31 +135,33 @@
     <!-- Tonnage -->
     <div class="form-group half-width">
       <label>Tonnage/Jaw</label>
-      <input type="text" formControlName="TonnageJaw"  />
+      <input type="text" formControlName="TonnageJaw" [readonly]="isCostUnit(proc.value)" />
     </div>
 
     <!-- Hours -->
     <div class="form-group half-width">
-      <label>Machine / per hr</label>
-      <input type="number" formControlName="Hours"  />
+      <label>Machine /Cost per hr</label>
+      <input type="number" formControlName="Hours" [readonly]="!isCostUnit(proc.value)" />
     </div>
 
     <!-- Cycle Time -->
     <div class="form-group half-width11" *ngIf="proc.value.Unit !== 'Square Inch'">
       <label>Cycle Time / Weight</label>
-      <input type="number" formControlName="cycleTime" />
+      <input type="number" formControlName="cycleTime" [readonly]="isCostUnit(proc.value)" />
     </div>
 
+      <div class="form-group half-width1" *ngIf="proc.value.Unit === 'Square Inch'">
+      <label>sqInch</label>
+      <input type="number" formControlName="sqInch" [readonly]="isCostUnit(proc.value)" />
+    </div>
+    
     <!-- Cavity -->
     <div class="form-group half-width1">
       <label>Cavity</label>
-      <input type="number" formControlName="cavity" />
+      <input type="number" formControlName="cavity" [readonly]="isCostUnit(proc.value)" />
     </div>
 
-    <div class="form-group half-width1" *ngIf="proc.value.Unit === 'Square Inch'">
-      <label>sqInch</label>
-      <input type="number" formControlName="sqInch" />
-    </div>
+  
 
     <!-- Cost -->
     <div class="cost">
