@@ -1,9 +1,3 @@
-
-
-
-
-
-
 <app-loading-spinner *ngIf="isPdfLoading$ | async"></app-loading-spinner>
 
 <div class="main">
@@ -12,356 +6,317 @@
 
 
 
-<div class="filter-cards">
+    <div class="filter-cards">
 
 
-  <div class="filter-card">
-    <div class="filter-field select-field" [class.active]="searchFilterType !== 'none'">
-      <div class="select-wrapper">
-        <label class="select-label" [class.active]="searchFilterType !== 'none'">Filter By:</label>
-        <select class="native-select" [(ngModel)]="searchFilterType" (change)="onSearchFilterTypeChange()">
-          <option value="none" disabled hidden>Filter By:</option>
-          <option value="all">All</option>
-          <option value="customerName">Customer Name</option>
-          <option value="drawingNo">Drawing No</option>
-          <option value="partName">Part Name</option>
-        </select>
+      <div class="filter-card">
+        <div class="filter-field select-field" [class.active]="searchFilterType !== 'none'">
+          <div class="select-wrapper">
+            <label class="select-label" [class.active]="searchFilterType !== 'none'">Filter By:</label>
+            <select class="native-select" [(ngModel)]="searchFilterType" (change)="onSearchFilterTypeChange()">
+              <option value="none" disabled hidden>Filter By:</option>
+              <option value="all">All</option>
+              <option value="customerName">Customer Name</option>
+              <option value="drawingNo">Drawing No</option>
+              <option value="partName">Part Name</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-field select-field" [hidden]="searchFilterType === 'all'">
+          <div class="select-wrapper">
+            <label class="select-label" [class.active]="selectedSearchValue">{{ getSearchFilterLabel() }}:</label>
+            <select class="native-select" [(ngModel)]="selectedSearchValue" (change)="onSearchValueChange()">
+              <option value="" disabled hidden>{{ getSearchFilterLabel() }}:</option>
+
+              <option *ngFor="let option of searchFilterOptions" [value]="option">
+                {{ option }}
+              </option>
+            </select>
+          </div>
+        </div>
       </div>
+
+      <div class="filter-card">
+        <div class="filter-field select-field" [class.active]="dateFilterType !== 'none'">
+          <div class="select-wrapper">
+            <label class="select-label" [class.active]="dateFilterType !== 'none'">Date Filter By:</label>
+            <select class="native-select" [(ngModel)]="dateFilterType" (change)="onDateFilterTypeChange()">
+              <option value="none" disabled hidden>Date Filter By:</option>
+              <option value="all">All</option>
+              <option value="date">Date</option>
+              <option value="week">Week</option>
+              <option value="month">Month</option>
+              <option value="year">Year</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-fields" *ngIf="dateFilterType !== 'none'">
+          <div class="filter-field" *ngIf="dateFilterType === 'date'">
+            <input type="date" id="singleDate" class="native-input" [(ngModel)]="filters.singleDate"
+              (change)="onDateChange()" (keyDown.arrowleft)="onDateArrowKey($any($event),'prev')"
+              (keyDown.arrowright)="onDateArrowKey($any($event),'next')" />
+          </div>
+
+          <div class="filter-field" *ngIf="dateFilterType === 'week'">
+            <input type="week" id="weekFilter" class="native-input" [(ngModel)]="filters.week" (change)="onWeekChange()"
+              (keyDown.arrowleft)="onWeekArrowKey($any($event),'prev')"
+              (keyDown.arrowright)="onWeekArrowKey($any($event),'next')" />
+            <label for="weekFilter" class="input-label">Week:</label>
+          </div>
+
+          <div class="filter-field" *ngIf="dateFilterType === 'month'">
+            <input type="month" id="monthFilter" class="native-input" [(ngModel)]="filters.month"
+              (change)="onMonthChange()" (keyDown.arrowleft)="onMonthArrowKey($any($event),'prev')"
+              (keyDown.arrowright)="onMonthArrowKey($any($event),'next')" />
+            <label for="monthFilter" class="input-label">Month:</label>
+          </div>
+
+          <div class="filter-field" *ngIf="dateFilterType === 'year'">
+            <input type="number" id="yearFilter" class="native-input" [class.has-value]="filters.year"
+              [(ngModel)]="filters.year" placeholder="YYYY" (change)="onYearChange()"
+              (keyDown.arrowleft)="onYearArrowKey($any($event),'prev')"
+              (keyDown.arrowright)="onYearArrowKey($any($event),'next')" />
+            <label for="yearFilter" class="input-label">Year:</label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="button-container">
+        <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Generate Quotation</button>
+      </div>
+
     </div>
 
-    <div class="filter-field select-field" [hidden]="searchFilterType === 'all'">
-      <div class="select-wrapper">
-        <label class="select-label" [class.active]="selectedSearchValue">{{ getSearchFilterLabel() }}:</label>
-        <select class="native-select" [(ngModel)]="selectedSearchValue" (change)="onSearchValueChange()">
-          <option value="" disabled hidden>{{ getSearchFilterLabel() }}:</option>
-        
-          <option *ngFor="let option of searchFilterOptions" [value]="option">
-            {{ option }}
-          </option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-  <div class="filter-card">
-    <div class="filter-field select-field" [class.active]="dateFilterType !== 'none'">
-      <div class="select-wrapper">
-        <label class="select-label" [class.active]="dateFilterType !== 'none'">Date Filter By:</label>
-        <select class="native-select" [(ngModel)]="dateFilterType" (change)="onDateFilterTypeChange()">
-          <option value="none" disabled hidden>Date Filter By:</option>
-          <option value="all">All</option>
-          <option value="date">Date</option>
-          <option value="week">Week</option>
-          <option value="month">Month</option>
-          <option value="year">Year</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="filter-fields" *ngIf="dateFilterType !== 'none'">
-      <div class="filter-field" *ngIf="dateFilterType === 'date'">
-        <input
-          type="date"
-          id="singleDate"
-          class="native-input"
-          [(ngModel)]="filters.singleDate"
-          (change)="onDateChange()"
-          (keyDown.arrowleft)="onDateArrowKey($any($event),'prev')"
-          (keyDown.arrowright)="onDateArrowKey($any($event),'next')"
-        />
-      </div>
-
-      <div class="filter-field" *ngIf="dateFilterType === 'week'">
-        <input
-          type="week"
-          id="weekFilter"
-          class="native-input"
-          [(ngModel)]="filters.week"
-          (change)="onWeekChange()"
-          (keyDown.arrowleft)="onWeekArrowKey($any($event),'prev')"
-          (keyDown.arrowright)="onWeekArrowKey($any($event),'next')"
-        />
-        <label for="weekFilter" class="input-label">Week:</label>
-      </div>
-
-      <div class="filter-field" *ngIf="dateFilterType === 'month'">
-        <input
-          type="month"
-          id="monthFilter"
-          class="native-input"
-          [(ngModel)]="filters.month"
-          (change)="onMonthChange()"
-          (keyDown.arrowleft)="onMonthArrowKey($any($event),'prev')"
-          (keyDown.arrowright)="onMonthArrowKey($any($event),'next')"
-        />
-        <label for="monthFilter" class="input-label">Month:</label>
-      </div>
-
-      <div class="filter-field" *ngIf="dateFilterType === 'year'">
-        <input
-          type="number"
-          id="yearFilter"
-          class="native-input"
-          [class.has-value]="filters.year"
-          [(ngModel)]="filters.year"
-          placeholder="YYYY"
-          (change)="onYearChange()"
-          (keyDown.arrowleft)="onYearArrowKey($any($event),'prev')"
-          (keyDown.arrowright)="onYearArrowKey($any($event),'next')"
-        />
-        <label for="yearFilter" class="input-label">Year:</label>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="button-container">
-    <button mat-raised-button color="primary" id="hbtn" (click)="openAddProductDialog()">Generate Quotation</button>
-  </div>
-
-</div>
 
 
-
-  <ng-container *ngIf="filteredCustomers$ | async as customers; else loading">
-    <div class="table-container">
-      <div class="table-scroll">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">confirmation_number</mat-icon>
-                <span>ID</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">person</mat-icon>
-                <span>Customer</span>
-              </div>
-            </th>
-          
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">category</mat-icon>
-                <span>Part Name</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">sell</mat-icon>
-                <span>Part No</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">history</mat-icon>
-                <span>Revision</span>
-              </div>
-            </th>
-         
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">inventory_2</mat-icon>
-                <span>Raw Materials</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">settings</mat-icon>
-                <span>Processes</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">file_download</mat-icon>
-                <span>Download</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">tune</mat-icon>
-                <span>Actions</span>
-              </div>
-            </th>
-            <th>
-              <div class="header-cell-content">
-                <mat-icon class="header-icon">verified</mat-icon>
-                <span>Status</span>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let c of filteredCustomers$ | async; let i = index">
-            <tr class="table-row">
-              <td>
-                <span class="customer-id-pill">{{ getDisplayId(c) }}</span>
-              </td>
-              <td>
-                <span class="customer-name">{{ c.customerName.customerName }}</span>
-              </td>
-           
-              <td>
-                <span class="part-name">{{ c.partName }}</span>
-              </td>
-              <td>
-                <span class="part-number">{{ getLatestRevision(c)?.productName }}</span>
-              </td>
-              <td>
-                <span class="revision-number">{{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}</span>
-              </td>
-              <td> 
-                <ng-container *ngIf="getLatestRevision(c)">
-                  <span class="raw-materials-count">{{ getLatestRevision(c).noOfRawMaterials }}</span>
-                </ng-container>
-                <ng-template #noMaterial>
-                  <span class="no-data-text">No Raw Materials</span>
-                </ng-template>
-              </td>
-              <td>
-                <ng-container *ngIf="getLatestRevision(c) ; else noProcess">
-                  <span class="processes-count">{{getLatestRevision(c).noOfProcess}}</span>
-                </ng-container>
-                <ng-template #noProcess>
-                  <span class="no-data-text">No Processes</span>
-                </ng-template>
-              </td>
-              <td class="download-cell">
-                <div class="combined-button">
-                  <div class="view-section" (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
-                    <mat-icon class="btn-icon">visibility</mat-icon>
-                    <span>View</span>
+    <ng-container *ngIf="filteredCustomers$ | async as customers; else loading">
+      <div class="table-container">
+        <div class="table-scroll">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">confirmation_number</mat-icon>
+                    <span>ID</span>
                   </div>
-                  <div class="download-section"   (click)="printQuotation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)" >
-                    <mat-icon class="btn-icon">download</mat-icon>
+                </th>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">person</mat-icon>
+                    <span>Customer</span>
+                  </div>
+                </th>
+
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">category</mat-icon>
+                    <span>Part Name</span>
+                  </div>
+                </th>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">sell</mat-icon>
+                    <span>Part No</span>
+                  </div>
+                </th>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">history</mat-icon>
+                    <span>Revision</span>
+                  </div>
+                </th>
+
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">inventory_2</mat-icon>
+                    <span>Raw Materials</span>
+                  </div>
+                </th>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">settings</mat-icon>
+                    <span>Processes</span>
+                  </div>
+                </th>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">file_download</mat-icon>
                     <span>Download</span>
                   </div>
-                </div>
-              </td>
-              <td class="actions">
-                <div class="actions-container">
-                  <button mat-icon-button class="action-btn edit-btn" (click)="onEdit(c)" title="Edit">
-                    <mat-icon class="icon">edit</mat-icon>
-                  </button>
-                  <button mat-icon-button class="action-btn delete-btn" (click)="onDelete(c._id)" title="Delete">
-                    <mat-icon class="icon">delete</mat-icon>
-                  </button>
-                  <button mat-icon-button class="action-btn expand-btn" (click)="toggleCompare(c)" title="Expand/Collapse">
-                    <mat-icon class="icon">{{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}</mat-icon>
-                  </button>
-                </div>
-              </td>
-              <td>
-                <div class="status-select">
-                  <select
-                    [disabled]="statusUpdatingMap[c._id || '']"
-                    [ngModel]="getLatestRevision(c)?.Status || 'Pending'"
-                    (ngModelChange)="onStatusChange(c, $event)"
-                  >
-                    <option *ngFor="let status of statusOptions" [value]="status">
-                      {{ status }}
-                    </option>
-                  </select>
-                  <mat-icon class="updating-icon" *ngIf="statusUpdatingMap[c._id || '']">
-                    autorenew
-                  </mat-icon>
-                </div>
-              </td>
-            </tr>
+                </th>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">tune</mat-icon>
+                    <span>Actions</span>
+                  </div>
+                </th>
+                <th>
+                  <div class="header-cell-content">
+                    <mat-icon class="header-icon">verified</mat-icon>
+                    <span>Status</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let c of filteredCustomers$ | async; let i = index">
+                <tr class="table-row">
+                  <td>
+                    <span class="customer-id-pill">{{ getDisplayId(c) }}</span>
+                  </td>
+                  <td>
+                    <span class="customer-name">{{ c.customerName.customerName }}</span>
+                  </td>
 
-            <!-- 🔽 Nested table row -->
-            <tr *ngIf="expandedCustomer === c">
-              <td id="subbg" colspan="10">
-                <table class="table table-sm table-bordered nested-table">
-                  <thead>
-                    <tr>
-                      <th class="subtable">Revision</th>
-                      <th class="subtable">Product</th>
-                      <th class="subtable">Raw Materials</th>
-                      <th class="subtable">Processes</th>
-                      <th class="subtable">Downlaod</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let rev of c.revisions; let i = index">
-                      <!-- Revision -->
-                      <td class="small-col">
-                        <mat-checkbox
-                          [(ngModel)]="rev.selected"
-                          (change)="onRevisionSelect(rev, $event)"
-                        ></mat-checkbox>
-                        Revision {{ rev.revisionNumber || (i + 1) }}
-                      </td>
+                  <td>
+                    <span class="part-name">{{ c.partName }}</span>
+                  </td>
+                  <td>
+                    <span class="part-number">{{ getLatestRevision(c)?.productName }}</span>
+                  </td>
+                  <td>
+                    <span class="revision-number">{{ getLatestrevisionNumber(c)?.revisionNumber || '0' }}</span>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="getLatestRevision(c)">
+                      <span class="raw-materials-count">{{ getLatestRevision(c).noOfRawMaterials }}</span>
+                    </ng-container>
+                    <ng-template #noMaterial>
+                      <span class="no-data-text">No Raw Materials</span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="getLatestRevision(c) ; else noProcess">
+                      <span class="processes-count">{{getLatestRevision(c).noOfProcess}}</span>
+                    </ng-container>
+                    <ng-template #noProcess>
+                      <span class="no-data-text">No Processes</span>
+                    </ng-template>
+                  </td>
+                  <td class="download-cell">
+                    <div class="combined-button">
+                      <div class="view-section"
+                        (click)="downloadQuotations(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                        <mat-icon class="btn-icon">visibility</mat-icon>
+                        <span>View</span>
+                      </div>
+                      <div class="download-section"
+                        (click)="printQuotation(c.customerName.customerName, c.partName, getLatestrevisionNumber(c).revisionNumber)">
+                        <mat-icon class="btn-icon">download</mat-icon>
+                        <span>Download</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="actions">
+                    <div class="actions-container">
+                      <button mat-icon-button class="action-btn edit-btn" (click)="onEdit(c)" title="Edit">
+                        <mat-icon class="icon">edit</mat-icon>
+                      </button>
+                      <button mat-icon-button class="action-btn delete-btn" (click)="onDelete(c._id)" title="Delete">
+                        <mat-icon class="icon">delete</mat-icon>
+                      </button>
+                      <button mat-icon-button class="action-btn expand-btn" (click)="toggleCompare(c)"
+                        title="Expand/Collapse">
+                        <mat-icon class="icon">{{ expandedCustomer === c ? 'expand_less' : 'expand_more' }}</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="status-select">
+                      <select [disabled]="statusUpdatingMap[c._id || '']"
+                        [ngModel]="getLatestRevision(c)?.Status || 'Pending'"
+                        (ngModelChange)="onStatusChange(c, $event)">
+                        <option *ngFor="let status of statusOptions" [value]="status">
+                          {{ status }}
+                        </option>
+                      </select>
+                      <mat-icon class="updating-icon" *ngIf="statusUpdatingMap[c._id || '']">
+                        autorenew
+                      </mat-icon>
+                    </div>
+                  </td>
+                </tr>
 
-                      <!-- Product -->
-                      <td class="small-col" id="small-colname">
-                        {{ rev.productName }}
-                      </td>
+                <!-- 🔽 Nested table row -->
+                <tr *ngIf="expandedCustomer === c">
+                  <td id="subbg" colspan="10">
+                    <table class="table table-sm table-bordered nested-table">
+                      <thead>
+                        <tr>
+                          <th class="subtable">Revision</th>
+                          <th class="subtable">Product</th>
+                          <th class="subtable">Raw Materials</th>
+                          <th class="subtable">Processes</th>
+                          <th class="subtable">Downlaod</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let rev of c.revisions; let i = index">
+                          <!-- Revision -->
+                          <td class="small-col">
+                            <mat-checkbox [(ngModel)]="rev.selected"
+                              (change)="onRevisionSelect(rev, $event)"></mat-checkbox>
+                            Revision {{ rev.revisionNumber || (i + 1) }}
+                          </td>
 
-                      <!-- Raw Materials (comma separated) -->
-                      <td class="wide-col">
-                        {{ getRawMaterialList(rev.rawMaterial) }}
-                      </td>
+                          <!-- Product -->
+                          <td class="small-col" id="small-colname">
+                            {{ rev.productName }}
+                          </td>
 
-                      <!-- Processes (comma separated) -->
-                      <td class="wide-col">
-                        {{ getProcessList(rev.processes) }}
-                      </td>
+                          <!-- Raw Materials (comma separated) -->
+                          <td class="wide-col">
+                            {{ getRawMaterialList(rev.rawMaterial) }}
+                          </td>
 
-                      <td class="small-col">
-                        <button
-                          mat-raised-button
-                          color="accent"
-                          (click)="downloadQuotation(c.customerName.customerName, c.partName, rev.revisionNumber)"
-                        >
-                          Download
-                        </button>
-                      </td>
-                    </tr>
+                          <!-- Processes (comma separated) -->
+                          <td class="wide-col">
+                            {{ getProcessList(rev.processes) }}
+                          </td>
 
-                    <!-- Compare button -->
-                    <tr>
-                      <td colspan="6" class="text-center">
-                        <button
-                          mat-raised-button
-                          color="primary"
-                          (click)="openComparePopup()"
-                          [disabled]="!canCompare()"
-                        >
-                          Compare Selected
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
+                          <td class="small-col">
+                            <button mat-raised-button color="accent"
+                              (click)="downloadQuotation(c.customerName.customerName, c.partName, rev.revisionNumber)">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+
+                        <!-- Compare button -->
+                        <tr>
+                          <td colspan="6" class="text-center">
+                            <button mat-raised-button color="primary" (click)="openComparePopup()"
+                              [disabled]="!canCompare()">
+                              Compare Selected
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="currentPage"
+          [pageSizeOptions]="[10, 20, 50]" (page)="onPageChange($event)" showFirstLastButtons class="custom-paginator">
+        </mat-paginator>
       </div>
+    </ng-container>
 
-      <mat-paginator
-        [length]="totalItems"
-        [pageSize]="pageSize"
-        [pageIndex]="currentPage"
-        [pageSizeOptions]="[10, 20, 50]"
-        (page)="onPageChange($event)"
-        showFirstLastButtons
-        class="custom-paginator">
-      </mat-paginator>
-    </div>
-  </ng-container>
-
-  <ng-template #loading>
-    <div style="text-align: center; padding: 40px;">
-      <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
-      <p *ngIf="!isLoading">Loading customer data...</p>
-    </div>
-  </ng-template>
-</div>
+    <ng-template #loading>
+      <div style="text-align: center; padding: 40px;">
+        <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+        <p *ngIf="!isLoading">Loading customer data...</p>
+      </div>
+    </ng-template>
+  </div>
 
 </div>
 
@@ -376,9 +331,7 @@
       <h4>Select Revisions to Compare</h4>
       <div class="revision-checkboxes">
         <div *ngFor="let rev of expandedCustomer?.revisions">
-          <mat-checkbox
-            [(ngModel)]="rev.selected"
-            (change)="onRevisionSelectPopup(rev, $event)">
+          <mat-checkbox [(ngModel)]="rev.selected" (change)="onRevisionSelectPopup(rev, $event)">
             Revision {{ rev.revisionNumber || 'N/A' }}
           </mat-checkbox>
         </div>
@@ -524,50 +477,50 @@
         </tr>
 
         <!-- Processes -->
-<tr>
-  <td><b>Processes</b></td>
-  <td *ngFor="let rev of selectedRevisions">
-    <div *ngFor="let p of rev.processes; let i = index" class="process-block">
+        <tr>
+          <td><b>Processes</b></td>
+          <td *ngFor="let rev of selectedRevisions">
+            <div *ngFor="let p of rev.processes; let i = index" class="process-block">
 
-      <p>
-        <b>Process Name:</b>
-        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('processName', i)}">
-          {{ p.processName }}
-        </span>
-      </p>
+              <p>
+                <b>Process Name:</b>
+                <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('processName', i)}">
+                  {{ p.processName }}
+                </span>
+              </p>
 
-      <p>
-        <b>Tonnage/Jaw:</b>
-        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('TonnageJaw', i)}">
-          {{ p.TonnageJaw }}
-        </span>
-      </p>
+              <p>
+                <b>Tonnage/Jaw:</b>
+                <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('TonnageJaw', i)}">
+                  {{ p.TonnageJaw }}
+                </span>
+              </p>
 
-      <p>
-        <b>Hours:</b>
-        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('Hours', i)}">
-          {{ p.Hours }}
-        </span>
-      </p>
+              <p>
+                <b>Hours:</b>
+                <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('Hours', i)}">
+                  {{ p.Hours }}
+                </span>
+              </p>
 
-      <p>
-        <b>Cycle time/Weight:</b>
-        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('cycleTime', i)}">
-          {{ p.cycleTime }}
-        </span>
-      </p>
+              <p>
+                <b>Cycle time/Weight:</b>
+                <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('cycleTime', i)}">
+                  {{ p.cycleTime }}
+                </span>
+              </p>
 
-      <p>
-        <b>Cost:</b>
-        <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('cost', i)}">
-          {{ p.cost | number:'1.2-2' }}
-        </span>
-      </p>
+              <p>
+                <b>Cost:</b>
+                <span [ngClass]="{'highlight-diff': isProcessFieldDifferent('cost', i)}">
+                  {{ p.cost | number:'1.2-2' }}
+                </span>
+              </p>
 
-      <hr />
-    </div>
-  </td>
-</tr>
+              <hr />
+            </div>
+          </td>
+        </tr>
 
 
       </tbody>
@@ -583,514 +536,580 @@
 
 
 
- <!-- PDF  -->
-<div  class="compare-popup"   *ngIf="pdfview" >
-<div  class="compare-popup-content">
+<!-- PDF  -->
+<div class="compare-popup" *ngIf="pdfview">
+  <div class="compare-popup-content">
 
-<div  class="button-das" style="margin-left: 97%;" >
- <button mat-icon-button color="warn" >
-  <mat-icon (click)="closeda()">cancel</mat-icon>
-</button>
-</div>
+    <div class="button-das" style="margin-left: 97%;">
+      <button mat-icon-button color="warn">
+        <mat-icon (click)="closeda()">cancel</mat-icon>
+      </button>
+    </div>
 
-<!-- Loading Spinner -->
-<div *ngIf="isQuotationLoading" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
-  <app-loading-spinner></app-loading-spinner>
-</div>
+    <!-- Loading Spinner -->
+    <div *ngIf="isQuotationLoading"
+      style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+      <app-loading-spinner></app-loading-spinner>
+    </div>
 
-      
-  <div id="pdfContent" *ngIf="!isQuotationLoading">
 
-    <div class="quotation" *ngIf="quotationData" >
-      <!-- Top header band: left spacer/logo, centered title, right meta table -->
- 
-      <div class="mainquotation">
-        <div class="quotationheader">
-          <img src="/sky.png" alt="SKYFAST">
-          <h3>QUOTATION</h3>
-          <div class="headerdate">
-                       
+    <div id="pdfContent" *ngIf="!isQuotationLoading">
 
-            <h6>Qtn. No : {{ quotationData.results[0].createdAt | date:'dd/MM/yy' }}/{{  quotationData.results[0].revisions[0].revisionName }} </h6>
-            <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
+      <div class="quotation" *ngIf="quotationData">
+        <!-- Top header band: left spacer/logo, centered title, right meta table -->
+
+        <div class="mainquotation">
+          <div class="quotationheader">
+            <img src="/sky.png" alt="SKYFAST">
+            <h3>QUOTATION</h3>
+            <div class="headerdate">
+
+
+              <h6>Qtn. No : {{ quotationData.results[0].createdAt | date:'dd/MM/yy' }}/{{
+                quotationData.results[0].revisions[0].revisionName }} </h6>
+              <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- Header grid to match reference: left address block + right details table -->
-      <table class="header-grid">
-        <tr>
-          <!-- Customer Block -->
-          <td class="customer-block">
-            <strong>Customer Name & Address:</strong><br>
-            {{ quotationData.results[0].customerName.customerName }} <br>
-            {{ quotationData.results[0].customerName.address }}
-          </td>
-      
-          <!-- Details Block -->
-          <td class="details-block">
-            <div class="details-container">
- <table class="inner-details">
-              <tr>
-                <td class="label">Drawing No</td>
-                <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
-              </tr>
-              <tr>
-                <td class="label">Part No</td>
-                <td class="value">: {{  quotationData.results[0].revisions[0].productName }}  </td>
-              </tr>
-              <tr>
-                <td class="label">Part Name</td>
-                <td class="value">: {{ quotationData.results[0].partName }}</td>
-              </tr>
-            </table>
-           
-<table class="inner-details" >
-         <div class="image-box">
-  <img [src]="getDrawingImage()"  />
-</div>
-</table>
-
-   
-
-            </div>
-           
-          </td>
-        </tr>
-      </table>
-      
-      <table class="material-table">
+        <!-- Header grid to match reference: left address block + right details table -->
+        <table class="header-grid">
           <tr>
-              <td colspan="4" class="section-header">Material Cost</td>
+            <!-- Customer Block -->
+            <td class="customer-block">
+              <strong>Customer Name & Address:</strong><br>
+              {{ quotationData.results[0].customerName.customerName }} <br>
+              {{ quotationData.results[0].customerName.address }}
+            </td>
+
+            <!-- Details Block -->
+            <td class="details-block">
+              <div class="details-container">
+                <table class="inner-details">
+                  <tr>
+                    <td class="label">Drawing No</td>
+                    <td class="value">: {{ quotationData.results[0].drawingNo }}</td>
+                  </tr>
+                  <tr>
+                    <td class="label">Part No</td>
+                    <td class="value">: {{ quotationData.results[0].revisions[0].productName }} </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Part Name</td>
+                    <td class="value">: {{ quotationData.results[0].partName }}</td>
+                  </tr>
+                </table>
+
+                <table class="inner-details">
+                  <div class="image-box">
+                    <img [src]="getDrawingImage()" />
+                  </div>
+                </table>
+
+
+
+              </div>
+
+            </td>
+          </tr>
+        </table>
+
+        <table class="material-table">
+          <tr>
+            <td colspan="4" class="section-header">Material Cost</td>
           </tr>
           <tr>
-              <td><strong>Raw Material Spec</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].GradeName }}</td>
-              <td><strong>Finish weight/pc</strong></td>
-              <td>NA</td>
+            <td><strong>Raw Material Spec</strong></td>
+            <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].GradeName }}</td>
+            <td><strong>Finish weight/pc</strong></td>
+            <td>NA</td>
           </tr>
           <tr>
-              <td><strong>Raw Material price/kg +10% inventory cost</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }}</td>
-              <td><strong>Raw Material cost/pc (Rm.wt/pc x Rm.price/kg)</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}
+            <td><strong>Raw Material price/kg +10% inventory cost</strong></td>
+            <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }}</td>
+            <td><strong>Raw Material cost/pc (Rm.wt/pc x Rm.price/kg)</strong></td>
+            <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}
 
 
-                            <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <p class="info-popup-text">
+              <span class="info-container" tabindex="0">
+                <mat-icon class="info-icon">info</mat-icon>
+                <div class="info-popup dim">
+                  <p class="info-popup-text">
 
-    (Raw Material weight * Raw Material price )  
-  </p>
-   {{ quotationData.results[0].revisions[0].rawMaterialWeight }} * {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} 
-  <br />
-  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
-</div>
+                    (Raw Material weight * Raw Material price )
+                  </p>
+                  {{ quotationData.results[0].revisions[0].rawMaterialWeight }} * {{
+                  quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }}
+                  <br />
+                  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
+                </div>
 
-</span>
-              </td>
+              </span>
+            </td>
           </tr>
           <tr>
-              <td><strong>Component Weight (Kg)</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].castingWeight }}</td>
-              <td><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
-              <td>NA</td>
+            <td><strong>Component Weight (Kg)</strong></td>
+            <td>{{ quotationData.results[0].revisions[0].castingWeight }}</td>
+            <td><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
+            <td>NA</td>
           </tr>
           <tr>
-              <td><strong>Mellting Loss</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].meltingLoss }}</td>
-              <td><strong>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</strong></td>
-              <td>NA</td>
+            <td><strong>Mellting Loss</strong></td>
+            <td>{{ quotationData.results[0].revisions[0].meltingLoss }}</td>
+            <td><strong>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</strong></td>
+            <td>NA</td>
           </tr>
           <tr>
-              <td><strong>Raw Material weight/pc</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3'}}
-                          <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-  <div class="info-popup dim">
-    <p class="info-popup-text">
-  
-      (Component Weight (Kg) * 1 + (meltingLoss / 100)  )
-    </p>
-   {{ quotationData.results[0].revisions[0].castingWeight }} * 
-{{ 1 + (quotationData.results[0].revisions[0].meltingLoss / 100) }}
-  <br />
-  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3' }}</strong>
-</div>
+            <td><strong>Raw Material weight/pc</strong></td>
+            <td>{{ quotationData.results[0].revisions[0].rawMaterialWeight | number:'1.2-3'}}
+              <span class="info-container" tabindex="0">
+                <mat-icon class="info-icon">info</mat-icon>
+                <div class="info-popup dim">
+                  <p class="info-popup-text">
 
-</span>
-              </td>
-              <td><strong>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}
-                                    <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <p class="info-popup-text">
+                    (Component Weight (Kg) * 1 + (meltingLoss / 100) )
+                  </p>
+                  {{ quotationData.results[0].revisions[0].castingWeight }} *
+                  {{ 1 + (quotationData.results[0].revisions[0].meltingLoss / 100) }}
+                  <br />
+                  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialWeight | number:'1.2-3'
+                    }}</strong>
+                </div>
 
-    (Raw Material cost * ICC)
-  </p>
-   {{ quotationData.results[0].revisions[0].rawMaterialCost }} * {{ (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}
-  <br />  
-  <strong>Result: {{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</strong>
-</div>
-</span>
-              </td>
+              </span>
+            </td>
+            <td><strong>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</strong></td>
+            <td>{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}
+              <span class="info-container" tabindex="0">
+                <mat-icon class="info-icon">info</mat-icon>
+                <div class="info-popup dim">
+                  <p class="info-popup-text">
+
+                    (Raw Material cost * ICC)
+                  </p>
+                  {{ quotationData.results[0].revisions[0].rawMaterialCost }} * {{
+                  (quotationData.results[0].revisions[0].InterestRate &&
+                  quotationData.results[0].revisions[0].InterestRate > 0) ?
+                  quotationData.results[0].revisions[0].InterestRate : 1 }}
+                  <br />
+                  <strong>Result: {{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</strong>
+                </div>
+              </span>
+            </td>
           </tr>
           <!-- Insert Process Cost as part of the same outer table -->
           <tr>
-              <td colspan="4" class="section-header">Process Cost</td>
+            <td colspan="4" class="section-header">Process Cost</td>
           </tr>
           <tr>
-              <td colspan="4" class="process-cell">
-                  <div class="osp-info">
-                      <span class="osp-no">OSP No :</span>
-                      <span class="osp-description">OSP Description :</span>
-                  </div>
-                  <table class="process-nested">
-          <thead>
-              <tr>
-                  <th>Opn No</th>
-                  <th>Opn Code</th>
-                  <th>Machine</th>
-                  <th>Machine Hour Rate</th>
-                  <th>No. of Cavities</th>
-                  <th>No. of Cores Mech</th>
-                  <th>No. of Cores Hy.</th>
-                  <th>Hourly Output</th>
-                  <th [attr.colspan]="isInternationalQuotation() ? 1 : 2">Process Cost/casting</th>
-                  <th *ngIf="quotationData.results[0].revisions[0]?.currency !=null">Process Cost {{quotationData.results[0].revisions[0]?.currency}}</th>
+            <td colspan="4" class="process-cell">
+              <div class="osp-info">
+                <span class="osp-no">OSP No :</span>
+                <span class="osp-description">OSP Description :</span>
+              </div>
+              <table class="process-nested">
+                <thead>
+                  <tr>
+                    <th>Opn No</th>
+                    <th>Opn Code</th>
+                    <th>Machine</th>
+                    <th>Machine Hour Rate</th>
+                    <th>No. of Cavities</th>
+                    <th>No. of Cores Mech</th>
+                    <th>No. of Cores Hy.</th>
+                    <th>Hourly Output</th>
+                    <th [attr.colspan]="isInternationalQuotation() ? 1 : 2">Process Cost/casting</th>
+                    <th *ngIf="quotationData.results[0].revisions[0]?.currency !=null">Process Cost
+                      {{quotationData.results[0].revisions[0]?.currency}}</th>
 
 
-              </tr>
-          </thead>
-          <tbody >
-             <tr  *ngFor="let process of quotationData.results[0].revisions[0]?.processes; let i = index" >
-               <td>{{ i + 1 }}</td>
-                <td>{{ (i + 1) * 10 }}</td>
-                <td>{{ process.processName }}</td>
-                 <td>{{ process.Hours }}</td>
-                  <td>{{ process.cavity }}</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>{{ process.HourlyOutput }}</td>
-                  <td [attr.colspan]="isInternationalQuotation() ? 1 : 2" class="process-cost-wide">{{ process.cost | number:'1.2-2' }}
-                                                              <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <p class="info-popup-text"> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let process of quotationData.results[0].revisions[0]?.processes; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ (i + 1) * 10 }}</td>
+                    <td>{{ process.processName }}</td>
+                    <td>{{ process.Hours }}</td>
+                    <td>{{ process.cavity }}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>{{ process.HourlyOutput }}</td>
+                    <td [attr.colspan]="isInternationalQuotation() ? 1 : 2" class="process-cost-wide">{{ process.cost |
+                      number:'1.2-2' }}
+                      <span class="info-container" tabindex="0">
+                        <mat-icon class="info-icon">info</mat-icon>
+                        <div class="info-popup dim">
+                          <ng-container *ngIf="(process.Unit || '').toLowerCase() === 'cost'; else defaultProcessFormula">
+                            <p class="info-popup-text">
+                              (Machine Hour Rate)
+                            </p>
+                            {{ process.Hours }}
+                          </ng-container>
+                          <ng-template #defaultProcessFormula>
+                            <p class="info-popup-text">
 
-    (Machine Hour Rate/Hourly Output/No. of Cavities)
-  </p>
-    ( {{ process.Hours }} / {{ process.HourlyOutput }} ) / {{ process.cavity }}
-  <br />  
-  <strong>Result: {{ process.cost| number:'1.2-3' }}</strong>
-</div>
-</span>
-                  </td>
-
-<td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
-  {{ getProcessCostByCurrency(process, quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-</td>
-
-
-             </tr>
-             <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  
-                  <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}
-                    <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <p class="info-popup-text">
-    
-    Sum of all individual process costs
-  </p>
-  <ng-container *ngFor="let process of quotationData.results[0].revisions[0].processes; let last = last">
-    {{ process.cost | number:'1.2-3' }}<span *ngIf="!last"> + </span>
-  </ng-container>
-  <br />
-  <strong>Result: {{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}</strong>
-</div>
-</span>
-                  </td>
-
-                  <!-- sum Process Cost -->
-
-<td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
-  {{ getSumOfProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-</td>
-
-
-
-              </tr>
-              <tr>
-                  <td>{{ quotationData.results[0].revisions[0].noOfProcess + 1}}</td>
-                  <td></td>
-                  <td>Oil shot & Rejections</td>
-                  <td>{{ quotationData.results[0].revisions[0].Rejection }}%</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  
-                  <td>-</td>
-                  <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}
-                                                              <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <p class="info-popup-text">
-    
-    (Sum of all individual process costs * Rejection %)
-  </p>
-    {{ quotationData.results[0].revisions[0].sumOfProcessCost }} * ( {{ quotationData.results[0].revisions[0].Rejection }} / 100 )
-  <br />
-  <strong>Result: {{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</strong>
-</div>
-</span>
-                  </td>
-
-
-
-<!-- Rejection Cost -->
-<td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
-  {{ getRejectionCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-</td>
-
-
-
-
-              </tr>
-              <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-    
-                  <td colspan="2">Total Process cost/pc (L) :</td>
-                  <td [attr.colspan]="isInternationalQuotation() ? 1 : 2" >{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}
-                                                              <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <p class="info-popup-text">
-
-    (Sum of all individual process costs + Rejection Cost)
-  </p>
-    {{ quotationData.results[0].revisions[0].sumOfProcessCost }} + {{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}
-  <br />
-  <strong>Result: {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</strong>
-</div>
-</span>
-                  </td>
-
-                  <!-- Total Process Cost -->
-<td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
-  {{ getTotalProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-</td>
-
-              </tr>
-              <!-- Integrated Total Quoted Price section within the same table -->
-              <tr class="tqp-header">
-                  <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
-                  <th colspan="1">Net Material Cost (M)</th>
-                   <!-- <th colspan="1">ICC</th> -->
-                  <th colspan="2">Total Labour Cost (L)</th>
-                  <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
-                  <th colspan="1">Tool Amortization</th>
-                  <th colspan="2">Total price</th>
-              </tr>
-              <tr>
-                
-                  <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</td>
-                  <!-- <td colspan="1">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}</td> -->
-                  <td colspan="2">{{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}</td>
-                   <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}
-                             <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
-<div class="info-popup dim">
-  <!-- If ICC (InterestRate) exists -->
-  <div *ngIf="quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0">
-    <p class="info-popup-text"> 
-
-      ((Total Labour Cost (L)) * Over Heads)
-    </p>
-  
-    ({{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
-    <br />
-    <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
-  </div>
-  <!-- If ICC (InterestRate) doesn't exist -->
-  <div *ngIf="!quotationData.results[0].revisions[0].InterestRate || quotationData.results[0].revisions[0].InterestRate === 0">
-    <p class="info-popup-text"> 
-      (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
-    </p>
-   
-    ({{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
-    <br />
-    <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
-  </div>
-</div>
-</span>
+                              (Machine Hour Rate/Hourly Output/No. of Cavities)
+                            </p>
+                            ( {{ process.Hours }} / {{ process.HourlyOutput }} ) / {{ process.cavity }}
+                          </ng-template>
+                          <br />
+                          <strong>Result: {{ process.cost| number:'1.2-3' }}</strong>
+                        </div>
+                      </span>
                     </td>
-                  <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
-                  <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{ quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-2'}}
-                     <span class="info-container" tabindex="0">
-  <mat-icon class="info-icon">info</mat-icon>
 
-  
-<div class="info-popup dim">
-  <!-- International Packing -->
-  <div *ngIf="quotationData.results[0].revisions[0].Packing === 'international'">
-    <p class="info-popup-text"> 
-      (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC)<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
-    </p>
-    {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
-    <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
-      <br />
-      + 
-      <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">
-    {{ term.value | number:'1.2-2' }}<span *ngIf="!last"> + </span>
-      </ng-container>
-    </ng-container>
-    <br />
-    <strong>Result: {{ quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-3'}}</strong>
-  </div>
-  <!-- Domestic Packing -->
-  <div *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic'">
-    <p class="info-popup-text"> 
-      (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
-    </p>
-  
-    {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
-    <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
-      <br />
-      + 
-      <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">
-        {{ term.value | number:'1.2-2' }}<span *ngIf="!last"> + </span>
-      </ng-container>
-    </ng-container>
-    <br />
-    <strong>Result: {{ quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-3'}}</strong>
-  </div>
-</div>
- 
-
-</span>
-                  </td>
+                    <td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
+                      {{ getProcessCostByCurrency(process, quotationData.results[0].revisions[0]?.currency) |
+                      number:'1.2-3' }}
+                    </td>
 
 
-<!-- Total Price -->
-<td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
-  {{ getTotalPriceByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-</td>
-              </tr>
-   
-              <!-- Other Terms and conditions separator inside the same table -->
-              <tr>
-                  <td colspan="10" class="section-header">Other Terms and conditions</td>
-              </tr>
-              <tr>
-                  <td colspan="10" class="terms-cell">
-                      <table class="terms-grid"  *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic' " >
-                          <tr>
-                              <th>Packing & Forwarding</th>
-                              <td>Yours</td>
-                              <th>Mode of Transport</th>
-                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
-                              <th>Freight:</th>
-                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
-                          </tr>
-                          <tr>
-                              <th>Insurance</th>
-                              <td>NA</td>
-                              <th>Payment Terms</th>
-                              <td>30 Days</td>
-                              <th>Packing</th>
-                              <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
-                          </tr>
-                          <tr *ngFor="let paramRow of getParamRows(quotationData.results[0].revisions[0].otherParams)">
-                              <ng-container *ngFor="let param of paramRow">
-                                  <th>{{ param.label }}</th>
-                                  <td>{{ param.value }}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                    <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{
+                      quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}
+                      <span class="info-container" tabindex="0">
+                        <mat-icon class="info-icon">info</mat-icon>
+                        <div class="info-popup dim">
+                          <p class="info-popup-text">
+
+                            Sum of all individual process costs
+                          </p>
+                          <ng-container
+                            *ngFor="let process of quotationData.results[0].revisions[0].processes; let last = last">
+                            {{ process.cost | number:'1.2-3' }}<span *ngIf="!last"> + </span>
+                          </ng-container>
+                          <br />
+                          <strong>Result: {{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3'
+                            }}</strong>
+                        </div>
+                      </span>
+                    </td>
+
+                    <!-- sum Process Cost -->
+
+                    <td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
+                      {{ getSumOfProcessCostByCurrency(quotationData.results[0].revisions[0],
+                      quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
+                    </td>
+
+
+
+                  </tr>
+                  <tr>
+                    <td>{{ quotationData.results[0].revisions[0].noOfProcess + 1}}</td>
+                    <td></td>
+                    <td>Oil shot & Rejections</td>
+                    <td>{{ quotationData.results[0].revisions[0].Rejection }}%</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+
+                    <td>-</td>
+                    <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{
+                      (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}
+                      <span class="info-container" tabindex="0">
+                        <mat-icon class="info-icon">info</mat-icon>
+                        <div class="info-popup dim">
+                          <p class="info-popup-text">
+
+                            (Sum of all individual process costs * Rejection %)
+                          </p>
+                          {{ quotationData.results[0].revisions[0].sumOfProcessCost }} * ( {{
+                          quotationData.results[0].revisions[0].Rejection }} / 100 )
+                          <br />
+                          <strong>Result: {{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2'
+                            }}</strong>
+                        </div>
+                      </span>
+                    </td>
+
+
+
+                    <!-- Rejection Cost -->
+                    <td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
+                      {{ getRejectionCostByCurrency(quotationData.results[0].revisions[0],
+                      quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
+                    </td>
+
+
+
+
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                    <td colspan="2">Total Process cost/pc (L) :</td>
+                    <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{
+                      (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}
+                      <span class="info-container" tabindex="0">
+                        <mat-icon class="info-icon">info</mat-icon>
+                        <div class="info-popup dim">
+                          <p class="info-popup-text">
+
+                            (Sum of all individual process costs + Rejection Cost)
+                          </p>
+                          {{ quotationData.results[0].revisions[0].sumOfProcessCost }} + {{
+                          (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}
+                          <br />
+                          <strong>Result: {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2'
+                            }}</strong>
+                        </div>
+                      </span>
+                    </td>
+
+                    <!-- Total Process Cost -->
+                    <td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
+                      {{ getTotalProcessCostByCurrency(quotationData.results[0].revisions[0],
+                      quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
+                    </td>
+
+                  </tr>
+                  <!-- Integrated Total Quoted Price section within the same table -->
+                  <tr class="tqp-header">
+                    <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
+                    <th colspan="1">Net Material Cost (M)</th>
+                    <!-- <th colspan="1">ICC</th> -->
+                    <th colspan="2">Total Labour Cost (L)</th>
+                    <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent
+                      }}%</th>
+                    <th colspan="1">Tool Amortization</th>
+                    <th colspan="2">Total price</th>
+                  </tr>
+                  <tr>
+
+                    <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</td>
+                    <!-- <td colspan="1">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}</td> -->
+                    <td colspan="2">{{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}
+                    </td>
+                    <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}
+                      <span class="info-container" tabindex="0">
+                        <mat-icon class="info-icon">info</mat-icon>
+                        <div class="info-popup dim">
+                          <!-- If ICC (InterestRate) exists -->
+                          <div
+                            *ngIf="quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0">
+                            <p class="info-popup-text">
+
+                              ((Total Labour Cost (L)) * Over Heads)
+                            </p>
+
+                            ({{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{
+                            quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+                            <br />
+                            <strong>Result: {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2'
+                              }}</strong>
+                          </div>
+                          <!-- If ICC (InterestRate) doesn't exist -->
+                          <div
+                            *ngIf="!quotationData.results[0].revisions[0].InterestRate || quotationData.results[0].revisions[0].InterestRate === 0">
+                            <p class="info-popup-text">
+                              (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
+                            </p>
+
+                            ({{ quotationData.results[0].revisions[0].netMaterialCost }} + {{
+                            (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{
+                            quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+                            <br />
+                            <strong>Result: {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2'
+                              }}</strong>
+                          </div>
+                        </div>
+                      </span>
+                    </td>
+                    <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
+                    <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{
+                      quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-2'}}
+                      <span class="info-container" tabindex="0">
+                        <mat-icon class="info-icon">info</mat-icon>
+
+
+                        <div class="info-popup dim">
+                          <!-- International Packing -->
+                          <div *ngIf="quotationData.results[0].revisions[0].Packing === 'international'">
+                            <p class="info-popup-text">
+                              (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool
+                              Amortization + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90
+                              days(ICC)<ng-container
+                                *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> +
+                                <ng-container
+                                  *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{
+                                  term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
+                            </p>
+                            {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{
+                            (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].toolCost }} + {{
+                            quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
+                            <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
+                              <br />
+                              +
+                              <ng-container
+                                *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">
+                                {{ term.value | number:'1.2-2' }}<span *ngIf="!last"> + </span>
                               </ng-container>
-                              <ng-container *ngFor="let _ of getEmptyParamSlots(3 - paramRow.length)">
-                                  <th></th>
-                                  <td></td>
+                            </ng-container>
+                            <br />
+                            <strong>Result: {{ quotationData.results[0].revisions[0].displayTotalPrice |
+                              number:'1.2-3'}}</strong>
+                          </div>
+                          <!-- Domestic Packing -->
+                          <div *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic'">
+                            <p class="info-popup-text">
+                              (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + Tool
+                              Amortization + Packing<ng-container
+                                *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> +
+                                <ng-container
+                                  *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{
+                                  term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
+                            </p>
+
+                            {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{
+                            (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{
+                            quotationData.results[0].revisions[0].toolCost }} + {{
+                            quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
+                            <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
+                              <br />
+                              +
+                              <ng-container
+                                *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">
+                                {{ term.value | number:'1.2-2' }}<span *ngIf="!last"> + </span>
                               </ng-container>
-                          </tr>
-                          <tr>
-                              <th>Applicable Tax</th>
-                              <td colspan="5">CGST / SGST / IGST</td>
-                          </tr>
+                            </ng-container>
+                            <br />
+                            <strong>Result: {{ quotationData.results[0].revisions[0].displayTotalPrice |
+                              number:'1.2-3'}}</strong>
+                          </div>
+                        </div>
+
+
+                      </span>
+                    </td>
+
+
+                    <!-- Total Price -->
+                    <td class="process-cost-wide" *ngIf="quotationData.results[0].revisions[0]?.currency !=null">
+                      {{ getTotalPriceByCurrency(quotationData.results[0].revisions[0],
+                      quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
+                    </td>
+                  </tr>
+
+                  <!-- Other Terms and conditions separator inside the same table -->
+                  <tr>
+                    <td colspan="10" class="section-header">Other Terms and conditions</td>
+                  </tr>
+                  <tr>
+                    <td colspan="10" class="terms-cell">
+                      <table class="terms-grid" *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic' ">
+                        <tr>
+                          <th>Packing & Forwarding</th>
+                          <td>Yours</td>
+                          <th>Mode of Transport</th>
+                          <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
+                          <th>Freight:</th>
+                          <td>{{quotationData.results[0].revisions[0].Freight}}</td>
+                        </tr>
+                        <tr>
+                          <th>Insurance</th>
+                          <td>NA</td>
+                          <th>Payment Terms</th>
+                          <td>30 Days</td>
+                          <th>Packing</th>
+                          <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
+                        </tr>
+                        <tr *ngFor="let paramRow of getParamRows(quotationData.results[0].revisions[0].otherParams)">
+                          <ng-container *ngFor="let param of paramRow">
+                            <th>{{ param.label }}</th>
+                            <td>{{ param.value }}</td>
+                          </ng-container>
+                          <ng-container *ngFor="let _ of getEmptyParamSlots(3 - paramRow.length)">
+                            <th></th>
+                            <td></td>
+                          </ng-container>
+                        </tr>
+                        <tr>
+                          <th>Applicable Tax</th>
+                          <td colspan="5">CGST / SGST / IGST</td>
+                        </tr>
                       </table>
-                        <table class="terms-grid"  *ngIf="quotationData.results[0].revisions[0].Packing === 'international' " >
-                          <tr>
-                              <th>CMM Inspectiong</th>
-                              <td>  {{quotationData.results[0].revisions[0].CMMInspection}} 
-</td>
-                              <th>Mode of Transport</th>
-                              <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
-                              <th>Freight:</th>
-                              <td>{{quotationData.results[0].revisions[0].Freight}}</td>
-                          </tr>
-                          <tr>
-                              <th>Insurance</th>
-                              <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
-                              <th>Payment Terms</th>
-                              <td>30 Days</td>
-                              <th>Packing</th>
-                              <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
-                          </tr>
-                            <tr>
-                              <th>See Packing</th>
-                              <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
-                              <th></th>
-                              <td></td>
-                              <td></td>
-                              <td></td>
+                      <table class="terms-grid"
+                        *ngIf="quotationData.results[0].revisions[0].Packing === 'international' ">
+                        <tr>
+                          <th>CMM Inspectiong</th>
+                          <td> {{quotationData.results[0].revisions[0].CMMInspection}}
+                          </td>
+                          <th>Mode of Transport</th>
+                          <td>{{quotationData.results[0].revisions[0].ModeOfTransport}}</td>
+                          <th>Freight:</th>
+                          <td>{{quotationData.results[0].revisions[0].Freight}}</td>
+                        </tr>
+                        <tr>
+                          <th>Insurance</th>
+                          <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
+                          <th>Payment Terms</th>
+                          <td>30 Days</td>
+                          <th>Packing</th>
+                          <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
+                        </tr>
+                        <tr>
+                          <th>See Packing</th>
+                          <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
+                          <th></th>
+                          <td></td>
+                          <td></td>
+                          <td></td>
 
-                          </tr>
-                         
+                        </tr>
 
-                           <tr>
-                              <th> Payment 90 days(ICC)	</th>
-                              <td>{{quotationData.results[0].revisions[0].Payment90DaysICC}}</td>
-                              <th></th>
-                              <td></td>
-                              <td colspan="2"></td>
-                          </tr>
-                          <tr *ngFor="let paramRow of getParamRows(quotationData.results[0].revisions[0].otherParams)">
-                              <ng-container *ngFor="let param of paramRow">
-                                  <th>{{ param.label }}</th>
-                                  <td>{{ param.value }}</td>
-                              </ng-container>
-                              <ng-container *ngFor="let _ of getEmptyParamSlots(3 - paramRow.length)">
-                                  <th></th>
-                                  <td></td>
-                              </ng-container>
-                          </tr>
-                          <tr>
-                              <th>Applicable Tax</th>
-                              <td colspan="5">CGST / SGST / IGST</td>
-                          </tr>
+
+                        <tr>
+                          <th> Payment 90 days(ICC) </th>
+                          <td>{{quotationData.results[0].revisions[0].Payment90DaysICC}}</td>
+                          <th></th>
+                          <td></td>
+                          <td colspan="2"></td>
+                        </tr>
+                        <tr *ngFor="let paramRow of getParamRows(quotationData.results[0].revisions[0].otherParams)">
+                          <ng-container *ngFor="let param of paramRow">
+                            <th>{{ param.label }}</th>
+                            <td>{{ param.value }}</td>
+                          </ng-container>
+                          <ng-container *ngFor="let _ of getEmptyParamSlots(3 - paramRow.length)">
+                            <th></th>
+                            <td></td>
+                          </ng-container>
+                        </tr>
+                        <tr>
+                          <th>Applicable Tax</th>
+                          <td colspan="5">CGST / SGST / IGST</td>
+                        </tr>
                       </table>
-                  </td>
-              </tr>
-                  </tbody>
-                  </table>
-              </td>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
           </tr>
-      </table>
-
-      
-  
+        </table>
 
 
 
@@ -1105,6 +1124,19 @@
 
 
 
+
+
+
+
+
+
+
+
+
+      </div>
+
+
+    </div>
 
 
 
@@ -1112,17 +1144,4 @@
 
 
   </div>
-
-  
-  </div>
-
-
-
-
-
-
 </div>
-</div>
-
-
-
