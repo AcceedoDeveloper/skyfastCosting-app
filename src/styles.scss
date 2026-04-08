@@ -51,12 +51,64 @@ body {
 
 .zoho-dialog .mat-mdc-dialog-container {
   padding: 0;
+  height: 100%;
 }
 
 .zoho-dialog .mat-mdc-dialog-surface {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   border-radius: 24px !important;
   overflow: hidden !important;
   background: linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%) !important;
   box-shadow: 0 30px 80px rgba(15, 23, 42, 0.22) !important;
+}
+
+.zoho-dialog .mat-mdc-dialog-content {
+  max-height: none !important;
+  overflow-y: auto !important;
+}
+
+.zoho-dialog .mat-horizontal-stepper-wrapper,
+.zoho-dialog .mat-stepper-horizontal,
+.zoho-dialog .mat-stepper-vertical {
+  height: 100%;
+}
+
+.zoho-dialog .mat-horizontal-content-container,
+.zoho-dialog .mat-vertical-content-container {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #8aa7c7 #e8eef5;
+}
+
+.zoho-dialog .mat-horizontal-content-container::-webkit-scrollbar,
+.zoho-dialog .mat-vertical-content-container::-webkit-scrollbar,
+.zoho-dialog .mat-mdc-dialog-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.zoho-dialog .mat-horizontal-content-container::-webkit-scrollbar-track,
+.zoho-dialog .mat-vertical-content-container::-webkit-scrollbar-track,
+.zoho-dialog .mat-mdc-dialog-content::-webkit-scrollbar-track {
+  background: #e8eef5;
+  border-radius: 999px;
+}
+
+.zoho-dialog .mat-horizontal-content-container::-webkit-scrollbar-thumb,
+.zoho-dialog .mat-vertical-content-container::-webkit-scrollbar-thumb,
+.zoho-dialog .mat-mdc-dialog-content::-webkit-scrollbar-thumb {
+  background: #8aa7c7;
+  border-radius: 999px;
+  border: 2px solid #e8eef5;
+}
+
+.zoho-dialog .mat-horizontal-content-container::-webkit-scrollbar-thumb:hover,
+.zoho-dialog .mat-vertical-content-container::-webkit-scrollbar-thumb:hover,
+.zoho-dialog .mat-mdc-dialog-content::-webkit-scrollbar-thumb:hover {
+  background: #6f92b8;
 }
 

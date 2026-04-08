@@ -98,9 +98,10 @@ selectedFileName: string = '';
 
   openCustomerPopup() {
   this.dialog.open(AddCustomerDetailsComponent, {
-    width: '50vw',
-    maxWidth: '1000px',
-    height: '50vh',
+    width: '67vw',
+    maxWidth: '67vw',
+    height: '67vh',
+    maxHeight: '67vh',
     panelClass: 'zoho-dialog',
     disableClose: true
   });

@@ -244,6 +244,15 @@
             <label class="label1" for="die-lifetime">Die Lifetime</label>
             <input class="lab" id="die-lifetime" matInput type="number" formControlName="dieLifeTime" />
           </div>
+
+          <div class="field-row">
+                     <label class="label1 pack" for="Payment-Terms">Payment Terms</label>
+                     <mat-select class="lab" formControlName="PaymentTerms">
+                        <mat-option value="" disabled selected>Select</mat-option>
+                        <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
+                     </mat-select>
+
+              </div>
            
           <!-- <div class="field-row">
             <label class="label1" for="Die-Maintenance">Die Maintenance </label>
@@ -333,14 +342,7 @@
               </div>
                   
 
-              <div class="field-row">
-                     <label class="label1 pack" for="Payment-Terms">Payment Terms</label>
-                     <mat-select class="lab" formControlName="PaymentTerms">
-                        <mat-option value="" disabled selected>Select</mat-option>
-                        <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
-                     </mat-select>
-
-              </div>
+              
 
               <div class="field-row">
                 <label class="label1 pack" for="DeliveryTerms">Delivery Terms</label>
