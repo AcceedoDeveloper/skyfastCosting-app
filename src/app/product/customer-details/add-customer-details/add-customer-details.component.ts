@@ -98,9 +98,9 @@ selectedFileName: string = '';
 
   openCustomerPopup() {
   this.dialog.open(AddCustomerDetailsComponent, {
-    width: '95vw',
-    maxWidth: '1400px',
-    height: '95vh',
+    width: '50vw',
+    maxWidth: '1000px',
+    height: '50vh',
     panelClass: 'zoho-dialog',
     disableClose: true
   });
@@ -203,7 +203,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
     this.store.dispatch(Action.loadRawMaterials());
     this.store.dispatch(Action.loadProcess());
 
-    this.store.select(selectLastAddedCustomer).subscribe(customer => {
+    this.store.select(Selector.selectLastAddedCustomer).subscribe((customer: CustomerDetails | undefined) => {
     if (customer) {
       this.Cusid = customer._id;
       // console.log('✅ Customer ID from NgRx:', this.Cusid);

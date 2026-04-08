@@ -14,14 +14,14 @@
 
 .maininputdiv {
   display: flex;
-  gap: 30px;           
+  gap: 20px;           
   align-items: flex-start;
 }
 
 .dialog-content {
-  max-height: none;
-  overflow: hidden;
-  padding-bottom: 8px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-bottom: 6px;
 }
 .checkbox-row {
   align-items: center;
@@ -32,14 +32,19 @@
   flex: 1;              
   display: flex;
   flex-direction: column;
-  gap: 18px;           
+  gap: 12px;           
 }
 
 .title {
   display: flex;
   align-items: center;
   justify-content:space-around;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+
+.title h4 {
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .icon{
@@ -62,20 +67,20 @@
 .formula-box {
   background: #e3f2fd;
   border: 2px solid #2196f3;
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: -20px;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: -15px;
   box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
 }
 
 .formula-box span {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
   color: #0d47a1;
 }
 
 .process-container{
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 /* Step Actions Styling */
@@ -83,22 +88,21 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 20px;
-
-  margin-top: 30px;
-  margin-right: 70px;
+  gap: 15px;
+  margin-top: 20px;
+  margin-right: 50px;
 }
 
 /* Button Styling */
 .btn {
   border: none;
-  border-radius: 6px;
-  padding: 10px 18px;
-  font-size: 16px;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary {
@@ -666,9 +670,9 @@ mat-radio-group {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   // background: yellowgreen;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 
@@ -709,11 +713,10 @@ mat-radio-group {
 
 
 .info-container {
-
   position: relative;
+  display: inline-block;
   cursor: pointer;
   outline: none;
-  margin-left: 10px;
 }
 
 .info-icon {
@@ -732,20 +735,28 @@ mat-radio-group {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 1.5rem;
+  border-radius: 4px;
+  border: 2px solid #0052cc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 12px 16px;
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  min-width: 300px;
+  width: 200px;
+  height: 120px;
   text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .info-popup.dim {
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
+  background-color: #ffffff;
+  backdrop-filter: none;
 }
 
 .info-container:focus .info-popup,
@@ -755,17 +766,19 @@ mat-radio-group {
 }
 
 .info-content h5 {
-  margin: 0.5rem 0;
-  font-size: 1rem;
+  margin: 6px 0;
+  font-size: 14px;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .info-content strong {
   display: block;
-  margin-top: 1rem;
-  font-size: 1.1rem;
+  margin-top: 10px;
+  font-size: 15px;
   color: #0052cc;
+  font-weight: 600;
 }
 
 /* === STEP 3: Other Details - Premium Modern Layout === */
@@ -779,13 +792,13 @@ mat-radio-group {
 .other-details {
   margin: 30px auto;
   padding: 24px 28px;
- 
   border-radius: 14px;
-
   max-width: 1300px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 /* === FLEX WRAPPER === */
@@ -1295,7 +1308,7 @@ mat-radio-group.radio-button {
 }
 
 #Upload{
-   margin-top: 110px;
+   margin-top: 50px;
 }
 
 .uploadimg{

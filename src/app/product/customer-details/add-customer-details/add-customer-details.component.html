@@ -304,6 +304,16 @@
               <input class="lab" id="die-lifetime" matInput type="number" formControlName="dieLifeTime" />
             </div>
 
+              <div class="field-row">
+                <label class="label1 pack">Payment Terms</label>
+                <mat-select class="lab" formControlName="PaymentTerms" >
+                  <mat-option value="" disabled selected>Select</mat-option>
+                    <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
+                </mat-select>
+              </div>
+
+              
+
             <!-- <div class="field-row">
            <label class="label1" for="die-lifetime">Die Maintenace</label>
            <input class="lab" id="die-lifetime" matInput type="text" formControlName="DieMaintenance">
@@ -402,14 +412,6 @@
               </div>
 
               <div class="field-row">
-                <label class="label1 pack">Payment Terms</label>
-                <mat-select class="lab" formControlName="PaymentTerms" >
-                  <mat-option value="" disabled selected>Select</mat-option>
-                    <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
-                </mat-select>
-              </div>
-
-              <div class="field-row">
                 <label class="label1 pack">Delivery Terms</label>
                 <mat-select class="lab" formControlName="DeliveryTerms">
                   <mat-option value="" disabled selected>Select</mat-option>
@@ -417,6 +419,8 @@
                 </mat-select>
 
               </div>
+
+            
                       <div class="dynamic-params" formArrayName="transpotationParams">
               <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
