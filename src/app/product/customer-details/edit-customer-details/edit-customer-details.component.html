@@ -135,33 +135,31 @@
     <!-- Tonnage -->
     <div class="form-group half-width">
       <label>Tonnage/Jaw</label>
-      <input type="text" formControlName="TonnageJaw" [readonly]="isCostUnit(proc.value)" />
+      <input type="text" formControlName="TonnageJaw"  />
     </div>
 
     <!-- Hours -->
     <div class="form-group half-width">
-      <label>Machine /Cost per hr</label>
-      <input type="number" formControlName="Hours" [readonly]="!isCostUnit(proc.value)" />
+      <label>Machine / per hr</label>
+      <input type="number" formControlName="Hours"  />
     </div>
 
     <!-- Cycle Time -->
     <div class="form-group half-width11" *ngIf="proc.value.Unit !== 'Square Inch'">
       <label>Cycle Time / Weight</label>
-      <input type="number" formControlName="cycleTime" [readonly]="isCostUnit(proc.value)" />
+      <input type="number" formControlName="cycleTime" />
     </div>
 
-      <div class="form-group half-width1" *ngIf="proc.value.Unit === 'Square Inch'">
-      <label>sqInch</label>
-      <input type="number" formControlName="sqInch" [readonly]="isCostUnit(proc.value)" />
-    </div>
-    
     <!-- Cavity -->
     <div class="form-group half-width1">
       <label>Cavity</label>
-      <input type="number" formControlName="cavity" [readonly]="isCostUnit(proc.value)" />
+      <input type="number" formControlName="cavity" />
     </div>
 
-  
+    <div class="form-group half-width1" *ngIf="proc.value.Unit === 'Square Inch'">
+      <label>sqInch</label>
+      <input type="number" formControlName="sqInch" />
+    </div>
 
     <!-- Cost -->
     <div class="cost">
@@ -244,15 +242,6 @@
             <label class="label1" for="die-lifetime">Die Lifetime</label>
             <input class="lab" id="die-lifetime" matInput type="number" formControlName="dieLifeTime" />
           </div>
-
-          <div class="field-row">
-                     <label class="label1 pack" for="Payment-Terms">Payment Terms</label>
-                     <mat-select class="lab" formControlName="PaymentTerms">
-                        <mat-option value="" disabled selected>Select</mat-option>
-                        <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
-                     </mat-select>
-
-              </div>
            
           <!-- <div class="field-row">
             <label class="label1" for="Die-Maintenance">Die Maintenance </label>
@@ -342,7 +331,14 @@
               </div>
                   
 
-              
+              <div class="field-row">
+                     <label class="label1 pack" for="Payment-Terms">Payment Terms</label>
+                     <mat-select class="lab" formControlName="PaymentTerms">
+                        <mat-option value="" disabled selected>Select</mat-option>
+                        <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
+                     </mat-select>
+
+              </div>
 
               <div class="field-row">
                 <label class="label1 pack" for="DeliveryTerms">Delivery Terms</label>

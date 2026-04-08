@@ -98,10 +98,9 @@ selectedFileName: string = '';
 
   openCustomerPopup() {
   this.dialog.open(AddCustomerDetailsComponent, {
-    width: '67vw',
-    maxWidth: '67vw',
-    height: '67vh',
-    maxHeight: '67vh',
+    width: '95vw',
+    maxWidth: '1400px',
+    height: '95vh',
     panelClass: 'zoho-dialog',
     disableClose: true
   });
@@ -204,7 +203,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
     this.store.dispatch(Action.loadRawMaterials());
     this.store.dispatch(Action.loadProcess());
 
-    this.store.select(Selector.selectLastAddedCustomer).subscribe((customer: CustomerDetails | undefined) => {
+    this.store.select(selectLastAddedCustomer).subscribe(customer => {
     if (customer) {
       this.Cusid = customer._id;
       // console.log('✅ Customer ID from NgRx:', this.Cusid);
@@ -501,10 +500,9 @@ addProcessSelection() {
     Hours: [''],
     Unit: [''],
     cycleTime: [''],
-    cavity: [null],
+    cavity: [null, Validators.required],
     sqInch: [0, Validators.required],
   });
-  this.applyProcessUnitValidators(group);
   this.processSelection.push(group);
   this.updateProcessCycleTime(this.processSelection.length - 1);
 }
@@ -540,28 +538,9 @@ onProcessChange(index: number, processId: string) {
         patchData.cavity = this.productForm.get('cavities')?.value || null;
       }
 
-      const group = this.processSelection.at(index) as FormGroup;
-      group.patchValue(patchData);
-      this.applyProcessUnitValidators(group);
+      this.processSelection.at(index).patchValue(patchData);
     }
   });
-}
-
-private applyProcessUnitValidators(group: FormGroup) {
-  const unit = String(group.get('Unit')?.value || '').toLowerCase();
-  const cavityControl = group.get('cavity');
-
-  if (!cavityControl) {
-    return;
-  }
-
-  if (unit === 'cost') {
-    cavityControl.clearValidators();
-  } else {
-    cavityControl.setValidators([Validators.required]);
-  }
-
-  cavityControl.updateValueAndValidity({ emitEvent: false });
 }
 
 private updateAllProcessCycleTimes() {
@@ -769,10 +748,6 @@ calculateProcessValue(proc: any): number {
     return +(sqInch * hours).toFixed(4);
   }
 
-  if (unit === 'cost') {
-    return +hours.toFixed(4);
-  }
-
   const value = hours / (3600 / cycleTime) / cavity;
   return Number.isFinite(value) ? +value.toFixed(4) : 0;
 }
@@ -786,10 +761,6 @@ getProcessFormulaTitle(proc: any): string {
 
   if (unit === 'square inch') {
     return 'Formula: sqInch * Machine / per hr';
-  }
-
-  if (unit === 'cost') {
-    return 'Formula: Machine / per hr';
   }
 
   return 'Formula: (Machine / per hr / (3600 / CycleTime) / Cavity)';
@@ -811,19 +782,7 @@ getProcessFormulaBreakdown(proc: any): string {
     return `= (${sqInch} * ${hours})`;
   }
 
-  if (unit === 'cost') {
-    return `= (${hours})`;
-  }
-
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
-}
-
-isCostUnit(proc: any): boolean {
-  return String(proc?.Unit || '').toLowerCase() === 'cost';
-}
-
-isSquareInchUnit(proc: any): boolean {
-  return String(proc?.Unit || '').toLowerCase() === 'square inch';
 }
 
 

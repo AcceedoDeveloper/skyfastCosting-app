@@ -244,22 +244,21 @@ if (data?.revisions?.length) {
 
   addProcess(proc: any = null) {
     const normalizedProcessId = this.extractProcessId(proc?.processId);
-    const group = this.fb.group({
-      processId: [normalizedProcessId],
-      processName: [proc?.processName || '', Validators.required],
-      TonnageJaw: [proc?.TonnageJaw || ''],
-      Hours: [proc?.Hours ?? 0],
-      Unit: [proc?.Unit || ''],
-      cycleTime: [proc?.cycleTime ?? 0],
-      cavity: [proc?.cavity ?? 0],
-      sqInch: [proc?.sqInch ?? 0],
-      cost: [proc?.cost ?? 0],
-      calculation: [proc?.calculation ?? 0]
-    });
 
-    this.applyProcessUnitValidators(group);
-
-    this.processes.push(group);
+    this.processes.push(
+      this.fb.group({
+        processId: [normalizedProcessId],
+        processName: [proc?.processName || '', Validators.required],
+        TonnageJaw: [proc?.TonnageJaw || ''],
+        Hours: [proc?.Hours ?? 0],
+        Unit: [proc?.Unit || ''],
+        cycleTime: [proc?.cycleTime ?? 0],
+        cavity: [proc?.cavity ?? 0],
+        sqInch: [proc?.sqInch ?? 0],
+        cost: [proc?.cost ?? 0],
+        calculation: [proc?.calculation ?? 0]
+      })
+    );
   }
 
   private extractProcessId(processId: any): string {
@@ -309,26 +308,8 @@ if (data?.revisions?.length) {
         }
 
         control.patchValue(patchData, { emitEvent: false });
-        this.applyProcessUnitValidators(control as FormGroup);
       }
     });
-  }
-
-  private applyProcessUnitValidators(group: FormGroup) {
-    const unit = String(group.get('Unit')?.value || '').toLowerCase();
-    const cavityControl = group.get('cavity');
-
-    if (!cavityControl) {
-      return;
-    }
-
-    if (unit === 'cost') {
-      cavityControl.clearValidators();
-    } else {
-      cavityControl.setValidators([Validators.required]);
-    }
-
-    cavityControl.updateValueAndValidity({ emitEvent: false });
   }
 
   private createParamGroup(label = '', value = ''): FormGroup {
@@ -588,10 +569,6 @@ calculateProcessValue(proc: any): number {
     return +(sqInch * hours).toFixed(4);
   }
 
-  if (unit === 'cost') {
-    return +hours.toFixed(4);
-  }
-
   const value = hours / (3600 / cycleTime) / cavity;
   return Number.isFinite(value) ? +value.toFixed(4) : 0;
 }
@@ -605,10 +582,6 @@ getProcessFormulaTitle(proc: any): string {
 
   if (unit === 'square inch') {
     return 'Formula: sqInch * Machine / per hr';
-  }
-
-  if (unit === 'cost') {
-    return 'Formula: Machine / per hr';
   }
 
   return 'Formula: (Machine / per hr / (3600 / CycleTime) / Cavity)';
@@ -630,19 +603,7 @@ getProcessFormulaBreakdown(proc: any): string {
     return `= (${sqInch} * ${hours})`;
   }
 
-  if (unit === 'cost') {
-    return `= (${hours})`;
-  }
-
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
-}
-
-isCostUnit(proc: any): boolean {
-  return String(proc?.Unit || '').toLowerCase() === 'cost';
-}
-
-isSquareInchUnit(proc: any): boolean {
-  return String(proc?.Unit || '').toLowerCase() === 'square inch';
 }
 
 
@@ -678,7 +639,6 @@ onProcessSelected(processId: string, index: number) {
       }
 
       processGroup.patchValue(patchData);
-      this.applyProcessUnitValidators(processGroup as FormGroup);
     }
   });
 }
