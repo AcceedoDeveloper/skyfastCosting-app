@@ -200,24 +200,24 @@
         <!-- Hours -->
         <div class="form-group field">
           <label>Machine / per hr</label>
-          <input type="number" formControlName="Hours" readonly />
+          <input type="number" formControlName="Hours" [readonly]="!isCostUnit(procCtrl.value)" />
         </div>
 
         <!-- Cycle -->
         <div class="form-group field1" *ngIf="procCtrl.value.Unit !== 'Square Inch'">
           <label>Cycle Time / Weight</label>
-          <input type="number" formControlName="cycleTime" />
+          <input type="number" formControlName="cycleTime" [readonly]="isCostUnit(procCtrl.value)" />
         </div>
 
          <div class="form-group field1" *ngIf="procCtrl.value.Unit === 'Square Inch'">
           <label>sqInch</label>
-          <input type="number" formControlName="sqInch" />
+          <input type="number" formControlName="sqInch" [readonly]="isCostUnit(procCtrl.value)" />
         </div>
 
         <!-- Cavity -->
         <div class="form-group field1">
           <label>Cavity</label>
-          <input type="number" formControlName="cavity" />
+          <input type="number" formControlName="cavity" [readonly]="isCostUnit(procCtrl.value)" />
         </div>
 
         
@@ -262,7 +262,7 @@
 
   </form>
 
-</mat-step>   
+</mat-step>
 
 
   <!-- STEP 3 -->
@@ -304,7 +304,6 @@
               <input class="lab" id="die-lifetime" matInput type="number" formControlName="dieLifeTime" />
             </div>
 
-            
               <div class="field-row">
                 <label class="label1 pack">Payment Terms</label>
                 <mat-select class="lab" formControlName="PaymentTerms" >
@@ -312,6 +311,8 @@
                     <mat-option *ngFor="let option of paymenttermsOptions" [value]="option">{{option}}</mat-option>
                 </mat-select>
               </div>
+
+              
 
             <!-- <div class="field-row">
            <label class="label1" for="die-lifetime">Die Maintenace</label>
@@ -410,7 +411,6 @@
                 </div>
               </div>
 
-
               <div class="field-row">
                 <label class="label1 pack">Delivery Terms</label>
                 <mat-select class="lab" formControlName="DeliveryTerms">
@@ -419,6 +419,8 @@
                 </mat-select>
 
               </div>
+
+            
                       <div class="dynamic-params" formArrayName="transpotationParams">
               <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
                 <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />

@@ -206,7 +206,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
     this.store.select(Selector.selectLastAddedCustomer).subscribe((customer: CustomerDetails | undefined) => {
     if (customer) {
       this.Cusid = customer._id;
-      // console.log('✅ Customer ID from NgRx:', this.Cusid);
+      // console.log('Customer ID from NgRx:', this.Cusid);
     }
   });
 
@@ -247,7 +247,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
               });
               processArray.push(group);
               
-              console.log('✅ Process loaded at index', index, ':', proc.processName);
+              console.log(' Process loaded at index', index, ':', proc.processName);
               
               // Trigger process change to fully populate all fields from process master
               setTimeout(() => {
@@ -421,7 +421,7 @@ calculateGrossWeight() {
       next: (customer) => {
         this.Cusid = customer._id;
         this.toastr.success('Customer created successfully!');
-        console.log('✅ Customer created with image:', customer._id);
+        console.log('Customer created with image:', customer._id);
       },
       error: (err) => {
         console.error(err);
@@ -500,9 +500,10 @@ addProcessSelection() {
     Hours: [''],
     Unit: [''],
     cycleTime: [''],
-    cavity: [null, Validators.required],
+    cavity: [null],
     sqInch: [0, Validators.required],
   });
+  this.applyProcessUnitValidators(group);
   this.processSelection.push(group);
   this.updateProcessCycleTime(this.processSelection.length - 1);
 }
@@ -538,9 +539,28 @@ onProcessChange(index: number, processId: string) {
         patchData.cavity = this.productForm.get('cavities')?.value || null;
       }
 
-      this.processSelection.at(index).patchValue(patchData);
+      const group = this.processSelection.at(index) as FormGroup;
+      group.patchValue(patchData);
+      this.applyProcessUnitValidators(group);
     }
   });
+}
+
+private applyProcessUnitValidators(group: FormGroup) {
+  const unit = String(group.get('Unit')?.value || '').toLowerCase();
+  const cavityControl = group.get('cavity');
+
+  if (!cavityControl) {
+    return;
+  }
+
+  if (unit === 'cost') {
+    cavityControl.clearValidators();
+  } else {
+    cavityControl.setValidators([Validators.required]);
+  }
+
+  cavityControl.updateValueAndValidity({ emitEvent: false });
 }
 
 private updateAllProcessCycleTimes() {
@@ -583,7 +603,7 @@ onSave() {
 
     this.productservices.updateCustomer(this.Cusid!, formData).subscribe({
       next: (res) => {
-        console.log('✅ Customer updated:', res);
+        console.log('Customer updated:', res);
       
         setTimeout(() => {
           this.toastr.success('Customer Added successfully!');
@@ -592,7 +612,7 @@ onSave() {
         }, 1000); 
       },
       error: (err) => {
-        console.error('❌ Update failed:', err);
+        console.error('Update failed:', err);
    
         setTimeout(() => {
           this.toastr.error('Failed to Add customer');
@@ -748,6 +768,10 @@ calculateProcessValue(proc: any): number {
     return +(sqInch * hours).toFixed(4);
   }
 
+  if (unit === 'cost') {
+    return +hours.toFixed(4);
+  }
+
   const value = hours / (3600 / cycleTime) / cavity;
   return Number.isFinite(value) ? +value.toFixed(4) : 0;
 }
@@ -761,6 +785,10 @@ getProcessFormulaTitle(proc: any): string {
 
   if (unit === 'square inch') {
     return 'Formula: sqInch * Machine / per hr';
+  }
+
+  if (unit === 'cost') {
+    return 'Formula: Machine / per hr';
   }
 
   return 'Formula: (Machine / per hr / (3600 / CycleTime) / Cavity)';
@@ -782,7 +810,19 @@ getProcessFormulaBreakdown(proc: any): string {
     return `= (${sqInch} * ${hours})`;
   }
 
+  if (unit === 'cost') {
+    return `= (${hours})`;
+  }
+
   return `= (${hours} / (3600 / ${cycleTime}) / ${cavity})`;
+}
+
+isCostUnit(proc: any): boolean {
+  return String(proc?.Unit || '').toLowerCase() === 'cost';
+}
+
+isSquareInchUnit(proc: any): boolean {
+  return String(proc?.Unit || '').toLowerCase() === 'square inch';
 }
 
 
