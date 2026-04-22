@@ -68,6 +68,17 @@
   margin-top: 16px;
   margin-right: 70px;
 }
+.step-actions {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.step-actions .btn-secondary {
+  order: -1;         
+  margin-right: auto; 
+}
 
 .btn {
   border: none;
@@ -743,7 +754,7 @@ mat-radio-group.radio-button {
 }
 
 #Upload {
-  margin-top: 60px;
+  margin-top: 75px;
 }
 
 mat-icon {

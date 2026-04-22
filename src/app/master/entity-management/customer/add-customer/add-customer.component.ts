@@ -44,10 +44,12 @@ export class AddCustomerComponent implements OnInit {
       phone: [this.data?.phone || ''],
       email: [this.data?.email || ''],
       transport: [this.data?.transport || '',Validators.required],
+      category:[this.data?.category || '',Validators.required],
       baseCost: [this.data?.baseCost || 0]
     });
   }
 
+  
   onSubmit(): void {
     if (this.customerForm.valid) {
       const customer: Customer = {

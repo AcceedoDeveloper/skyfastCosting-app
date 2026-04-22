@@ -25,6 +25,9 @@
               <span>Address</span>
             </div>
           </th>
+
+          
+  
           <th>
             <div class="header-cell-content">
               <mat-icon class="header-icon">receipt</mat-icon>
@@ -43,6 +46,12 @@
               <span>Email</span>
             </div>
           </th>
+          <th>
+           <div class="header-cell-content">
+    <mat-icon class="header-icon">category</mat-icon>
+    <span>Category</span>
+  </div>
+</th>
           <th>
             <div class="header-cell-content">
               <mat-icon class="header-icon">local_shipping</mat-icon>
@@ -65,6 +74,7 @@
           <td class="address-cell">
             <span>{{ customer.address }}</span>
           </td>
+      
           <td>
             <span class="gst-number">{{ customer.gstNumber }}</span>
           </td>
@@ -74,6 +84,9 @@
           <td>
             <span class="email-value">{{ customer.email }}</span>
           </td>
+              <td>
+  <span>{{ customer.category }}</span>
+</td>
           <td>
             <span class="transport-value">{{ customer.transport }}</span>
           </td>

@@ -211,6 +211,17 @@ if (data?.revisions?.length) {
       this.previewUrl = this.getImageUrl(this.data.drawingImage);
       console.log('previewUrl set to:', this.previewUrl);
     }
+
+this.customerForm.get('castingWeight')?.valueChanges.subscribe(value => {
+  const casting = Number(value || 0);
+
+  const shortWeight = casting * 2;
+
+  this.customerForm.patchValue(
+    { shortWeight },
+    { emitEvent: false }
+  );
+});
   }
 
   /**

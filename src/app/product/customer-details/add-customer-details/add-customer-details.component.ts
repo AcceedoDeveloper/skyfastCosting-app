@@ -317,6 +317,28 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
       }
     }
 
+    this.productForm.get('castingWeight')?.valueChanges.subscribe(value => {
+  if (value !== null && value !== undefined && value !== '') {
+    const casting = Number(value);
+
+    // shortWeight = castingWeight * 2
+    const shortWeight = casting * 2;
+
+    this.productForm.patchValue(
+      { shortWeight: shortWeight },
+      { emitEvent: false }
+    );
+  } else {
+    this.productForm.patchValue(
+      { shortWeight: null },
+      { emitEvent: false }
+    );
+  }
+});
+
+
+
+
   }
 
   @HostListener('wheel', ['$event'])
