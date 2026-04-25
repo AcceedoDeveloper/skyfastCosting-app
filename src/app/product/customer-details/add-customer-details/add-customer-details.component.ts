@@ -152,7 +152,7 @@ selectedFileName: string = '';
   SeaPacking: [0],
   Payment90DaysICC: [0],
    includeRejections: [true],
-   isMachiningAvailable:[false],
+   isMachiningAvailable:[true],
   currency: ['USD'],
   commercialTermsParams: this.fb.array([]),
   transpotationParams: this.fb.array([]),
@@ -301,7 +301,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
         SeaPacking: this.data.SeaPacking || 0,
         Payment90DaysICC: this.data.Payment90DaysICC || 0,
         includeRejections: this.data.includeRejections !== undefined ? this.data.includeRejections : true,
-        isMachiningAvailable:this.data.isMachiningAvailable || false,
+        isMachiningAvailable:this.data.isMachiningAvailable || true,
         currency: this.data.currency || 'USD'
       });
 
@@ -757,7 +757,7 @@ private buildCustomerPayload() {
     // Inspection:this.processForm.value.Inspection,
     // WIPPartsHandlingTray:this.processForm.value.WIPPartsHandlingTray,
     includeRejections: this.processForm.value.includeRejections ?? true,
-    isMachiningAvailable:this.processForm.value.isMachiningAvailable ?? false,
+    isMachiningAvailable:this.processForm.value.isMachiningAvailable ?? true,
     TransportPercentage: this.processForm.value.TransportPercentage,
     TransportCost: this.processForm.value.TransportCost,
     CMMInspection: this.processForm.value.CMMInspection,

@@ -158,7 +158,7 @@ if (data?.revisions?.length) {
   Insurance: [revision?.Insurance],
   SeaPacking: [revision?.SeaPacking],
     includeRejections: [revision?.includeRejections ?? false],
-    isMachiningAvailable:[revision?.isMachiningAvailable ?? false],
+    isMachiningAvailable:[revision?.isMachiningAvailable ?? true],
 
   Payment90DaysICC: [revision?.Payment90DaysICC],
   currency: [revision?.currency ],
