@@ -34,6 +34,9 @@ export interface Revision {
   ModeOfTransport:string
   Packing: string;
   ToolAmbience: string;
+  scrapIncluded:boolean;
+  meltPerKg:number;
+  scrapRecoverable:number;
   castingWeight: number;
   cavities: number;
   meltingLoss: number;

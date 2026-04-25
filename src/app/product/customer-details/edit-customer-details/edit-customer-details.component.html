@@ -307,63 +307,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Transportation -->
-        <div class="summary-card">
-          <div class="section-header">
-            <h3 class="card-title">Transportation</h3>
-            <button type="button" class="section-add-btn" (click)="addCustomParam('transpotationParams')">
-              <mat-icon>add</mat-icon>
-            </button>
-          </div>
-          <div class="subdiv">
-            <div class="subdiv2">
-              <div class="field-row">
-                <label class="label1 carry" for="icc">ICC (Inventory Carry Cost %)</label>
-                <input class="lab" id="icc" matInput type="number" formControlName="InterestRate" />
-              </div>
-              <div class="field-row">
-                <label class="label1" for="Freight">Freight</label>
-                <input class="lab" id="Freight" matInput type="text" formControlName="Freight" />
-              </div>
-              <div class="field-row">
-                <label class="label1" for="ModeOfTransport">Mode Of Transport</label>
-                <input class="lab" id="ModeOfTransport" matInput type="text" formControlName="ModeOfTransport" />
-              </div>
-            </div>
-            <div class="subdiv2">
-              <div class="field-row">
-                <label class="label1 pack" for="packing">Packing</label>
-                <mat-select class="lab" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
-                  <mat-option *ngFor="let option of packingOptions" [value]="option">{{ option }}</mat-option>
-                </mat-select>
-              </div>
-                  
-
-            
-
-              <div class="field-row">
-                <label class="label1 pack" for="DeliveryTerms">Delivery Terms</label>
-                <mat-select class="lab" formControlName="DeliveryTerms">
-                    <mat-option value="" disabled selected>Select</mat-option>
-                  <mat-option *ngFor="let option of deliverytermsoption" [value]="option">{{option}}</mat-option>
-                </mat-select>
-              </div>
-                        <div class="dynamic-params" formArrayName="transpotationParams">
-                <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
- <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
-                
- <div class="input-wrapper">
-
-   <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
-                    <button type="button" class="remove-param-btn" (click)="removeCustomParam('transpotationParams', i)">
-                      <mat-icon>close</mat-icon>
-                    </button>
- </div>
- 
-                </div>
-              </div>
 
               <!-- File Upload -->
               <h3 class="rejection-heading" id="Upload">Upload Product</h3>
@@ -423,6 +366,82 @@
                   </div>
                 </div>
               </div>
+        </div>
+
+        <!-- Transportation -->
+        <div class="summary-card">
+          <div class="section-header">
+            <h3 class="card-title">Transportation</h3>
+            <button type="button" class="section-add-btn" (click)="addCustomParam('transpotationParams')">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="subdiv">
+            <div class="subdiv2">
+              <div class="field-row">
+                <label class="label1 carry" for="icc">ICC (Inventory Carry Cost %)</label>
+                <input class="lab" id="icc" matInput type="number" formControlName="InterestRate" />
+              </div>
+              <div class="field-row">
+                <label class="label1" for="Freight">Freight</label>
+                <input class="lab" id="Freight" matInput type="text" formControlName="Freight" />
+              </div>
+              <div class="field-row">
+                <label class="label1" for="ModeOfTransport">Mode Of Transport</label>
+                <input class="lab" id="ModeOfTransport" matInput type="text" formControlName="ModeOfTransport" />
+              </div>
+            </div>
+            <div class="subdiv2">
+              <div class="field-row">
+                <label class="label1 pack" for="packing">Packing</label>
+                <mat-select class="lab" formControlName="Packing" (selectionChange)="onPackingChange($event.value)">
+                  <mat-option *ngFor="let option of packingOptions" [value]="option">{{ option }}</mat-option>
+                </mat-select>
+              </div>
+                  
+
+            
+
+              <div class="field-row">
+                <label class="label1 pack" for="DeliveryTerms">Delivery Terms</label>
+                <mat-select class="lab" formControlName="DeliveryTerms">
+                    <mat-option value="" disabled selected>Select</mat-option>
+                  <mat-option *ngFor="let option of deliverytermsoption" [value]="option">{{option}}</mat-option>
+                </mat-select>
+              </div>
+                        <div class="dynamic-params" formArrayName="transpotationParams">
+                <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
+ <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
+                
+ <div class="input-wrapper">
+
+   <input class="dynamic-input" type="text" placeholder="Value" formControlName="value" />
+                    <button type="button" class="remove-param-btn" (click)="removeCustomParam('transpotationParams', i)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+ </div>
+ 
+                </div>
+              </div>
+
+                  <h3 class="rejection-heading" id="Upload">Scrap </h3>
+                  <div class="field-row checkbox-row">
+              <label class="label1">Scrap Include</label>
+              <mat-checkbox formControlName="scrapIncluded"></mat-checkbox>
+              </div>
+
+               <div *ngIf="customerForm.get('scrapIncluded')?.value">
+               <div class="field-row" *ngIf="isAutoMobileCustomer() || isNonAutoMobileCustomer()">
+              <label class="label1 reject" for="meltPerKg">melt Per (Kg)</label>
+              <input class="lab" id="meltPerKg" matInput type="number" formControlName="meltPerKg" />
+            </div>
+
+                <div class="field-row" *ngIf="isNonAutoMobileCustomer()">
+              <label class="label1 reject" for="scrapRecoverable">Scrap Recoverable</label>
+              <input class="lab" id="scrapRecoverable" matInput type="number" formControlName="scrapRecoverable" />
+            </div>
+            </div>
+
 
     
 

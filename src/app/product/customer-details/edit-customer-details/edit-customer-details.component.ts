@@ -21,6 +21,9 @@ import {selectAllProcess, selectAllRawMaterials } from '../../store/product.sele
 import * as Action from '../../store/product.actions';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
+import { loadCustomer } from '../../../master/entity-management/store/entity.action';
+import { selectAllCustomers } from '../../../master/entity-management/store/entity.selectors';
+import { Customer } from '../../../model/machine.model';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
 import * as customerActions from '../../store/product.actions';
@@ -55,6 +58,8 @@ export class EditCustomerDetailsComponent implements OnInit {
     customerdeatilas$! : Observable<CustomerDetails[]>;
   rawMaterial$! : Observable<RawMaterial[]>;
   process$!: Observable<Process[]>;
+  custoemr$!: Observable<Customer[]>;
+  selectedCustomerCategory = '';
   customerForm: FormGroup;
   revisionNumber = 1; 
   selectedRevisionIndex = 0; // default first revision
@@ -135,6 +140,10 @@ if (data?.revisions?.length) {
       Packing: [revision?.Packing || 'domestic'],
 
       ToolAmbience: [revision?.ToolAmbience ],
+      scrapIncluded:[revision?.scrapIncluded],
+      scrapRecoverable:[revision?.scrapRecoverable],
+      meltPerKg:[revision?.meltPerKg],
+
       overHeadsPercent: [revision?.overHeadsPercent ],
       dieLifeTime: [ revision?.DieLifeTime ],
       // DieMaintenance:[revision?.DieMaintenance],
@@ -188,7 +197,14 @@ if (data?.revisions?.length) {
   
 
   ngOnInit(): void {
+    this.selectedCustomerCategory = this.resolveCustomerCategory();
+
     this.onPackingChange(this.customerForm.get('Packing')?.value);
+
+    this.custoemr$ = this.store.select(selectAllCustomers);
+    this.custoemr$.subscribe(customers => {
+      this.updateSelectedCustomerCategory(customers);
+    });
 
     this.rawMaterial$ = this.store.select(selectAllRawMaterials);
 
@@ -196,6 +212,7 @@ if (data?.revisions?.length) {
       console.log('raw data', raw);
     })
 
+    this.store.dispatch(loadCustomer());
     this.store.dispatch(Action.loadRawMaterials());
     this.store.dispatch(Action.loadProcess());
 
@@ -223,6 +240,48 @@ this.customerForm.get('castingWeight')?.valueChanges.subscribe(value => {
   );
 });
   }
+
+isAutoMobileCustomer(): boolean {
+  return this.selectedCustomerCategory.toLowerCase() === 'automobile';
+}
+
+isNonAutoMobileCustomer(): boolean {
+  return this.selectedCustomerCategory.toLowerCase() === 'non-automobile';
+}
+
+private resolveCustomerCategory(): string {
+  const customerNameData = this.data?.customerName;
+  const customerIdData = this.data?.customerId;
+
+  if (customerIdData && typeof customerIdData === 'object' && 'category' in customerIdData) {
+    return String(customerIdData.category || '');
+  }
+
+  if (customerNameData && typeof customerNameData === 'object' && 'category' in customerNameData) {
+    return String(customerNameData.category || '');
+  }
+
+  return String((this.data as any)?.category || '');
+}
+
+private updateSelectedCustomerCategory(customers: Customer[]) {
+  if (this.selectedCustomerCategory) {
+    return;
+  }
+
+  const selectedCustomerName =
+    typeof this.data?.customerName === 'string'
+      ? this.data.customerName
+      : this.data?.customerName?.customerName || '';
+
+  const selectedCustomer = customers.find(
+    customer => customer.customerName === selectedCustomerName
+  );
+
+  if (selectedCustomer?.category) {
+    this.selectedCustomerCategory = selectedCustomer.category;
+  }
+}
 
   /**
    * Normalizes image path - adds /uploads/ prefix if missing
@@ -475,6 +534,9 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     ModeOfTransport: formValue.ModeOfTransport,
     CMMInspection: formValue.CMMInspection,
     ToolAmbience: formValue.ToolAmbience,
+    scrapRecoverable:formValue.scrapRecoverable,
+    meltPerKg:formValue.meltPerKg,
+    scrapIncluded:formValue.scrapIncluded,
     overHeadsPercent: formValue.overHeadsPercent,
     // DieMaintenance:formValue.DieMaintenance,
     // Inspection:formValue.Inspection,

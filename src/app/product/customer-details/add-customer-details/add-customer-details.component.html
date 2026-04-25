@@ -359,6 +359,72 @@
               <mat-checkbox formControlName="includeRejections"></mat-checkbox>
               </div>
 
+               <h3 class="rejection-heading" id="Upload">Upload Product </h3>
+<div class="field-row">
+  <label class="label1 reject">Product Item</label>
+
+<div class="file-upload-name">
+  <div class="file-upload">
+    <!-- Upload Box -->
+     <div class="uploadimg">
+       <label class="upload-box" for="fileInput">
+     <span class="upload-text">
+       {{ selectedFileName ? '📁 Reupload Image' : '📁 Upload Image' }}
+     </span>
+   
+   
+   </label>
+
+   
+
+   <img
+   *ngIf="previewUrl || data?.drawingImage"
+   [src]="previewUrl || getImageUrl(data?.drawingImage)"
+   alt="Preview"
+   class="profile-dp"
+   (click)="togglePopup(); $event.stopPropagation()"
+ />
+ 
+ 
+   
+   <!-- Minimal Image Preview / Clickable Thumbnail -->
+     </div>
+     
+    <!-- Hidden Input -->
+    <input
+      id="fileInput"
+      type="file"
+      hidden
+      accept="image/*"
+      (change)="onFileSelected($event)"
+    />
+
+    <!-- Image Popup -->
+    <div class="imagepop" [class.show]="popupOpen" (click)="togglePopup()">
+      <div class="popup-content" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="togglePopup()">✖</button>
+        <img
+          [src]="previewUrl || getImageUrl(data?.drawingImage)"
+          alt="Preview"
+          class="popup-image"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- File Info + Show Button -->
+  <div class="file-info">
+    <div class="file-name">
+      {{ selectedFileName || data?.drawingFileName }}
+    </div>
+  
+  </div>
+</div>
+
+    
+
+</div>
+
             
             <div class="dynamic-params" formArrayName="rejectionParams">
               <div class="dynamic-param-row" *ngFor="let param of rejectionParams.controls; let i = index" [formGroupName]="i">
@@ -434,75 +500,33 @@
               </div>
             </div>
 
- <h3 class="rejection-heading" id="Upload">Upload Product </h3>
-<div class="field-row">
-  <label class="label1 reject">Product Item</label>
 
-<div class="file-upload-name">
-  <div class="file-upload">
-    <!-- Upload Box -->
-     <div class="uploadimg">
-       <label class="upload-box" for="fileInput">
-     <span class="upload-text">
-       {{ selectedFileName ? '📁 Reupload Image' : '📁 Upload Image' }}
-     </span>
-   
-   
-   </label>
-
-   
-
-   <img
-   *ngIf="previewUrl || data?.drawingImage"
-   [src]="previewUrl || getImageUrl(data?.drawingImage)"
-   alt="Preview"
-   class="profile-dp"
-   (click)="togglePopup(); $event.stopPropagation()"
- />
- 
- 
-   
-   <!-- Minimal Image Preview / Clickable Thumbnail -->
-     </div>
-     
-    <!-- Hidden Input -->
-    <input
-      id="fileInput"
-      type="file"
-      hidden
-      accept="image/*"
-      (change)="onFileSelected($event)"
-    />
-
-    <!-- Image Popup -->
-    <div class="imagepop" [class.show]="popupOpen" (click)="togglePopup()">
-      <div class="popup-content" (click)="$event.stopPropagation()">
-        <button class="close-btn" (click)="togglePopup()">✖</button>
-        <img
-          [src]="previewUrl || getImageUrl(data?.drawingImage)"
-          alt="Preview"
-          class="popup-image"
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- File Info + Show Button -->
-  <div class="file-info">
-    <div class="file-name">
-      {{ selectedFileName || data?.drawingFileName }}
-    </div>
-  
-  </div>
-</div>
-
-    
-
-</div>
 
 
             </div>
+                <h3 class="rejection-heading" id="Upload">Scrap </h3>
+                  <div class="field-row checkbox-row">
+              <label class="label1">Scrap Include</label>
+              <mat-checkbox formControlName="scrapIncluded"></mat-checkbox>
+              </div>
+
+              <div *ngIf="processForm.get('scrapIncluded')?.value">
+
+                <div class="field-row" *ngIf="isAutoMobileCustomer() || isNonAutoMobileCustomer()">
+               <label class="label1 reject" for="meltPerKg">melt Per (Kg)</label>
+               <input class="lab" id="meltPerKg" matInput type="number" formControlName="meltPerKg" />
+             </div>
+ 
+                 <div class="field-row" *ngIf="isNonAutoMobileCustomer()">
+               <label class="label1 reject" for="scrapRecoverable">Scrap Recoverable</label>
+               <input class="lab" id="scrapRecoverable" matInput type="number" formControlName="scrapRecoverable" />
+             </div>
+              </div>
+
+
           </div>
+
+        
 
         </div>
         <!-- === RIGHT SIDE SLIDE-IN PANEL === -->

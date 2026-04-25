@@ -693,14 +693,34 @@
           <tr>
               <td><strong>Component Weight (Kg)</strong></td>
               <td>{{ quotationData.results[0].revisions[0].castingWeight }}</td>
-              <td><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
-              <td>NA</td>
+              <td rowspan="2"><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
+              <td rowspan="2">NA
+                                                        <span class="info-container" tabindex="0">
+  <mat-icon class="info-icon">info</mat-icon>
+  <div class="info-popup dim">
+    <p class="info-popup-text">
+  
+     ( Short Weight * Melting Loss ) 
+    </p>
+   {{quotationData.results[0].revisions[0].shortWeight}} * 
+{{quotationData.results[0].revisions[0].meltingLoss }}
+  <br />
+  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3' }}</strong>
+</div>
+
+</span>
+              </td>
+
+          </tr>
+          <tr>
+            <td><strong>Scrap weight</strong></td>
+            <td>{{quotationData.results[0].revisions[0].shortWeight}}</td>
           </tr>
           <tr>
               <td><strong>Mellting Loss</strong></td>
               <td>{{ quotationData.results[0].revisions[0].meltingLoss }}</td>
-              <td><strong>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</strong></td>
-              <td>NA</td>
+              <td ><strong>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</strong></td>
+              <td >NA</td>
           </tr>
           <tr>
               <td><strong>Raw Material weight/pc</strong></td>

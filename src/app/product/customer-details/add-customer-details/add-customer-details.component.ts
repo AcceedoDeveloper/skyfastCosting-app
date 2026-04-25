@@ -65,6 +65,7 @@ export class AddCustomerDetailsComponent implements OnInit{
 
 
   loading: boolean = false;
+  selectedCustomerCategory = '';
     selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
 selectedFileName: string = '';
@@ -134,6 +135,9 @@ selectedFileName: string = '';
     ModeOfTransport:[''],
 
     ToolAmbience: [0, Validators.required],
+    scrapIncluded:[false],
+    meltPerKg:[0],
+    scrapRecoverable:[0],
      TransportType: ['cost'],  // 👈 default is "cost"
   TransportCost: [0],
   TransportPercentage: [0],
@@ -171,6 +175,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
     this.custoemr$ = this.store.select(selectAllCustomers);
     this.custoemr$.subscribe(customers => {
       console.log('Customers from store:', customers);
+      this.updateSelectedCustomerCategory(customers);
     });
 
     this.rawmaterial$ = this.store.select(selectAllRawMaterials);
@@ -209,6 +214,12 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
       // console.log('Customer ID from NgRx:', this.Cusid);
     }
   });
+
+    this.productForm.get('customerName')?.valueChanges.subscribe(() => {
+      this.custoemr$.pipe(take(1)).subscribe(customers => {
+        this.updateSelectedCustomerCategory(customers);
+      });
+    });
 
     // Populate form with incoming data if it exists (for edit mode)
     if (this.data) {
@@ -271,6 +282,9 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
         Freight: this.data.Freight || '',
         ModeOfTransport: this.data.ModeOfTransport || '',
         ToolAmbience: this.data.ToolAmbience || 0,
+        scrapIncluded:this.data.scrapIncluded || false,
+        scrapRecoverable:this.data.scrapRecoverable|| 0,
+        meltPerKg:this.data.meltPerKg || 0,
         TransportType: this.data.TransportType || 'cost',
         TransportCost: this.data.TransportCost || this.data.packingRate || 0,
         TransportPercentage: this.data.TransportPercentage || this.data.packingPercentage || 0,
@@ -340,6 +354,23 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
 
 
   }
+
+private updateSelectedCustomerCategory(customers: Customer[]) {
+  const selectedCustomerName = this.productForm?.get('customerName')?.value;
+  const selectedCustomer = customers.find(
+    customer => customer.customerName === selectedCustomerName
+  );
+
+  this.selectedCustomerCategory = selectedCustomer?.category || '';
+}
+
+isAutoMobileCustomer(): boolean {
+  return this.selectedCustomerCategory === 'AutoMobile';
+}
+
+isNonAutoMobileCustomer(): boolean {
+  return this.selectedCustomerCategory === 'Non-AutoMobile';
+}
 
   @HostListener('wheel', ['$event'])
   onNumberInputWheel(event: WheelEvent): void {
@@ -652,6 +683,7 @@ onSave() {
     }, 1000); 
   }
 
+
   // Remove this line as dialogRef.close() is handled inside the setTimeout blocks
   // this.dialogRef.close();
 }
@@ -705,6 +737,9 @@ private buildCustomerPayload() {
     InterestRate: this.processForm.value.InterestRate,
     InspectorCost: this.processForm.value.InspectorCost,
     ToolAmbience: this.processForm.value.ToolAmbience,
+    scrapIncluded:this.processForm.value.scrapIncluded,
+    scrapRecoverable:this.processForm.value.scrapRecoverable,
+    meltPerKg:this.processForm.value.meltPerKg,
     packingRate: this.processForm.value.TransportCost,
     Freight: this.processForm.value.Freight,
     ModeOfTransport: this.processForm.value.ModeOfTransport,
