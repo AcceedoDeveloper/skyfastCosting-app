@@ -666,7 +666,24 @@
               <td><strong>Raw Material Spec</strong></td>
               <td>{{ quotationData.results[0].revisions[0].rawMaterial[0].GradeName }}</td>
               <td><strong>Finish weight/pc</strong></td>
-              <td>NA</td>
+                <td *ngIf="!quotationData.results[0].revisions[0].scrapIncluded">NA</td>
+              <td *ngIf="quotationData.results[0].revisions[0].scrapIncluded">{{ quotationData.results[0].revisions[0].finishWeight | number:'1.2-3' }}
+                                            <span class="info-container" tabindex="0">
+  <mat-icon class="info-icon">info</mat-icon>
+<div class="info-popup dim">
+  <p class="info-popup-text">
+
+    ( Scrap Weight * Scrap Weight/Pc ) 
+  </p>
+  {{ quotationData.results[0].revisions[0].shortWeight }} *
+  {{ quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}
+  
+  <br />
+  <strong>Result:{{ quotationData.results[0].revisions[0].finishWeight | number:'1.2-3' }}</strong>
+</div>
+
+</span>
+              </td>
           </tr>
           <tr>
               <td><strong>Raw Material price/kg +10% inventory cost</strong></td>
@@ -694,7 +711,8 @@
               <td><strong>Component Weight (Kg)</strong></td>
               <td>{{ quotationData.results[0].revisions[0].castingWeight }}</td>
               <td rowspan="2"><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
-              <td rowspan="2">NA
+              <td rowspan="2" *ngIf="!quotationData.results[0].revisions[0].scrapIncluded">NA</td>
+              <td rowspan="2" *ngIf="quotationData.results[0].revisions[0].scrapIncluded">{{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}
                                                         <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
   <div class="info-popup dim">
@@ -705,7 +723,7 @@
    {{quotationData.results[0].revisions[0].shortWeight}} * 
 {{quotationData.results[0].revisions[0].meltingLoss }}
   <br />
-  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3' }}</strong>
+  <strong>Result: {{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}</strong>
 </div>
 
 </span>
@@ -720,7 +738,46 @@
               <td><strong>Mellting Loss</strong></td>
               <td>{{ quotationData.results[0].revisions[0].meltingLoss }}</td>
               <td ><strong>Scrap cost/pc (Scrap wt/pc x Scrap cost/kg)</strong></td>
-              <td >NA</td>
+                            <td  *ngIf="!quotationData.results[0].revisions[0].scrapIncluded">NA</td>
+
+              <td *ngIf="quotationData.results[0].revisions[0].scrapIncluded">{{ quotationData.results[0].revisions[0].scrapCost | number:'1.2-3' }}
+    <span class="info-container" tabindex="0">
+  <mat-icon class="info-icon">info</mat-icon>
+  <div class="info-popup dim">
+    <p class="info-popup-text">
+  <p class="info-popup-text">
+
+  <ng-container *ngIf="quotationData.results[0].customerName.category === 'Non-AutoMobile'">
+    (Raw Material Price - MeltPerKg) * Casting Weight
+  </ng-container>
+
+  <ng-container *ngIf="quotationData.results[0].customerName.category === 'Automobile'">
+    (Raw Material Price - MeltPerKg) * Scrap Recoverable
+  </ng-container>
+
+</p>
+
+<ng-container *ngIf="quotationData.results[0].customerName.category === 'Non-AutoMobile'">
+  ({{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} - 
+   {{ quotationData.results[0].revisions[0].meltPerKg }}) 
+   * {{ quotationData.results[0].revisions[0].castingWeight }}
+</ng-container>
+
+<ng-container *ngIf="quotationData.results[0].customerName.category === 'Automobile'">
+  ({{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} - 
+   {{ quotationData.results[0].revisions[0].meltPerKg }}) 
+   * {{ quotationData.results[0].revisions[0].scrapRecoverable }}
+</ng-container>
+    
+  
+   
+  
+  <br />
+  <strong>Result: {{quotationData.results[0].revisions[0].scrapCost | number:'1.2-3' }}</strong>
+</div>
+
+</span>
+              </td>
           </tr>
           <tr>
               <td><strong>Raw Material weight/pc</strong></td>
@@ -1143,6 +1200,5 @@
 
 </div>
 </div>
-
 
 

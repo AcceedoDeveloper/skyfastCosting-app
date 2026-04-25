@@ -35,6 +35,7 @@ export interface Revision {
   Packing: string;
   ToolAmbience: string;
   scrapIncluded:boolean;
+  iccIncluded:boolean;
   meltPerKg:number;
   scrapRecoverable:number;
   castingWeight: number;

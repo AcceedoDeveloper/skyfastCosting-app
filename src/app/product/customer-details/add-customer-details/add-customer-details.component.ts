@@ -136,6 +136,7 @@ selectedFileName: string = '';
 
     ToolAmbience: [0, Validators.required],
     scrapIncluded:[false],
+    iccIncluded:[false],
     meltPerKg:[0],
     scrapRecoverable:[0],
      TransportType: ['cost'],  // 👈 default is "cost"
@@ -283,6 +284,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
         ModeOfTransport: this.data.ModeOfTransport || '',
         ToolAmbience: this.data.ToolAmbience || 0,
         scrapIncluded:this.data.scrapIncluded || false,
+        iccIncluded:this.data.iccIncluded || false,
         scrapRecoverable:this.data.scrapRecoverable|| 0,
         meltPerKg:this.data.meltPerKg || 0,
         TransportType: this.data.TransportType || 'cost',
@@ -738,6 +740,7 @@ private buildCustomerPayload() {
     InspectorCost: this.processForm.value.InspectorCost,
     ToolAmbience: this.processForm.value.ToolAmbience,
     scrapIncluded:this.processForm.value.scrapIncluded,
+    iccIncluded:this.processForm.value.iccIncluded,
     scrapRecoverable:this.processForm.value.scrapRecoverable,
     meltPerKg:this.processForm.value.meltPerKg,
     packingRate: this.processForm.value.TransportCost,

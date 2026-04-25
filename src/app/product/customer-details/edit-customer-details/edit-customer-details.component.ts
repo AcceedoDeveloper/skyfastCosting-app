@@ -141,6 +141,7 @@ if (data?.revisions?.length) {
 
       ToolAmbience: [revision?.ToolAmbience ],
       scrapIncluded:[revision?.scrapIncluded],
+      iccIncluded:[revision?.iccIncluded],
       scrapRecoverable:[revision?.scrapRecoverable],
       meltPerKg:[revision?.meltPerKg],
 
@@ -537,6 +538,7 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     scrapRecoverable:formValue.scrapRecoverable,
     meltPerKg:formValue.meltPerKg,
     scrapIncluded:formValue.scrapIncluded,
+    iccIncluded:formValue.iccIncluded,
     overHeadsPercent: formValue.overHeadsPercent,
     // DieMaintenance:formValue.DieMaintenance,
     // Inspection:formValue.Inspection,

@@ -409,6 +409,11 @@
                   <mat-option *ngFor="let option of deliverytermsoption" [value]="option">{{option}}</mat-option>
                 </mat-select>
               </div>
+
+                     <div class="field-row checkbox-row">
+              <label class="label1">ICC Include</label>
+              <mat-checkbox formControlName="iccIncluded"></mat-checkbox>
+              </div>
                         <div class="dynamic-params" formArrayName="transpotationParams">
                 <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
  <input class="dynamic-input" type="text" placeholder="Label" formControlName="label" />
