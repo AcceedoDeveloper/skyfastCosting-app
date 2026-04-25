@@ -158,6 +158,7 @@ if (data?.revisions?.length) {
   Insurance: [revision?.Insurance],
   SeaPacking: [revision?.SeaPacking],
     includeRejections: [revision?.includeRejections ?? false],
+    isMachiningAvailable:[revision?.isMachiningAvailable ?? false],
 
   Payment90DaysICC: [revision?.Payment90DaysICC],
   currency: [revision?.currency ],
@@ -548,6 +549,7 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     // WIPPartsHandlingTray:formValue.WIPPartsHandlingTray,
 
         includeRejections: formValue.includeRejections,
+        isMachiningAvailable:formValue.isMachiningAvailable,
 
     packingPercentage: formValue.TransportPercentage,
     packingRate: formValue.TransportCost,

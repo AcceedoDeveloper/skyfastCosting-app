@@ -312,6 +312,11 @@
                 </mat-select>
               </div>
 
+                <div class="field-row checkbox-row">
+              <label class="label1">Machining</label>
+              <mat-checkbox formControlName="isMachiningAvailable"></mat-checkbox>
+              </div>
+
               
 
             <!-- <div class="field-row">
@@ -521,7 +526,7 @@
                <input class="lab" id="meltPerKg" matInput type="number" formControlName="meltPerKg" />
              </div>
  
-                 <div class="field-row" *ngIf="isNonAutoMobileCustomer()">
+                 <div class="field-row" *ngIf="isAutoMobileCustomer()">
                <label class="label1 reject" for="scrapRecoverable">Scrap Recoverable</label>
                <input class="lab" id="scrapRecoverable" matInput type="number" formControlName="scrapRecoverable" />
              </div>

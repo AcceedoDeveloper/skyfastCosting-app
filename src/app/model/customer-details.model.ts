@@ -64,6 +64,7 @@ export interface Revision {
   Payment90DaysICC: number;
   currency: string;
   includeRejections?: boolean;
+  isMachiningAvailable?:boolean;
   commercialTermsParams?: Record<string, string>;
   transpotationParams?: Record<string, string>;
   rejectionParams?: Record<string, string>;
