@@ -182,13 +182,26 @@
         <!-- Process -->
         <div class="form-group field">
           <label>Select Process</label>
-          <select formControlName="processId"
-                  (change)="onProcessChange(i, $any($event.target).value)">
-            <option value="null">Select</option>
-            <option *ngFor="let p of (process$ | async)" [value]="p._id">
-              {{ p.processName }} {{ p.machineCentre }}
-            </option>
-          </select>
+          <mat-select class="process-select"
+                      [panelClass]="'process-select-panel'"
+                      formControlName="processId"
+                      placeholder="Select"
+                      (selectionChange)="onProcessChange(i, $event.value)">
+                     
+
+                        <mat-option>
+                          <ngx-mat-select-search
+                            [formControl]="processFilterCtrls[i]"
+                            placeholderLabel="Search process"
+                            noEntriesFoundLabel="No process found">
+                          </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option [value]="null" disabled>Select</mat-option>
+                        <mat-option *ngFor="let p of getFilteredProcesses(process$ | async, i)" [value]="p._id">
+                          {{ p.processName }} {{ p.machineCentre }}
+                        </mat-option>
+                  
+          </mat-select>
         </div>
 
         <!-- Tonnage -->

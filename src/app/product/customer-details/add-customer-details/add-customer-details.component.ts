@@ -2,7 +2,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, Inject, OnInit, ViewChild, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,6 +34,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 import { ConfigService } from '../../../shared/config.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 @Component({
@@ -53,6 +54,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatProgressSpinnerModule,
     LoadingSpinnerComponent,
     MatCheckboxModule,
+    NgxMatSelectSearchModule,
    
   ],
   templateUrl: './add-customer-details.component.html',
@@ -79,6 +81,7 @@ selectedFileName: string = '';
     custoemr$! : Observable<Customer[]>;
     rawmaterial$! : Observable<RawMaterial[]>;
     process$! : Observable<Process[]>;
+    processFilterCtrls: FormControl<string | null>[] = [];
     Cusid?: string;
     showTransportInput = true; 
     packingOptions: string[] = ["none", "domestic", "international"];
@@ -259,6 +262,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
                 sqInch: [proc.sqInch, Validators.required],
               });
               processArray.push(group);
+              this.processFilterCtrls.push(new FormControl<string | null>(''));
               
               console.log(' Process loaded at index', index, ':', proc.processName);
               
@@ -562,6 +566,7 @@ addProcessSelection() {
   });
   this.applyProcessUnitValidators(group);
   this.processSelection.push(group);
+  this.processFilterCtrls.push(new FormControl<string | null>(''));
   this.updateProcessCycleTime(this.processSelection.length - 1);
 }
 
@@ -569,6 +574,30 @@ addProcessSelection() {
 
 removeProcessSelection(index: number) {
   this.processSelection.removeAt(index);
+  this.processFilterCtrls.splice(index, 1);
+}
+
+getFilteredProcesses(processes: Process[] | null | undefined, index: number): Process[] {
+  const processList = processes || [];
+  const searchTerm = (this.processFilterCtrls[index]?.value || '').toLowerCase().trim();
+
+  if (!searchTerm) {
+    return processList;
+  }
+
+  return processList.filter(process => {
+    const searchableText = [
+      process.processName,
+      process.machineCentre,
+      process.TonnageJaw,
+      process.Unit
+    ]
+      .filter(value => value !== null && value !== undefined)
+      .join(' ')
+      .toLowerCase();
+
+    return searchableText.includes(searchTerm);
+  });
 }
 
 

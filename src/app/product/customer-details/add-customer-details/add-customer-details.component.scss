@@ -176,6 +176,39 @@ select:focus {
   outline: none;
 }
 
+.process-select {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 36px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: 0.2s;
+  box-sizing: border-box;
+ 
+}
+
+.process-select:focus {
+  border-color: #b3b3b3;
+  outline: none;
+}
+
+.process-select ::ng-deep .mat-mdc-select-trigger {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.process-select ::ng-deep .mat-mdc-select-value {
+  display: flex;
+  align-items: center;
+}
+
+.options{
+margin-left: -10px;
+}
 .field {
   width: 200px;
   min-width: 100px;
@@ -785,4 +818,3 @@ mat-icon {
     max-width: 100%;
   }
 }
-

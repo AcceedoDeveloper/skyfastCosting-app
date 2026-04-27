@@ -120,16 +120,26 @@
     <!-- Process Name -->
     <div class="form-group half-width">
       <label>Process Name</label>
-     <select formControlName="processId"
-        (change)="onProcessSelected($any($event.target).value, i)">
-        <option value="">Select Process</option>
-        <option *ngIf="proc.get('processId')?.value" [value]="proc.get('processId')?.value">
+      <mat-select class="process-select"
+                  [panelClass]="'process-select-panel'"
+                  formControlName="processId"
+                  placeholder="Select Process"
+                  (selectionChange)="onProcessSelected($event.value, i)">
+        <mat-option>
+          <ngx-mat-select-search
+            [formControl]="processFilterCtrls[i]"
+            placeholderLabel="Search process"
+            noEntriesFoundLabel="No process found">
+          </ngx-mat-select-search>
+        </mat-option>
+        <mat-option [value]="''" disabled>Select Process</mat-option>
+        <mat-option *ngIf="proc.get('processId')?.value" [value]="proc.get('processId')?.value">
           {{ proc.get('processName')?.value || 'Saved Process' }}
-        </option>
-        <option *ngFor="let p of (process$ | async)" [value]="p._id">
+        </mat-option>
+        <mat-option *ngFor="let p of getFilteredProcesses(process$ | async, i)" [value]="p._id">
           {{ p.processName }} {{ p.machineCentre }}
-        </option>
-      </select>
+        </mat-option>
+      </mat-select>
     </div>
 
     <!-- Tonnage -->

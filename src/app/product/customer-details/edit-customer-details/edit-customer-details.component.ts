@@ -6,7 +6,7 @@
 
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { CustomerDetails } from '../../../model/customer-details.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,6 +33,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from '../../../shared/config.service';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @Component({
   selector: 'app-edit-customer-details',
@@ -49,6 +50,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatRadioModule,
      MatCheckboxModule,
     LoadingSpinnerComponent,
+    NgxMatSelectSearchModule,
   ],
   templateUrl: './edit-customer-details.component.html',
   styleUrl: './edit-customer-details.component.scss'
@@ -58,6 +60,7 @@ export class EditCustomerDetailsComponent implements OnInit {
     customerdeatilas$! : Observable<CustomerDetails[]>;
   rawMaterial$! : Observable<RawMaterial[]>;
   process$!: Observable<Process[]>;
+  processFilterCtrls: FormControl<string | null>[] = [];
   custoemr$!: Observable<Customer[]>;
   selectedCustomerCategory = '';
   customerForm: FormGroup;
@@ -332,6 +335,7 @@ private updateSelectedCustomerCategory(customers: Customer[]) {
     this.applyProcessUnitValidators(group);
 
     this.processes.push(group);
+    this.processFilterCtrls.push(new FormControl<string | null>(''));
   }
 
   private extractProcessId(processId: any): string {
@@ -439,6 +443,30 @@ private updateSelectedCustomerCategory(customers: Customer[]) {
 
   removeProcess(index: number) {
     this.processes.removeAt(index);
+    this.processFilterCtrls.splice(index, 1);
+  }
+
+  getFilteredProcesses(processes: Process[] | null | undefined, index: number): Process[] {
+    const processList = processes || [];
+    const searchTerm = (this.processFilterCtrls[index]?.value || '').toLowerCase().trim();
+
+    if (!searchTerm) {
+      return processList;
+    }
+
+    return processList.filter(process => {
+      const searchableText = [
+        process.processName,
+        process.machineCentre,
+        process.TonnageJaw,
+        process.Unit
+      ]
+        .filter(value => value !== null && value !== undefined)
+        .join(' ')
+        .toLowerCase();
+
+      return searchableText.includes(searchTerm);
+    });
   }
 
   onFileSelected(event: Event): void {
