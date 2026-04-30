@@ -390,14 +390,23 @@ isNonAutoMobileCustomer(): boolean {
   }
 
 
-calculateGrossWeight() {
-  const casting = Number(this.productForm.get('castingWeight')?.value) || 0;
+  calculateGrossWeight() {
+    const casting = Number(this.productForm.get('castingWeight')?.value) || 0;
   const melting = Number(this.productForm.get('meltingLoss')?.value) || 0;
 
-  const gross = casting *(1+(melting/100)) ;
+    const gross = Number((casting * (1 + (melting / 100))).toFixed(3));
 
   this.productForm.get('grossWeight')?.setValue(gross, { emitEvent: false });
-}
+  }
+
+  formatGrossWeight(): void {
+    const grossWeightControl = this.productForm.get('grossWeight');
+    const grossWeight = Number(grossWeightControl?.value);
+
+    if (!Number.isNaN(grossWeight)) {
+      grossWeightControl?.setValue(Number(grossWeight.toFixed(3)), { emitEvent: false });
+    }
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

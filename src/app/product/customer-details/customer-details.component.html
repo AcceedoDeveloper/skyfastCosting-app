@@ -673,10 +673,10 @@
 <div class="info-popup dim">
   <p class="info-popup-text">
 
-    ( Component Weight * Raw Material Weight) 
+    (  Raw Material Weight * Raw Material price ) 
   </p>
-  {{ quotationData.results[0].revisions[0].castingWeight }} *
-  {{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3'}}
+ 
+  {{ quotationData.results[0].revisions[0].rawMaterialWeight  | number:'1.2-3'}} *{{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }}
   
   <br />
   <strong>Result:{{ quotationData.results[0].revisions[0].finishWeight | number:'1.2-3' }}</strong>
@@ -701,7 +701,7 @@
 
     (Raw Material price * Scrap weight/pc )  
   </p>
-   {{ quotationData.results[0].revisions[0].rawMaterialWeight }} * {{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}
+   {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} * {{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}
   <br />
   <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
 </div>

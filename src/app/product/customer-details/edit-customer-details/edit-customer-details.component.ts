@@ -243,7 +243,32 @@ this.customerForm.get('castingWeight')?.valueChanges.subscribe(value => {
     { shortWeight },
     { emitEvent: false }
   );
+
+  this.calculateGrossWeight();
 });
+
+this.customerForm.get('meltingLoss')?.valueChanges.subscribe(() => {
+  this.calculateGrossWeight();
+});
+
+this.formatGrossWeight();
+  }
+
+  calculateGrossWeight(): void {
+    const casting = Number(this.customerForm.get('castingWeight')?.value) || 0;
+    const melting = Number(this.customerForm.get('meltingLoss')?.value) || 0;
+    const gross = Number((casting * (1 + (melting / 100))).toFixed(3));
+
+    this.customerForm.get('grossWeight')?.setValue(gross, { emitEvent: false });
+  }
+
+  formatGrossWeight(): void {
+    const grossWeightControl = this.customerForm.get('grossWeight');
+    const grossWeight = Number(grossWeightControl?.value);
+
+    if (!Number.isNaN(grossWeight)) {
+      grossWeightControl?.setValue(Number(grossWeight.toFixed(3)), { emitEvent: false });
+    }
   }
 
 isAutoMobileCustomer(): boolean {

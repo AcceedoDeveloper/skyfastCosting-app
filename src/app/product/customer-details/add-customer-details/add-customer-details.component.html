@@ -106,7 +106,7 @@
 
                   <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Gross Weight (In Kg)</mat-label>
-                <input type="number" matInput formControlName="grossWeight">
+                <input type="number" matInput formControlName="grossWeight" step="0.001" (blur)="formatGrossWeight()">
                 <mat-error *ngIf="productForm.get('grossweight')?.touched && productForm.get('grossweight')?.hasError('required')">
                   Gross Weight is Required
                 </mat-error>

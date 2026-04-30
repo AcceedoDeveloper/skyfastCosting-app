@@ -1313,11 +1313,14 @@ vertical-align: middle;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   padding: 14px 18px;
+  width: max-content;
+  max-width: min(90vw, 720px);
   line-height: 1.7;
   text-align: left;
   font-size: 13px;
   color: #333;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
 }
 
 .info-popup.dim br {
@@ -1367,8 +1370,9 @@ vertical-align: middle;
   line-height: 1.6;
   color: #333;
   font-weight: 500;
-  word-wrap: break-word;
-  white-space: normal;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  white-space: nowrap;
 }
 
 .info-popup.dim .info-popup-text {
@@ -1380,6 +1384,7 @@ vertical-align: middle;
   color: #333;
   font-weight: 500;
   letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
 .info-popup-text:first-child {
@@ -1649,4 +1654,3 @@ vertical-align: middle;
  .process-nested td{
   text-align: center !important;
 }
-
