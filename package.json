@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --output-path ./dist/Skyfast-costing --base-href /Skyfast-costing/",
+    "build": "ng build --output-path ./dist/Skyfast-costing --base-href /",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

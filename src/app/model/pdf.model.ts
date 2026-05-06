@@ -50,6 +50,7 @@ export interface Revision {
   packingRate?: number | null;
   packingPercentage?: number | null;
   rawMaterialCost: number;
+  IccNetMaterialCost:number;
   netMaterialCost: number;
   rawMaterialWeight: number;
   sumOfProcessCost: number;
