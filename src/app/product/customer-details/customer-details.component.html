@@ -988,7 +988,9 @@
               <tr>
                 
                   <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</td>
-                  <td colspan="1" *ngIf="quotationData.results[0].revisions[0].isMachiningAvailable">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }}
+                 <td colspan="1" *ngIf="quotationData.results[0].revisions[0].isMachiningAvailable && quotationData.results[0].customerName.category === 'Non-AutoMobile'">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}</td>
+
+                  <td colspan="1" *ngIf="quotationData.results[0].revisions[0].isMachiningAvailable && quotationData.results[0].customerName.category ==='AutoMobile'">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }}
                                                                                   <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
@@ -1011,10 +1013,10 @@
   <div *ngIf="quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0">
     <p class="info-popup-text"> 
 
-      ((Net Material Cost + Total Labour Cost ) * Over Heads)
+       Total Labour Cost  * Over Heads
     </p>
   
-    (({{ (quotationData.results[0].revisions[0].rawMaterialCost) | number:'1.2-2' }}) + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+ {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
     <br />
     <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
   </div>

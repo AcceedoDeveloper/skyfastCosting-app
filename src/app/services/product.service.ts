@@ -13,9 +13,6 @@ import { ConfigService} from '../shared/config.service';
 })
 export class ProductService {
 
-// private apiUrl = 'http://localhost:3005';
-
-//  private apiUrl2 = 'http://localhost:3005/uploadProcessExcel';
 
 
   constructor(private http: HttpClient, private config : ConfigService) {}

@@ -47,9 +47,9 @@ export class AddProcessComponent implements OnInit, OnDestroy {
     this.processForm = this.fb.group({
       processName: [data?.process?.processName || '', Validators.required],
       TonnageJaw: [data?.process?.TonnageJaw || ''],
-      Hours: [data?.process?.Hours || ''],
+      Hours: [data?.process?.Hours || '',Validators.required],
      machineCentre: [data?.process?.machineCentre || ''],
-     Unit:[data?.process?.Unit ||'']
+     Unit:[data?.process?.Unit ||'',Validators.required]
     });
   }
 
