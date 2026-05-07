@@ -979,8 +979,8 @@
               <tr class="tqp-header">
                   <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
                   <th colspan="1">Net Material Cost (M)</th>
-                   <th colspan="1" *ngIf="quotationData.results[0].revisions[0].isMachiningAvailable">ICC</th>
-                  <th  [attr.colspan]="quotationData.results[0].revisions[0].isMachiningAvailable ? 1: 2">Total Labour Cost (L)</th>
+                   <th colspan="1" *ngIf="quotationData.results[0].revisions[0].iccIncluded">ICC</th>
+                  <th  [attr.colspan]="quotationData.results[0].revisions[0].iccIncluded ? 1: 2">Total Labour Cost (L)</th>
                   <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
                   <th colspan="1">Tool Amortization</th>
                   <th colspan="2">Total price</th>
@@ -988,9 +988,9 @@
               <tr>
                 
                   <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</td>
-                 <td colspan="1" *ngIf="quotationData.results[0].revisions[0].isMachiningAvailable && quotationData.results[0].customerName.category === 'Non-AutoMobile'">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}</td>
+                 <td colspan="1" *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category === 'Non-AutoMobile'">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}</td>
 
-                  <td colspan="1" *ngIf="quotationData.results[0].revisions[0].isMachiningAvailable && quotationData.results[0].customerName.category ==='AutoMobile'">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }}
+                  <td colspan="1" *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category ==='AutoMobile'">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }}
                                                                                   <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
@@ -1004,7 +1004,7 @@
 </div>
 </span>
                   </td>
-                  <td [attr.colspan]="quotationData.results[0].revisions[0].isMachiningAvailable ? 1: 2">{{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}</td>
+                  <td [attr.colspan]="quotationData.results[0].revisions[0].iccIncluded ? 1: 2">{{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}</td>
                    <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}
                              <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
