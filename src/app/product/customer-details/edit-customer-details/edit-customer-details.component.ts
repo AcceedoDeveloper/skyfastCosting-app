@@ -206,6 +206,40 @@ if (data?.revisions?.length) {
 
     this.onPackingChange(this.customerForm.get('Packing')?.value);
 
+    const scrapIncludedCtrl = this.customerForm.get('scrapIncluded');
+    const machiningCtrl = this.customerForm.get('isMachiningAvailable');
+
+    if (this.isAutoMobileCustomer() && machiningCtrl?.value === false) {
+      scrapIncludedCtrl?.setValue(false, { emitEvent: false });
+      scrapIncludedCtrl?.disable({ emitEvent: false });
+    }
+
+    machiningCtrl?.valueChanges.subscribe(isAvailable => {
+      if (!this.isAutoMobileCustomer()) {
+        return;
+      }
+
+      if (isAvailable === false) {
+        scrapIncludedCtrl?.setValue(false, { emitEvent: false });
+        scrapIncludedCtrl?.disable({ emitEvent: false });
+      } else if (this.hasSelectedMachine()) {
+        scrapIncludedCtrl?.enable({ emitEvent: false });
+      }
+    });
+
+    this.processes.valueChanges.subscribe(() => {
+      if (!this.isAutoMobileCustomer()) {
+        return;
+      }
+
+      if (!this.hasSelectedMachine()) {
+        scrapIncludedCtrl?.setValue(false, { emitEvent: false });
+        scrapIncludedCtrl?.disable({ emitEvent: false });
+      } else if (machiningCtrl?.value) {
+        scrapIncludedCtrl?.enable({ emitEvent: false });
+      }
+    });
+
     this.custoemr$ = this.store.select(selectAllCustomers);
     this.custoemr$.subscribe(customers => {
       this.updateSelectedCustomerCategory(customers);
@@ -277,6 +311,16 @@ isAutoMobileCustomer(): boolean {
 
 isNonAutoMobileCustomer(): boolean {
   return this.selectedCustomerCategory.toLowerCase() === 'non-automobile';
+}
+
+hasSelectedMachine(): boolean {
+  return this.processes.controls.some(proc => !!proc.get('processId')?.value);
+}
+
+isScrapIncludedDisabled(): boolean {
+  return this.isAutoMobileCustomer() && (
+    !this.customerForm.get('isMachiningAvailable')?.value || !this.hasSelectedMachine()
+  );
 }
 
 private resolveCustomerCategory(): string {

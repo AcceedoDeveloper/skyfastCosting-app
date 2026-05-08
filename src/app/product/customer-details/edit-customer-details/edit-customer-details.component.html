@@ -426,7 +426,7 @@
 
                      <div class="field-row checkbox-row">
               <label class="label1">ICC Include</label>
-              <mat-checkbox formControlName="iccIncluded" [disabled]="isAutoMobileCustomer() && !customerForm.get('isMachiningAvailable')?.value"></mat-checkbox>
+              <mat-checkbox formControlName="iccIncluded" [disabled]="isScrapIncludedDisabled()"></mat-checkbox>
               </div>
                         <div class="dynamic-params" formArrayName="transpotationParams">
                 <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
@@ -443,10 +443,10 @@
                 </div>
               </div>
 
-                  <!-- <h3 class="rejection-heading" id="Upload">Scrap </h3> -->
+                   <h3 class="rejection-heading" id="Upload">Scrap </h3>
                   <div class="field-row checkbox-row">
               <label class="label1">Scrap Include</label>
-              <mat-checkbox formControlName="scrapIncluded" [disabled]="isAutoMobileCustomer() && !customerForm.get('isMachiningAvailable')?.value"></mat-checkbox>
+              <mat-checkbox formControlName="scrapIncluded" [disabled]="isScrapIncludedDisabled()"></mat-checkbox>
               </div>
 
                <div *ngIf="customerForm.get('scrapIncluded')?.value">
