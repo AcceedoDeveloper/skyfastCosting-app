@@ -1016,7 +1016,7 @@
        Total Labour Cost  * Over Heads
     </p>
   
- {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+ {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }} * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
     <br />
     <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
   </div>
@@ -1026,7 +1026,7 @@
       (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
     </p>
    
-    ({{ quotationData.results[0].revisions[0].rawMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+    ({{ quotationData.results[0].revisions[0].rawMaterialCost }} + {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
     <br />
     <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
   </div>
@@ -1066,7 +1066,7 @@
     <p class="info-popup-text"> 
       (Net Material Cost (M) +
       <span *ngIf="quotationData.results[0].revisions[0].iccIncluded">ICC +</span>
-      Total Labour Cost (L) + Profit, ICC & Over Heads + Tool Amortization + Packing<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
+      Total Process cost/pc (L) + Profit, ICC & Over Heads + Tool Amortization + Packing<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
     </p>
   
     {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-2' }} + 
@@ -1074,7 +1074,7 @@
                   <span *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category ==='AutoMobile'">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }} +
                   </span>
     
-    {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
+   {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
     <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
       <br />
       + 
