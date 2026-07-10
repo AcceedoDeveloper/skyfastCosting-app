@@ -591,18 +591,64 @@ private getISOWeekNumber(date: Date): number {
         return;
       }
 
-      const updatedCustomer = {
-        ...customer,
-        revisions: customer.revisions?.map((rev, idx) =>
-          idx === latestRevisionIndex
-            ? { ...rev, applyRateChanges: true }
-            : rev
-        )
+      const normalizedCustomerName = typeof customer.customerName === 'string'
+        ? customer.customerName
+        : customer.customerName?.customerName || '';
+
+      const applyRatePayload = {
+        productName: latestRevision.productName,
+        cavities: latestRevision.cavities,
+        castingWeight: latestRevision.castingWeight,
+        grossWeight: latestRevision.grossWeight,
+        shortWeight: latestRevision.shortWeight,
+        meltingLoss: latestRevision.meltingLoss,
+        Rejection: latestRevision.Rejection,
+        Packing: latestRevision.Packing,
+        InterestRate: latestRevision.InterestRate,
+        InspectorCost: latestRevision.InspectorCost,
+        Freight: latestRevision.Freight,
+        ModeOfTransport: latestRevision.ModeOfTransport,
+        CMMInspection: latestRevision.CMMInspection,
+        ToolAmbience: latestRevision.ToolAmbience,
+        scrapRecoverable: latestRevision.scrapRecoverable,
+        meltPerKg: latestRevision.meltPerKg,
+        scrapIncluded: latestRevision.scrapIncluded,
+        iccIncluded: latestRevision.iccIncluded,
+        overHeadsPercent: latestRevision.overHeadsPercent,
+        DieLifeTime: latestRevision.DieLifeTime,
+        PaymentTerms: latestRevision.PaymentTerms,
+        DeliveryTerms: latestRevision.DeliveryTerms,
+        includeRejections: latestRevision.includeRejections,
+        isMachiningAvailable: latestRevision.isMachiningAvailable,
+        packingPercentage: latestRevision.packingPercentage,
+        packingRate: latestRevision.packingRate,
+        customerName: normalizedCustomerName,
+        rawMaterial: latestRevision.rawMaterial?.map((rm: any) => rm?.GradeName || rm?.gradeName || rm) ?? [],
+        processes: latestRevision.processes?.map((proc: any) => ({
+          processId: proc.processId,
+          processName: proc.processName,
+          TonnageJaw: proc.TonnageJaw,
+          Hours: proc.Hours,
+          cost: proc.cost,
+          cycleTime: proc.cycleTime,
+          cavity: proc.cavity,
+          sqInch: proc.sqInch
+        })) ?? [],
+        commercialTermsParams: latestRevision.commercialTermsParams || {},
+        transpotationParams: latestRevision.transpotationParams || {},
+        rejectionParams: latestRevision.rejectionParams || {},
+        otherParams: latestRevision.otherParams || {},
+        revisionNumber: latestRevision.revisionNumber
       };
 
-      console.log('ApplyRateChanges payload:', { customerId, updatedCustomer });
+      const jsonPayload = {
+        ...applyRatePayload,
+        applyRateChanges: true
+      };
 
-      this.productservices.updateCustomerDetails(customerId, updatedCustomer).subscribe({
+      console.log('ApplyRateChanges payload:', jsonPayload);
+
+      this.productservices.updateCustomerDetails(customerId, jsonPayload).subscribe({
         next: (response) => {
           console.log('ApplyRateChanges API success:', response);
           if (latestRevision) {
