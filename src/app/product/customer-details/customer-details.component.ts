@@ -32,6 +32,10 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { ConfigService} from '../../shared/config.service';
 import { PdfViewComponent } from './pdf-view/pdf-view.component';
 
+export function getApplyRateChangesLabel(value?: boolean): string {
+  return value ? 'Applied' : 'Pending';
+}
+
 @Component({
   selector: 'app-customer-details',
   imports: [
@@ -53,8 +57,6 @@ import { PdfViewComponent } from './pdf-view/pdf-view.component';
   templateUrl: './customer-details.component.html',
   styleUrl: './customer-details.component.scss'
 })
-
-
 export class CustomerDetailsComponent implements OnInit {
   customers$!: Observable<CustomerDetails[]>;
   filteredCustomers$!: Observable<CustomerDetails[]>;
@@ -532,77 +534,88 @@ private getISOWeekNumber(date: Date): number {
     const latestRevision = revisions[latestRevisionIndex];
     const oldStatus = latestRevision?.Status || 'Pending';
 
-    // Log the status change
-    // console.log('🔄 Status Change Detected:', {
-    //   customerId: customerId,
-    //   customerName: customer.customerName?.customerName,
-    //   partName: customer.partName,
-    //   revisionNumber: latestRevision?.revisionNumber,
-    //   oldStatus: oldStatus,
-    //   newStatus: newStatus,
-    //   timestamp: new Date().toISOString(),
-    //   changed: oldStatus !== newStatus
-    // });
-
-    // Log if status actually changed
-    if (oldStatus !== newStatus) {
-      console.log(' Status Updated:', {
-        from: oldStatus,
-        to: newStatus,
-        customer: `${customer.customerName?.customerName} - ${customer.partName}`
-      });
-    } else {
-      console.log(' Status unchanged (same value selected)');
-      return; // Don't make API call if status hasn't changed
+    if (oldStatus === newStatus) {
+      return;
     }
 
-    // Prepare payload
     const payload = {
       revisionNumber: latestRevisionIndex + 1,
       Status: newStatus
     };
 
-    console.log(' Update Payload:', {
-      customerId: customerId,
-      payload: payload
-    });
-
-    // Set loading state BEFORE API call
     this.statusUpdatingMap[customerId] = true;
-    console.log('⏳ Status update in progress for customer:', customerId);
 
-    // Make API call to update status
     this.productservices.updateCustomer(customerId, payload).subscribe({
-      next: (res) => {
-        console.log('✅ Status updated successfully:', {
-          customerId: customerId,
-          newStatus: newStatus,
-          response: res
-        });
-        
-        // Reset loading state
+      next: () => {
         this.statusUpdatingMap[customerId] = false;
-        
-        // Reload customers to reflect the change
         this.store.dispatch(customerActions.loadCustomers());
-        
-        // Show success message
         this.tooser.success(`Status updated to ${newStatus} successfully!`);
       },
-      error: (err) => {
-        console.error('❌ Status update failed:', {
-          customerId: customerId,
-          error: err,
-          attemptedStatus: newStatus
-        });
-        
-        // Reset loading state on error
+      error: () => {
         this.statusUpdatingMap[customerId] = false;
-        
-        // Show error message
         this.tooser.error('Failed to update status. Please try again.');
       }
     });
+  }
+
+  isApplyRateChangesEnabled(customer: CustomerDetails): boolean {
+    return !!this.getLatestRevision(customer)?.applyRateChanges;
+  }
+
+  onApplyRateChangesClick(customer: CustomerDetails): void {
+    if (this.isApplyRateChangesEnabled(customer)) {
+      return;
+    }
+
+    const revisions = customer.revisions || [];
+    const customerId = customer._id;
+    const latestRevisionIndex = revisions.length - 1;
+    const latestRevision = revisions[latestRevisionIndex];
+
+    if (!customerId || !latestRevision) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(ConfrimDialogComponent, {
+      width: '360px',
+      data: {
+        title: 'Apply Rate Changes',
+        message: 'Do you want to apply rate changes for this revision?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('ApplyRateChanges dialog result:', { customerId, result, latestRevisionIndex, latestRevision });
+      if (result !== 'confirm') {
+        console.log('ApplyRateChanges cancelled by user.', customerId);
+        return;
+      }
+
+      const payload = {
+        revisionNumber: latestRevisionIndex + 1,
+        applyRateChanges: true
+      };
+      console.log('ApplyRateChanges payload:', { customerId, payload });
+
+      this.productservices.updateCustomerDetails(customerId, payload).subscribe({
+        next: (response) => {
+          console.log('ApplyRateChanges API success:', response);
+          if (latestRevision) {
+            latestRevision.applyRateChanges = true;
+          }
+          this.store.dispatch(customerActions.loadCustomers());
+          this.tooser.success('Rate changes applied successfully!');
+        },
+        error: (error) => {
+          console.error('ApplyRateChanges API error:', error);
+          this.tooser.error('Failed to apply rate changes. Please try again.');
+        }
+      });
+    });
+  }
+
+  getApplyRateChangesLabel(customer: CustomerDetails): string {
+    return this.isApplyRateChangesEnabled(customer) ? 'Applied' : 'Pending';
   }
 
   getLatestRevision(c: any) {

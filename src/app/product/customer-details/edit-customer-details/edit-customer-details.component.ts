@@ -191,6 +191,7 @@ if (data?.revisions?.length) {
     this.loadCustomParams('transpotationParams', revision?.transpotationParams);
     this.loadCustomParams('rejectionParams', revision?.rejectionParams);
     this.loadCustomParams('otherParams', revision?.otherParams);
+    this.ensureDefaultOtherParams();
 
     //  Fill processes from revision
     if (revision?.processes?.length) {
@@ -507,6 +508,24 @@ private updateSelectedCustomerCategory(customers: Customer[]) {
 
     Object.entries(params).forEach(([label, value]) => {
       formArray.push(this.createParamGroup(label, String(value ?? '')));
+    });
+  }
+
+  private ensureDefaultOtherParams() {
+    const formArray = this.otherParams;
+    const defaults = [
+      { label: 'Die maintenance', value: '1' },
+      { label: '100% Visual Inspector', value: '1' }
+    ];
+
+    defaults.forEach((defaultParam) => {
+      const exists = formArray.controls.some(
+        (ctrl) => ctrl.value.label?.trim().toLowerCase() === defaultParam.label.toLowerCase()
+      );
+
+      if (!exists) {
+        formArray.push(this.createParamGroup(defaultParam.label, defaultParam.value));
+      }
     });
   }
 

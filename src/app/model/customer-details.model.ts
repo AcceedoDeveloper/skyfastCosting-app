@@ -70,6 +70,7 @@ export interface Revision {
   rejectionParams?: Record<string, string>;
   otherParams?: Record<string, string>;
   Status?: string;
+  applyRateChanges?: boolean;
 }
 
 

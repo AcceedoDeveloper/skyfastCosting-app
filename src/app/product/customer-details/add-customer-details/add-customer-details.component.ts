@@ -163,6 +163,7 @@ selectedFileName: string = '';
   otherParams: this.fb.array([])
     })
 
+    this.ensureDefaultOtherParams();
     this.onPackingChange(this.processForm.get('Packing')?.value);
 
 
@@ -337,6 +338,8 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
           paramArray.push(this.fb.group({ label, value }));
         });
       }
+
+      this.ensureDefaultOtherParams();
     }
 
     this.productForm.get('castingWeight')?.valueChanges.subscribe(value => {
@@ -543,10 +546,27 @@ get otherParams(): FormArray {
   return this.processForm.get('otherParams') as FormArray;
 }
 
-private createParamGroup(): FormGroup {
+private createParamGroup(label = '', value = ''): FormGroup {
   return this.fb.group({
-    label: [''],
-    value: ['']
+    label: [label],
+    value: [value]
+  });
+}
+
+private ensureDefaultOtherParams(): void {
+  const defaults = [
+    { label: 'Die maintenance', value: '1' },
+    { label: '100% Visual Inspector', value: '1' }
+  ];
+
+  const existingLabels = this.otherParams.controls.map(ctrl =>
+    String(ctrl.get('label')?.value || '').trim().toLowerCase()
+  );
+
+  defaults.forEach(def => {
+    if (!existingLabels.includes(def.label.toLowerCase())) {
+      this.otherParams.push(this.createParamGroup(def.label, def.value));
+    }
   });
 }
 

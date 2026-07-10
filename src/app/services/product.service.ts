@@ -113,6 +113,13 @@ updateCustomer(id: string, customer: any): Observable<any> {
   );
 }
 
+updateCustomerDetails(id: string, customer: any): Observable<any> {
+  return this.http.put<any>(
+    `${this.config.getCostingUrl('updateCustomerDetails')}/${id}`,
+    customer
+  );
+}
+
 
 
 

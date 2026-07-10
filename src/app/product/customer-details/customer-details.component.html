@@ -191,6 +191,12 @@
                 <span>Status</span>
               </div>
             </th>
+                 <th>
+              <div class="header-cell-content">
+                <mat-icon class="header-icon">inventory_2</mat-icon>
+                <span>Apply Rate Changes</span>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -269,11 +275,24 @@
                   </mat-icon>
                 </div>
               </td>
+              <td class="rate-change-cell">
+                <div class="rate-change-button-wrapper">
+                  <button
+                    mat-stroked-button
+                    color="primary"
+                    class="rate-change-btn"
+                    [disabled]="isApplyRateChangesEnabled(c)"
+                    (click)="onApplyRateChangesClick(c)"
+                  >
+                    {{ isApplyRateChangesEnabled(c) ? 'Applied' : 'Apply Rate Changes' }}
+                  </button>
+                </div>
+              </td>
             </tr>
 
             <!-- 🔽 Nested table row -->
             <tr *ngIf="expandedCustomer === c">
-              <td id="subbg" colspan="10">
+              <td id="subbg" colspan="11">
                 <table class="table table-sm table-bordered nested-table">
                   <thead>
                     <tr>
@@ -1083,7 +1102,7 @@
       </ng-container>
     </ng-container>
     <br />
-    <strong>Result: {{ quotationData.results[0].revisions[0].displayTotalPrice | number:'1.2-3'}}</strong>
+    <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
   </div>
 </div>
  
