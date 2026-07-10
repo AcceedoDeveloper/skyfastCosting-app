@@ -591,13 +591,18 @@ private getISOWeekNumber(date: Date): number {
         return;
       }
 
-      const payload = {
-        revisionNumber: latestRevisionIndex + 1,
-        applyRateChanges: true
+      const updatedCustomer = {
+        ...customer,
+        revisions: customer.revisions?.map((rev, idx) =>
+          idx === latestRevisionIndex
+            ? { ...rev, applyRateChanges: true }
+            : rev
+        )
       };
-      console.log('ApplyRateChanges payload:', { customerId, payload });
 
-      this.productservices.updateCustomerDetails(customerId, payload).subscribe({
+      console.log('ApplyRateChanges payload:', { customerId, updatedCustomer });
+
+      this.productservices.updateCustomerDetails(customerId, updatedCustomer).subscribe({
         next: (response) => {
           console.log('ApplyRateChanges API success:', response);
           if (latestRevision) {
