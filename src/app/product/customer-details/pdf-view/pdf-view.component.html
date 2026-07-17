@@ -329,7 +329,7 @@
       </p>
       {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
       <br />
-      <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+      <strong>Result:1 {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
     </div>
     <!-- Domestic Packing -->
     <div *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic'">
@@ -339,7 +339,7 @@
       </p>
       {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
       <br />
-      <strong>Result: {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
+      <strong>Result:1 {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
     </div>
   </div>
   </span>
