@@ -262,7 +262,7 @@
               <td>
                 <div class="status-select">
                   <select
-                    [disabled]="statusUpdatingMap[c._id || '']"
+                    [disabled]="statusUpdatingMap[c._id || ''] || isApproved(c)"
                     [ngModel]="getLatestRevision(c)?.Status || 'Pending'"
                     (ngModelChange)="onStatusChange(c, $event)"
                   >
@@ -281,7 +281,7 @@
                     mat-stroked-button
                     color="primary"
                     class="rate-change-btn"
-                    [disabled]="isApplyRateChangesEnabled(c)"
+                    [disabled]="isApplyRateChangesEnabled(c) || isApproved(c)"
                     (click)="onApplyRateChangesClick(c)"
                   >
                     {{ isApplyRateChangesEnabled(c) ? 'Applied' : 'Apply Rate Changes' }}

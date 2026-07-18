@@ -562,8 +562,16 @@ private getISOWeekNumber(date: Date): number {
     return !!this.getLatestRevision(customer)?.applyRateChanges;
   }
 
+  // Once the latest revision is Approved, the Status field and the Apply Rate
+  // Changes button are locked. Creating a new revision (which defaults back to
+  // 'Pending') makes this false again, re-enabling both.
+  isApproved(customer: CustomerDetails): boolean {
+    const status = this.getLatestRevision(customer)?.Status;
+    return typeof status === 'string' && status.trim().toLowerCase() === 'approved';
+  }
+
   onApplyRateChangesClick(customer: CustomerDetails): void {
-    if (this.isApplyRateChangesEnabled(customer)) {
+    if (this.isApplyRateChangesEnabled(customer) || this.isApproved(customer)) {
       return;
     }
 
