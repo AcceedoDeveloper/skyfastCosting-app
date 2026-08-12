@@ -41,9 +41,13 @@ export class CompanyPreferencesComponent implements OnInit {
   isEditing: boolean = false;
   companyForm!: FormGroup;
   hostingForm!: FormGroup;
+  meltScrapForm!: FormGroup;
+
+  readonly defaultMeltScrapPercentage = 0.101;
 
   editingCompany: { id: string } | null = null;
   editingHosting: { id: string } | null = null;
+  editingMeltScrap: { id: string } | null = null;
   trackByCompanyId!: TrackByFunction<Company>;
   trackByHostingId!: TrackByFunction<HostingMail>;
 
@@ -69,7 +73,9 @@ export class CompanyPreferencesComponent implements OnInit {
       companyAddress: [company.companyAddress, Validators.required],
       companyGSTNumber: [company.companyGSTNumber, Validators.required],
       backupEmailId: [company.backupEmailId, [Validators.required, Validators.email]],
-      backupTiming: [company.backupTiming, Validators.required]
+      backupTiming: [company.backupTiming, Validators.required],
+      // carried through so saving company details does not drop the costing preference
+      meltScrapPercentage: [company.meltScrapPercentage ?? this.defaultMeltScrapPercentage]
     });
   }
 
@@ -84,6 +90,34 @@ export class CompanyPreferencesComponent implements OnInit {
         company: this.companyForm.value
       }));
       this.editingCompany = null;
+    }
+  }
+
+
+  editMeltScrap(company: Company) {
+    this.editingMeltScrap = { id: company._id! };
+    this.meltScrapForm = this.fb.group({
+      meltScrapPercentage: [
+        company.meltScrapPercentage ?? this.defaultMeltScrapPercentage,
+        [Validators.required, Validators.min(0)]
+      ]
+    });
+  }
+
+  cancelEditMeltScrap() {
+    this.editingMeltScrap = null;
+  }
+
+  saveMeltScrap(company: Company) {
+    if (this.meltScrapForm.valid && this.editingMeltScrap) {
+      this.store.dispatch(RoleActions.updateCompany({
+        id: this.editingMeltScrap.id,
+        company: {
+          ...company,
+          meltScrapPercentage: Number(this.meltScrapForm.value.meltScrapPercentage)
+        }
+      }));
+      this.editingMeltScrap = null;
     }
   }
 

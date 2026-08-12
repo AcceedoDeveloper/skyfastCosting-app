@@ -718,9 +718,9 @@
 <div class="info-popup dim">
   <p class="info-popup-text">
 
-    (Raw Material price * Scrap weight/pc )  
+    (Raw Material price * Raw Material weight/pc )
   </p>
-   {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} * {{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}
+   {{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} * {{quotationData.results[0].revisions[0].rawMaterialWeight | number:'1.2-3' }}
   <br />
   <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
 </div>
@@ -731,17 +731,17 @@
           <tr>
               <td><strong>Component Weight (Kg)</strong></td>
               <td>{{ quotationData.results[0].revisions[0].castingWeight }}</td>
-              <td rowspan="2"><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
-              <td rowspan="2" *ngIf="!quotationData.results[0].revisions[0].scrapIncluded">NA</td>
-              <td rowspan="2" *ngIf="quotationData.results[0].revisions[0].scrapIncluded">{{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}
+              <td [attr.rowspan]="quotationData.results[0].revisions[0].scrapIncluded ? 2 : 1"><strong>Scrap weight/pc (Rm.wt - Finish wt x 0.96)</strong></td>
+              <td [attr.rowspan]="quotationData.results[0].revisions[0].scrapIncluded ? 2 : 1" *ngIf="!quotationData.results[0].revisions[0].scrapIncluded">NA</td>
+              <td [attr.rowspan]="quotationData.results[0].revisions[0].scrapIncluded ? 2 : 1" *ngIf="quotationData.results[0].revisions[0].scrapIncluded">{{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}
                                                         <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
   <div class="info-popup dim">
     <p class="info-popup-text">
   
-     ( Short Weight * (1 + Melting Loss /100) ) 
+     ( Melt Per (Kg) )
     </p>
-   {{quotationData.results[0].revisions[0].shortWeight}} * (1 + {{quotationData.results[0].revisions[0].meltingLoss }} / 100)
+   {{quotationData.results[0].revisions[0].meltPerKg }}
 
   <br />
   <strong>Result: {{quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }}</strong>
@@ -751,7 +751,7 @@
               </td>
 
           </tr>
-          <tr>
+          <tr *ngIf="quotationData.results[0].revisions[0].scrapIncluded">
             <td><strong>Scrap weight</strong></td>
             <td>{{quotationData.results[0].revisions[0].shortWeight}}</td>
           </tr>
@@ -766,33 +766,13 @@
   <mat-icon class="info-icon">info</mat-icon>
   <div class="info-popup dim">
     <p class="info-popup-text">
-  <p class="info-popup-text">
 
-  <ng-container *ngIf="quotationData.results[0].customerName.category === 'Non-AutoMobile'">
-    Raw Material cost -(Raw Material price - MeltPerKg) * Casting Weight
-  </ng-container>
-
-  <ng-container *ngIf="quotationData.results[0].customerName.category === 'AutoMobile'">
-     Raw Material cost -(Raw Material price - MeltPerKg) * Scrap Recoverable
-  </ng-container>
+  ( Scrap weight/pc * Melt Scrap % )
 
 </p>
 
-<ng-container *ngIf="quotationData.results[0].customerName.category === 'Non-AutoMobile'">
- {{quotationData.results[0].revisions[0].rawMaterialCost}} - ({{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} - 
-   {{ quotationData.results[0].revisions[0].meltPerKg }}) 
-   * {{ quotationData.results[0].revisions[0].castingWeight }}
-</ng-container>
+{{ quotationData.results[0].revisions[0].scrapWeight | number:'1.2-3' }} * {{ quotationData.results[0].revisions[0].meltScrapPercentage }}
 
-<ng-container *ngIf="quotationData.results[0].customerName.category === 'AutoMobile'">
-   {{quotationData.results[0].revisions[0].rawMaterialCost}} - ({{ quotationData.results[0].revisions[0].rawMaterial[0].RatePerKg }} - 
-   {{ quotationData.results[0].revisions[0].meltPerKg }}) 
-   * {{ quotationData.results[0].revisions[0].scrapRecoverable }}
-</ng-container>
-    
-  
-   
-  
   <br />
   <strong>Result: {{quotationData.results[0].revisions[0].scrapCost | number:'1.2-3' }}</strong>
 </div>
@@ -819,17 +799,17 @@
 </span>
               </td>
               <td><strong>Net Mat.cost (Rm.cost/pc - Scrap cost/pc) (M)</strong></td>
-              <td>{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}
+              <td>{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}
                                     <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
 <div class="info-popup dim">
   <p class="info-popup-text">
 
-    (Raw Material cost )
+    (Raw Material cost/pc - Scrap cost/pc )
   </p>
-   {{ quotationData.results[0].revisions[0].rawMaterialCost }}
-  <br />  
-  <strong>Result: {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</strong>
+   {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }} - {{ quotationData.results[0].revisions[0].scrapCost | number:'1.2-3' }}
+  <br />
+  <strong>Result: {{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</strong>
 </div>
 </span>
               </td>
@@ -1001,12 +981,13 @@
                    <th colspan="1" *ngIf="quotationData.results[0].revisions[0].iccIncluded">ICC</th>
                   <th  [attr.colspan]="quotationData.results[0].revisions[0].iccIncluded ? 1: 2">Total Labour Cost (L)</th>
                   <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
-                  <th colspan="1">Tool Amortization</th>
+                  <th colspan="1" *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit {{ quotationData.results[0].revisions[0].profitPercent }}%</th>
+                  <th colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</th>
                   <th colspan="2">Total price</th>
               </tr>
               <tr>
-                
-                  <td colspan="1">{{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}</td>
+
+                  <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}</td>
                  <td colspan="1" *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category === 'Non-AutoMobile'">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}</td>
 
                   <td colspan="1" *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category ==='AutoMobile'">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }}
@@ -1017,7 +998,7 @@
 
     ( (ICC /100) * Net Mat.cost)
   </p>
-  ({{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}/100) * {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-3' }}
+  ({{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }}/100) * {{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }}
   <br />
   <strong>Result: {{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }}</strong>
 </div>
@@ -1045,14 +1026,28 @@
       (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
     </p>
    
-    ({{ quotationData.results[0].revisions[0].rawMaterialCost }} + {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+    ({{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }} + {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
     <br />
     <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
   </div>
 </div>
 </span>
                     </td>
-                  <td colspan="1">{{ quotationData.results[0].revisions[0].toolCost }}</td>
+                  <td colspan="1" *ngIf="quotationData.results[0].revisions[0].scrapCredited">{{ quotationData.results[0].revisions[0].profitCost | number:'1.2-2' }}
+                    <span class="info-container" tabindex="0">
+  <mat-icon class="info-icon">info</mat-icon>
+<div class="info-popup dim">
+  <p class="info-popup-text">
+
+    (Net Material Cost (M) + Total Labour Cost (L)) * Profit %
+  </p>
+  ({{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3' }} + {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].profitPercent }} / 100)
+  <br />
+  <strong>Result: {{ quotationData.results[0].revisions[0].profitCost | number:'1.2-2' }}</strong>
+</div>
+</span>
+                  </td>
+                  <td colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited">{{ quotationData.results[0].revisions[0].toolCost }}</td>
                   <td [attr.colspan]="isInternationalQuotation() ? 1 : 2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-2'}}
                      <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
@@ -1062,14 +1057,14 @@
   <!-- International Packing -->
   <div *ngIf="quotationData.results[0].revisions[0].Packing === 'international'">
     <p class="info-popup-text"> 
-      (Net Material Cost (M) +<span *ngIf="quotationData.results[0].revisions[0].iccIncluded">ICC +</span> Total Labour Cost (L)+ Profit, ICC & Over Heads + Tool Amortization + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC)<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
+      (Net Material Cost (M) +<span *ngIf="quotationData.results[0].revisions[0].iccIncluded">ICC +</span> Total Labour Cost (L)+ Profit, ICC & Over Heads + <ng-container *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit</ng-container><ng-container *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</ng-container> + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC)<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
     </p>
-    {{ (quotationData.results[0].revisions[0].rawMaterialCost) | number:'1.2-2' }}+               
+    {{ (quotationData.results[0].revisions[0].netMaterialCost) | number:'1.2-2' }}+
        <span *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category === 'Non-AutoMobile'">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }} +</span>
                   <span *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category ==='AutoMobile'">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }}+
                   </span>
 
-    {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
+    {{ getDisplayedLabourCost(quotationData.results[0].revisions[0]) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
     <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
       <br />
       + 
@@ -1085,15 +1080,15 @@
     <p class="info-popup-text"> 
       (Net Material Cost (M) +
       <span *ngIf="quotationData.results[0].revisions[0].iccIncluded">ICC +</span>
-      Total Process cost/pc (L) + Profit, ICC & Over Heads + Tool Amortization + Packing<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
+      Total Process cost/pc (L) + Profit, ICC & Over Heads + <ng-container *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit</ng-container><ng-container *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</ng-container> + Packing<ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length"> + <ng-container *ngFor="let term of quotationData.results[0].revisions[0].otherParamsBreakdown; let last = last">{{ term.label }}<span *ngIf="!last"> + </span></ng-container></ng-container>)
     </p>
   
-    {{ quotationData.results[0].revisions[0].rawMaterialCost | number:'1.2-2' }} + 
+    {{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-2' }} +
       <span *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category === 'Non-AutoMobile'">{{  (quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0) ? quotationData.results[0].revisions[0].InterestRate : 1 }} +</span>
                   <span *ngIf="quotationData.results[0].revisions[0].iccIncluded && quotationData.results[0].customerName.category ==='AutoMobile'">{{ quotationData.results[0].revisions[0].IccNetMaterialCost | number:'1.2-3' }} +
                   </span>
     
-   {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].toolCost }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
+   {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
     <ng-container *ngIf="quotationData.results[0].revisions[0].otherParamsBreakdown?.length">
       <br />
       + 

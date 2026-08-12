@@ -51,6 +51,20 @@
 
 
 
+.section:first-child .card.melt-scrap-card {
+  flex: 0 0 auto;
+}
+
+/* the nth-of-type(2) icon rule above is meant for the hosting title only */
+.section-title.costing-title::before {
+  content: none;
+}
+
+.section:first-child .section-title + .card.melt-scrap-card,
+.section:first-child .card + .section-title {
+  margin-top: 20px;
+}
+
 .card {
   background: #ffffff;
   padding: 12px 26px;

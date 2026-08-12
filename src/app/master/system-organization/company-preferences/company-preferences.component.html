@@ -76,6 +76,42 @@
         </div>
       </form>
     </div>
+
+    <ng-container *ngIf="companies[0] as defaultCompany">
+      <h2 class="section-title costing-title">COSTING PREFERENCES</h2>
+
+      <div class="card melt-scrap-card">
+
+        <div class="kv-list" *ngIf="editingMeltScrap?.id !== defaultCompany._id">
+          <div class="row">
+            <div class="label">Melt Scrap %</div><div class="colon">:</div>
+            <div class="value">{{ defaultCompany.meltScrapPercentage ?? defaultMeltScrapPercentage }}</div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" (click)="editMeltScrap(defaultCompany)">Edit</button>
+          </div>
+        </div>
+
+
+        <form class="kv-list"
+              *ngIf="editingMeltScrap?.id === defaultCompany._id"
+              [formGroup]="meltScrapForm"
+              (ngSubmit)="saveMeltScrap(defaultCompany)">
+          <div class="row">
+            <div class="label">Melt Scrap %</div><div class="colon">:</div>
+            <div class="value">
+              <input class="kv-input" type="number" step="0.001" min="0" formControlName="meltScrapPercentage" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" type="submit" [disabled]="meltScrapForm.invalid">Update</button>
+            <button class="btn" type="button" (click)="cancelEditMeltScrap()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </ng-container>
   </div>
 
     <div class="seconddiv" *ngIf="hosting$ | async as hostingList">
