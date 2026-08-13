@@ -15,6 +15,7 @@ import { CustomerDetails, CustomerFilters } from '../../model/customer-details.m
 import { MatIconModule } from '@angular/material/icon';
 import { AddCustomerDetailsComponent } from './add-customer-details/add-customer-details.component';
 import { ConfrimDialogComponent } from '../../shared/confrim-dialog/confrim-dialog.component';
+import { CurrencySelectDialogComponent } from '../../shared/currency-select-dialog/currency-select-dialog.component';
 import { EditCustomerDetailsComponent } from './edit-customer-details/edit-customer-details.component';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -231,6 +232,64 @@ export class CustomerDetailsComponent implements OnInit {
     return Array.from({ length: Math.max(count, 0) }, (_, index) => index);
   }
 
+  // ----- Total quoted price columns -----
+  // The quoted-price row must always span 10 columns, so the optional cost
+  // columns borrow their width from Total Labour Cost and Total price.
+
+  showProfitOrToolColumn(revision: any): boolean {
+    if (!revision) {
+      return false;
+    }
+    return revision.scrapCredited === true
+      ? true
+      : Number(revision.toolCost || 0) !== 0;
+  }
+
+  showIccCostColumn(revision: any): boolean {
+    return Number(revision?.iccCost || 0) !== 0;
+  }
+
+  showSettingCostColumn(revision: any): boolean {
+    return revision?.settingCostApplicable === true
+      && Number(revision?.settingCost || 0) !== 0;
+  }
+
+  private optionalTqpColumns(revision: any): number {
+    return (this.showProfitOrToolColumn(revision) ? 1 : 0)
+      + (this.showIccCostColumn(revision) ? 1 : 0)
+      + (this.showSettingCostColumn(revision) ? 1 : 0);
+  }
+
+  // label(2) + net material(1) + labour + overheads + optional + total price = 10.
+  // The value row also carries a per-currency cell, so it needs one more slot.
+  private tqpColspans(revision: any): { labour: number; overheads: number; totalPrice: number } {
+    const budget = 7 - this.optionalTqpColumns(revision);
+
+    for (const [labour, overheads] of [[2, 2], [2, 1], [1, 1]]) {
+      const totalPrice = budget - labour - overheads;
+      if (totalPrice >= 1) {
+        return { labour, overheads, totalPrice };
+      }
+    }
+    return { labour: 1, overheads: 1, totalPrice: Math.max(1, budget - 2) };
+  }
+
+  getLabourColspan(revision: any): number {
+    return this.tqpColspans(revision).labour;
+  }
+
+  getOverheadsColspan(revision: any): number {
+    return this.tqpColspans(revision).overheads;
+  }
+
+  getTotalPriceColspan(revision: any): number {
+    return this.tqpColspans(revision).totalPrice;
+  }
+
+  getTotalPriceValueColspan(revision: any): number {
+    return this.getTotalPriceColspan(revision);
+  }
+
   getDisplayedLabourCost(revision: any): number {
     if (!revision) {
       return 0;
@@ -239,6 +298,15 @@ export class CustomerDetailsComponent implements OnInit {
     return revision.includeRejections === false
       ? (revision.sumOfProcessCost ?? 0)
       : (revision.TotalProcessCost ?? 0);
+  }
+
+  // the payment terms the ICC carrying cost was quoted on, e.g. "45 Days" -> 45
+  getPaymentTermsDays(revision: any): number {
+    if (revision?.paymentTermsDays != null) {
+      return Number(revision.paymentTermsDays);
+    }
+    const match = String(revision?.PaymentTerms || '').match(/\d+/);
+    return match ? Number(match[0]) : 0;
   }
 
   applyFilter(): void {
@@ -392,20 +460,43 @@ private getISOWeekNumber(date: Date): number {
   });
 }
   onEdit(customer: CustomerDetails) {
+    // An approved revision is locked. The only way to change it is to branch a
+    // new revision, so ask first and open in new-revision-only mode.
+    if (this.isApproved(customer)) {
+      this.dialog.open(ConfrimDialogComponent, {
+        width: '380px',
+        data: {
+          title: 'Approved Quotation',
+          message: 'This quotation is approved and cannot be changed. Is this for a new revision?',
+          confirmText: 'Yes, new revision',
+          cancelText: 'No'
+        }
+      }).afterClosed().subscribe(result => {
+        if (result === 'confirm') {
+          this.openEditDialog(customer, true);
+        }
+      });
+      return;
+    }
+
+    this.openEditDialog(customer, false);
+  }
+
+  private openEditDialog(customer: CustomerDetails, forceNewRevision: boolean) {
     const dialogRef = this.dialog.open(EditCustomerDetailsComponent, {
       width: '96vw',
       height: '92vh',
       maxWidth: '1480px',
       panelClass: 'zoho-dialog',
-      data: customer,
-      disableClose:true, 
+      data: { ...customer, forceNewRevision },
+      disableClose:true,
     });
 
  dialogRef.afterClosed().subscribe(result => {
     if (result === true || result === 'success') {
       this.loadCustomers();
       this.store.dispatch(customerActions.loadCustomers());
-     
+
     }
   });
   }
@@ -548,11 +639,20 @@ private getISOWeekNumber(date: Date): number {
     this.productservices.updateCustomer(customerId, payload).subscribe({
       next: () => {
         this.statusUpdatingMap[customerId] = false;
+        // reflect it on the row straight away so the approved lock applies
+        // without waiting for the refetch to come back
+        if (latestRevision) {
+          latestRevision.Status = newStatus;
+        }
+        // the table is fed by filters$, not the store, so it needs this to reload
+        this.loadCustomers();
         this.store.dispatch(customerActions.loadCustomers());
         this.tooser.success(`Status updated to ${newStatus} successfully!`);
       },
       error: () => {
         this.statusUpdatingMap[customerId] = false;
+        // resync so the dropdown drops back to the real status
+        this.loadCustomers();
         this.tooser.error('Failed to update status. Please try again.');
       }
     });
@@ -675,6 +775,55 @@ private getISOWeekNumber(date: Date): number {
 
   getApplyRateChangesLabel(customer: CustomerDetails): string {
     return this.isApplyRateChangesEnabled(customer) ? 'Applied' : 'Pending';
+  }
+
+  // the customer whose quotation the View popup is showing, so the popup's own
+  // Download button knows what to render and which currencies were ticked
+  quotationCustomer: any = null;
+
+  viewQuotation(customer: any): void {
+    this.quotationCustomer = customer;
+    this.downloadQuotations(
+      customer.customerName.customerName,
+      customer.partName,
+      this.getLatestrevisionNumber(customer).revisionNumber
+    );
+  }
+
+  // ----- Download currency selection (international quotations only) -----
+
+  isInternationalRevision(customer: any): boolean {
+    const rev = this.getLatestRevision(customer);
+    return String(rev?.Packing || '').toLowerCase() === 'international' && !!rev?.currency;
+  }
+
+  getForeignCurrency(customer: any): string {
+    return this.getLatestRevision(customer)?.currency || '';
+  }
+
+  downloadWithSelectedCurrencies(customer: any): void {
+    const rev = this.getLatestrevisionNumber(customer);
+    const customerName = customer.customerName.customerName;
+    const partName = customer.partName;
+
+    // domestic quotations are always priced in INR, so nothing to ask
+    if (!this.isInternationalRevision(customer)) {
+      this.printQuotation(customerName, partName, rev.revisionNumber);
+      return;
+    }
+
+    const foreign = this.getForeignCurrency(customer);
+
+    this.dialog.open(CurrencySelectDialogComponent, {
+      width: '420px',
+      data: { currency: foreign }
+    }).afterClosed().subscribe(choice => {
+      if (!choice) {
+        return; // cancelled — no download
+      }
+
+      this.printQuotation(customerName, partName, rev.revisionNumber, [choice]);
+    });
   }
 
   getLatestRevision(c: any) {
@@ -1108,9 +1257,9 @@ viewQuatation(customerName: string, partName: string, revision: number): void {
   });
 }
 
-printQuotation(customerName: string, partName: string, revision: number): void {
+printQuotation(customerName: string, partName: string, revision: number, currencies?: string[]): void {
   this.isPdfLoading$.next(true);
-  this.productservices.printQuotation(customerName, partName, revision).subscribe({
+  this.productservices.printQuotation(customerName, partName, revision, currencies).subscribe({
     next: (res) => {
       console.log('Quotation printed successfully:', res);
       this.isPdfLoading$.next(false);
@@ -1217,29 +1366,19 @@ saveCurrency(){
 }
 
 
-getProcessCostByCurrency(process: any, currency: string = '') {
-  if (!currency) return process.cost;
-  const key = `ProcessCost${currency}`;
-  return process[key] ?? process.cost;
+// The server prices the whole quotation in one currency, so the cost cells just
+// print what came back — these say which currency that was and how to format it.
+get displayCurrency(): string {
+  return this.quotationData?.results?.[0]?.revisions?.[0]?.displayCurrency || 'INR';
 }
 
-getSumOfProcessCostByCurrency(revision: any, currency: string = '') {
-  if (!currency) return revision.sumOfProcessCost;
-  const key = `sumOfProcessCost${currency}`;
-  return revision[key] ?? revision.sumOfProcessCost;
+isForeignCurrencyQuotation(): boolean {
+  return this.displayCurrency !== 'INR';
 }
 
-
-getRejectionCostByCurrency(revision: any, currency: string = '') {
-  if (!currency) return revision.RejectionCost;
-  const key = `RejectionCost${currency}`;
-  return revision[key] ?? revision.RejectionCost;
-}
-
-getTotalProcessCostByCurrency(revision: any, currency: string = '') {
-  if (!currency) return revision.TotalProcessCost;
-  const key = `TotalProcessCost${currency}`;
-  return revision[key] ?? revision.TotalProcessCost;
+// foreign currency amounts are small enough to need the third decimal
+get costFormat(): string {
+  return this.isForeignCurrencyQuotation() ? '1.2-3' : '1.2-2';
 }
 
 onDateArrowKey(event: KeyboardEvent, direction: 'prev' | 'next'): void {
@@ -1342,12 +1481,6 @@ isInternationalQuotation(): boolean {
          !!revision.currency;
 }
 
-
-  getTotalPriceByCurrency(revision: any, currency: string = '') {
-    if (!currency) return revision.TotalPrice;
-    const key = `TotalPrice${currency}`;
-    return revision[key] ?? revision.TotalPrice;
-  }
 
   private getNumericOtherParams(
     otherParams: Record<string, any> | undefined | null

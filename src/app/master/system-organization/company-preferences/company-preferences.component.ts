@@ -44,6 +44,10 @@ export class CompanyPreferencesComponent implements OnInit {
   meltScrapForm!: FormGroup;
 
   readonly defaultMeltScrapPercentage = 0.101;
+  readonly defaultPaymentDaysPercentage = 10;
+  readonly defaultQuotationNumberPrefix = 'SF/QT';
+  readonly defaultQuotationFormatNumber = 'SF/SAL/R';
+  readonly defaultQuotationFormatDate = '01.11.2020';
 
   editingCompany: { id: string } | null = null;
   editingHosting: { id: string } | null = null;
@@ -74,8 +78,12 @@ export class CompanyPreferencesComponent implements OnInit {
       companyGSTNumber: [company.companyGSTNumber, Validators.required],
       backupEmailId: [company.backupEmailId, [Validators.required, Validators.email]],
       backupTiming: [company.backupTiming, Validators.required],
-      // carried through so saving company details does not drop the costing preference
-      meltScrapPercentage: [company.meltScrapPercentage ?? this.defaultMeltScrapPercentage]
+      // carried through so saving company details does not drop the costing preferences
+      meltScrapPercentage: [company.meltScrapPercentage ?? this.defaultMeltScrapPercentage],
+      paymentDaysPercentage: [company.paymentDaysPercentage ?? this.defaultPaymentDaysPercentage],
+      quotationNumberPrefix: [company.quotationNumberPrefix ?? this.defaultQuotationNumberPrefix],
+      quotationFormatNumber: [company.quotationFormatNumber ?? this.defaultQuotationFormatNumber],
+      quotationFormatDate: [company.quotationFormatDate ?? this.defaultQuotationFormatDate]
     });
   }
 
@@ -100,6 +108,22 @@ export class CompanyPreferencesComponent implements OnInit {
       meltScrapPercentage: [
         company.meltScrapPercentage ?? this.defaultMeltScrapPercentage,
         [Validators.required, Validators.min(0)]
+      ],
+      paymentDaysPercentage: [
+        company.paymentDaysPercentage ?? this.defaultPaymentDaysPercentage,
+        [Validators.required, Validators.min(0)]
+      ],
+      quotationNumberPrefix: [
+        company.quotationNumberPrefix ?? this.defaultQuotationNumberPrefix,
+        Validators.required
+      ],
+      quotationFormatNumber: [
+        company.quotationFormatNumber ?? this.defaultQuotationFormatNumber,
+        Validators.required
+      ],
+      quotationFormatDate: [
+        company.quotationFormatDate ?? this.defaultQuotationFormatDate,
+        Validators.required
       ]
     });
   }
@@ -114,7 +138,11 @@ export class CompanyPreferencesComponent implements OnInit {
         id: this.editingMeltScrap.id,
         company: {
           ...company,
-          meltScrapPercentage: Number(this.meltScrapForm.value.meltScrapPercentage)
+          meltScrapPercentage: Number(this.meltScrapForm.value.meltScrapPercentage),
+          paymentDaysPercentage: Number(this.meltScrapForm.value.paymentDaysPercentage),
+          quotationNumberPrefix: this.meltScrapForm.value.quotationNumberPrefix,
+          quotationFormatNumber: this.meltScrapForm.value.quotationFormatNumber,
+          quotationFormatDate: this.meltScrapForm.value.quotationFormatDate
         }
       }));
       this.editingMeltScrap = null;

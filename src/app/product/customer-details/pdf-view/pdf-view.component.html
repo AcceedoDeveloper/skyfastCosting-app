@@ -17,7 +17,7 @@
             <div class="headerdate">
                          
   
-              <h6>Qtn. No : {{ quotationData.results[0].createdAt | date:'dd/MM/yy' }}/{{  quotationData.results[0].revisions[0].revisionName }} </h6>
+              <h6>Qtn. No : {{ quotationData.results[0].revisions[0].quotationNo }}</h6>
               <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
             </div>
           </div>
@@ -167,7 +167,7 @@
                     <th>No. of Cores Hy.</th>
                     <th>Hourly Output</th>
                   
-                    <th colspan="2">Process Cost/casting</th>
+                    <th colspan="2">Process Cost/casting<span *ngIf="isForeignCurrencyQuotation()"> ({{ displayCurrency }})</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -237,7 +237,7 @@
                     <td>-</td>
                     
                     <td>-</td>
-                    <td colspan="2">{{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}
+                    <td colspan="2">{{ (quotationData.results[0].revisions[0].RejectionCost) | number: costFormat }}
                                             <span class="info-container" tabindex="0">
     <mat-icon class="info-icon">info</mat-icon>
   <div class="info-popup dim">
@@ -247,7 +247,7 @@
     </p>
       {{ quotationData.results[0].revisions[0].sumOfProcessCost }} * ( {{ quotationData.results[0].revisions[0].Rejection }} / 100 )
     <br />
-    <strong>Result: {{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</strong>
+    <strong>Result: {{ (quotationData.results[0].revisions[0].RejectionCost) | number: costFormat }}</strong>
   </div>
   </span>
                     </td>
@@ -261,7 +261,7 @@
                     <td></td>
       
                     <td colspan="2">Total Process cost/pc (L) :</td>
-                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}
+                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}
                                             <span class="info-container" tabindex="0">
     <mat-icon class="info-icon">info</mat-icon>
   <div class="info-popup dim">
@@ -269,9 +269,9 @@
   
       (Sum of all individual process costs + Rejection Cost)
     </p>
-      {{ quotationData.results[0].revisions[0].sumOfProcessCost }} + {{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}
+      {{ quotationData.results[0].revisions[0].sumOfProcessCost }} + {{ (quotationData.results[0].revisions[0].RejectionCost) | number: costFormat }}
     <br />
-    <strong>Result: {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</strong>
+    <strong>Result: {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}</strong>
   </div>
   </span>
                     </td>
@@ -280,45 +280,49 @@
                 <tr class="tqp-header">
                     <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
                     <th colspan="1">Net Material Cost (M)</th>
-                    <th colspan="2">Total Labour Cost (L)</th>
-                    <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
+                    <th [attr.colspan]="getLabourColspan(quotationData.results[0].revisions[0])">Total Labour Cost (L)</th>
+                    <th [attr.colspan]="getOverheadsColspan(quotationData.results[0].revisions[0])">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
                     <th colspan="1" *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit {{ quotationData.results[0].revisions[0].profitPercent }}%</th>
-                    <th colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</th>
-                    <th colspan="2">Total price</th>
+                    <th colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited && showProfitOrToolColumn(quotationData.results[0].revisions[0])">Tool Amortization</th>
+                    <th colspan="1" *ngIf="showIccCostColumn(quotationData.results[0].revisions[0])">ICC Cost {{ quotationData.results[0].revisions[0].InterestRate }}%</th>
+                    <th colspan="1" *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])">Setting Cost {{ quotationData.results[0].revisions[0].settingCostPercentage }}%</th>
+                    <th [attr.colspan]="getTotalPriceColspan(quotationData.results[0].revisions[0])">Total price<span *ngIf="isForeignCurrencyQuotation()"> ({{ displayCurrency }})</span></th>
                 </tr>
                 <tr>
                   
                     <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3'}}</td>
-                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                    <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}
+                    <td [attr.colspan]="getLabourColspan(quotationData.results[0].revisions[0])">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}</td>
+                    <td [attr.colspan]="getOverheadsColspan(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].overHeadsCost | number: costFormat }}
                       <span class="info-container" tabindex="0">
   <mat-icon class="info-icon">info</mat-icon>
   <div class="info-popup dim">
-  <!-- If ICC (InterestRate) exists -->
-  <div *ngIf="quotationData.results[0].revisions[0].InterestRate && quotationData.results[0].revisions[0].InterestRate > 0">
+  <!-- labour only: ICC included on a non Non-AutoMobile quote -->
+  <div *ngIf="!quotationData.results[0].revisions[0].overHeadsIncludesMaterial">
     <p class="info-popup-text">
-  
+
       ((Total Labour Cost (L)) * Over Heads)
     </p>
-  ({{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+  ({{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
   <br />
-  <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
+  <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number: costFormat }}</strong>
   </div>
-  <!-- If ICC (InterestRate) doesn't exist -->
-  <div *ngIf="!quotationData.results[0].revisions[0].InterestRate || quotationData.results[0].revisions[0].InterestRate === 0">
+  <!-- material + labour -->
+  <div *ngIf="quotationData.results[0].revisions[0].overHeadsIncludesMaterial">
     <p class="info-popup-text">
   
       (Net Material Cost (M) + Total Labour Cost (L)) * Over Heads %
     </p>
-  ({{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
+  ({{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}) * ({{ quotationData.results[0].revisions[0].overHeadsPercent }} / 100)
   <br />
-  <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }}</strong>
+  <strong>Result:  {{ quotationData.results[0].revisions[0].overHeadsCost | number: costFormat }}</strong>
   </div>
   </div>
   </span>
              </td>
-                    <td colspan="1">{{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number:'1.2-2' }}</td>
-                    <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}
+                    <td colspan="1" *ngIf="showProfitOrToolColumn(quotationData.results[0].revisions[0])">{{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number: costFormat }}</td>
+                    <td colspan="1" *ngIf="showIccCostColumn(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].iccCost | number: costFormat }}</td>
+                    <td colspan="1" *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].settingCost | number: costFormat }}</td>
+                    <td [attr.colspan]="getTotalPriceColspan(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}
                           <span class="info-container" tabindex="0">
     <mat-icon class="info-icon">info</mat-icon>
   <div class="info-popup dim">
@@ -326,9 +330,9 @@
     <div *ngIf="quotationData.results[0].revisions[0].Packing === 'international'">
       <p class="info-popup-text">
   
-        (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + <ng-container *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit</ng-container><ng-container *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</ng-container> + Packing + CMM Inspection + Insurance + Sea Packing + Payment 90 days(ICC))
+        (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + <ng-container *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit</ng-container><ng-container *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</ng-container><ng-container *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])"> + Setting Cost</ng-container> + Packing + CMM Inspection + Insurance + Sea Packing + Payment {{ getPaymentTermsDays(quotationData.results[0].revisions[0]) }} days(ICC))
       </p>
-      {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].CMMInspection | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Insurance | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].SeaPacking | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number:'1.2-2' }}
+      {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number: costFormat }} + {{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number: costFormat }}<ng-container *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])"> + {{ quotationData.results[0].revisions[0].settingCost | number: costFormat }}</ng-container> + {{ quotationData.results[0].revisions[0].PackingCost | number: costFormat }} + {{ quotationData.results[0].revisions[0].CMMInspection | number: costFormat }} + {{ quotationData.results[0].revisions[0].Insurance | number: costFormat }} + {{ quotationData.results[0].revisions[0].SeaPacking | number: costFormat }} + {{ quotationData.results[0].revisions[0].Payment90DaysICC | number: costFormat }}
       <br />
       <strong>Result:1 {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
     </div>
@@ -336,9 +340,9 @@
     <div *ngIf="quotationData.results[0].revisions[0].Packing === 'domestic'">
       <p class="info-popup-text">
   
-        (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + <ng-container *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit</ng-container><ng-container *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</ng-container> + Packing)
+        (Net Material Cost (M) + Total Labour Cost (L) + Profit, ICC & Over Heads + <ng-container *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit</ng-container><ng-container *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</ng-container><ng-container *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])"> + Setting Cost</ng-container> + Packing)
       </p>
-      {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number:'1.2-2' }} + {{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number:'1.2-2' }} + {{ quotationData.results[0].revisions[0].PackingCost | number:'1.2-2' }}
+      {{ quotationData.results[0].revisions[0].netMaterialCost }} + {{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }} + {{ quotationData.results[0].revisions[0].overHeadsCost | number: costFormat }} + {{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number: costFormat }}<ng-container *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])"> + {{ quotationData.results[0].revisions[0].settingCost | number: costFormat }}</ng-container> + {{ quotationData.results[0].revisions[0].PackingCost | number: costFormat }}
       <br />
       <strong>Result:1 {{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</strong>
     </div>
@@ -366,7 +370,7 @@
                                 <th>Insurance</th>
                                 <td>NA</td>
                                 <th>Payment Terms</th>
-                                <td>30 Days</td>
+                                <td>{{quotationData.results[0].revisions[0].PaymentTerms}}</td>
                                 <th>Packing</th>
                                 <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
                             </tr>
@@ -389,28 +393,16 @@
                                 <th>Insurance</th>
                                 <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
                                 <th>Payment Terms</th>
-                                <td>30 Days</td>
-                                <td>Packing</td>
+                                <td>{{quotationData.results[0].revisions[0].PaymentTerms}}</td>
+                                <th>Packing</th>
                             </tr>
                               <tr>
-                                <th>See Packing</th>
+                                <th>Sea Packing</th>
                                 <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
-                                <th></th>
-                                <td></td>
-                                <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
-                            </tr>
-                           
-  
-                             <tr>
-                                <th> Payment 90 days(ICC)	</th>
-                                <td>{{quotationData.results[0].revisions[0].Payment90DaysICC}}</td>
-                                <th></th>
-                                <td></td>
-                                <td colspan="2"></td>
-                            </tr>
-                            <tr>
+                                <th>Payment {{ getPaymentTermsDays(quotationData.results[0].revisions[0]) }} days(ICC)</th>
+                                <td>{{quotationData.results[0].revisions[0].Payment90DaysICC | number: costFormat}}</td>
                                 <th>Applicable Tax</th>
-                                <td colspan="5">CGST / SGST / IGST</td>
+                                <td>CGST / SGST / IGST</td>
                             </tr>
                         </table>
                     </td>
@@ -420,6 +412,12 @@
                 </td>
             </tr>
         </table>
+
+        <!-- Document control: F/N bottom left, Rev/N bottom right -->
+        <div class="doc-control">
+          <span>F/N : {{ quotationData.results[0].revisions[0].quotationFormatNo }}</span>
+          <span>Rev/N : {{ quotationData.results[0].revisions[0].quotationRevisionNo }}</span>
+        </div>
   
         
     
@@ -441,7 +439,7 @@
             <div class="headerdate">
                          
   
-              <h6>Qtn. No : {{ quotationData.results[0].createdAt | date:'dd/MM/yy' }}/{{  quotationData.results[0].revisions[0].revisionName }} </h6>
+              <h6>Qtn. No : {{ quotationData.results[0].revisions[0].quotationNo }}</h6>
               <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
             </div>
           </div>
@@ -544,8 +542,7 @@
                     <th>No. of Cores Mech</th>
                     <th>No. of Cores Hy.</th>
                     <th>Hourly Output</th>
-                    <th >Process Cost/casting</th>
-                    <th *ngIf="quotationData.results[0].revisions[0]?.currency !=null">Process Cost {{quotationData.results[0].revisions[0]?.currency}}</th>
+                    <th colspan="2">Process Cost/casting<span *ngIf="isForeignCurrencyQuotation()"> ({{ displayCurrency }})</span></th>
   
      
                 </tr>
@@ -560,13 +557,10 @@
                     <td>-</td>
                     <td>-</td>
                     <td>{{ process.HourlyOutput }}</td>
-                    <td  class="process-cost-wide">{{ process.cost | number:'1.2-3' }}</td>
-  
-  
+                    <td class="process-cost-wide" colspan="2">{{ process.cost | number:'1.2-3' }}</td>
+
+
                     <!-- get process cost by currency -->
-  <td class="process-cost-wide">
-    {{ getProcessCostByCurrency(process, quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-  </td>
   
   
   
@@ -581,13 +575,10 @@
                     <td></td>
                     <td></td>
                     
-                    <td >{{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}</td>
-  
-  
+                    <td colspan="2">{{ quotationData.results[0].revisions[0].sumOfProcessCost | number:'1.2-3' }}</td>
+
+
   <!-- Sum of Process Cost (Dynamic by Currency) -->
-  <td class="process-cost-wide">
-    {{ getSumOfProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-  </td>
   
   
                 </tr>
@@ -602,14 +593,11 @@
                     
                     <td>-</td>
            
-                    <td >{{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</td>
-            
-  
-  
+                    <td colspan="2">{{ (quotationData.results[0].revisions[0].RejectionCost) | number: costFormat }}</td>
+
+
+
   <!-- Rejection Cost -->
-  <td class="process-cost-wide">
-    {{ getRejectionCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-  </td>
                 </tr>
                 <tr>
                     <td></td>
@@ -620,37 +608,35 @@
                     <td></td>
       
                     <td colspan="2">Total Process cost/pc (L) :</td>
-                    <td >{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-  
-  
+                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}</td>
+
+
                     <!-- Total Process Cost -->
-  <td class="process-cost-wide">
-    {{ getTotalProcessCostByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-  </td>
   
                 </tr>
                 <!-- Integrated Total Quoted Price section within the same table -->
                 <tr class="tqp-header">
                     <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
                     <th colspan="1">Net Material Cost (M)</th>
-                    <th colspan="2">Total Labour Cost (L)</th>
-                    <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
+                    <th [attr.colspan]="getLabourColspan(quotationData.results[0].revisions[0])">Total Labour Cost (L)</th>
+                    <th [attr.colspan]="getOverheadsColspan(quotationData.results[0].revisions[0])">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
                     <th colspan="1" *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit {{ quotationData.results[0].revisions[0].profitPercent }}%</th>
-                    <th colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</th>
-                    <th colspan="2">Total price</th>
+                    <th colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited && showProfitOrToolColumn(quotationData.results[0].revisions[0])">Tool Amortization</th>
+                    <th colspan="1" *ngIf="showIccCostColumn(quotationData.results[0].revisions[0])">ICC Cost {{ quotationData.results[0].revisions[0].InterestRate }}%</th>
+                    <th colspan="1" *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])">Setting Cost {{ quotationData.results[0].revisions[0].settingCostPercentage }}%</th>
+                    <th [attr.colspan]="getTotalPriceColspan(quotationData.results[0].revisions[0])">Total price<span *ngIf="isForeignCurrencyQuotation()"> ({{ displayCurrency }})</span></th>
                 </tr>
                 <tr>
-                  
+
                     <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3'}}</td>
-                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                    <td colspan="2">{{ quotationData.results[0].revisions[0].overHeadsCost   | number:'1.2-2' }}</td>
-                    <td colspan="1">{{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number:'1.2-2' }}</td>
-                    <td >{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
-           
+                    <td [attr.colspan]="getLabourColspan(quotationData.results[0].revisions[0])">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}</td>
+                    <td [attr.colspan]="getOverheadsColspan(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].overHeadsCost   | number: costFormat }}</td>
+                    <td colspan="1" *ngIf="showProfitOrToolColumn(quotationData.results[0].revisions[0])">{{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number: costFormat }}</td>
+                    <td colspan="1" *ngIf="showIccCostColumn(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].iccCost | number: costFormat }}</td>
+                    <td colspan="1" *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].settingCost | number: costFormat }}</td>
+                    <td [attr.colspan]="getTotalPriceValueColspan(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
+
   <!-- Total Price -->
-  <td class="process-cost-wide">
-    {{ getTotalPriceByCurrency(quotationData.results[0].revisions[0], quotationData.results[0].revisions[0]?.currency) | number:'1.2-3' }}
-  </td>
   
                 </tr>
      
@@ -673,7 +659,7 @@
                                 <th>Insurance</th>
                                 <td>NA</td>
                                 <th>Payment Terms</th>
-                                <td>30 Days</td>
+                                <td>{{quotationData.results[0].revisions[0].PaymentTerms}}</td>
                                 <th>Packing</th>
                                 <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
                             </tr>
@@ -696,31 +682,17 @@
                                 <th>Insurance</th>
                                 <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
                                 <th>Payment Terms</th>
-                                <td>30 Days</td>
-                                <td>Packing</td>
+                                <td>{{quotationData.results[0].revisions[0].PaymentTerms}}</td>
+                                <th>Packing</th>
                                 <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
                             </tr>
                               <tr>
-                                <th>See Packing</th>
+                                <th>Sea Packing</th>
                                 <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
-                                <th></th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-  
-                            </tr>
-                           
-  
-                             <tr>
-                                <th> Payment 90 days(ICC)	</th>
-                                <td>{{quotationData.results[0].revisions[0].Payment90DaysICC}}</td>
-                                <th></th>
-                                <td></td>
-                                <td colspan="2"></td>
-                            </tr>
-                            <tr>
+                                <th>Payment {{ getPaymentTermsDays(quotationData.results[0].revisions[0]) }} days(ICC)</th>
+                                <td>{{quotationData.results[0].revisions[0].Payment90DaysICC | number: costFormat}}</td>
                                 <th>Applicable Tax</th>
-                                <td colspan="5">CGST / SGST / IGST</td>
+                                <td>CGST / SGST / IGST</td>
                             </tr>
                         </table>
                     </td>
@@ -730,6 +702,12 @@
                 </td>
             </tr>
         </table>
+
+        <!-- Document control: F/N bottom left, Rev/N bottom right -->
+        <div class="doc-control">
+          <span>F/N : {{ quotationData.results[0].revisions[0].quotationFormatNo }}</span>
+          <span>Rev/N : {{ quotationData.results[0].revisions[0].quotationRevisionNo }}</span>
+        </div>
   
         
     
@@ -751,7 +729,7 @@
             <div class="headerdate">
                          
   
-              <h6>Qtn. No : {{ quotationData.results[0].createdAt | date:'dd/MM/yy' }}/{{  quotationData.results[0].revisions[0].revisionName }} </h6>
+              <h6>Qtn. No : {{ quotationData.results[0].revisions[0].quotationNo }}</h6>
               <h6> Date : {{ quotationData.results[0].createdAt | date:'dd.MM.yy' }}</h6>
             </div>
           </div>
@@ -855,7 +833,7 @@
                     <th>No. of Cores Hy.</th>
                     <th>Hourly Output</th>
                   
-                    <th colspan="2">Process Cost/casting</th>
+                    <th colspan="2">Process Cost/casting<span *ngIf="isForeignCurrencyQuotation()"> ({{ displayCurrency }})</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -892,7 +870,7 @@
                     <td>-</td>
                     
                     <td>-</td>
-                    <td colspan="2">{{ (quotationData.results[0].revisions[0].RejectionCost) | number:'1.2-2' }}</td>
+                    <td colspan="2">{{ (quotationData.results[0].revisions[0].RejectionCost) | number: costFormat }}</td>
                 </tr>
                 <tr>
                     <td></td>
@@ -903,25 +881,29 @@
                     <td></td>
       
                     <td colspan="2">Total Process cost/pc (L) :</td>
-                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
+                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}</td>
                 </tr>
                 <!-- Integrated Total Quoted Price section within the same table -->
                 <tr class="tqp-header">
                     <td colspan="2" rowspan="2" class="tqp-label">Total quoted price / piece :</td>
                     <th colspan="1">Net Material Cost (M)</th>
-                    <th colspan="2">Total Labour Cost (L)</th>
-                    <th colspan="2">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
+                    <th [attr.colspan]="getLabourColspan(quotationData.results[0].revisions[0])">Total Labour Cost (L)</th>
+                    <th [attr.colspan]="getOverheadsColspan(quotationData.results[0].revisions[0])">Profit, ICC & Over Heads {{ quotationData.results[0].revisions[0].overHeadsPercent }}%</th>
                     <th colspan="1" *ngIf="quotationData.results[0].revisions[0].scrapCredited">Profit {{ quotationData.results[0].revisions[0].profitPercent }}%</th>
-                    <th colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited">Tool Amortization</th>
-                    <th colspan="2">Total price</th>
+                    <th colspan="1" *ngIf="!quotationData.results[0].revisions[0].scrapCredited && showProfitOrToolColumn(quotationData.results[0].revisions[0])">Tool Amortization</th>
+                    <th colspan="1" *ngIf="showIccCostColumn(quotationData.results[0].revisions[0])">ICC Cost {{ quotationData.results[0].revisions[0].InterestRate }}%</th>
+                    <th colspan="1" *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])">Setting Cost {{ quotationData.results[0].revisions[0].settingCostPercentage }}%</th>
+                    <th [attr.colspan]="getTotalPriceColspan(quotationData.results[0].revisions[0])">Total price<span *ngIf="isForeignCurrencyQuotation()"> ({{ displayCurrency }})</span></th>
                 </tr>
                 <tr>
                   
                     <td colspan="1">{{ quotationData.results[0].revisions[0].netMaterialCost | number:'1.2-3'}}</td>
-                    <td colspan="2">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number:'1.2-2' }}</td>
-                    <td colspan="2">{{  quotationData.results[0].revisions[0].overHeadsCost   | number:'1.2-2' }} </td>
-                    <td colspan="1">{{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number:'1.2-2' }}</td>
-                    <td colspan="2">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
+                    <td [attr.colspan]="getLabourColspan(quotationData.results[0].revisions[0])">{{ (quotationData.results[0].revisions[0].TotalProcessCost) | number: costFormat }}</td>
+                    <td [attr.colspan]="getOverheadsColspan(quotationData.results[0].revisions[0])">{{  quotationData.results[0].revisions[0].overHeadsCost   | number: costFormat }} </td>
+                    <td colspan="1" *ngIf="showProfitOrToolColumn(quotationData.results[0].revisions[0])">{{ (quotationData.results[0].revisions[0].scrapCredited ? quotationData.results[0].revisions[0].profitCost : quotationData.results[0].revisions[0].toolCost) | number: costFormat }}</td>
+                    <td colspan="1" *ngIf="showIccCostColumn(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].iccCost | number: costFormat }}</td>
+                    <td colspan="1" *ngIf="showSettingCostColumn(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].settingCost | number: costFormat }}</td>
+                    <td [attr.colspan]="getTotalPriceColspan(quotationData.results[0].revisions[0])">{{ quotationData.results[0].revisions[0].TotalPrice | number:'1.2-3'}}</td>
                 </tr>
      
                 <!-- Other Terms and conditions separator inside the same table -->
@@ -943,7 +925,7 @@
                                 <th>Insurance</th>
                                 <td>NA</td>
                                 <th>Payment Terms</th>
-                                <td>30 Days</td>
+                                <td>{{quotationData.results[0].revisions[0].PaymentTerms}}</td>
                                 <th>Packing</th>
                                 <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
                             </tr>
@@ -966,28 +948,16 @@
                                 <th>Insurance</th>
                                 <td>{{quotationData.results[0].revisions[0].Insurance}}</td>
                                 <th>Payment Terms</th>
-                                <td>30 Days</td>
-                                <td>Packing</td>
+                                <td>{{quotationData.results[0].revisions[0].PaymentTerms}}</td>
+                                <th>Packing</th>
                             </tr>
                               <tr>
-                                <th>See Packing</th>
+                                <th>Sea Packing</th>
                                 <td>{{quotationData.results[0].revisions[0].SeaPacking}}</td>
-                                <th></th>
-                                <td></td>
-                                <td>{{quotationData.results[0].revisions[0].PackingCost}}</td>
-                            </tr>
-                           
-  
-                             <tr>
-                                <th> Payment 90 days(ICC)	</th>
-                                <td>{{quotationData.results[0].revisions[0].Payment90DaysICC}}</td>
-                                <th></th>
-                                <td></td>
-                                <td colspan="2"></td>
-                            </tr>
-                            <tr>
+                                <th>Payment {{ getPaymentTermsDays(quotationData.results[0].revisions[0]) }} days(ICC)</th>
+                                <td>{{quotationData.results[0].revisions[0].Payment90DaysICC | number: costFormat}}</td>
                                 <th>Applicable Tax</th>
-                                <td colspan="5">CGST / SGST / IGST</td>
+                                <td>CGST / SGST / IGST</td>
                             </tr>
                         </table>
                     </td>
@@ -997,6 +967,12 @@
                 </td>
             </tr>
         </table>
+
+        <!-- Document control: F/N bottom left, Rev/N bottom right -->
+        <div class="doc-control">
+          <span>F/N : {{ quotationData.results[0].revisions[0].quotationFormatNo }}</span>
+          <span>Rev/N : {{ quotationData.results[0].revisions[0].quotationRevisionNo }}</span>
+        </div>
   
         
     

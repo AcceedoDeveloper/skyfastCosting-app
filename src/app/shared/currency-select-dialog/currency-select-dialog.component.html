@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Download Quotation</h2>
+<mat-dialog-content>
+  <p>Which currency should the quotation be priced in?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="currency-actions">
+  <button type="button" class="btn btn-secondary" mat-dialog-close>Cancel</button>
+  <button type="button" class="btn btn-outline" [mat-dialog-close]="'INR'">INR</button>
+  <button type="button" class="btn btn-primary" [mat-dialog-close]="data.currency">{{ data.currency }}</button>
+</mat-dialog-actions>

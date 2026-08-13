@@ -11,6 +11,11 @@ import { MatDialogModule } from '@angular/material/dialog';
   styleUrl: './confrim-dialog.component.scss'
 })
 export class ConfrimDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { title?: string, message?: string }) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {
+    title?: string,
+    message?: string,
+    confirmText?: string,
+    cancelText?: string
+  }) {}
 
 }

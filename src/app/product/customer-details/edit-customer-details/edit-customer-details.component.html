@@ -154,21 +154,35 @@
       <input type="number" formControlName="Hours" [readonly]="!isCostUnit(proc.value)" />
     </div>
 
-    <!-- Cycle Time -->
-    <div class="form-group half-width11" *ngIf="proc.value.Unit !== 'Square Inch'">
-      <label>Cycle Time / Weight</label>
-      <input type="number" formControlName="cycleTime" />
-    </div>
-    
-    <!-- Cavity -->
-    <div class="form-group half-width1">
-      <label>Cavity</label>
-      <input type="number" formControlName="cavity" [readonly]="isCostUnit(proc.value)" />
+    <!-- Weight (taken straight from the component weight) -->
+    <div class="form-group half-width11" *ngIf="proc.value.Unit === 'Weight'">
+      <label>Weight</label>
+      <input type="number" [value]="customerForm.get('castingWeight')?.value" readonly />
     </div>
 
-    <div class="form-group half-width1" *ngIf="proc.value.Unit === 'Square Inch'">
+    <!-- Cycle Time -->
+    <div class="form-group half-width11" *ngIf="proc.value.Unit !== 'Square Inch'">
+      <label>{{ proc.value.Unit === 'Weight' ? 'Cycle Time' : 'Cycle Time / Weight' }}</label>
+      <input type="number" formControlName="cycleTime" />
+    </div>
+
+    <!-- sqInch takes the Cycle Time slot so Cavity and Setting stay in line -->
+    <div class="form-group half-width11" *ngIf="proc.value.Unit === 'Square Inch'">
       <label>sqInch</label>
       <input type="number" formControlName="sqInch" />
+    </div>
+
+    <!-- Cavity — shown but inert for Square Inch, which does not use it -->
+    <div class="form-group half-width1" *ngIf="proc.value.Unit !== 'Weight'">
+      <label>Cavity</label>
+      <input type="number" formControlName="cavity"
+        [readonly]="isCostUnit(proc.value) || proc.value.Unit === 'Square Inch'" />
+    </div>
+
+    <!-- Setting -->
+    <div class="form-group half-width1">
+      <label>Setting</label>
+      <mat-checkbox formControlName="setting"></mat-checkbox>
     </div>
 
     <!-- Cost -->
@@ -230,6 +244,7 @@
       <div class="summary-row">
         <!-- Commercial Terms -->
         <div class="summary-card">
+          <div class="card-top">
           <div class="section-header">
             <h3 class="card-title">Commercial Terms</h3>
             <button type="button" class="section-add-btn" (click)="addCustomParam('commercialTermsParams')">
@@ -294,6 +309,7 @@
               </button>
             </div>
             </div>
+          </div>
           </div>
           <div class="section-header rejection-header">
             <h3 class="rejection-heading" id="rejected">Rejection</h3>
@@ -384,6 +400,7 @@
 
         <!-- Transportation -->
         <div class="summary-card">
+          <div class="card-top">
           <div class="section-header">
             <h3 class="card-title">Transportation</h3>
             <button type="button" class="section-add-btn" (click)="addCustomParam('transpotationParams')">
@@ -424,9 +441,9 @@
                 </mat-select>
               </div>
 
-                     <div class="field-row checkbox-row">
-              <label class="label1">ICC Include</label>
-              <mat-checkbox formControlName="iccIncluded" [disabled]="isScrapIncludedDisabled()"></mat-checkbox>
+                     <div class="field-row" *ngIf="customerForm.get('Packing')?.value === 'international'">
+              <label class="label1" for="setting-cost">Setting Cost (%)</label>
+              <input class="lab" id="setting-cost" matInput type="number" formControlName="settingCostPercentage" />
               </div>
                         <div class="dynamic-params" formArrayName="transpotationParams">
                 <div class="dynamic-param-row" *ngFor="let param of transpotationParams.controls; let i = index" [formGroupName]="i">
@@ -443,7 +460,8 @@
                 </div>
               </div>
 
-                   <h3 class="rejection-heading" id="Upload">Scrap </h3>
+              </div>
+                   <h3 class="rejection-heading scrap-heading" id="Upload">Scrap </h3>
                   <div class="field-row checkbox-row">
               <label class="label1">Scrap Include</label>
               <mat-checkbox formControlName="scrapIncluded" [disabled]="isScrapIncludedDisabled()"></mat-checkbox>
@@ -471,6 +489,7 @@
 
 <div class="details-panel" [ngClass]="{'active': showTransportInput || customerForm.get('Packing')?.value === 'international' || customerForm.get('Packing')?.value === 'domestic'}">
 
+<div class="card-top">
 <!-- International Packing -->
 <div *ngIf="customerForm.get('Packing')?.value === 'international'" class="slide-card">
   <div class="section-header">
@@ -500,10 +519,6 @@
   <div class="field-row">
     <label class="label1" for="sea-packing">Sea Packing</label>
     <input class="lab" id="sea-packing" matInput type="number" formControlName="SeaPacking" />
-  </div>
-  <div class="field-row">
-    <label class="label1" for="payment-icc">Payment 90 Days ICC</label>
-    <input class="lab" id="payment-icc" matInput type="number" formControlName="Payment90DaysICC" />
   </div>
   <div class="field-row">
     <label class="trans" for="currency">Currency</label>
@@ -543,6 +558,7 @@
 
 </div>
 
+                 </div>
                  <div class="section-header">
               <h3 class="card-titlee">Other</h3>
    <button type="button" class="section-add-btn" (click)="addCustomParam('otherParams')">
@@ -580,7 +596,8 @@
       <button class="btn btn-danger" type="button" (click)="close()">Close</button>
       <button class="btn btn-secondary" matStepperPrevious type="button">Back</button>
       <button class="btn btn-warning" matStepperNext (click)="incrementRevision()">Save As New Revision</button>
-      <button class="btn btn-primary" matStepperNext (click)="onSave()">Save</button>
+      <!-- an approved quotation can only be branched, never saved in place -->
+      <button class="btn btn-primary" matStepperNext (click)="onSave()" *ngIf="!forceNewRevision">Save</button>
     </div>
   </div>
 </form>

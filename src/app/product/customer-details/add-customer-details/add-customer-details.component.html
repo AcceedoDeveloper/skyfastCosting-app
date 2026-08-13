@@ -181,7 +181,7 @@
 
 
 
-      <div formArrayName="processSelection">
+      <div class="process-list" formArrayName="processSelection">
 
         <div *ngFor="let procCtrl of processSelection.controls; let i = index" [formGroupName]="i" class="step2div">
 
@@ -217,9 +217,15 @@
             <input type="number" formControlName="Hours" [readonly]="!isCostUnit(procCtrl.value)" />
           </div>
 
+          <!-- Weight (taken straight from the component weight) -->
+          <div class="form-group field1" *ngIf="procCtrl.value.Unit === 'Weight'">
+            <label>Weight</label>
+            <input type="number" [value]="productForm.get('castingWeight')?.value" readonly />
+          </div>
+
           <!-- Cycle -->
           <div class="form-group field1" *ngIf="procCtrl.value.Unit !== 'Square Inch'">
-            <label>Cycle Time / Weight</label>
+            <label>{{ procCtrl.value.Unit === 'Weight' ? 'Cycle Time' : 'Cycle Time / Weight' }}</label>
             <input type="number" formControlName="cycleTime" [readonly]="isCostUnit(procCtrl.value)" />
           </div>
 
@@ -228,10 +234,17 @@
             <input type="number" formControlName="sqInch" [readonly]="isCostUnit(procCtrl.value)" />
           </div>
 
-          <!-- Cavity -->
-          <div class="form-group field1">
+          <!-- Cavity — shown but inert for Square Inch, which does not use it -->
+          <div class="form-group field1" *ngIf="procCtrl.value.Unit !== 'Weight'">
             <label>Cavity</label>
-            <input type="number" formControlName="cavity" [readonly]="isCostUnit(procCtrl.value)" />
+            <input type="number" formControlName="cavity"
+              [readonly]="isCostUnit(procCtrl.value) || procCtrl.value.Unit === 'Square Inch'" />
+          </div>
+
+          <!-- Setting -->
+          <div class="form-group field1">
+            <label>Setting</label>
+            <mat-checkbox formControlName="setting"></mat-checkbox>
           </div>
 
 
@@ -293,6 +306,7 @@
           <div class="summary-row">
             <!-- Commercial Terms -->
             <div class="summary-card">
+              <div class="card-top">
               <div class="section-header">
                 <h3 class="card-title">Commercial Terms</h3>
                 <button type="button" class="section-add-btn" (click)="addCustomParam('commercialTermsParams')">
@@ -365,6 +379,7 @@
                 </div>
               </div>
 
+              </div>
               <div class="section-header rejection-header">
                 <h3 class="rejection-heading" id="rejected">Rejection</h3>
                 <button type="button" class="section-add-btn" (click)="addCustomParam('rejectionParams')">
@@ -453,6 +468,7 @@
 
             <!-- Transportation -->
             <div class="summary-card">
+              <div class="card-top">
               <div class="section-header">
                 <h3 class="card-title">Transportation</h3>
                 <button type="button" class="section-add-btn" (click)="addCustomParam('transpotationParams')">
@@ -495,10 +511,9 @@
                   </mat-select>
 
                 </div>
-                <div class="field-row checkbox-row">
-                  <label class="label1">ICC Included</label>
-                  <mat-checkbox formControlName="iccIncluded"
-                    [disabled]="isAutoMobileCustomer() && !processForm.get('isMachiningAvailable')?.value"></mat-checkbox>
+                <div class="field-row" *ngIf="processForm.get('Packing')?.value === 'international'">
+                  <label class="label1" for="setting-cost">Setting Cost (%)</label>
+                  <input class="lab" id="setting-cost" matInput type="number" formControlName="settingCostPercentage" />
                 </div>
 
 
@@ -521,7 +536,8 @@
 
 
               </div>
-               <h3 class="rejection-heading" id="Upload">Scrap </h3> 
+              </div>
+               <h3 class="rejection-heading scrap-heading" id="Upload">Scrap </h3>
               <div class="field-row checkbox-row">
                 <label class="label1">Scrap Include</label>
                 <mat-checkbox formControlName="scrapIncluded"
@@ -552,6 +568,7 @@
             [ngClass]="{'active': showTransportInput || processForm.get('Packing')?.value === 'international'}">
             <!-- International Packing -->
             <div *ngIf="processForm.get('Packing')?.value === 'international'" class="slide-card">
+              <div class="card-top">
               <div class="section-header">
                 <h3 class="card-title">International Packing</h3>
 
@@ -584,10 +601,6 @@
                 <input class="lab" id="sea-packing" matInput type="number" formControlName="SeaPacking" />
               </div>
               <div class="field-row">
-                <label class="label1" for="payment-icc">Payment 90 Days ICC</label>
-                <input class="lab" id="payment-icc" matInput type="number" formControlName="Payment90DaysICC" />
-              </div>
-              <div class="field-row">
                 <label class="trans" for="currency">Currency</label>
                 <select class="lab" formControlName="currency">
                   <option value="">Select Currency</option>
@@ -595,6 +608,7 @@
                     {{ currency.symbol }} {{ currency.code }} - {{ currency.name }} ({{ currency.country }})
                   </option>
                 </select>
+              </div>
               </div>
               <div class="section-header">
                 <h3 class="card-title">Other</h3>
@@ -620,6 +634,7 @@
 
             <!-- Domestic Packing -->
             <div *ngIf="processForm.get('Packing')?.value === 'domestic'" class="slide-card">
+              <div class="card-top">
               <div class="section-header">
                 <h3 class="card-title">Domestic Packing</h3>
 
@@ -642,6 +657,7 @@
                 <label class="label1" for="transport-percent">Transport %</label>
                 <input class="lab" id="transport-percent" matInput type="number"
                   formControlName="TransportPercentage" />
+              </div>
               </div>
 
               <div class="section-header">

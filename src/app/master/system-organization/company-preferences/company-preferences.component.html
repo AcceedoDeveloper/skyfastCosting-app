@@ -87,6 +87,22 @@
             <div class="label">Melt Scrap %</div><div class="colon">:</div>
             <div class="value">{{ defaultCompany.meltScrapPercentage ?? defaultMeltScrapPercentage }}</div>
           </div>
+          <div class="row">
+            <div class="label">Payment Days %</div><div class="colon">:</div>
+            <div class="value">{{ defaultCompany.paymentDaysPercentage ?? defaultPaymentDaysPercentage }}</div>
+          </div>
+          <div class="row">
+            <div class="label">Quotation No Prefix</div><div class="colon">:</div>
+            <div class="value">{{ defaultCompany.quotationNumberPrefix || defaultQuotationNumberPrefix }}</div>
+          </div>
+          <div class="row">
+            <div class="label">Quotation Format No (F/N)</div><div class="colon">:</div>
+            <div class="value">{{ defaultCompany.quotationFormatNumber || defaultQuotationFormatNumber }}</div>
+          </div>
+          <div class="row">
+            <div class="label">Format Date (Rev/N)</div><div class="colon">:</div>
+            <div class="value">{{ defaultCompany.quotationFormatDate || defaultQuotationFormatDate }}</div>
+          </div>
 
           <div class="actions">
             <button class="btn primary" (click)="editMeltScrap(defaultCompany)">Edit</button>
@@ -102,6 +118,30 @@
             <div class="label">Melt Scrap %</div><div class="colon">:</div>
             <div class="value">
               <input class="kv-input" type="number" step="0.001" min="0" formControlName="meltScrapPercentage" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Payment Days %</div><div class="colon">:</div>
+            <div class="value">
+              <input class="kv-input" type="number" step="0.01" min="0" formControlName="paymentDaysPercentage" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Quotation No Prefix</div><div class="colon">:</div>
+            <div class="value">
+              <input class="kv-input" type="text" formControlName="quotationNumberPrefix" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Quotation Format No (F/N)</div><div class="colon">:</div>
+            <div class="value">
+              <input class="kv-input" type="text" formControlName="quotationFormatNumber" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Format Date (Rev/N)</div><div class="colon">:</div>
+            <div class="value">
+              <input class="kv-input" type="text" placeholder="dd.mm.yyyy" formControlName="quotationFormatDate" />
             </div>
           </div>
 

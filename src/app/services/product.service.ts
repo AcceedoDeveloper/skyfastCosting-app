@@ -141,10 +141,13 @@ updateCustomerDetails(id: string, customer: any): Observable<any> {
   }
 
   // 🔹 Get Quotation Data
-  quotationData(customerName: string, partName: string, revision: number): Observable<any> {
+  // `currency` overrides the currency the quotation is priced in; without it the
+  // server uses the one stored on the revision
+  quotationData(customerName: string, partName: string, revision: number, currency = ''): Observable<any> {
     const url =
       this.config.getCostingUrl("getQuotationData") +
-      `?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}`;
+      `?CustomerName=${encodeURIComponent(customerName)}&partName=${encodeURIComponent(partName)}&Revision=${revision}` +
+      (currency ? `&currency=${encodeURIComponent(currency)}` : '');
     return this.http.get<any>(url);
   }
 
@@ -194,7 +197,14 @@ updateCustomerDetails(id: string, customer: any): Observable<any> {
 
   downloadQuotationPDF(params: { customerName: string, partName: string, revision: number }) {
     const url = this.config.getCostingUrl('downloadQuotation');
-    return this.http.get<{ fileName: string }>(url, { params });
+    // the endpoint reads CustomerName/Revision with these exact casings
+    return this.http.get<{ fileName: string }>(url, {
+      params: {
+        CustomerName: params.customerName,
+        partName: params.partName,
+        Revision: String(params.revision)
+      }
+    });
   }
   
   getQuotationData(customerName: string, partName: string, revision: number) {
@@ -212,13 +222,18 @@ updateCustomerDetails(id: string, customer: any): Observable<any> {
   }
 
 
-  printQuotation(CustomerName: string, partName: string, revision: number) {
+  printQuotation(CustomerName: string, partName: string, revision: number, currencies?: string[]) {
     const url = this.config.getCostingUrl('printQuotation');
-    const params = {
+    const params: Record<string, string> = {
       CustomerName,
       partName,
       Revision: revision.toString()
     };
+    // the server forwards every query param onto the quotation page it renders,
+    // so this reaches the PDF as-is and decides which cost columns are printed
+    if (currencies?.length) {
+      params['currencies'] = currencies.join(',');
+    }
     console.log(params);
 
     return this.http.get<any>(url, { params });

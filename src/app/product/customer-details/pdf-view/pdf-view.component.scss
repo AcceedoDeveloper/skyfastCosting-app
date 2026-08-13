@@ -1,17 +1,9 @@
 #pdfContent {
     font-family: Arial, sans-serif;
-    margin: 10px;
+    margin: 0 10px 10px;
     line-height: 1.4;
     color: #000000; // Ensure all text is black
   
-  
-    @media print {
-    #pdfContent {
-      transform: scale(0.75);   /* adjust until it fits */
-      transform-origin: top left;
-      width: 100%;
-    }
-  }
   
     
     // Add page borders and styling
@@ -77,9 +69,9 @@
     }
     
     .quotation {
-    
+
       border: 1px solid #000000;
-      padding: 15px;
+      padding: 4px 12px 10px;
       background-color: #ffffff;
     
       width: 100%;
@@ -123,7 +115,7 @@
     .qmeta .value { font-weight: bold; }
     
     .customer-info {
-      margin-bottom: 25px;
+      margin-bottom: 6px;
       color: #000000;
       font-weight: bold;
       font-size: 14px;
@@ -203,17 +195,22 @@
       width: 100%;
       max-width: 100%;
       border-collapse: collapse;
-      margin-bottom: 25px;
+      margin-bottom: 6px;
       border: 1px solid #000000;
       background-color: #ffffff;
       table-layout: fixed; // Force table to respect width constraints
-      overflow: hidden;
       page-break-inside: auto; // Allow table to split across pages
+    }
+
+    /* the last table in a container has nothing below it, so its bottom margin
+       is just dead space at the foot of the quotation */
+    table:last-child {
+      margin-bottom: 0;
     }
     
     th, td {
       border: 1px solid #000000;
-      padding: 8px 6px;
+      padding: 3px 6px;
       text-align: left;
       color: #000000;
       background-color: #ffffff;
@@ -229,7 +226,7 @@
       color: #000000;
       text-align: center;
       font-size: 11px;
-      padding: 8px 6px;
+      padding: 3px 6px;
       white-space: normal;
       line-height: 1.3;
     }
@@ -238,7 +235,7 @@
     table:has(th:contains("Opn No")) {
       th, td {
         font-size: 11px;
-        padding: 6px 4px;
+        padding: 2px 4px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         white-space: normal;
@@ -247,7 +244,7 @@
       
       th {
         font-size: 11px;
-        padding: 8px 4px;
+        padding: 3px 4px;
         background-color: #f2f2f2;
         font-weight: bold;
         text-align: center;
@@ -276,17 +273,16 @@
         display: table-row-group;
       }
       
-      // Set specific column widths for process table (9 columns now; last column wider)
+      // Column widths for the process table — they add up to 100%
       th:nth-child(1), td:nth-child(1) { width: 6%; } // Opn No
-      th:nth-child(2), td:nth-child(2) { width: 6%; } // Opn Code
-      th:nth-child(3), td:nth-child(3) { width: 18%; } // Machine
-      th:nth-child(4), td:nth-child(4) { width: 12%; } // Machine Hour Rate
-      th:nth-child(5), td:nth-child(5) { width: 10%; } // No. of Cavities
+      th:nth-child(2), td:nth-child(2) { width: 7%; } // Opn Code
+      th:nth-child(3), td:nth-child(3) { width: 20%; } // Machine — process names wrap below this
+      th:nth-child(4), td:nth-child(4) { width: 11%; } // Machine Hour Rate
+      th:nth-child(5), td:nth-child(5) { width: 9%; } // No. of Cavities
       th:nth-child(6), td:nth-child(6) { width: 8%; } // No. of Cores Mech
       th:nth-child(7), td:nth-child(7) { width: 8%; } // No. of Cores Hy.
-      th:nth-child(8), td:nth-child(8) { width: 12%; } // Hourly Output
-      th:nth-child(9), td:nth-child(9) { width: 40%; white-space: normal; } // Process Cost (fill right gap)
-      td.process-cost-wide { width: 100%; }
+      th:nth-child(8), td:nth-child(8) { width: 11%; } // Hourly Output
+      th:nth-child(9), td:nth-child(9) { width: 20%; white-space: normal; } // Process Cost (spans 2 grid columns)
     }
   
     /* Integrated Total Quoted Price rows styling inside the same table */
@@ -313,15 +309,29 @@
     .terms-grid { width: 100%; border-collapse: collapse; }
     .terms-grid th, .terms-grid td {
       border: 1px solid #000000;
-      padding: 6px 8px;
+      padding: 3px 8px;
       font-size: 11px;
       text-align: left;
     }
-  
+
+    /* Document control: F/N bottom left, Rev/N bottom right, printed in the strip
+       the quotation table already leaves at its bottom — no border, no extra band */
+    .doc-control {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin: 2px 2px 0;
+      border: none;
+      background: transparent;
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
     /* Process nested table when embedded under Material Cost */
     .process-cell { padding: 0; }
     .process-nested { width: 100%; border-collapse: collapse; }
-    .process-nested th, .process-nested td { border: 1px solid #000000; padding: 6px 4px; }
+    .process-nested th, .process-nested td { border: 1px solid #000000; padding: 2px 4px; }
   
     /* Material table attached directly under header grid */
     .material-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
@@ -406,13 +416,11 @@
     // Allow table splitting across pages with proper continuation
     table {
       page-break-inside: auto; // Allow table to split across pages
-      page-break-after: avoid;
     }
     
     // Allow rows to split but keep header with content
     tr {
       page-break-inside: avoid; // Keep individual rows together
-      page-break-after: avoid;
     }
     
     // Ensure table headers repeat on new pages
@@ -487,7 +495,7 @@
     table:has(th:contains("Net Material Cost")) {
       th, td {
         font-size: 12px;
-        padding: 8px 6px;
+        padding: 3px 6px;
         text-align: center;
       }
       

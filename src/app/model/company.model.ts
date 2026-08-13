@@ -7,6 +7,10 @@ export interface Company {
   backupEmailId?: string;
   backupTiming?: string;
   meltScrapPercentage?: number;
+  paymentDaysPercentage?: number;
+  quotationNumberPrefix?: string;
+  quotationFormatNumber?: string;
+  quotationFormatDate?: string;
   createdAt: Date;
   updatedAt: Date;
   __v?: number;

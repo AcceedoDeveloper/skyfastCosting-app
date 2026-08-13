@@ -64,10 +64,14 @@ export class EditCustomerDetailsComponent implements OnInit {
   custoemr$!: Observable<Customer[]>;
   selectedCustomerCategory = '';
   customerForm: FormGroup;
-  revisionNumber = 1; 
+  revisionNumber = 1;
+  // true when editing an approved quotation: the only way to save is as a new revision
+  forceNewRevision = false;
+  // a new revision always starts back at Pending, even when branched from Approved
+  private saveAsNewRevision = false;
   selectedRevisionIndex = 0; // default first revision
   packingOptions: string[] = ["none", "domestic", "international"];
-    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","90 Days","Immediate"];
+    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","90 Days","110 Days","Immediate"];
     deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
 
   selectedFile: File | null = null;
@@ -101,7 +105,8 @@ loading = false;
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditCustomerDetailsComponent>,
     private store : Store,
-    @Inject(MAT_DIALOG_DATA) public data: CustomerDetails | null
+    // forceNewRevision is set by the caller when the quotation is approved
+    @Inject(MAT_DIALOG_DATA) public data: (CustomerDetails & { forceNewRevision?: boolean }) | null
     , private productservices : ProductService,
     private toastr : ToastrService,
     private config:ConfigService
@@ -109,6 +114,9 @@ loading = false;
 
     console.log('data', data);
     
+  // set when the caller only allows branching a new revision (approved quotation)
+  this.forceNewRevision = data?.forceNewRevision === true;
+
   const revision = data?.revisions?.[data.revisions.length - 1];
   
   // if revisions exist, take the last revision number and increment by 1
@@ -164,6 +172,7 @@ if (data?.revisions?.length) {
     isMachiningAvailable:[revision?.isMachiningAvailable ?? true],
 
   Payment90DaysICC: [revision?.Payment90DaysICC],
+  settingCostPercentage: [revision?.settingCostPercentage ?? 0],
   currency: [revision?.currency ],
 
       castingWeight: [revision?.castingWeight ?? 0],
@@ -190,8 +199,9 @@ if (data?.revisions?.length) {
     this.loadCustomParams('commercialTermsParams', revision?.commercialTermsParams);
     this.loadCustomParams('transpotationParams', revision?.transpotationParams);
     this.loadCustomParams('rejectionParams', revision?.rejectionParams);
+    // no default "Other" params here — they are seeded once when the quotation
+    // is created, so editing must show exactly what was saved
     this.loadCustomParams('otherParams', revision?.otherParams);
-    this.ensureDefaultOtherParams();
 
     //  Fill processes from revision
     if (revision?.processes?.length) {
@@ -399,7 +409,8 @@ private updateSelectedCustomerCategory(customers: Customer[]) {
       cavity: [proc?.cavity ?? 0],
       sqInch: [proc?.sqInch ?? 0],
       cost: [proc?.cost ?? 0],
-      calculation: [proc?.calculation ?? 0]
+      calculation: [proc?.calculation ?? 0],
+      setting: [proc?.setting ?? false]
     });
 
     this.applyProcessUnitValidators(group);
@@ -446,9 +457,8 @@ private updateSelectedCustomerCategory(customers: Customer[]) {
           cycleTime: control.get('cycleTime')?.value || matchedProcess.cycleTime
         };
 
-        if (matchedUnit === 'weight') {
-          patchData.cycleTime = this.toFiniteNumber(this.customerForm.get('castingWeight')?.value, 0);
-        }
+        // Weight-unit processes no longer borrow cycleTime for the component
+        // weight — weight is read straight from the product, cycle time is entered.
 
         if (!control.get('cavity')?.value && matchedProcess.processName === 'PDC') {
           patchData.cavity = this.customerForm.get('cavities')?.value || matchedProcess.cavity;
@@ -468,7 +478,8 @@ private updateSelectedCustomerCategory(customers: Customer[]) {
       return;
     }
 
-    if (unit === 'cost') {
+    // cavity is only shown for Hour-style units
+    if (unit === 'cost' || unit === 'weight' || unit === 'square inch') {
       cavityControl.clearValidators();
     } else {
       cavityControl.setValidators([Validators.required]);
@@ -508,24 +519,6 @@ private updateSelectedCustomerCategory(customers: Customer[]) {
 
     Object.entries(params).forEach(([label, value]) => {
       formArray.push(this.createParamGroup(label, String(value ?? '')));
-    });
-  }
-
-  private ensureDefaultOtherParams() {
-    const formArray = this.otherParams;
-    const defaults = [
-      { label: 'Die maintenance', value: '1' },
-      { label: '100% Visual Inspector', value: '1' }
-    ];
-
-    defaults.forEach((defaultParam) => {
-      const exists = formArray.controls.some(
-        (ctrl) => ctrl.value.label?.trim().toLowerCase() === defaultParam.label.toLowerCase()
-      );
-
-      if (!exists) {
-        formArray.push(this.createParamGroup(defaultParam.label, defaultParam.value));
-      }
     });
   }
 
@@ -673,6 +666,7 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
       Insurance: formValue.Insurance,
       SeaPacking: formValue.SeaPacking,
       Payment90DaysICC: formValue.Payment90DaysICC,
+      settingCostPercentage: formValue.settingCostPercentage,
       currency: formValue.currency,
       TransportPercentage: formValue.TransportPercentage,
       TransportCost: formValue.TransportCost
@@ -686,7 +680,10 @@ private buildUpdatedCustomer(allRawMaterials: RawMaterial[]) {
     transpotationParams: this.buildParamsMap(this.transpotationParams),
     rejectionParams: this.buildParamsMap(this.rejectionParams),
     otherParams: this.buildParamsMap(this.otherParams),
-    revisionNumber: this.revisionNumber
+    revisionNumber: this.revisionNumber,
+    // without this the backend carries the previous revision's Status forward,
+    // so a revision branched off an approved one would come back Approved
+    ...(this.saveAsNewRevision ? { Status: 'Pending' } : {})
   };
 }
 
@@ -745,7 +742,8 @@ private buildProcessPayload(process: any) {
     Hours: normalizedProcess.Hours,
     cost: this.calculateProcessValue(normalizedProcess),
     cycleTime: normalizedProcess.cycleTime,
-    cavity: normalizedProcess.cavity
+    cavity: normalizedProcess.cavity,
+    setting: normalizedProcess.setting === true
   };
 }
 
@@ -754,6 +752,7 @@ private buildProcessPayload(process: any) {
 
 incrementRevision() {
   this.revisionNumber++;
+  this.saveAsNewRevision = true;
   console.log(' Revision incremented:', this.revisionNumber);
   this.onSave();
 }
@@ -774,7 +773,8 @@ calculateProcessValue(proc: any): number {
   const sqInch = this.toFiniteNumber(proc.sqInch, 0);
 
   if (unit === 'weight') {
-    return +(castingWeight * hours).toFixed(4);
+    const weightValue = cycleTime > 0 ? (castingWeight * hours) / (3600 / cycleTime) : 0;
+    return Number.isFinite(weightValue) ? +weightValue.toFixed(4) : 0;
   }
 
   if (unit === 'square inch') {
@@ -793,7 +793,7 @@ getProcessFormulaTitle(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
 
   if (unit === 'weight') {
-    return 'Formula: Casting Weight * Machine / per hr';
+    return 'Formula: (Component Weight * Machine / per hr) / (3600 / Cycle Time)';
   }
 
   if (unit === 'square inch') {
@@ -816,7 +816,7 @@ getProcessFormulaBreakdown(proc: any): string {
   const sqInch = this.toFiniteNumber(proc?.sqInch, 0);
 
   if (unit === 'weight') {
-    return `= (${castingWeight} * ${hours})`;
+    return `= (${castingWeight} * ${hours}) / (3600 / ${cycleTime})`;
   }
 
   if (unit === 'square inch') {
@@ -859,9 +859,8 @@ onProcessSelected(processId: string, index: number) {
         calculation: selectedProc.calculation
       };
 
-      if (selectedUnit === 'weight') {
-        patchData.cycleTime = this.toFiniteNumber(this.customerForm.get('castingWeight')?.value, 0);
-      }
+      // Weight-unit processes no longer borrow cycleTime for the component
+      // weight — weight is read straight from the product, cycle time is entered.
 
       // 🔹 If processName is PDC → auto-fill cavity from customerForm
       if (selectedProc.processName === 'PDC') {

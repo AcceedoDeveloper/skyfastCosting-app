@@ -85,7 +85,7 @@ selectedFileName: string = '';
     Cusid?: string;
     showTransportInput = true; 
     packingOptions: string[] = ["none", "domestic", "international"];
-    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","90 Days","Immediate"];
+    paymenttermsOptions:string[] =["30 Days","45 Days","60 Days","90 Days","110 Days","Immediate"];
     deliverytermsoption:string[]=["Ex-Works","FOB","CIF"];
 
     constructor(
@@ -154,6 +154,7 @@ selectedFileName: string = '';
   Insurance: [0],
   SeaPacking: [0],
   Payment90DaysICC: [0],
+  settingCostPercentage: [0],
    includeRejections: [true],
    isMachiningAvailable:[true],
   currency: ['USD'],
@@ -261,6 +262,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
                 cycleTime: [proc.cycleTime],
                 cavity: [proc.cavity, Validators.required],
                 sqInch: [proc.sqInch, Validators.required],
+                setting: [proc.setting ?? false],
               });
               processArray.push(group);
               this.processFilterCtrls.push(new FormControl<string | null>(''));
@@ -305,6 +307,7 @@ this.productForm.get('meltingLoss')?.valueChanges.subscribe(() => {
         Insurance: this.data.Insurance || 0,
         SeaPacking: this.data.SeaPacking || 0,
         Payment90DaysICC: this.data.Payment90DaysICC || 0,
+        settingCostPercentage: this.data.settingCostPercentage || 0,
         includeRejections: this.data.includeRejections !== undefined ? this.data.includeRejections : true,
         isMachiningAvailable:this.data.isMachiningAvailable || true,
         currency: this.data.currency || 'USD'
@@ -592,6 +595,7 @@ addProcessSelection() {
     cycleTime: [''],
     cavity: [null],
     sqInch: [0, Validators.required],
+    setting: [false],
   });
   this.applyProcessUnitValidators(group);
   this.processSelection.push(group);
@@ -644,10 +648,8 @@ onProcessChange(index: number, processId: string) {
         cycleTime: selectedProcess.cycleTime
       };
 
-      const unit = String(selectedProcess.Unit || '').toLowerCase();
-      if (unit === 'weight' ) {
-        patchData.cycleTime = this.productForm.get('castingWeight')?.value || 0;
-      }
+      // Weight-unit processes no longer borrow cycleTime for the component
+      // weight — weight is read straight from the product, cycle time is entered.
 
       // 🔹 If processName is PDC, auto-fill cavity from productForm
       if (selectedProcess.processName === 'PDC') {
@@ -669,7 +671,8 @@ private applyProcessUnitValidators(group: FormGroup) {
     return;
   }
 
-  if (unit === 'cost') {
+  // cavity is only shown for Hour-style units
+  if (unit === 'cost' || unit === 'weight' || unit === 'square inch') {
     cavityControl.clearValidators();
   } else {
     cavityControl.setValidators([Validators.required]);
@@ -683,13 +686,9 @@ private updateAllProcessCycleTimes() {
 }
 
 private updateProcessCycleTime(index: number) {
-  const group = this.processSelection.at(index) as FormGroup;
-  const unit = String(group.get('Unit')?.value || '').toLowerCase();
-
-  if (unit === 'weight' ) {
-    const castingWeight = this.productForm.get('castingWeight')?.value || 0;
-    group.get('cycleTime')?.setValue(castingWeight, { emitEvent: false });
-  }
+  // Weight-unit processes used to overwrite cycleTime with the component weight,
+  // because one field served as both. Weight is now shown on its own and read
+  // straight from the component weight, so cycleTime is the operator's to enter.
 }
 
 
@@ -822,6 +821,7 @@ private buildCustomerPayload() {
     Insurance: this.processForm.value.Insurance,
     SeaPacking: this.processForm.value.SeaPacking,
     Payment90DaysICC: this.processForm.value.Payment90DaysICC,
+    settingCostPercentage: this.processForm.value.settingCostPercentage,
     currency: this.processForm.value.currency,
     commercialTermsParams,
     transpotationParams,
@@ -867,7 +867,8 @@ private buildProcessPayload(process: any) {
     Hours: normalizedProcess.Hours,
     cost: this.calculateProcessValue(normalizedProcess),
     cycleTime: normalizedProcess.cycleTime,
-    cavity: normalizedProcess.cavity
+    cavity: normalizedProcess.cavity,
+    setting: normalizedProcess.setting === true
   };
 }
 
@@ -882,7 +883,8 @@ calculateProcessValue(proc: any): number {
   const sqInch = this.toFiniteNumber(proc.sqInch, 0);
 
   if (unit === 'weight') {
-    return +(castingWeight * hours).toFixed(4);
+    const weightValue = cycleTime > 0 ? (castingWeight * hours) / (3600 / cycleTime) : 0;
+    return Number.isFinite(weightValue) ? +weightValue.toFixed(4) : 0;
   }
 
   if (unit === 'square inch') {
@@ -901,7 +903,7 @@ getProcessFormulaTitle(proc: any): string {
   const unit = String(proc?.Unit || '').toLowerCase();
 
   if (unit === 'weight') {
-    return 'Formula: Casting Weight * Machine / per hr';
+    return 'Formula: (Component Weight * Machine / per hr) / (3600 / Cycle Time)';
   }
 
   if (unit === 'square inch') {
@@ -924,7 +926,7 @@ getProcessFormulaBreakdown(proc: any): string {
   const sqInch = this.toFiniteNumber(proc?.sqInch, 0);
 
   if (unit === 'weight') {
-    return `= (${castingWeight} * ${hours})`;
+    return `= (${castingWeight} * ${hours}) / (3600 / ${cycleTime})`;
   }
 
   if (unit === 'square inch') {

@@ -34,8 +34,14 @@
   justify-content: flex-end;
 }
 
+/* the process list grows with every row added, so cap it and scroll instead of
+   pushing Back/Next off the dialog. Sized off the viewport so it adapts. */
 .process-container {
   margin-top: 20px;
+  max-height: calc(92vh - 260px);
+  min-height: 180px;
+  overflow: auto;
+  padding-right: 8px;
 }
 
 .process-row {
@@ -366,6 +372,48 @@ select:focus {
   border-radius: 10px;
   padding: 22px 20px;
   transition: all 0.3s ease;
+}
+
+/* Rejection / Scrap / Other must start on the same line across the three
+   columns. Reserving a shared height for the fields above them keeps that true
+   for both international and domestic, which have different field counts. */
+.summary-card,
+.details-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-top {
+  display: flex;
+  flex-direction: column;
+}
+
+/* fields that are shown only to keep the process row aligned */
+.form-group input[readonly] {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* 993px is where .summary-container stops stacking, so the reservation applies
+   exactly while the three columns are side by side */
+@media (min-width: 993px) {
+  .card-top {
+    min-height: 440px;
+  }
+}
+
+/* the trailing block starts at the same offset in every column ... */
+.card-top + .section-header,
+.card-top + .rejection-heading {
+  margin-top: 16px;
+}
+
+/* ... and its heading adds nothing further on top */
+.card-top + .section-header > .card-title,
+.card-top + .section-header > .card-titlee,
+.card-top + .section-header > .rejection-heading {
+  margin-top: 0;
 }
 
 .summary-card h3 {

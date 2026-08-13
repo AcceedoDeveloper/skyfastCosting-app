@@ -3,6 +3,6 @@
   <p>{{ data.message || 'Are you sure you want to proceed?' }}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="button" >
-  <button type="button" class="btn btn-secondary" style="gap: 10px;" mat-dialog-close="cancel">Cancel</button>
-  <button type="button" class="btn btn-danger" [mat-dialog-close]="'confirm'">Confirm</button>
+  <button type="button" class="btn btn-secondary" style="gap: 10px;" mat-dialog-close="cancel">{{ data.cancelText || 'Cancel' }}</button>
+  <button type="button" class="btn btn-danger" [mat-dialog-close]="'confirm'">{{ data.confirmText || 'Confirm' }}</button>
 </mat-dialog-actions>

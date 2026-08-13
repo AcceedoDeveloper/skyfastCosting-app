@@ -38,6 +38,7 @@ export interface Revision {
   iccIncluded:boolean;
   meltPerKg:number;
   scrapRecoverable:number;
+  settingCostPercentage?:number;
   castingWeight: number;
   cavities: number;
   meltingLoss: number;
